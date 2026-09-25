@@ -1,0 +1,145 @@
+.carousel-inner {
+    overflow: visible;
+}
+
+    .carousel-inner::-webkit-scrollbar {
+        display: none !important; /* Hides the scrollbar */
+    }
+
+.page-header-menu-section .header-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#carouselExample {
+    width: 500px;
+    overflow: visible;
+}
+
+.carousel-inner {
+    display: flex;
+}
+
+.carousel-item {
+    flex: 0 0 auto;
+    width: 100%;
+}
+
+.header-nav > li {
+    padding: 0px 0 2px 0px !important;
+    margin: 0px 3px !important;
+}
+
+.page-header-menu-section .header-nav > li > a {
+    width: 110px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .page-header-menu-section button i {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    body
+    .page-header-menu-section button i {
+        display: none;
+    }
+}
+
+.page-header-menu-section button i {
+    background-color: #eee;
+    color: #000000;
+    padding: 8px;
+    border-radius: 15px;
+    font-size: 16px;
+}
+
+
+
+.page-header-menu-section {
+    position: relative !important;
+}
+
+
+
+.carousel-control-prev {
+    left: 0;
+}
+
+.carousel-control-next {
+    right: 0;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    color: var(--bs-dropdown-link-active-color);
+    text-decoration: none;
+    background-color: #fff !important;
+}
+
+a {
+    text-decoration: auto !important;
+}
+
+.color-palette {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+@media (min-width: 1025px) { /* Adjust breakpoint if needed */
+    .menubar {
+        display: none !important;
+    }
+
+    #base {
+        padding-left: 0px !important;
+    }
+
+    #header {
+        left: 0 !important;
+    }
+}
+
+@media (max-width: 1024px) { /* Mobile & Tablet */
+    .mainTopMenu {
+        display: none !important;
+    }
+}
+
+.page-header-box > h1 {
+    display: none;
+}
+
+.carousel-control-prev:disabled, .carousel-control-next:disabled {
+    opacity: 0.1; /* Set opacity to 0.1 when the button is disabled */
+    pointer-events: none; /* Disable interactions with the button */
+}
+.carousel-control-next, .carousel-control-prev {
+    position: absolute;
+    top: 27%;
+    transform: translateY(-50%);
+    z-index: 1;
+    width: 6% !important;
+    bottom: 0;
+}
+
+.dataTables_wrapper .dataTables__top {
+    margin-bottom: 10px !important;
+    display: flex;
+    align-items: center;
+}
+
+.automatonShowFilter {
+    order: 4;
+}
+
+.page-header-box button span.visually-hidden {
+    display: none;
+}

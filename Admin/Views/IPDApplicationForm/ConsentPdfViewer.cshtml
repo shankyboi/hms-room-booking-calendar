@@ -1,0 +1,111 @@
+@{
+	Layout = null;
+	var pdfUrl = ViewBag.PdfUrl as string ?? "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<h6>Consent document</h6>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+	<style>
+		* { box-sizing: border-box; }
+		html, body { height: 100%; overflow: hidden; }
+		body { margin: 0; padding: 12px; font-family: sans-serif; background: #f5f5f5; display: flex; flex-direction: column; }
+		#pdf-scroll-container {
+			max-width: 100%;
+			flex: 1 1 auto;
+			min-height: 0;
+			overflow-y: auto;
+			overflow-x: hidden;
+			background: #fff;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			padding: 16px;
+		}
+		#pdf-pages { position: relative; }
+		#pdf-pages canvas { display: block; margin: 0 auto 12px; max-width: 100%; height: auto !important; }
+		#pdf-loading, #pdf-error { text-align: center; padding: 2rem; color: #666; }
+		#pdf-error { color: #c00; }
+	</style>
+</head>
+<body>
+	<div id="pdf-loading">Loading PDF…</div>
+	<div id="pdf-error" style="display:none;"></div>
+	<div id="pdf-scroll-container" style="display:none;">
+		<div id="pdf-pages"></div>
+		<div id="pdf-end-marker" style="height:1px; visibility:hidden;"></div>
+	</div>
+
+	<script>
+		(function() {
+			var pdfUrl = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(pdfUrl));
+			if (!pdfUrl) {
+				document.getElementById('pdf-loading').style.display = 'none';
+				document.getElementById('pdf-error').style.display = 'block';
+				document.getElementById('pdf-error').textContent = 'No document URL.';
+				return;
+			}
+
+			var scrollContainer = document.getElementById('pdf-scroll-container');
+			var pagesDiv = document.getElementById('pdf-pages');
+			var loadingEl = document.getElementById('pdf-loading');
+			var errorEl = document.getElementById('pdf-error');
+			var endMarker = document.getElementById('pdf-end-marker');
+			var scrolledToBottom = false;
+
+			function notifyParentScrolledToBottom(userScrolled) {
+				if (scrolledToBottom) return;
+				scrolledToBottom = true;
+				try {
+					if (window.parent && window.parent !== window)
+						window.parent.postMessage({ type: 'consent-pdf-scrolled-to-bottom', userScrolled: !!userScrolled }, '*');
+				} catch (e) {}
+			}
+
+			function checkScroll(fromScrollEvent) {
+				if (scrolledToBottom) return;
+				var el = scrollContainer;
+				var atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+				if (atBottom) notifyParentScrolledToBottom(fromScrollEvent);
+			}
+
+			pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+			var loadingTask = pdfjsLib.getDocument(pdfUrl);
+			loadingTask.promise.then(function(pdf) {
+				loadingEl.style.display = 'none';
+				scrollContainer.style.display = 'block';
+				var totalPages = pdf.numPages;
+				var renderNext = function(pageNum) {
+					if (pageNum > totalPages) {
+						scrollContainer.addEventListener('scroll', function() { checkScroll(true); });
+						// Short PDFs: no scroll needed — enable button without alert
+						setTimeout(function() { checkScroll(false); }, 100);
+						requestAnimationFrame(function() { checkScroll(false); });
+						return;
+					}
+					pdf.getPage(pageNum).then(function(page) {
+						var scale = 1.5;
+						var viewport = page.getViewport({ scale: scale });
+						var canvas = document.createElement('canvas');
+						var ctx = canvas.getContext('2d');
+						canvas.height = viewport.height;
+						canvas.width = viewport.width;
+						pagesDiv.appendChild(canvas);
+						page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function() {
+							renderNext(pageNum + 1);
+						});
+					});
+				};
+				renderNext(1);
+			}).catch(function(err) {
+				loadingEl.style.display = 'none';
+				errorEl.style.display = 'block';
+				errorEl.textContent = 'Failed to load PDF.';
+			});
+		})();
+	</script>
+</body>
+</html>

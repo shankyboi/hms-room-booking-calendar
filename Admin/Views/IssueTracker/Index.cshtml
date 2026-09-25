@@ -1,0 +1,793 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@{
+    ViewData["Title"] = "Issue Tracker";
+    Layout = "~/Views/Shared/_IssueTrackerLayout.cshtml";
+    var apiUrl  = ViewBag.ApiUrl as string ?? Configuration["ApiSettings:apiURL"]?.TrimEnd('/');
+    var showDev = (bool)(ViewBag.ShowReportToDeveloper ?? false);
+}
+
+<style>
+/* ── Issue Tracker Styles ──────────────────────────────────────────── */
+.it-page-header {
+    background: var(--card-head-header, #2F6B4F);
+    color: var(--card-head-text, #fff);
+    border-radius: 10px; padding: 18px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px;
+    box-shadow: var(--cardshadow, 0 4px 14px rgba(0,0,0,.15));
+}
+.it-page-header h4 { margin: 0; font-weight: 700; font-size: 18px; }
+.it-page-header .it-meta { font-size: 12px; opacity: .8; margin-top: 3px; }
+
+/* Report-to-dev banner */
+.it-dev-banner {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+    color: #fff; border-radius: 10px; padding: 16px 22px;
+    display: flex; align-items: center; gap: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 14px rgba(26,35,126,.3);
+}
+.it-dev-banner .it-dev-icon {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: rgba(255,255,255,.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+}
+.it-dev-banner .it-dev-text h6 { margin: 0; font-weight: 700; font-size: 14px; }
+.it-dev-banner .it-dev-text p  { margin: 0; font-size: 12px; opacity: .8; }
+.it-dev-banner .it-dev-fill-btn {
+    margin-left: auto;
+    background: #fff; color: #1a237e;
+    border: none; border-radius: 22px;
+    padding: 8px 20px; font-weight: 700; font-size: 13px;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    transition: all .18s;
+}
+.it-dev-fill-btn:hover { background: #e8eaf6; }
+
+/* Form card */
+.it-form-card {
+    background: var(--cardcolor, #fff);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--cardshadow, 0 4px 14px rgba(0,0,0,.1));
+    border: 1px solid var(--card-head-header, #2F6B4F);
+    margin-bottom: 28px;
+}
+.it-form-head {
+    background: var(--card-head-header, #2F6B4F);
+    color: var(--card-head-text, #fff);
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 700;
+}
+.it-form-body { padding: 20px 24px; }
+
+/* Inputs */
+.it-label {
+    font-size: 13px; font-weight: 700 !important;
+    color: var(--card-head-header, #2F6B4F) !important;
+    margin-bottom: 6px; display: block;
+}
+.it-input {
+    width: 100%;
+    border: 1.5px solid var(--input-border, #D5D5DE) !important;
+    border-radius: 7px !important;
+    padding: 9px 13px !important;
+    font-size: 13px !important;
+    color: var(--colorblack, #000) !important;
+    background: var(--input-background, #fff) !important;
+    transition: border-color .18s;
+}
+.it-input:focus {
+    border-color: var(--btnprimary, #2F6B4F) !important;
+    box-shadow: 0 0 0 3px rgba(0,0,0,.05) !important;
+    outline: none;
+}
+.it-input::placeholder { opacity: .5; }
+
+/* Priority badges */
+.it-badge {
+    display: inline-block; border-radius: 12px;
+    padding: 3px 10px; font-size: 11px; font-weight: 700;
+}
+.it-badge-low      { background: #e8f5e9; color: #2e7d32; }
+.it-badge-medium   { background: #fff8e1; color: #f57f17; }
+.it-badge-high     { background: #fff3e0; color: #e65100; }
+.it-badge-critical { background: #fce4ec; color: #b71c1c; }
+
+/* Status badges */
+.it-badge-open        { background: #e3f2fd; color: #1565c0; }
+.it-badge-inprogress  { background: #fff8e1; color: #f57f17; }
+.it-badge-resolved    { background: #e8f5e9; color: #2e7d32; }
+.it-badge-closed      { background: #f5f5f5; color: #616161; }
+
+/* Table */
+.it-table-card {
+    background: var(--cardcolor, #fff);
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--cardshadow, 0 4px 14px rgba(0,0,0,.1));
+}
+.it-table-head {
+    background: var(--card-head-header, #2F6B4F);
+    color: var(--card-head-text, #fff);
+    padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 14px; font-weight: 700;
+}
+.it-stat-pill {
+    background: rgba(255,255,255,.18); border-radius: 20px;
+    padding: 4px 14px; font-size: 12px; font-weight: 600;
+}
+
+/* Filters row */
+.it-filters { padding: 14px 20px; border-bottom: 1px solid var(--input-border, #eee); display: flex; gap: 10px; flex-wrap: wrap; }
+.it-filter-select { border: 1.5px solid var(--input-border, #D5D5DE); border-radius: 7px; padding: 6px 12px; font-size: 13px; background: var(--input-background,#fff); color: var(--colorblack,#000); }
+
+/* Submit btn */
+.it-submit-btn {
+    background: var(--btnprimary, #2F6B4F) !important;
+    color: var(--btncolor, #fff) !important;
+    border: none; border-radius: 7px;
+    padding: 10px 28px; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: opacity .18s;
+}
+.it-submit-btn:hover { opacity: .88; }
+.it-cancel-btn {
+    background: transparent !important;
+    color: var(--card-head-header, #2F6B4F) !important;
+    border: 1.5px solid var(--card-head-header, #2F6B4F) !important;
+    border-radius: 7px; padding: 10px 22px;
+    font-size: 14px; font-weight: 600; cursor: pointer; transition: all .18s;
+}
+.it-cancel-btn:hover { background: var(--tab-card-bg, #f8f8f8) !important; }
+
+/* URL field highlight */
+.it-url-wrap { position: relative; }
+.it-url-badge {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: var(--btnprimary, #2F6B4F); color: #fff;
+    border-radius: 4px; padding: 2px 8px; font-size: 11px;
+    pointer-events: none;
+}
+</style>
+
+<div class="container-fluid pt-3 pb-5">
+
+    <!-- ── Page header ─────────────────────────────────────────────── -->
+    <div class="it-page-header">
+        <div>
+            <h4><i class="fa fa-bug mr-2"></i>Issue Tracker</h4>
+            <div class="it-meta">Track, report and manage application issues</div>
+        </div>
+        <span id="it-open-count-badge" class="it-stat-pill">Loading…</span>
+    </div>
+
+    <!-- ── Report to Developer banner (always visible) ────────────── -->
+    <div class="it-dev-banner" id="it-dev-banner">
+        <div class="it-dev-icon"><i class="fa fa-code"></i></div>
+        <div class="it-dev-text">
+            <h6>Report to Developer</h6>
+            <p>Found an issue? Click the button to report it directly to the development team.</p>
+        </div>
+        <button class="it-dev-fill-btn" id="btnReportToDev">
+            <i class="fa fa-bug mr-1"></i> Report to Developer
+        </button>
+    </div>
+
+    <!-- ── New Issue Form (hidden – submit only via Report to Developer btn) ── -->
+    <div class="it-form-card" id="it-form-section" style="display:none;">
+        <div class="it-form-head">
+            <i class="fa fa-plus-circle"></i>
+            <span>Report a New Issue</span>
+        </div>
+        <div class="it-form-body">
+            <div class="row">
+
+                <!-- Entity -->
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <label class="it-label">Entity / Module <span style="color:#e53935">*</span></label>
+                    <select id="it-entity" class="it-input">
+                        <option value="">— Select Entity —</option>
+                    </select>
+                </div>
+
+                <!-- File -->
+                <div class="col-md-3 col-sm-6 mb-3">
+                    <label class="it-label">File Name</label>
+                    <select id="it-file" class="it-input">
+                        <option value="">— Select File —</option>
+                    </select>
+                </div>
+
+                <!-- Priority -->
+                <div class="col-md-2 col-sm-6 mb-3">
+                    <label class="it-label">Priority</label>
+                    <select id="it-priority" class="it-input">
+                        <option value="Low">🟢 Low</option>
+                        <option value="Medium" selected>🟡 Medium</option>
+                        <option value="High">🟠 High</option>
+                        <option value="Critical">🔴 Critical</option>
+                    </select>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-2 col-sm-6 mb-3">
+                    <label class="it-label">Status</label>
+                    <select id="it-status" class="it-input">
+                        <option value="Open" selected>Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+
+                <!-- Reporter -->
+                <div class="col-md-2 col-sm-6 mb-3">
+                    <label class="it-label">Reporter Name</label>
+                    <input type="text" id="it-reporter" class="it-input" placeholder="Your name (optional)">
+                </div>
+
+                <!-- URL -->
+                <div class="col-md-12 mb-3">
+                    <label class="it-label">Page URL <small style="font-weight:400;opacity:.7">(auto-filled when using Report to Developer)</small></label>
+                    <div class="it-url-wrap">
+                        <input type="text" id="it-url" class="it-input" placeholder="https://…" style="padding-right:80px;">
+                        <span class="it-url-badge" id="it-url-badge" style="display:none;">Auto</span>
+                    </div>
+                </div>
+
+                <!-- Issue Text -->
+                <div class="col-md-12 mb-3">
+                    <label class="it-label">Issue Description <span style="color:#e53935">*</span></label>
+                    <textarea id="it-issuetext" class="it-input" rows="4"
+                              placeholder="Describe the issue in detail — steps to reproduce, expected vs actual behaviour…"
+                              style="resize:vertical; min-height:90px;"></textarea>
+                </div>
+
+                <!-- Buttons -->
+                <div class="col-md-12">
+                    <button class="it-submit-btn mr-2" id="it-submit">
+                        <i class="fa fa-paper-plane mr-1"></i> Submit Issue
+                    </button>
+                    <button class="it-cancel-btn" id="it-clear">
+                        <i class="fa fa-times mr-1"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Issues List ─────────────────────────────────────────────── -->
+    <div class="it-table-card">
+        <div class="it-table-head">
+            <span><i class="fa fa-list mr-2"></i>All Issues</span>
+            <button class="it-stat-pill" style="cursor:pointer;border:none;background:rgba(255,255,255,.18);" onclick="loadIssues()">
+                <i class="fa fa-refresh mr-1"></i> Refresh
+            </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="it-filters">
+            <select class="it-filter-select" id="filter-entity">
+                <option value="">All Entities</option>
+            </select>
+            <select class="it-filter-select" id="filter-priority">
+                <option value="">All Priorities</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+            </select>
+            <select class="it-filter-select" id="filter-status">
+                <option value="">All Statuses</option>
+                <option value="Open">Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Closed">Closed</option>
+                <option value="Reopen">Reopen</option>
+            </select>
+            <input type="text" class="it-filter-select" id="filter-search"
+                   placeholder="🔍 Search issues…" style="min-width:180px;">
+        </div>
+
+        <div class="table-responsive">
+            <table id="it-issues-table" class="table table-hover mb-0" style="font-size:13px;">
+                <thead style="background:var(--tab-card-bg,#F8FAFC);">
+                    <tr>
+                        <th style="padding:10px 14px;color:var(--card-head-header,#2F6B4F);font-weight:700;">#</th>
+                        <th style="padding:10px 14px;color:var(--card-head-header,#2F6B4F);font-weight:700;">Entity</th>
+                        <th style="padding:10px 14px;color:var(--card-head-header,#2F6B4F);font-weight:700;">File</th>
+                        <th style="padding:10px 14px;color:var(--card-head-header,#2F6B4F);font-weight:700;">Issue</th>
+                        <th style="padding:10px 14px;color:var(--card-head-header,#2F6B4F);font-weight:700;">Priority</th>
+                        <th style="padding:10px 14px;color:var(--card-head-header,#2F6B4F);font-weight:700;">Status</th>
+                        <th style="padding:10px 14px;color:var(--card-head-header,#2F6B4F);font-weight:700;">Reporter</th>
+                        <th style="padding:10px 14px;color:var(--card-head-header,#2F6B4F);font-weight:700;">Date</th>
+                        <th style="padding:10px 14px;color:var(--card-head-header,#2F6B4F);font-weight:700;text-align:center;" title="Screenshot attached">📷</th>
+                       
+                    </tr>
+                </thead>
+                <tbody id="it-tbody">
+                    <tr><td colspan="9" class="text-center py-4 text-muted">Loading issues…</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// All calls go through the same-origin MVC proxy – no CORS, no direct API exposure
+var IT_URL_ISSUES     = '@Url.Action("GetIssues",     "IssueTracker")';
+var IT_URL_ENTITIES   = '@Url.Action("GetEntities",   "IssueTracker")';
+var IT_URL_FILES      = '@Url.Action("GetFiles",      "IssueTracker")';
+var IT_URL_STATUS     = '@Url.Action("UpdateStatus",  "IssueTracker")';
+var IT_URL_DELETE     = '@Url.Action("DeleteIssue",   "IssueTracker")';
+var IT_URL_ADD        = '@Url.Action("ReportIssue",   "IssueTracker")';
+var IT_URL_SCREENSHOT = '@Url.Action("GetScreenshot", "IssueTracker")';
+var _allIssues = [];
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function priorityBadge(p) {
+    var map = { Low:'low', Medium:'medium', High:'high', Critical:'critical' };
+    return '<span class="it-badge it-badge-' + (map[p]||'medium') + '">' + (p||'—') + '</span>';
+}
+function statusBadge(s) {
+    var key = (s||'').toLowerCase().replace(' ','');
+    return '<span class="it-badge it-badge-' + key + '">' + (s||'—') + '</span>';
+}
+function fmtDate(d) {
+    if (!d) return '—';
+    var dt = new Date(d);
+    return dt.toLocaleDateString('en-GB') + ' ' + dt.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+}
+function truncate(s, n) { return s && s.length > n ? s.substr(0, n) + '…' : (s||'—'); }
+
+// ── Load entities into select ─────────────────────────────────────────────────
+// Generic cross-cutting entities that don't map to a single Views folder
+var GENERIC_ENTITIES = [
+    { group: '── General ──',      isGroup: true },
+    { value: 'General',            label: 'General' },
+    { value: 'All Pages',          label: 'All Pages' },
+    { value: 'Menu / Navigation',  label: 'Menu / Navigation' },
+    { value: 'Dashboard',          label: 'Dashboard' },
+    { value: 'Login / Auth',       label: 'Login / Auth' },
+    { value: 'Layout / Theme',     label: 'Layout / Theme' },
+    { value: 'Reports',            label: 'Reports' },
+    { value: 'Performance',        label: 'Performance' },
+    { value: 'API / Integration',  label: 'API / Integration' },
+    { value: 'Print / Export',     label: 'Print / Export' },
+    { group: '── Modules ──',      isGroup: true },
+];
+
+function loadEntities() {
+    var $sel = $('#it-entity'), $fe = $('#filter-entity');
+
+    // 1. Prepend generic options with an optgroup separator
+    $.each(GENERIC_ENTITIES, function(_, item) {
+        if (item.isGroup) {
+            var $og = $('<optgroup>').attr('label', item.group);
+            $sel.append($og);
+        } else {
+            $sel.append('<option value="' + item.value + '">' + item.label + '</option>');
+            $fe.append('<option value="' + item.value + '">' + item.value + '</option>');
+        }
+    });
+
+    // 2. Append folder-derived entities after the generic ones
+    $.ajax({
+        url: IT_URL_ENTITIES,
+        method: 'GET',
+        success: function(data) {
+            $.each(data, function(_, e) {
+                $sel.append('<option value="' + e + '">' + e + '</option>');
+                $fe.append('<option value="' + e + '">' + e + '</option>');
+            });
+        }
+    });
+}
+
+// ── Load files when entity changes ───────────────────────────────────────────
+$('#it-entity').on('change', function() {
+    var entity     = $(this).val();
+    var $fileWrap  = $('#it-file').closest('.col-md-3');
+    var $file      = $('#it-file').empty().append('<option value="">— Select File —</option>');
+
+    if (!entity) { $fileWrap.show(); return; }
+
+    // Generic entities have no folder – hide the file dropdown gracefully
+    var isGeneric = GENERIC_ENTITIES.some(function(g) { return !g.isGroup && g.value === entity; });
+    if (isGeneric) { $fileWrap.hide(); return; }
+
+    $fileWrap.show();
+    $.ajax({
+        url: IT_URL_FILES,
+        method: 'GET', data: { entityname: entity },
+        success: function(data) {
+            if (!data || data.length === 0) { $fileWrap.hide(); return; }
+            $.each(data, function(_, f) {
+                $file.append('<option value="' + f + '">' + f + '</option>');
+            });
+        }
+    });
+});
+
+// ── Load all issues ───────────────────────────────────────────────────────────
+function normalizeKeys(arr) {
+    /* WebAPI may return PascalCase keys (e.g. "Issuetrackerid").
+       Normalize everything to lowercase so JS field access is consistent. */
+    if (!Array.isArray(arr)) return arr;
+    return arr.map(function(item) {
+        var n = {};
+        Object.keys(item).forEach(function(k) { n[k.toLowerCase()] = item[k]; });
+        return n;
+    });
+}
+
+function loadIssues() {
+    $.ajax({
+        url: IT_URL_ISSUES,   // same-origin MVC proxy
+        method: 'GET',
+        success: function(data) {
+            _allIssues = normalizeKeys(data);
+            renderTable(_allIssues);
+            updateStats(_allIssues);
+        },
+        error: function() {
+            $('#it-tbody').html('<tr><td colspan="11" class="text-center py-3 text-danger">Failed to load issues.</td></tr>');
+        }
+    });
+}
+
+function updateStats(data) {
+    var open = data.filter(function(d){ return d.status === 'Open' || d.status === 'Reopen' || d.status === 'In Progress'; }).length;
+    $('#it-open-count-badge').text(open + ' Open');
+}
+
+function renderTable(data) {
+    if (!data || data.length === 0) {
+        $('#it-tbody').html('<tr><td colspan="11" class="text-center py-4 text-muted"><i class="fa fa-check-circle mr-2" style="color:#2e7d32;"></i>No issues found.</td></tr>');
+        return;
+    }
+    var rows = '';
+    $.each(data, function(i, issue) {
+        var urlHtml = issue.pageurl
+            ? '<a href="' + issue.pageurl + '" target="_blank" style="font-size:11px;color:var(--card-head-header);">' +
+              '<i class="fa fa-external-link mr-1"></i>Link</a>'
+            : '';
+        rows += '<tr data-id="' + issue.issuetrackerid + '">'
+            + '<td style="padding:10px 14px;vertical-align:middle;">' + (i + 1) + '</td>'
+            + '<td style="padding:10px 14px;vertical-align:middle;font-weight:600;color:var(--card-head-header);">' + (issue.entityname || '—') + '</td>'
+            + '<td style="padding:10px 14px;vertical-align:middle;">' + (issue.filename || '—') + '<br>' + urlHtml + '</td>'
+            + '<td style="padding:10px 14px;vertical-align:middle;max-width:280px;" title="' + (issue.issuetext||'').replace(/"/g,'&quot;') + '">'
+            +     '<div style="white-space:pre-wrap;line-height:1.5;">' + truncate(issue.issuetext, 120) + '</div>'
+            + '</td>'
+            + '<td style="padding:10px 14px;vertical-align:middle;">' + priorityBadge(issue.priority) + '</td>'
+            + '<td style="padding:10px 14px;vertical-align:middle;">'
+            +     '<select class="it-status-select" data-id="' + issue.issuetrackerid + '" data-prev="' + (issue.status||'Open') + '" '
+            +             'style="border:1px solid var(--input-border,#ddd);border-radius:5px;padding:4px 8px;font-size:12px;background:var(--input-background,#fff);color:var(--colorblack,#000);">'
+            +         '<option value="Open"'          + (issue.status==='Open'?          ' selected':'') + '>Open</option>'
+            +         '<option value="In Progress"'   + (issue.status==='In Progress'?   ' selected':'') + '>In Progress</option>'
+            +         '<option value="Resolved"'      + (issue.status==='Resolved'?      ' selected':'') + '>Resolved</option>'
+            +         '<option value="Closed"'        + (issue.status==='Closed'?        ' selected':'') + '>Closed</option>'
+            +         '<option value="Reopen"'        + (issue.status==='Reopen'?        ' selected':'') + '>Reopen</option>'
+            +     '</select>'
+            + '</td>'
+            + '<td style="padding:10px 14px;vertical-align:middle;">' + (issue.reporterdesc || '<span style="opacity:.5">—</span>') + '</td>'
+            + '<td style="padding:10px 14px;vertical-align:middle;white-space:nowrap;font-size:12px;">' + fmtDate(issue.createddate) + '</td>'
+            + '<td style="padding:10px 14px;vertical-align:middle;text-align:center;">'
+            +     (issue.hasscreenshot
+                    ? '<button class="btn btn-sm it-screenshot-btn" data-id="' + issue.issuetrackerid + '" '
+                    +          'title="View screenshot" style="background:var(--btnprimary,#2F6B4F);color:#fff;border:none;">'
+                    +     '<i class="fa fa-camera"></i>'
+                    + '</button>'
+                    : '<span style="opacity:.3;font-size:13px;" title="No screenshot">—</span>')
+            + '</td>'
+          
+            + '</tr>';
+    });
+    $('#it-tbody').html(rows);
+}
+
+// ── Status change in-table ────────────────────────────────────────────────────
+$(document).on('change', '.it-status-select', function() {
+    var $sel   = $(this);
+    var id     = $sel.attr('data-id');            // always read raw DOM attribute
+    var status = $sel.val();
+    var prev   = $sel.attr('data-prev') || 'Open';
+
+    if (!id) {
+        console.error('UpdateStatus: data-id missing on select element', $sel[0]);
+        return;
+    }
+
+    $sel.prop('disabled', true);
+
+    $.ajax({
+        url: IT_URL_STATUS,   // same-origin MVC proxy – no CORS issues
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ issuetrackerid: id, status: status }),
+        success: function() {
+            $sel.attr('data-prev', status);
+            loadIssues();
+            // Keep nav badge in sync when status changes
+            if (typeof loadBugCount === 'function') loadBugCount();
+        },
+        error: function(xhr) {
+            // Revert to previous value on failure
+            $sel.val(prev);
+            swal({ title:'Error', text: xhr.responseText || 'Failed to update status. Please try again.',
+                   type:'error', buttonsStyling:false, confirmButtonClass:'btn btn-primary' });
+        },
+        complete: function() { $sel.prop('disabled', false); }
+    });
+});
+
+// ── Delete ────────────────────────────────────────────────────────────────────
+$(document).on('click', '.it-delete-btn', function() {
+    var id = $(this).data('id');
+    swal({
+        title: 'Delete this issue?',
+        text:  'This action cannot be undone.',
+        type:  'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it',
+        confirmButtonClass: 'btn btn-danger',
+        cancelButtonClass:  'btn btn-secondary',
+        buttonsStyling: false
+    }).then(function(result) {
+        if (result.value || result === true) {
+            $.ajax({
+                url: IT_URL_DELETE,   // same-origin MVC proxy
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ issuetrackerid: id }),
+                success: function() { loadIssues(); if (typeof loadBugCount==='function') loadBugCount(); }
+            });
+        }
+    });
+});
+
+// ── Submit new issue ──────────────────────────────────────────────────────────
+$('#it-submit').on('click', function() {
+    var entity = $('#it-entity').val();
+    var text   = $.trim($('#it-issuetext').val());
+
+    if (!entity) { swal({ title:'Required', text:'Please select an Entity / Module.', type:'warning', buttonsStyling:false, confirmButtonClass:'btn btn-primary' }); return; }
+    if (!text)   { swal({ title:'Required', text:'Please enter an issue description.', type:'warning', buttonsStyling:false, confirmButtonClass:'btn btn-primary' }); return; }
+
+    var payload = {
+        entityname:   entity,
+        filename:     $('#it-file').val()     || null,
+        pageurl:      $('#it-url').val()      || null,
+        issuetext:    text,
+        priority:     $('#it-priority').val() || 'Medium',
+        status:       $('#it-status').val()   || 'Open',
+        reporterdesc: $('#it-reporter').val() || null
+    };
+
+    var $btn = $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1"></i> Saving…');
+
+    $.ajax({
+        url: IT_URL_ADD,   // same-origin MVC proxy (ReportIssue)
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        success: function() {
+            swal({ title:'Submitted!', text:'Issue has been reported.', type:'success', buttonsStyling:false, confirmButtonClass:'btn btn-primary' });
+            clearForm();
+            // Close the form and reset the toggle button
+            _itFormOpen = false;
+            $('#it-form-section').slideUp(220);
+            $('#btnReportToDev').html('<i class="fa fa-bug mr-1"></i> Report to Developer');
+            loadIssues();
+        },
+        error: function(xhr) {
+            swal({ title:'Error', text: xhr.responseText || 'Failed to submit issue.', type:'error', buttonsStyling:false, confirmButtonClass:'btn btn-primary' });
+        },
+        complete: function() {
+            $btn.prop('disabled', false).html('<i class="fa fa-paper-plane mr-1"></i> Submit Issue');
+        }
+    });
+});
+
+// ── Clear form ────────────────────────────────────────────────────────────────
+function clearForm() {
+    $('#it-entity').val('');
+    $('#it-file').empty().append('<option value="">— Select File —</option>');
+    $('#it-url').val('');
+    $('#it-issuetext').val('');
+    $('#it-reporter').val('');
+    $('#it-priority').val('Medium');
+    $('#it-status').val('Open');
+    $('#it-url-badge').hide();
+}
+$('#it-clear').on('click', clearForm);
+
+// ── Report-to-Developer toggle ────────────────────────────────────────────────
+var _itFormOpen = false;
+$('#btnReportToDev').on('click', function() {
+    _itFormOpen = !_itFormOpen;
+    if (!_itFormOpen) {
+        $('#it-form-section').slideUp(220);
+        $(this).html('<i class="fa fa-bug mr-1"></i> Report to Developer');
+        return;
+    }
+    // Reveal the form and scroll to it
+    $('#it-form-section').slideDown(280, function() {
+        $('html,body').animate({ scrollTop: $('#it-form-section').offset().top - 20 }, 300);
+    });
+    $(this).html('<i class="fa fa-times mr-1"></i> Close Form');
+
+    var url = document.referrer || window.location.href;
+    $('#it-url').val(url);
+    $('#it-url-badge').show();
+
+    // Parse entity and file from URL path
+    // e.g. /Admin/Assessment/Add_Assessment  OR  /Assessment/Add_Assessment
+    try {
+        var parsed   = new URL(url);
+        var segments = parsed.pathname.split('/').filter(Boolean);
+
+        // Strip base path prefixes (Admin, NalamVazhaDev, etc.)
+        var knownPrefixes = ['admin', 'client', 'nalamvazhadev'];
+        segments = segments.filter(function(s) {
+            return knownPrefixes.indexOf(s.toLowerCase()) === -1;
+        });
+
+        var entity = segments.length >= 1 ? segments[segments.length - 2] || segments[0] : null;
+        var action = segments.length >= 1 ? segments[segments.length - 1] : null;
+
+        if (entity) {
+            // Try exact match first; if not in list fall back to 'General'
+            var $opt = $('#it-entity option').filter(function() {
+                return $(this).val().toLowerCase() === entity.toLowerCase();
+            });
+            if ($opt.length) {
+                $('#it-entity').val($opt.val()).trigger('change');
+            } else {
+                $('#it-entity').val('General').trigger('change');
+            }
+
+            // After files load, select the matching .cshtml file
+            if (action) {
+                var targetFile = action + '.cshtml';
+                setTimeout(function() {
+                    $('#it-file option').each(function() {
+                        if ($(this).val().toLowerCase() === targetFile.toLowerCase()) {
+                            $('#it-file').val($(this).val());
+                            return false;
+                        }
+                    });
+                }, 700);
+            }
+        }
+    } catch(e) {}
+
+    // Scroll to form
+    $('html, body').animate({ scrollTop: $('#it-form-section').offset().top - 20 }, 400);
+    $('#it-issuetext').focus();
+});
+
+// ── Client-side filters ───────────────────────────────────────────────────────
+function applyFilters() {
+    var entity   = $('#filter-entity').val().toLowerCase();
+    var priority = $('#filter-priority').val().toLowerCase();
+    var status   = $('#filter-status').val().toLowerCase();
+    var search   = $('#filter-search').val().toLowerCase();
+
+    var filtered = _allIssues.filter(function(d) {
+        return (!entity   || (d.entityname||'').toLowerCase()  === entity)
+            && (!priority || (d.priority  ||'').toLowerCase()  === priority)
+            && (!status   || (d.status    ||'').toLowerCase()  === status)
+            && (!search   || (d.issuetext ||'').toLowerCase().includes(search)
+                          || (d.entityname||'').toLowerCase().includes(search)
+                          || (d.filename  ||'').toLowerCase().includes(search)
+                          || (d.reporterdesc||'').toLowerCase().includes(search));
+    });
+    renderTable(filtered);
+}
+$('#filter-entity, #filter-priority, #filter-status').on('change', applyFilters);
+$('#filter-search').on('keyup', applyFilters);
+
+// ── View screenshot ───────────────────────────────────────────────────────────
+$(document).on('click', '.it-screenshot-btn', function() {
+    var id     = $(this).attr('data-id');   // raw DOM attribute – avoids jQuery cache issues
+    var $modal = $('#it-screenshot-modal');
+    var $img   = $('#it-screenshot-img');
+    var $spin  = $('#it-screenshot-spinner');
+    var $err   = $('#it-screenshot-err');
+
+    $img.hide(); $err.hide(); $spin.show();
+    $modal.modal('show');
+
+    if (!id) { $spin.hide(); $err.show(); return; }
+
+    $.ajax({
+        url: IT_URL_SCREENSHOT,             // same-origin MVC proxy – no CORS issues
+        method: 'GET',
+        data: { id: id },
+        success: function(res) {
+            $spin.hide();
+            if (res && res.screenshotdata) {
+                $img.attr('src', res.screenshotdata).show();
+            } else {
+                console.warn('GetScreenshot: no screenshotdata in response', res);
+                $err.show();
+            }
+        },
+        error: function(xhr) {
+            console.error('GetScreenshot failed:', xhr.status, xhr.responseText);
+            $spin.hide(); $err.show();
+        }
+    });
+});
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+$(document).ready(function() {
+    loadEntities();
+    loadIssues();
+});
+</script>
+
+<!-- ── Screenshot lightbox modal ──────────────────────────────────────────── -->
+<div class="modal fade" id="it-screenshot-modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-xl" role="document" style="margin-top:50px;">
+    <div class="modal-content" style="border-radius:10px;overflow:hidden;border:none;box-shadow:0 8px 32px rgba(0,0,0,.3);">
+      <div class="modal-header" style="background:var(--card-head-header,#2F6B4F);color:var(--card-head-text,#fff);padding:12px 20px;">
+        <button type="button" class="close" data-dismiss="modal" style="color:#fff;text-shadow:none;opacity:.8;"><span>×</span></button>
+        <h4 class="modal-title" style="font-size:14px;font-weight:700;">
+          <i class="fa fa-camera mr-2"></i>Issue Screenshot
+        </h4>
+      </div>
+      <div class="modal-body" style="background:#111;padding:12px;text-align:center;min-height:120px;">
+        <div id="it-screenshot-spinner" style="color:#fff;padding:30px 0;">
+          <i class="fa fa-spinner fa-spin fa-2x"></i><br>
+          <small style="opacity:.7;margin-top:8px;display:block;">Loading screenshot…</small>
+        </div>
+        <div id="it-screenshot-err" style="display:none;color:#ff8a80;padding:30px 0;">
+          <i class="fa fa-exclamation-circle fa-2x"></i><br>
+          <small style="margin-top:8px;display:block;">Screenshot not available.</small>
+        </div>
+        <img id="it-screenshot-img" src="" alt="Screenshot"
+             style="display:none;max-width:100%;border-radius:6px;cursor:zoom-in;"
+             title="Click to open full size"
+             onclick="itOpenScreenshotFullSize(this.src)">
+      </div>
+      <div class="modal-footer" style="background:var(--tab-card-bg,#f8fafc);border-top:1px solid var(--input-border,#eee);padding:10px 16px;">
+        <button type="button" class="btn btn-sm" data-dismiss="modal"
+                style="background:var(--btnprimary,#2F6B4F);color:#fff;border:none;border-radius:6px;padding:7px 20px;font-weight:600;">
+          <i class="fa fa-times mr-1"></i>Close
+        </button>
+        <a id="it-screenshot-download" href="#" download="screenshot.jpg"
+           class="btn btn-sm"
+           style="background:transparent;border:1.5px solid var(--card-head-header,#2F6B4F);color:var(--card-head-header,#2F6B4F);border-radius:6px;padding:7px 20px;font-weight:600;">
+          <i class="fa fa-download mr-1"></i>Download
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+// Open screenshot full-size in a new tab.
+// <\/body><\/html> — forward-slash escaped so Razor/HTML parsers ignore these sequences.
+function itOpenScreenshotFullSize(src) {
+    var w = window.open('', '_blank');
+    if (!w) return;
+    w.document.write(
+        '<html><head><title>Screenshot<\/title><\/head>'
+        + '<body style="margin:0;background:#111;text-align:center;">'
+        + '<img src="' + src + '" style="max-width:100%;border:none;">'
+        + '<\/body><\/html>'
+    );
+    w.document.close();
+}
+
+// Update download href once image loads
+$('#it-screenshot-img').on('load', function(){
+    $('#it-screenshot-download').attr('href', this.src);
+});
+</script>

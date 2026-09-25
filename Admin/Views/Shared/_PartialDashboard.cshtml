@@ -1,0 +1,86 @@
+
+<div class="mahat-Dashboardheader" ></div>
+
+<script>
+	function get_Dashboard_Items() {
+
+		$.ajax({
+			url: '@Url.Action("get_Dashboard_Items", "users")',
+			dataType: 'json',
+
+			success: function (data) {
+				if (data && data.length > 0) {
+					var newDiv = $('<div class="card tabs-enclosed"></div>');
+					var newUl = $('<ul class="nav nav-tabs"></ul>');
+					var activecontroller = "@ViewContext.RouteData.Values["controller"].ToString().ToUpper()";
+					var activeaction = "@ViewContext.RouteData.Values["action"].ToString().ToUpper()";
+				    var isDashboardviewable = "N";
+					$.each(data, function (index, item) {
+						var isactive = ""
+						if (activecontroller === item.controllername.toString().toUpperCase() && activeaction === item.actionmethodname.toString().toUpperCase()) {
+							isactive = "active";
+							isDashboardviewable = "Y"
+						}
+						var newLi = $('<li class="' + isactive + '"></li>');
+						var url = '@Url.Action("__action__", "__controller__")'
+							.replace("__action__", item.actionmethodname)
+							.replace("__controller__", item.controllername);
+
+						url += "?isDashboardView=Y";
+						var newLink = $('<a></a>').attr('href', url)
+							.append('<span class="lbl">' + item.actiondisplayname + '</span>');
+						newLi.append(newLink);
+						newUl.append(newLi);
+					});
+					var button = `<li class="btn-add-tab">
+							<div class="input-group input-search tabbar-search">
+								<input type="text" class="form-control dt-global-search" placeholder="Search..." style="width:100% !important">
+									<span class="input-group-addon">
+										<i class="material-icons">search</i>
+									</span>
+							</div>
+							<a href="#" class="btn btn-rounded add-row-btn cma_add_button dashboard-button">Add Product</a>
+
+						</li>`;
+					newDiv.append(newUl);
+
+					if(isDashboardviewable === "Y")
+						$('.mahat-Dashboardheader').append(newDiv);
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+					swal({
+						title: 'Failed!',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false
+					}).then(function () {
+						window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+				}
+				else {
+					swal({
+						title: 'Contact Administrator !',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary'
+					})
+				}
+			}
+		})
+
+	}
+
+</script>
+<script>
+	
+	$(document).ready(function () {
+		var isDashboardView = getUrlVars()["isDashboardView"] ;
+		if (isDashboardView === 'Y')
+			get_Dashboard_Items()
+	})
+</script>

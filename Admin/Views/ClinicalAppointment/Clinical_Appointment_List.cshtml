@@ -1,0 +1,3038 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:43:40 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.ClinicalAppointmentModel
+					@{
+					ViewData["Title"] = @Resource.clinicalappointmentlist;
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="card " style="padding:20px;">
+					<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<h3 class="formHdr">@Resource.clinicalappointmentlist</h3>
+					</div>
+					</div>
+					</div><!--form_card_header-->
+					<div class="card-body" style="padding:1px;padding-top:0px;">
+
+					@if(TempData["errMessage"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["errMessage"]
+					</div>
+					</div>
+					</div>
+					}
+
+					@if(TempData["message"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["message"]
+					</div>
+					</div>
+					</div>
+					}
+
+					<input type="hidden" id="ClinicalAppointmentid" name="ClinicalAppointmentid"/>
+					<div class="row">
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+								<div class="form-group form-group--float-above my-3" > 
+								<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+								<select name="tenantid" id="tenantid" class="form-control">
+								</select>
+								<i class="form-group__bar"></i>
+								</div>
+
+								<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2 tasktype_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="tasktype">@Resource.clinicalappointment_tasktype</label>
+										<select name="tasktype" id="tasktype" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.tasktype)
+									<div id="tasktype-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+@{
+    var _isDoctor = string.Equals(
+        (HttpContextAccessor.HttpContext.Session.GetString("NalamVazhauserrole") ?? ""),
+        "Doctor", StringComparison.OrdinalIgnoreCase);
+}
+@if (!_isDoctor)
+{
+<div class="col-sm-2 col-xs-12 p-2 practitioner_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="practitioner">@Resource.clinicalappointment_practitioner</label>
+										<select name="practitioner" id="practitioner" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.practitioner)
+									<div id="practitioner-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+}
+@if (_isDoctor)
+{
+    <div class="col-sm-2 col-xs-12 p-2 d-flex align-items-center">
+        <span class="badge badge-success p-2" style="font-size:0.85rem;">
+            <i class="fa fa-user-md mr-1"></i> Your appointments only
+        </span>
+    </div>
+    <input type="hidden" id="practitioner" name="practitioner" value="" />
+}
+<div class="col-sm-2 col-xs-12 p-2">
+						<div>
+							<div class="form-group form-group--float-above my-2" > 
+								<label>@Resource.clinicalappointment_appointmentdate @Resource.from</label>
+								<input type="text" id="appointmentdate_automatonfrom" placeholder="dd/mm/yyyy" autocomplete="off" class = "form-control form-control-lg />
+								<i class="form-group__bar" ></i>
+							</div>
+					   </div>
+					</div>
+<div class="col-sm-2 col-xs-12 p-2">
+						<div>
+							<div class="form-group form-group--float-above my-2" > 
+								<label>@Resource.clinicalappointment_appointmentdate @Resource.to</label>
+								<input type="text" id="appointmentdate_automatonto" placeholder="dd/mm/yyyy" autocomplete="off" class = "form-control form-control-lg />
+								<i class="form-group__bar" ></i>
+								</div>
+					   </div>
+					</div>
+
+<div class="col-sm-2 col-xs-12 p-2 status_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="status">@Resource.clinicalappointment_status</label>
+										<select name="status" id="status" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.status)
+									<div id="status-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2 origin_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="origin">@Resource.clinicalappointment_origin</label>
+										<select name="origin" id="origin" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.origin)
+									<div id="origin-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 p-2">
+
+												<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+												@if (!_isDoctor)
+												{
+												<button type="button" id="btnRescheduleByPractitioner" class="btn btn-outline-primary btn--icon-text mt-5 ml-2" title="Reschedule all appointments from one practitioner to another"><i class="fa fa-user-md"></i> Reschedule by practitioner</button>
+												}
+												</div>
+								</div>
+
+<!-- Modal: Reschedule by practitioner -->
+<div class="modal fade" id="modalRescheduleByPractitioner" tabindex="-1" role="dialog" aria-labelledby="modalRescheduleByPractitionerLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalRescheduleByPractitionerLabel"><i class="fa fa-user-md"></i> Reschedule Appointments to another doctor</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<p class="text-muted small mb-3">Move all appointments from one practitioner to another on a selected date. The target doctor's slot duration will be applied to each appointment.</p>
+				<div class="form-group">
+					<label for="rescheduleDate">Reschedule Date <span class="text-danger">*</span></label>
+					<input type="date" id="rescheduleDate" class="form-control">
+				</div>
+				<div class="form-group">
+					<label for="rescheduleFromPractitioner">From practitioner</label>
+					<select id="rescheduleFromPractitioner" class="form-control"><option value="">Select...</option></select>
+				</div>
+				<div class="form-group">
+					<label for="rescheduleToPractitioner">To practitioner</label>
+					<select id="rescheduleToPractitioner" class="form-control"><option value="">Select...</option></select>
+				</div>
+				<div id="rescheduleByPractitionerMessage" class="small mt-2" style="display:none;"></div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+				<button type="button" id="btnRescheduleByPractitionerSubmit" class="btn cma_primary_button"><i class="fa fa-exchange-alt"></i> Reschedule all</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="card tab-card">
+	<div class="card-head" style="display: none;">
+		<ul class="nav nav-tabs" data-toggle="tabs">
+			<li class="active cma_fill_tab"><a href="#cma_calendar_tab"><i class="fa fa-calendar"></i></a></li>
+			<li class="cma_fill_tab"><a href="#cma_card_tab"><i class="fa fa-address-card"></i></a></li>
+			<li class="cma_fill_tab"><a href="#cma_table_tab"><i class="fa fa-table"></i></a></li>
+		</ul>
+	</div>
+	<!--end .card-head -->
+	<div class="card-body tab-content pt-0">
+
+		<div class="tab-pane active" id="cma_calendar_tab">
+			<div class="clinical-appointment-calendar-fullpage">
+				<div class="clinical-appointment-calendar-toolbar">
+					<div class="clinical-appointment-calendar-toolbar__nav">
+						<span class="clinical-appointment-calendar-toolbar__date clinical-appointment-calendar-date-picker" id="clinicalAppointmentCalendarDateLabel" title="Click to pick a date"><i class="fa fa-calendar"></i> <span id="clinicalAppointmentCalendarDateText"></span></span>
+						<input type="text" id="clinicalAppointmentCalendarHiddenDatePicker" style="position:absolute;opacity:0;width:0;height:0;pointer-events:none;" />
+						<button type="button" class="occupancy-calendar-btn clinical-appointment-calendar-btn--today">Today</button>
+					</div>
+				</div>
+				<div class="clinical-appointment-calendar-wrap">
+					<div id="clinicalAppointmentCalendar"></div>
+					<div id="clinicalAppointmentCalendarPlaceholder" class="clinical-appointment-calendar-placeholder" style="display:none;">No practitioners in selection. Use filters and ensure date range is set.</div>
+				</div>
+			</div>
+		</div>
+		<!--end #cma_calendar_tab -->
+
+		<div class="tab-pane" id="cma_card_tab">
+			<div class="dataTables_wrapper dicover-engae-wrap" style="min-height:0px">
+
+				<div class="dataTables__top" id="cma_card_tab_action_container">
+
+					<div class="dataTables_buttons actions" id="cma_card_tab_action_container_action_btn">
+					</div>
+				</div>
+			</div>
+			<div class="row automaton_card" id="ClinicalAppointmentContainer">
+			</div>
+		</div>
+		<!--end #cma_card_tab -->
+
+		<div class="tab-pane" id="cma_table_tab">
+
+					<div class="row automaton_table hidden-sm-down"><div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+					<table id="tblClinicalAppointment" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+					<thead class="thead-default">
+					<tr>
+
+					<th>@Resource.clinicalappointment_tasktype</th>
+<th>@Resource.clinicalappointment_patient</th>
+<th>@Resource.clinicalappointment_practitioner</th>
+ 
+<th>@Resource.clinicalappointment_actualpractitioner</th>
+<th>@Resource.clinicalappointment_appointmentdate</th>
+<th>@Resource.clinicalappointment_durationfrom</th>
+<th>@Resource.clinicalappointment_durationto</th>
+<th>@Resource.clinicalappointment_status</th>
+<th>@Resource.clinicalappointment_origin</th>
+ 
+<th>@Resource.clinicalappointment_tokennumber</th>
+<th>@Resource.reshedulehistory</th>
+
+					<th class="all">Action</th>
+
+
+					</tr>
+					</thead>
+					<tbody></tbody>
+
+					</table>
+					</div>
+
+					</div>
+					</div>
+					<!--end #cma_table_tab -->
+
+		</div>
+		<!--end .card-body -->
+	</div>
+	<!--end .tab-card -->
+					
+					</div>
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					<link href="~/css/clinical-appointment.css" rel="stylesheet" />
+					 <script src="~/js/dtpager.js"></script>
+					<script src="https://javascript.daypilot.org/demo/lite/js/daypilot-all.min.js"></script>
+					<script src="~/js/nv-clinical-calendar-colors.js"></script>
+					<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.3/jquery.scrollTo.min.js"></script>
+
+					<script type="text/javascript">
+
+					var currentCardPageNumber = -1;
+					var arr_selected_for_verification = [];
+
+					function fill_ClinicalAppointment()
+					{
+
+						var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"tasktype":$("#tasktype").val(),
+"practitioner":$("#practitioner").val(),
+"appointmentdate_automatonfrom":getSqlDate($("#appointmentdate_automatonfrom").val()),"appointmentdate_automatonto":getSqlDate($("#appointmentdate_automatonto").val()),
+"status":$("#status").val(),
+"origin":$("#origin").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+						
+
+					
+
+					
+
+
+					
+		 dataTableId="#tblClinicalAppointment";
+		 reachedEOF = false;
+		 totalRecordsCount = 0;
+		 currentPageNumber = 1;
+		 fetchingDataFromApi = false;
+	
+		var pagerControlsTemplate = "<div id='pager_container' class='dataTables_paginate'>"
+			+ "<button type='button' id='pager_btn_previous' onClick='pager_gotoPreviousPage(this);' class='paginate_button previous'>Previous</button>"
+			+ "<span>Page <input type='number' id='pager_txt_currentpage' min='1' max='^MAXPAGE^' maxlength='10' size='10' onFocus='this.oldValue=this.value;' onChange='pager_gotoPage(this);'/> of <span id='pager_lbl_pagecount'></span></span>"
+			+ "<select id='pager_ddl_pagesize' onChange='pager_pageSizeChanged(this);'>"
+			+ "<option value='50' selected>50 rows</option>"
+			+ "<option value='100'>100 rows</option>"
+			+ "<option value='200'>200 rows</option>"
+			+ "<option value='500'>500 rows</option>"
+			+ "<option value='^Everything^'>Everything</option>"
+			+ "</select>"
+			+ "<button type='button' id='pager_btn_next' onClick='pager_gotoNextPage(this);' class='paginate_button next'>Next</button>"
+			+ "</div>";
+
+	var table=$("#tblClinicalAppointment").DataTable({
+	columnDefs: [{ 
+	 targets: -1,
+	 title: '<i class="fa fa-pencil fa-lg"></i>'
+  }],
+	paging:false,
+	destroy:true,
+	serverSide: true,
+	filter: true,
+	"orderMulti": false,
+	searchDelay: 2000,
+	autoWidth: false,
+	"order": [],"aaSorting": [],
+	autoWidth: !1,responsive:!0,
+	language: {
+	searchPlaceholder: "Search for records..."
+	},
+	 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+	dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+  
+	buttons: [{
+	extend: "excelHtml5",
+	title: "List Of ClinicalAppointment Data"
+	}, {
+	extend: "csvHtml5",
+	title: "List Of ClinicalAppointment Data"
+	}, {
+	extend: "print",
+	title: "List Of ClinicalAppointment Data"
+	}],
+ initComplete: function(a, b) {
+
+
+
+	  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+	  
+		if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+	 $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+		<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+	  `);
+		 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+			$("#cma_card_tab_action_container").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			`);
+		}
+ }
+count_of_ClinicalAppointment_tasktype(($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),sendFilterData)
+var Actions=getAutho("ClinicalAppointment","create")
+		if(Actions != undefined){
+			var create_URL = "@Url.Action("entry.viewname", "ClinicalAppointment")"
+			create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+			
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`   
+
+	   
+		<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.clinicalappointment_tasktype
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_patient
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_practitioner
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+ 
+<li>
+																<label> @Resource.clinicalappointment_actualpractitioner
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_appointmentdate
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_durationfrom
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_durationto
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_status
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_origin
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+ 
+<li>
+																<label> @Resource.clinicalappointment_tokennumber
+ <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.reshedulehistory
+ <input type="checkbox" class="colvis_switch" data-column="12" checked /></label>
+															  </li>
+
+									</ul>
+									</div>
+
+		 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+		</div>
+	  `.replace("create_URL", create_URL))
+}
+	$("#cma_card_tab_action_container .card-lst").remove();
+	$("#cma_card_tab_action_container_action_btn").empty()
+	$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+	   
+
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+			else{
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(` 
+		
+		
+		<div class="dataTables_buttons actions">
+		 <div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.clinicalappointment_tasktype
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_patient
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_practitioner
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+ 
+<li>
+																<label> @Resource.clinicalappointment_actualpractitioner
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_appointmentdate
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_durationfrom
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_durationto
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_status
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.clinicalappointment_origin
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+ 
+<li>
+																<label> @Resource.clinicalappointment_tokennumber
+ <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.reshedulehistory
+ <input type="checkbox" class="colvis_switch" data-column="12" checked /></label>
+															  </li>
+
+									</ul>
+									</div>
+		</div>
+	  `)
+}
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+if (!$(pagerContainerId).length) {
+		$(dataTableId + '_info').parent().append(
+					pagerControlsTemplate.replace('^Everything^', totalRecordsCount).replace('^MAXPAGE^', pager_getPageCount())
+				);
+}
+				//$(dataTableId + '_info').hide();
+				$(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+				pager_setCurrentPageNumber(1);
+				pager_onPageChanged();
+
+			
+
+	}
+	 ,columns: [
+		 
+		{data: 'tasktype'},
+{data: 'patient_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('PatientProfile','detail')
+ if(row["patient_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "PatientProfile")?PatientProfileid=" + row['patient']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["patient_master"]+ '</a>' 
+}else {
+ 
+return row['patient_master'] 
+}
+}
+}},
+{data: 'practitioner_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('People','detail')
+ if(row["practitioner_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "People")?Peopleid=" + row['practitioner']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["practitioner_master"]+ '</a>' 
+}else {
+ 
+return row['practitioner_master'] 
+}
+}
+}},
+{data: 'photo',mRender: function (data, type, row) {if(row["photo"]==null) {
+ return '-' 
+}else {
+ 
+var uploaded_photo = row["photo"].split('|');
+var iterate = 1;
+											var collect_files="";
+											var random_num=Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+											for (var i = 0; i < uploaded_photo.length; i++) {
+		
+
+												if (uploaded_photo[i] != "") {
+var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_photo[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+if(iterate==1)
+collect_files+='<a class="img'+random_num+'" href=' + filepath + '><img  class="disp_image '+random_num+'" style="width: 75px; height: 75px" src="' + filepath + '"; alt="img"></a>'
+else
+collect_files+='<a class="img'+random_num+'" href=' + filepath + '><img class="disp_image '+random_num+'" style="display:none;width: 75px; height: 75px" src="' + filepath + '"; alt="img"></a>'
+iterate = iterate + 1;
+												}
+
+											  
+											}
+$('body').on('click', 'a.img' + random_num + '', function(e) {
+e.preventDefault();
+$('.img' + random_num + '').colorbox({rel: $(this).attr('href'), width: "90%", height: "80%" });
+$.colorbox({open: true });
+});
+return collect_files;  }}},
+{data: 'actualpractitioner_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('People','detail')
+ if(row["actualpractitioner_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "People")?Peopleid=" + row['actualpractitioner']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["actualpractitioner_master"]+ '</a>' 
+}else {
+ 
+return row['actualpractitioner_master'] 
+}
+}
+}},
+{data: 'appointmentdate'},
+{data: 'durationfrom'},
+{data: 'durationto'},
+{data: 'status'},
+{data: 'origin'},
+{data: 'bookingid'},
+{data: 'tokennumber'},
+{
+											data: 'automaton_clinicalappointment_reshedulehistory',
+											mRender: function(data, type, row) {
+												if (row['automaton_clinicalappointment_reshedulehistory'] == null)
+												{
+													return '-'
+												}
+												else
+												{
+													return get_dependent_li_l(row['automaton_clinicalappointment_reshedulehistory']);
+
+												}
+											}
+										},
+
+		{
+					"sName": "clinicalappointmentid",
+					"bSearchable": false,
+					"bSortable": false,
+					data: 'clinicalappointmentid', "className": "dt-center",
+					mRender: function(data, type, row) {
+					var Actions=getAuthoController("ClinicalAppointment")
+					var appendMessage='';
+					if(Actions !=undefined)
+					{
+					for (var index = 0; index < Actions.length; ++index) {
+					var entry = Actions[index];
+			 
+					if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+					var URL = "@Url.Action("entry.viewname", "ClinicalAppointment")?ClinicalAppointmentid=" + row["clinicalappointmentid"]
+					URL = URL.replace("entry.viewname", entry.actionmethodname);
+			 
+					if(entry.viewname=="delete")
+					{
+						
+						appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>' 	
+				   
+				
+					}
+					
+					else if(entry.viewname=="detail")
+					{
+						var DETAIL_URL = "@Url.Action("entry.actionmethodname", "ClinicalAppointment")?ClinicalAppointmentid=" + row["clinicalappointmentid"]
+						DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+						appendMessage+='<a href="' + DETAIL_URL + '" class="dropdown-item">View</a>' 			
+ }
+					else
+					{
+					 
+						appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>' 
+					}
+			 
+					}					 
+						 
+					}
+								
+					if(appendMessage =="")
+					{
+					return '-'
+
+					}
+					else
+					{
+					return '<div class="dropdown actions__item">' +
+					'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+					'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+		 
+
+					'</div>' +
+					'</div>'
+					}
+
+
+
+					}
+					else
+					{
+					return '-'
+
+					}
+
+
+					}
+					}
+	
+
+	 ],
+
+		ajax: function (data, callback, settings) {
+		fetchingDataFromApi = true;
+		sendFilterData.searchterm = data.search.value; 
+		sendFilterData.pagesize = pageSize;    
+		sendFilterData.pagenumber =  (currentPageNumber - 1);   
+		var sortParams = [];
+		for (var i = 0; i < data.order.length; i++) {
+			var colIndex = data.order[i].column;
+			var sortDirection = data.order[i].dir;
+			var columnName = data.columns[colIndex].data;
+
+			var sortParam = {};
+			sortParam["col"] = columnName;
+			sortParam["dir"] = sortDirection;
+
+			sortParams.push(sortParam);
+		}
+		sendFilterData.sortFieldsJson =  JSON.stringify(sortParams);
+		$.ajax({
+		url: "@Url.Action("get_Clinical_Appointment_List", "ClinicalAppointment")",
+		type: 'GET',
+		dataType: 'json',
+		data: sendFilterData,
+
+		success: function(responsedata) {
+
+				 fetchingDataFromApi = false;
+				//to let grid say no data available and all other flows get through
+				if (responsedata.detail == null) {
+					responsedata.detail = [];
+				}
+				totalRecordsCount = responsedata.count;
+				if (responsedata.detail.length < pageSize) {
+					reachedEOF = true;
+				}
+		
+				setTimeout(function () {
+				callback({
+					data: responsedata.detail,
+					recordsTotal: responsedata.count
+				  });
+				}, 50);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			fetchingDataFromApi = false;
+
+			if (JSON.stringify(jqXHR.responseText) == "API Authorization failed") {
+					swal({
+					title: 'Failed!',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+					 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function() {
+					window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+			}
+			else
+			{
+					swal({
+					title: 'Contact Administrator !',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+			}
+		}
+		});
+		},
+		"infoCallback": function(settings, start, end, max, total, pre)
+		{
+				var startRowCount = (pageSize * currentPageNumber) - pageSize + 1;
+				var endRowCount = $(dataTableId).DataTable().rows().count() + startRowCount - 1;
+				var pagingInfo = 'Showing ' + startRowCount + ' to ' + endRowCount + ' of ' + totalRecordsCount + ' entries';
+
+				return pagingInfo;
+		}
+
+
+})
+	 
+	  
+ $('body').on('click', '.ColVis_collection li', function(a) {
+	event.stopPropagation();
+  });
+ 
+ $('body').on('change', '.colvis_switch', function(a) {
+	var column = table.column($(this).attr('data-column'));
+	column.visible(!column.visible());
+  });
+
+
+ 
+
+  
+	 
+
+
+	
+
+
+							
+					}
+	  function fill_pagination(callback) {
+		if ((reachedEOF || fetchingDataFromApi) && currentPageNumber !=1) {
+			return;
+		}
+		fetchingDataFromApi = true;
+		 var order = $(dataTableId).DataTable().order();
+			var sortParams = [];
+
+			for (var i = 0; i < order.length; i++) {
+				var colIndex = order[i][0];
+				var sortDirection = order[i][1];
+				var columnName = $(dataTableId).DataTable().settings()[0].aoColumns[colIndex].data;
+
+				var sortParam = {
+					col: columnName,
+					dir: sortDirection
+				};
+
+				sortParams.push(sortParam);
+			}
+			var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"tasktype":$("#tasktype").val(),
+"practitioner":$("#practitioner").val(),
+"appointmentdate_automatonfrom":getSqlDate($("#appointmentdate_automatonfrom").val()),"appointmentdate_automatonto":getSqlDate($("#appointmentdate_automatonto").val()),
+"status":$("#status").val(),
+"origin":$("#origin").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+			sendFilterData.searchterm = $(".dt-global-search").val();
+		sendFilterData.sortFieldsJson= JSON.stringify(sortParams);
+		var currentPage = $(dataTableId).DataTable().page();
+  
+		$.ajax({
+			url: "@Url.Action("get_Clinical_Appointment_List", "ClinicalAppointment")",
+			type: 'GET',
+			dataType: 'json',
+			data: sendFilterData,
+			success: function (responsedata) {
+				if (responsedata != null && responsedata.detail.length > 0) {
+					if (responsedata.detail.length < pageSize) {
+						reachedEOF = true;
+					}
+
+					api_response_data = responsedata.detail;
+					var table = $(dataTableId).DataTable();
+					table.rows().remove();
+					table.rows.add(responsedata.detail).draw();
+				}
+				else {
+					reachedEOF = true;
+				}
+				fetchingDataFromApi = false;
+				if (callback != undefined) {
+					callback();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				fetchingDataFromApi = false;
+				if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+					swal({
+						title: 'Failed!',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+												allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function () {
+						window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+				}
+				else {
+					swal({
+						title: 'Contact Administrator !',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+				}
+			}
+		});
+
+
+	}
+
+		function getTaskTypeIcon(taskType) {
+			if (!taskType) return 'fa-stethoscope';
+			var t = (taskType + '').toLowerCase().replace(/\s+/g, '');
+			if (t.indexOf('therapy') !== -1 || t.indexOf('physiotherapy') !== -1) return 'fa-spa';
+			return 'fa-stethoscope';
+		}
+		function fill_ClinicalAppointment_cards()
+		 {
+			 var ClinicalAppointmentdata;
+
+			 var sendFilterData = {
+																"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+																  "tasktype":$("#tasktype").val(),
+		"practitioner":$("#practitioner").val(),
+		"appointmentdate_automatonfrom":getSqlDate($("#appointmentdate_automatonfrom").val()),"appointmentdate_automatonto":getSqlDate($("#appointmentdate_automatonto").val()),
+		"status":$("#status").val(),
+		"origin":$("#origin").val(),
+
+																 "pagesize": pageSize,
+																"pagenumber":(++currentCardPageNumber).toString()
+
+															}
+			 $.ajax({
+		type: "GET",
+		url: "@Url.Action("get_Clinical_Appointment_List", "ClinicalAppointment")",
+			data: sendFilterData,
+			contentType: "application/json; charset=utf-8",
+			 dataType: "Json",
+			 async: false,
+			success: function(data) {
+			var resultSet = data;
+			resultSet = data.detail;
+			ClinicalAppointmentdata = data.detail;
+			if(ClinicalAppointmentdata == null)
+			 return;
+		if (ClinicalAppointmentdata != null)
+		{
+		if (currentCardPageNumber <= 0)
+		$("#ClinicalAppointmentContainer").empty()
+		}
+			 $.each(resultSet, function(key, obj) {
+		$('body').on('click', 'a.img' + obj.clinicalappointmentid + '', function(e) {
+		e.preventDefault();
+		$('.img' + obj.clinicalappointmentid + '').colorbox({rel: '.img' + obj.clinicalappointmentid, width: "90%", height: "80%" });
+		$.colorbox({open: true });
+		});
+		var ClinicalAppointmentContainer = '<div class="col-md-3 col-sm-6 col-xs-12">' +
+		'<div class="card image-card image-top ">';
+		 if ((obj.photo ? obj.photo:"") !="") {
+		var uploaded_photo =obj.photo.split('|');
+		var iterate = 0;
+		for (var i = 0; i < uploaded_photo.length; i++) {
+		var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_photo[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+		if (uploaded_photo[i] != "") {
+		iterate = iterate + 1;
+		if (iterate == 1)
+			ClinicalAppointmentContainer = ClinicalAppointmentContainer + '<div class="card-head">' +
+				'<a href="' + (filepath  ? filepath  : vBaseurl+"/images/blank.jpg") + '" class="img' + obj.clinicalappointmentid+ ' img-group-gallery cboxElement" >' +
+				'<img  src="' + (filepath ? filepath : vBaseurl+"/images/blank.jpg") + '"  class="img-responsive gallaryImage" alt="blank" />' +
+				'</a>' +
+				'</div>';
+		else
+			ClinicalAppointmentContainer = ClinicalAppointmentContainer + '<div class="card-head" style="display:none">' +
+				'<a href="' + (filepath ? filepath : vBaseurl+"/images/blank.jpg") + '" class="img' + obj.clinicalappointmentid+ ' img-group-gallery cboxElement" >' +
+				'</a>' +
+				'</div>';
+
+		}
+
+
+		}
+
+
+		}else{
+
+		ClinicalAppointmentContainer = ClinicalAppointmentContainer + '<div class="card-head">' +
+				'<a href="'+ vBaseurl+ '/images/blank.jpg" class="img' + obj.clinicalappointmentid+ ' img-group-gallery cboxElement" >' +
+				'<img  src="'+ vBaseurl+ '/images/blank.jpg"  class="img-responsive gallaryImage" alt="blank" />' +
+				'</a>' +
+				'</div>';
+
+		}
+		ClinicalAppointmentContainer = ClinicalAppointmentContainer +'<div class="card-head">';
+		ClinicalAppointmentContainer = ClinicalAppointmentContainer +'<header id="header' + obj.clinicalappointmentid + '">' + (obj.bookingid? obj.bookingid:"")+'</header>';
+		var Actions=getAuthoController("ClinicalAppointment")
+
+													if(Actions !=undefined)
+													{
+		var hasValidActions = false;
+		var ClinicalAppointmentContainerTemp='';
+
+														for (var index = 0; index < Actions.length; ++index) {
+																var entry = Actions[index];
+
+																if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="create" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+																	var URL = "@Url.Action("entry.viewname", "ClinicalAppointment")?ClinicalAppointmentid=" + obj.clinicalappointmentid
+																	URL = URL.replace("entry.viewname", entry.actionmethodname);
+
+																		if(entry.viewname=="delete")
+																		{
+																			ClinicalAppointmentContainerTemp+='<li><a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a></li>'
+																		}
+																		else
+																		{
+																			ClinicalAppointmentContainerTemp+='<li><a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a></li>'
+																		}
+
+																}
+
+														}
+		if (hasValidActions) {
+		ClinicalAppointmentContainer+='<div class="tools cma_card_action_tools"><div class="btn-group">'+
+																'<a href="#" class="btn btn-icon-toggle dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="md md-more-vert"></i></a>';
+
+														ClinicalAppointmentContainer+='<ul class="dropdown-menu animation-dock pull-right menu-card-styling" role="menu" style="text-align: left;">'+
+										ClinicalAppointmentContainerTemp +
+			 '</ul></div></div>';
+															}
+
+		else {
+						ClinicalAppointmentContainer += '-';
+					}
+
+													}
+													else
+													{
+
+														ClinicalAppointmentContainer = ClinicalAppointmentContainer + '-';
+													}
+
+		ClinicalAppointmentContainer = ClinicalAppointmentContainer +'</div>';
+		ClinicalAppointmentContainer = ClinicalAppointmentContainer +'<div class="card-body"><div class="scroll">' +
+		'<b>Task Type : </b>' + (obj.tasktype? obj.tasktype:"-")  +'</br>' +
+		'<b>Patient : </b>' + (obj.patient_master? obj.patient_master:"-")  +'</br>' +
+		'<b>Practitioner : </b>' + (obj.practitioner_master? obj.practitioner_master:"-")  +'</br>' +
+		'<b>Actual Practitioner : </b>' + (obj.actualpractitioner_master? obj.actualpractitioner_master:"-")  +'</br>' +
+		'<b>Appointment Date : </b>' + (obj.appointmentdate? obj.appointmentdate:"-")  +'</br>' +
+		'<b>Duration From : </b>' + (obj.durationfrom? obj.durationfrom:"-")  +'</br>' +
+		'<b>Duration To : </b>' + (obj.durationto? obj.durationto:"-")  +'</br>' +
+		'<b>Status : </b>' + (obj.status? obj.status:"-")  +'</br>' +
+		'<b>Origin : </b>' + (obj.origin? obj.origin:"-")  +'</br>' +
+		'<b>Booking ID : </b>' + (obj.bookingid? obj.bookingid:"-")  +'</br>' +
+		'<b>Token Number : </b>' + (obj.tokennumber? obj.tokennumber:"-")  +'</br>' +
+		'<b>Reshedule History : </b>' + (obj.automaton_clinicalappointment_reshedulehistory? get_dependent_li_l(obj.automaton_clinicalappointment_reshedulehistory):"-")  +'</br>' +
+		'</div>' +
+		'</div>' +
+		'</div>' +
+		 '</div>'
+		$("#ClinicalAppointmentContainer").append(ClinicalAppointmentContainer)
+		var taskTypeIcon = (typeof getTaskTypeIcon === 'function') ? getTaskTypeIcon(obj.tasktype) : 'fa-stethoscope';
+		$("#header"+ obj.clinicalappointmentid).html('<i class="fa ' + taskTypeIcon + ' cal-card-task-ico"></i> ' + (obj.tasktype ? obj.tasktype : "-"));
+
+			});
+			},
+			error: function () {
+		$("#ClinicalAppointmentContainer").empty()
+			$("#ClinicalAppointmentContainer").append('No Data');
+			}
+			});
+		}
+
+
+
+					$(document).ready(function () {
+					$('body').on('change', '.dt-global-search', function(event) {
+					  reachedEOF = false;
+
+					  pager_setCurrentPageNumber(1);
+					  fill_pagination(pager_onPageChanged);
+
+					  $(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+					});
+
+					// Each tab loads its own data only when shown (calendar is first tab and loads on init below)
+					$(".cma_fill_tab").click(function(){
+						$(document).scrollTo(0,100);
+						currentCardPageNumber = -1;
+						reachedRequestsEOF = false;
+					});
+					$('a[href="#cma_card_tab"]').on('shown.bs.tab', function() {
+						fill_ClinicalAppointment_cards();
+						fill_ClinicalAppointment();
+					});
+					$('a[href="#cma_table_tab"]').on('shown.bs.tab', function() {
+						fill_ClinicalAppointment();
+					});
+
+					var Actions=getAutho("ClinicalAppointment","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}
+
+
+
+
+					});
+					
+
+					$("body").on("click", "[data-table-action]", function(a) {
+					a.preventDefault();
+					var b = $(this).data("table-action");
+					console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+					if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+					var c = $(this).closest(".card");
+					c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+					}
+					});
+
+		$(window).scroll(function () {
+				if ($(window).scrollTop() + $(window).height() + 250 >= $(document).height()) {
+					fill_ClinicalAppointment_cards();
+				}
+			});
+
+					</script>
+					<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+<script>
+$(document).ready(function () {
+	$('#appointmentdate_automatonfrom').datetimepicker({
+		 format: "d/m/Y",
+		 formatDate: "d/m/Y",
+		 timepicker: false,
+});
+	$('#appointmentdate_automatonto').datetimepicker({
+		 format: "d/m/Y",
+		 formatDate: "d/m/Y",
+		 timepicker: false,
+});
+		$("#appointmentdate_automatonfrom").datetimepicker('defaultDate', moment().add(-365, 'days'));
+		$("#appointmentdate_automatonto").datetimepicker('defaultDate', moment());
+})
+</script>
+
+	<style>
+		/* Clinical Appointment Calendar */
+		.clinical-appointment-calendar-fullpage {
+			display: flex;
+			flex-direction: column;
+			min-height: 480px;
+			background: var(--body-background, #fff);
+			border-radius: var(--border-radius-10, 10px);
+			border: var(--border-primary, 1px solid #e2e8f0);
+			overflow: hidden;
+			box-shadow: var(--cardshadow, 0 2px 8px rgba(0,0,0,0.06));
+		}
+
+		.clinical-appointment-calendar-toolbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			flex-shrink: 0;
+			padding: 12px 16px;
+			background: var(--Header, #fff);
+			border-bottom: var(--border-primary, 1px solid #e8ecf1);
+		}
+
+		.clinical-appointment-calendar-toolbar__title {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: var(--font-16, 16px);
+			font-weight: var(--font-weight-600, 600);
+			color: var(--Headertext, var(--body-text, #1e293b));
+		}
+
+		.clinical-appointment-calendar-toolbar__title i {
+			color: var(--theme-primary, var(--btnprimary, #5c9fd6));
+		}
+
+		.clinical-appointment-calendar-toolbar__nav {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.clinical-appointment-calendar-toolbar__date {
+			font-size: var(--font-14, 14px);
+			color: var(--labelcolor, #475569);
+			margin-left: 8px;
+			min-width: 180px;
+		}
+
+		.clinical-appointment-calendar-wrap {
+			flex: 1;
+			min-height: 400px;
+			position: relative;
+		}
+
+		#clinicalAppointmentCalendar {
+			width: 100%;
+			height: 100%;
+			min-height: 400px;
+		}
+
+		.clinical-appointment-calendar-placeholder {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			text-align: center;
+			color: var(--labelcolor, #64748b);
+			font-size: var(--font-14, 14px);
+			padding: 24px;
+		}
+
+		/* Toolbar buttons */
+		.clinical-appointment-calendar-fullpage .occupancy-calendar-btn {
+			background: var(--btnsecoundary, #fff);
+			color: var(--btnsecoundarycolor, var(--btnprimary));
+			border: var(--border-primary);
+		}
+		.clinical-appointment-calendar-fullpage .occupancy-calendar-btn:hover {
+			background: var(--btnprimary);
+			color: var(--btncolor, #fff);
+		}
+		.clinical-appointment-calendar-fullpage .clinical-appointment-calendar-btn--today {
+			background: var(--btnprimary);
+			color: var(--btncolor, #fff);
+			border-color: var(--btnprimary);
+		}
+
+		/* Practitioner column header */
+		.cal-practitioner-header {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			gap: 6px;
+			padding: 8px 4px;
+			text-align: center;
+		}
+
+		.cal-practitioner-photo {
+			width: 56px;
+			height: 56px;
+			border-radius: 50%;
+			object-fit: cover;
+			display: block;
+			margin: 0 auto;
+			background: var(--input-border, #e2e8f0);
+		}
+
+		.cal-practitioner-name {
+			display: block;
+			font-size: var(--font-13, 12px);
+			font-weight: var(--font-weight-600, 600);
+			color: var(--thheader, #1e293b);
+			line-height: 1.2;
+			word-break: break-word;
+		}
+
+		#clinicalAppointmentCalendar .calendar_column_header .cal-practitioner-header {
+			min-height: 100px;
+		}
+		.cal-practitioner-reschedule-btn {
+			font-size: 16px;
+			color: #fff !important;
+			text-decoration: none;
+			opacity: 0.95;
+			line-height: 1;
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 28px;
+			height: 28px;
+			border-radius: 50%;
+			background: var(--btnprimary, #218c8e);
+		}
+		.cal-practitioner-reschedule-btn:hover {
+			color: #fff !important;
+			opacity: 1;
+			background: var(--btnprimary, #218c8e);
+		}
+		.cal-practitioner-reschedule-btn i {
+			color: inherit;
+		}
+
+		#clinicalAppointmentCalendar thead th {
+			min-height: 100px;
+			vertical-align: middle;
+			background: var(--tableheader, #f8fafc) !important;
+			color: var(--thheader, var(--tablecolor));
+			border-color: var(--input-border, #e8ecf1) !important;
+		}
+
+		#clinicalAppointmentCalendar .calendar_column_header {
+			min-height: 100px !important;
+			background: var(--tableheader, #f8fafc) !important;
+			color: var(--thheader, var(--tablecolor));
+		}
+		.cal-card-task-ico {
+			margin-right: 6px;
+			opacity: 0.9;
+			color: var(--btnprimary, #2d5f44);
+		}
+		.cal-evt-card {
+			padding: 3px 6px;
+			color: #fff;
+			font-size: 12px;
+			line-height: 1.35;
+			overflow: hidden;
+			box-sizing: border-box;
+			height: 100%;
+			-webkit-font-smoothing: antialiased;
+		}
+		.cal-evt-name {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 4px;
+			font-weight: 600;
+		}
+		.cal-evt-name-text {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			min-width: 0;
+			flex: 1 1 auto;
+		}
+		.cal-evt-row {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			opacity: 0.95;
+			overflow: hidden;
+		}
+		.cal-evt-row-text {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+		.cal-evt-ico { margin-right: 2px; flex-shrink: 0; }
+		.cal-priority-badge {
+			display: inline-flex;
+			align-items: center;
+			border: 1px solid;
+			border-radius: 999px;
+			padding: 1px 6px;
+			font-size: 10px;
+			font-weight: 600;
+			letter-spacing: 0.2px;
+			line-height: 1.3;
+			flex-shrink: 0;
+			white-space: nowrap;
+		}
+	</style>
+	<script>
+		let userRole = "@Context.Session.GetString("NalamVazhauserrole")";
+		var role = (userRole || "").toLowerCase().trim();
+		var frontDeskRoles = ["frontdesk admin", "front desk admin"];
+		var canRescheduleByDrag = frontDeskRoles.includes(role);
+		var isDoctor = (role === "doctor");
+		var LOGIN_USER_ID = "@(Context.Session.GetString("NalamVazhaloginUserID") ?? "")";
+		var CAL_PEOPLEID_URL = '@Url.Action("GetPeopleIdByUserId", "ClinicalAppointment")';
+		var _calDoctorPeopleId = '';
+	</script>
+
+	<script>
+		(function() {
+			var clinicalAppointmentCalendarInstance = null;
+			var clinicalAppointmentCalendarStartDate = null;
+
+			function getCalendarStartDate() {
+				var fromVal = $("#appointmentdate_automatonfrom").val();
+				var toVal = $("#appointmentdate_automatonto").val();
+				if (fromVal && getSqlDate(fromVal)) {
+					var parts = getSqlDate(fromVal).split('-');
+					if (parts.length === 3) return new DayPilot.Date(parts[0] + '-' + parts[1] + '-' + parts[2]);
+				}
+				return DayPilot.Date.today();
+			}
+
+			function toIsoStartEnd(appointmentdate, durationfrom, durationto) {
+				if (!appointmentdate) return { start: null, end: null };
+				var d = (appointmentdate + '').split('T')[0].split(' ')[0];
+				if (d.indexOf('/') !== -1) {
+					var p = d.split('/');
+					if (p.length === 3) d = p[2] + '-' + p[1] + '-' + p[0];
+				}
+				var from = (durationfrom || '09:00').toString().trim();
+				var to = (durationto || '10:00').toString().trim();
+				if (from.length <= 5 && from.indexOf(':') !== -1) { /* HH:mm */ }
+				else if (from.toLowerCase().indexOf('am') !== -1 || from.toLowerCase().indexOf('pm') !== -1) {
+					var m = moment(from, ['h:mm A', 'h:mm a', 'HH:mm']);
+					from = m.isValid() ? m.format('HH:mm') : '09:00';
+				}
+				if (to.length <= 5 && to.indexOf(':') !== -1) { /* HH:mm */ }
+				else if (to.toLowerCase().indexOf('am') !== -1 || to.toLowerCase().indexOf('pm') !== -1) {
+					var m2 = moment(to, ['h:mm A', 'h:mm a', 'HH:mm']);
+					to = m2.isValid() ? m2.format('HH:mm') : '10:00';
+				}
+				return {
+					start: d + 'T' + from + ':00',
+					end: d + 'T' + to + ':00'
+				};
+			}
+
+			function getTaskTypeColor(taskType) {
+				return window.NVClinicalCalendarColors.taskTypeColor(taskType);
+			}
+			function normalizeAppointmentPriority(priority) {
+				return window.NVClinicalCalendarColors.normalizePriority(priority);
+			}
+			function getAppointmentPriorityColors(priority) {
+				return window.NVClinicalCalendarColors.priorityColors(priority);
+			}
+			function renderAppointmentPriorityBadge(priority) {
+				var label = normalizeAppointmentPriority(priority);
+				var c = getAppointmentPriorityColors(label);
+				return '<span class="cal-priority-badge" style="background:' + c.bg + ';color:' + c.fg + ';border-color:' + c.border + ';">' + label + '</span>';
+			}
+			function getTaskTypeIconCal(taskType) {
+				if (!taskType) return 'fa-stethoscope';
+				var t = (taskType + '').toLowerCase().replace(/\s+/g, '');
+				if (t.indexOf('therapy') !== -1 || t.indexOf('physiotherapy') !== -1) return 'fa-spa';
+				return 'fa-stethoscope';
+			}
+			// "14:05" -> "2:05 PM" -- exact appointment time, easier to scan than raw 24h duration text
+			function formatTime12(timeStr) {
+				if (!timeStr) return '';
+				var parts = timeStr.split(':');
+				var h = parseInt(parts[0], 10);
+				var m = parseInt(parts[1], 10) || 0;
+				if (isNaN(h)) return '';
+				var ampm = h >= 12 ? 'PM' : 'AM';
+				var h12 = h % 12;
+				if (h12 === 0) h12 = 12;
+				return h12 + ':' + (m < 10 ? '0' : '') + m + ' ' + ampm;
+			}
+
+			// Shared helper: add minutes to "HH:MM" string (window scope for cross-closure access)
+			window.addMinutesToTime = function(timeStr, minutes) {
+				if (!timeStr) return timeStr;
+				var parts = (timeStr + ':00').split(':');
+				var h = parseInt(parts[0], 10) || 0;
+				var m = parseInt(parts[1], 10) || 0;
+				var total = h * 60 + m + minutes;
+				var nh = Math.floor(total / 60) % 24;
+				var nm = total % 60;
+				return (nh < 10 ? '0' : '') + nh + ':' + (nm < 10 ? '0' : '') + nm;
+			};
+
+			function renderClinicalAppointmentCalendar() {
+				var calendarEl = document.getElementById('clinicalAppointmentCalendar');
+				var placeholderEl = document.getElementById('clinicalAppointmentCalendarPlaceholder');
+				if (!calendarEl) return;
+
+				var tenantId = ($("#tenantid").val() || str_tenantid || '');
+				if (!tenantId) {
+					if (placeholderEl) { placeholderEl.style.display = 'block'; placeholderEl.textContent = 'Select a tenant.'; }
+					return;
+				}
+
+				clinicalAppointmentCalendarStartDate = getCalendarStartDate();
+				var startDate = clinicalAppointmentCalendarStartDate;
+				var days = 1;
+				$('#clinicalAppointmentCalendarDateText').text(startDate.toString('dddd MMM d, yyyy'));
+
+				var fromStr = startDate.toString('yyyy-MM-dd');
+				var toStr = fromStr;
+						function extractPhoto(photoField) {
+			if (!photoField) return '';
+			var parts = photoField.toString().split('|');
+			for (var i = 0; i < parts.length; i++) {
+				if (parts[i] && parts[i].trim()) {
+					return parts[i].trim();
+				}
+			}
+			return '';
+		}
+				$.ajax({
+					url: '@Url.Action("lookup_ClinicalAppointment_practitioner", "ClinicalAppointment")',
+					data: { tenantid: tenantId },
+					dataType: 'json'
+				}).done(function(practitionerList) {
+					var cloudPath = '@(Context.Session.GetString("NalamVazhacloudpath") ?? "")';
+					var sasToken = '@(Context.Session.GetString("NalamVazhaSAStoken") ?? "")';
+					var blankImg = (typeof vBaseurl !== 'undefined' ? vBaseurl : '') + '/images/blank.jpg';
+					if (!practitionerList || practitionerList.length === 0) {
+						practitionerList = [];
+					} else {
+						practitionerList = practitionerList.filter(function(item) { return item && (item.firstname != null || item.lastname != null); });
+						practitionerList.sort(function(a, b) {
+							var na = (a.firstname || '') + ' ' + (a.lastname || '');
+							var nb = (b.firstname || '') + ' ' + (b.lastname || '');
+							return na.localeCompare(nb);
+						});
+					}
+					// Doctor role: show only their own column
+					if (isDoctor && _calDoctorPeopleId) {
+						practitionerList = practitionerList.filter(function(p) {
+							var pid = (p.Peopleid || p.peopleid || '').toString().toLowerCase();
+							return pid === _calDoctorPeopleId.toLowerCase();
+						});
+					}
+					// Fetch People to get photos for practitioners
+					$.ajax({
+						url: '@Url.Action("get_all_People", "ClinicalAppointment")',
+						data: { tenantid: tenantId },
+						dataType: 'json'
+					}).done(function(peopleData) {
+						var peopleList = (peopleData && peopleData.detail) ? peopleData.detail : (peopleData && peopleData.data) ? peopleData.data : (Array.isArray(peopleData) ? peopleData : []);
+						var peopleById = {};
+						for (var i = 0; i < peopleList.length; i++) {
+							var pe = peopleList[i];
+							var pid = (pe.Peopleid || pe.peopleid || pe.id || '').toString();
+							if (pid) peopleById[pid] = pe;
+						}
+						for (var j = 0; j < practitionerList.length; j++) {
+							var pid = (practitionerList[j].Peopleid || practitionerList[j].peopleid || '').toString();
+							var person = peopleById[pid];
+							if (person && (person.photo || person.Photo)) practitionerList[j].peoplePhoto	= person.photo || person.Photo;
+						}
+					}).always(function() {
+						buildCalendarColumns();
+					});
+
+					function buildCalendarColumns() {
+						var columns = [];
+						for (var k = 0; k < practitionerList.length; k++) {
+							var p = practitionerList[k];
+							var fullName = ((p.firstname || '') + ' ' + (p.lastname || '')).trim() || (p.Peopleid || '');
+							columns.push({ name: fullName, id: p.Peopleid });
+						}
+						if (columns.length === 0) {
+							if (placeholderEl) { placeholderEl.style.display = 'block'; placeholderEl.textContent = 'No practitioners in selection.'; }
+							if (clinicalAppointmentCalendarInstance) { clinicalAppointmentCalendarInstance.update({ columns: [], events: [] }); }
+							return;
+						}
+						if (placeholderEl) placeholderEl.style.display = 'none';
+
+						var filterData = {
+						tenantid: tenantId,
+						tasktype: $("#tasktype").val() || '',
+						practitioner: $("#practitioner").val() || '',
+						appointmentdate_automatonfrom: fromStr,
+						appointmentdate_automatonto: toStr,
+						status: $("#status").val() || '',
+						origin: $("#origin").val() || '',
+						pagesize: 500,
+						pagenumber: 0
+					};
+
+					$.ajax({
+						url: '@Url.Action("get_Clinical_Appointment_List", "ClinicalAppointment")',
+						type: 'GET',
+						data: filterData,
+						dataType: 'json'
+					}).done(function(responsedata) {
+						var list = (responsedata && responsedata.detail) ? responsedata.detail : [];
+						var events = [];
+						var resourceIds = {};
+						columns.forEach(function(c) { resourceIds[c.id] = true; });
+						var practitionerPhotoFromAppointments = {};
+						var practitionerIdsWithDataForDay = {};
+						for (var i = 0; i < list.length; i++) {
+							var row = list[i];
+							var resId = (row.practitioner || row.Practitioner || '').toString();
+							if (resId && !practitionerPhotoFromAppointments[resId] && (row.photo || row.Photo)) {
+								var apPhoto = extractPhoto(row.photo || row.Photo);
+								if (apPhoto && apPhoto.trim())
+								practitionerPhotoFromAppointments[resId] = apPhoto.trim();
+							}
+							if (!resId || !resourceIds[resId]) continue;
+							var dateStr = (row.appointmentdate || '').toString();
+							if (dateStr) {
+								var dayStr = dateStr.substring(0, 10);
+								var calDayStr = (startDate || '').toString().substring(0, 10);
+								if (dayStr === calDayStr) practitionerIdsWithDataForDay[resId] = true;
+							}
+							if (!dateStr) continue;
+							var parsed = toIsoStartEnd(dateStr, row.durationfrom, row.durationto);
+							if (!parsed.start || !parsed.end) continue;
+							var patientName = (row.patient_master || '').toString().trim();
+							var taskType = (row.tasktype || '').toString();
+							var taskPriority = normalizeAppointmentPriority(row.taskpriority || row.TaskPriority || row.priority || row.Priority);
+							var barColor = getTaskTypeColor(taskType);
+							var fromTime = (row.durationfrom || '').toString().trim();
+							var toTime = (row.durationto || '').toString().trim();
+							var durationMin = '';
+							var durationMinutes = 0;
+							if (fromTime && toTime) {
+								var fp = fromTime.split(':'), tp = toTime.split(':');
+								var fMins = parseInt(fp[0])*60 + parseInt(fp[1]||0);
+								var tMins = parseInt(tp[0])*60 + parseInt(tp[1]||0);
+								var diff = tMins - fMins;
+								if (diff > 0) { durationMin = diff + ' min'; durationMinutes = diff; }
+							}
+							var practitionerName = (row.practitioner_master || row.Practitioner_master || '').toString().trim();
+							events.push({
+								id: row.clinicalappointmentid || 'ev_' + i,
+								text: patientName,
+								start: parsed.start,
+								end: parsed.end,
+								resource: resId,
+								barColor: barColor,
+								backColor: barColor,
+								taskType: taskType,
+								taskPriority: taskPriority,
+								patientName: patientName,
+								practitionerName: practitionerName,
+								fromTime: fromTime,
+								toTime: toTime,
+								durationMin: durationMin,
+								durationMinutes: durationMinutes
+							});
+						}
+						// Store globally for conflict detection in drag & drop
+						window._clinicalCalendarEvents = events;
+
+						var cellHeight = 35;
+						var businessStart = 6;
+						var businessEnd = 22;
+						var slotsPerHour = 2;
+						var hourCount = businessEnd - businessStart;
+						var height = hourCount * slotsPerHour * cellHeight;
+
+						var cloudPath2 = '@(Context.Session.GetString("NalamVazhacloudpath") ?? "")';
+						var sasToken2 = '@(Context.Session.GetString("NalamVazhaSAStoken") ?? "")';
+						var blankImg2 = (typeof vBaseurl !== 'undefined' && vBaseurl ? vBaseurl : '') + '/images/blank.jpg';
+						var practitionerHeaderMap = {};
+						for (var hi = 0; hi < practitionerList.length; hi++) {
+							var hp = practitionerList[hi];
+							var hId = (hp.Peopleid || hp.peopleid || '').toString();
+							var hFullName = ((hp.firstname || '') + ' ' + (hp.lastname || '')).trim() || hId;
+									var hPhotoRaw = '';
+
+		var lookupPhoto = extractPhoto(hp.photo || hp.Photo);
+		if (lookupPhoto) {
+			hPhotoRaw = lookupPhoto;
+		}
+
+		if (!hPhotoRaw) {
+			var peoplePhoto = extractPhoto(hp.peoplePhoto);
+			if (peoplePhoto) {
+				hPhotoRaw = peoplePhoto;
+			}
+		}
+
+		if (!hPhotoRaw && practitionerPhotoFromAppointments[hId]) {
+			hPhotoRaw = practitionerPhotoFromAppointments[hId];
+		}
+							var hPhotoPath = blankImg2;
+							if (hPhotoRaw) {
+								if (hPhotoRaw.indexOf('http') === 0) hPhotoPath = hPhotoRaw;
+								else if (cloudPath2 && sasToken2) hPhotoPath = cloudPath2 + '/' + hPhotoRaw + sasToken2;
+							}
+							var hasDataForDay = !!practitionerIdsWithDataForDay[hId];
+							var hSafeName = hFullName.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+							practitionerHeaderMap[hId] = { fullName: hFullName, photoPath: hPhotoPath, safeName: hSafeName, hasDataForDay: hasDataForDay };
+						}
+						function getHeaderHtml(colId) {
+							var h = practitionerHeaderMap[(colId || '').toString()];
+							if (!h) return null;
+							var imgSrc = h.photoPath ? h.photoPath : blankImg2;
+							var pid = (colId || '').toString().replace(/"/g, '&quot;');
+							var rescheduleBtn = '<button type="button" class="cal-practitioner-reschedule-btn btn btn-sm btn-link p-0 mt-1" data-practitioner-id="' + pid + '" title="Reschedule all to another doctor"><i class="fa fa-exchange-alt"></i></button>';
+							return '<div class="cal-practitioner-header"><img src="' + imgSrc + '" class="cal-practitioner-photo" alt="" /><span class="cal-practitioner-name">' + h.safeName + '</span>' + rescheduleBtn + '</div>';
+						}
+						function injectPractitionerHeaders() {
+							function doInject() {
+								var $container = $('#clinicalAppointmentCalendar');
+								if (!$container.length) return;
+								var $headers = $container.find('thead th').slice(1);
+								if ($headers.length === 0) $headers = $container.find('th').slice(1);
+								if ($headers.length === 0) $headers = $container.find('td').first().siblings();
+								if ($headers.length === 0) {
+									var $firstRow = $container.find('tr:first td, tr:first th').addBack().filter('tr').first().children();
+									if ($firstRow.length > 0) $headers = $firstRow.slice(1);
+								}
+								if ($headers.length === 0) {
+									var $headerArea = $container.find('thead').length ? $container.find('thead') : $container.find('tr:first').parent();
+									var replaced = {};
+									$headerArea.find('th, td, div').each(function() {
+										var $el = $(this);
+										if ($el.find('.cal-practitioner-header').length) return;
+										var txt = $el.text().trim();
+										for (var ni = 0; ni < practitionerList.length; ni++) {
+											if (replaced[ni]) continue;
+											var p = practitionerList[ni];
+											var name = ((p.firstname || '') + ' ' + (p.lastname || '')).trim();
+											if (!name || txt !== name) continue;
+											var html = getHeaderHtml((p.Peopleid || p.peopleid || '').toString());
+											if (html) { $el.html(html); replaced[ni] = true; return; }
+										}
+									});
+									return;
+								}
+								if (practitionerList.length > 0 && $headers.length > 0) {
+									$headers.each(function() {
+										var $cell = $(this);
+										if ($cell.find('.cal-practitioner-header').length) return;
+										var currentText = $cell.text().trim();
+										for (var ni = 0; ni < practitionerList.length; ni++) {
+											var p = practitionerList[ni];
+											var pName = ((p.firstname || '') + ' ' + (p.lastname || '')).trim();
+											if (!pName || currentText !== pName) continue;
+											var pid = (p.Peopleid || p.peopleid || '').toString();
+											var html = getHeaderHtml(pid);
+											if (html) $cell.html(html);
+											break;
+										}
+									});
+								}
+							}
+							setTimeout(doInject, 100);
+							setTimeout(doInject, 350);
+							setTimeout(doInject, 700);
+						}
+
+						var calendarConfig = {
+							viewType: "Resources",
+							startDate: startDate,
+							days: days,
+
+							height: height,
+							columns: columns,
+							events: events,
+							eventHeight: 66,
+							headerLevels: 1,
+							businessBeginsHour: businessStart,
+							businessEndsHour: businessEnd,
+
+							cellDuration: 30,
+							cellHeight: cellHeight,
+							timeHeaderCellDuration: 60,
+							timeRangeSelectedHandling: (userRole && userRole.toLowerCase() === "doctor") ? "Disabled" : "Enabled",
+							eventMoveHandling: canRescheduleByDrag ? "Update" : "Disabled",
+							eventResizeHandling: canRescheduleByDrag ? "Update" : "Disabled",
+							onEventClick: function(args) {
+								var e = args.e;
+								if (e.data.id && e.data.id.toString().indexOf('ev_') !== 0) {
+									var url = '@Url.Action("View_Clinical_Appointment", "ClinicalAppointment")?ClinicalAppointmentid=' + e.data.id;
+									window.location.href = url;
+								}
+							},
+							onTimeRangeSelected: function(args) {
+								var cal = args.control;
+								if (cal && cal.clearSelection) cal.clearSelection();
+								var start = args.start;
+								var end = args.end;
+								var resource = (args.resource || (args.column && args.column.id) || '').toString();
+								var dateStr = '';
+								var fromStr = '';
+								var toStr = '';
+								if (start) {
+									dateStr = start.toString('yyyy-MM-dd');
+									fromStr = start.toString('HH:mm');
+									toStr = end && end.toString ? end.toString('HH:mm') : fromStr;
+								}
+								var baseUrl = '@Url.Action("Add_Clinical_Appointment", "ClinicalAppointment")';
+								var q = ['popup=1'];
+								if (dateStr) q.push('appointmentdate=' + encodeURIComponent(dateStr));
+								if (fromStr) q.push('durationfrom=' + encodeURIComponent(fromStr));
+								if (toStr) q.push('durationto=' + encodeURIComponent(toStr));
+								if (resource) q.push('practitioner=' + encodeURIComponent(resource));
+								var url = baseUrl + '?' + q.join('&');
+								if (typeof $ !== 'undefined' && $.colorbox) {
+									$.colorbox({ href: url, iframe: true, width: '90%', height: '90%', onClosed: function() { if (window.renderClinicalAppointmentCalendar) renderClinicalAppointmentCalendar(); } });
+								} else { window.open(url, '_blank'); }
+							},
+							onEventMoved: function(args) {
+								if (!canRescheduleByDrag) {
+									renderClinicalAppointmentCalendar();
+									return;
+								}
+								var e = args.e;
+								var id = e.data.id;
+								if (!id || id.toString().indexOf('ev_') === 0) return;
+								var newStart    = args.newStart;
+								var newEnd      = args.newEnd;
+								/* Block drop on past dates */
+								var todayStr = DayPilot.Date.today().toString('yyyy-MM-dd');
+								if (newStart.toString('yyyy-MM-dd') < todayStr) {
+									swal({ title: 'Not Allowed', text: 'Cannot reschedule to a past date.', type: 'warning' });
+									if (window.renderClinicalAppointmentCalendar) renderClinicalAppointmentCalendar();
+									return;
+								}
+								var newResource  = (args.newResource || '').toString();
+								var origResource = (e.data.resource  || '').toString();
+								var appDurFrom   = newStart.toString('HH:mm');
+								var appDurTo     = newEnd.toString('HH:mm');   // default: keep same duration
+								var appTaskType  = (e.data.taskType || '').toString().toLowerCase().trim();
+								var calTenantId  = ($("#tenantid").val() || (typeof str_tenantid !== 'undefined' ? str_tenantid : ''));
+
+								// ev.start is stored as "yyyy-MM-ddTHH:mm:ss" ISO string — use substring, no DayPilot constructor
+								var newDateStr   = newStart.toString('yyyy-MM-dd');
+								var newFromStr   = newStart.toString('HH:mm');
+								var newToStr     = newEnd.toString('HH:mm');
+								var targetDoctor = newResource || origResource;
+
+								// Validation 1: no-op — same date, same durationfrom, same doctor
+								// e.data.fromTime holds the original "HH:mm" stored when building events
+								var origDateStr = (e.data.start || '').toString().substring(0, 10);
+								var origFromStr = (e.data.fromTime || '').toString().trim();
+								if (newDateStr === origDateStr && newFromStr === origFromStr && targetDoctor === origResource) {
+									renderClinicalAppointmentCalendar();
+									return;
+								}
+
+								// Validation 2: conflict — target doctor already has an overlapping slot
+								// Compares HH:mm strings (lexicographic = chronological within same date)
+								var existingEvents = window._clinicalCalendarEvents || [];
+								var hasConflict = existingEvents.some(function(ev) {
+									if ((ev.id || '').toString() === id.toString()) return false;       // skip self
+									if ((ev.resource || '').toString() !== targetDoctor) return false;  // wrong doctor
+									var evIsoStart = (ev.start || '').toString();
+									var evIsoEnd   = (ev.end   || '').toString();
+									if (evIsoStart.substring(0, 10) !== newDateStr) return false;       // different date
+									var evFrom = evIsoStart.substring(11, 16);  // "HH:mm"
+									var evTo   = evIsoEnd.substring(11, 16);    // "HH:mm"
+									return newFromStr < evTo && newToStr > evFrom;
+								});
+								if (hasConflict) {
+									swal({ title: 'Conflict', text: 'This doctor already has an appointment at that time.', type: 'warning' });
+									renderClinicalAppointmentCalendar();
+									return;
+								}
+
+								function doReschedule(durFrom, durTo) {
+									var payload = {
+										ClinicalAppointmentid: id.toString(),
+										appointmentdate: newStart.toString('yyyy-MM-dd'),
+										durationfrom: durFrom,
+										durationto:   durTo
+									};
+									if (newResource) payload.practitioner = newResource;
+									$.ajax({
+										url: '@Url.Action("Reschedule_Clinical_Appointment", "ClinicalAppointment")',
+										type: 'POST',
+										contentType: 'application/json',
+										data: JSON.stringify(payload),
+										success: function(resp) {
+											if (resp && resp.success) {
+												swal({ title: 'Updated', text: 'Appointment updated successfully.', type: 'success' });
+											} else {
+												swal({ title: 'Error', text: (resp && resp.message) || 'Update failed', type: 'error' });
+												if (window.renderClinicalAppointmentCalendar) renderClinicalAppointmentCalendar();
+											}
+										},
+										error: function() {
+											swal({ title: 'Error', text: 'Failed to update appointment.', type: 'error' });
+											if (window.renderClinicalAppointmentCalendar) renderClinicalAppointmentCalendar();
+										}
+									});
+								}
+
+								// When dropped onto a different doctor: look up that doctor's duration
+								// for the same tasktype via GetDuration_ByPractitioner SP
+								if (newResource && newResource !== origResource && appTaskType) {
+									$.ajax({
+										url: '@Url.Action("GetDuration_ByPractitioner", "People")',
+										type: 'GET',
+										data: { Peopleid: newResource, tenantid: calTenantId },
+										dataType: 'json',
+										success: function(durRaw) {
+											if (typeof durRaw === 'string') { try { durRaw = JSON.parse(durRaw); } catch(ex) { durRaw = []; } }
+											var durList   = Array.isArray(durRaw) ? durRaw : [];
+											var targetDur = 0;
+											durList.forEach(function(row) {
+												var name = (row.tasktype_text || row.Tasktype_text || '').toString().toLowerCase().trim();
+												if (name === appTaskType) {
+													targetDur = parseInt(row.durationinminutes || row.Durationinminutes, 10) || 0;
+												}
+											});
+											var newDurTo = (targetDur > 0) ? addMinutesToTime(appDurFrom, targetDur) : appDurTo;
+											doReschedule(appDurFrom, newDurTo);
+										},
+										error: function() {
+											doReschedule(appDurFrom, appDurTo);
+										}
+									});
+								} else {
+									// Same doctor or no resource change: keep DayPilot-calculated end time
+									doReschedule(appDurFrom, appDurTo);
+								}
+							},
+							onEventResized: function(args) {
+								if (!canRescheduleByDrag) {
+									renderClinicalAppointmentCalendar();
+									return;
+								}
+								var e = args.e;
+								var id = e.data.id;
+								if (!id || id.toString().indexOf('ev_') === 0) return;
+								var newStart = args.newStart;
+								var newEnd = args.newEnd;
+								var payload = {
+									ClinicalAppointmentid: id.toString(),
+									appointmentdate: newStart.toString('yyyy-MM-dd'),
+									durationfrom: newStart.toString('HH:mm'),
+									durationto: newEnd.toString('HH:mm')
+								};
+								$.ajax({
+									url: '@Url.Action("Reschedule_Clinical_Appointment", "ClinicalAppointment")',
+									type: 'POST',
+									contentType: 'application/json',
+									data: JSON.stringify(payload),
+									success: function(resp) {
+										if (resp && resp.success) {
+											swal({ title: 'Updated', text: 'Appointment duration updated successfully.', type: 'success' });
+										} else {
+											swal({ title: 'Error', text: (resp && resp.message) || 'Update failed', type: 'error' });
+											if (window.renderClinicalAppointmentCalendar) renderClinicalAppointmentCalendar();
+										}
+									},
+									error: function() {
+										swal({ title: 'Error', text: 'Failed to update appointment.', type: 'error' });
+										if (window.renderClinicalAppointmentCalendar) renderClinicalAppointmentCalendar();
+									}
+								});
+							},
+							onBeforeEventRender: function(args) {
+								var d = args.data;
+								var esc = function(s) { return (s||'').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+								var pName = esc(d.patientName || d.text || '');
+								var tType = esc(d.taskType || '');
+								var priority = normalizeAppointmentPriority(d.taskPriority);
+								var fromT12 = formatTime12(d.fromTime || '');
+								var toT12 = formatTime12(d.toTime || '');
+								var timeRange = esc(fromT12 && toT12 ? (fromT12 + ' - ' + toT12) : (fromT12 || ''));
+								var durMinutes = parseInt(d.durationMinutes, 10) || 0;
+
+								var baseColor = d.barColor || '#4a90d9';
+								d.backColor = baseColor;
+								d.borderColor = baseColor;
+								d.fontColor = '#fff';
+								d.barVisible = false;
+
+								/* Disable drag/resize on events in the past, and dim them */
+								var todayStr = DayPilot.Date.today().toString('yyyy-MM-dd');
+								if (d.start && d.start.toString('yyyy-MM-dd') < todayStr) {
+									d.moveDisabled   = true;
+									d.resizeDisabled = true;
+									d.backColor = '#cbd5e1';
+									d.borderColor = '#94a3b8';
+									d.fontColor = '#475569';
+								}
+
+								// Keep the requested task and time visible in every slot. Patient
+								// details use a second row only when the appointment has enough height.
+								var slotTitleParts = [];
+								if (tType) slotTitleParts.push(tType);
+								if (timeRange) slotTitleParts.push(timeRange);
+								var slotTitle = slotTitleParts.length ? slotTitleParts.join(' | ') : pName;
+								var showPatientRow = pName && durMinutes >= 60;
+
+								var html = '<div class="cal-evt-card">';
+								html += '<div class="cal-evt-name">' +
+										'<span class="cal-evt-name-text">' + slotTitle + '</span>' +
+										renderAppointmentPriorityBadge(priority) +
+										'</div>';
+								if (showPatientRow) html += '<div class="cal-evt-row"><i class="fa fa-user cal-evt-ico"></i><span class="cal-evt-row-text">' + pName + '</span></div>';
+								html += '</div>';
+								d.html = html;
+
+								// Hover tooltip -- always shows the full detail regardless of
+								// how compact the block itself has to be.
+								var tooltipLines = [pName];
+								if (tType) tooltipLines.push(tType + (priority ? ' (' + priority + ' priority)' : ''));
+								if (timeRange) tooltipLines.push(timeRange);
+								if (d.practitionerName) tooltipLines.push('Practitioner: ' + d.practitionerName);
+								d.toolTip = tooltipLines.join('\n');
+							}
+						};
+						try {
+							calendarConfig.onBeforeHeaderRender = function(args) {
+								var colId = (args.column && args.column.id) ? args.column.id : (args.resource || (args.header && args.header.resource));
+								var html = getHeaderHtml(colId);
+								if (html && args.header) args.header.html = html;
+							};
+						} catch (e) {}
+						if (!clinicalAppointmentCalendarInstance) {
+							clinicalAppointmentCalendarInstance = new DayPilot.Calendar("clinicalAppointmentCalendar", calendarConfig);
+							clinicalAppointmentCalendarInstance.init();
+							injectPractitionerHeaders();
+						} else {
+							clinicalAppointmentCalendarInstance.update({
+								startDate: startDate,
+								days: days,
+
+								height: height,
+								columns: columns,
+								events: events,
+								businessBeginsHour: businessStart,
+								businessEndsHour: businessEnd,
+
+								cellDuration: 30,
+								cellHeight: cellHeight,
+								timeHeaderCellDuration: 60
+							});
+							injectPractitionerHeaders();
+						}
+					});
+					} // end buildCalendarColumns
+				});
+			}
+
+				window.renderClinicalAppointmentCalendar = renderClinicalAppointmentCalendar;
+			$(document).ready(function() {
+				$('a[href="#cma_calendar_tab"]').on('shown.bs.tab', function() {
+					renderClinicalAppointmentCalendar();
+				});
+
+				// For doctor role: resolve Peopleid, set as practitioner filter, then render calendar
+				if (isDoctor && LOGIN_USER_ID) {
+					$.getJSON(CAL_PEOPLEID_URL + '?usersid=' + encodeURIComponent(LOGIN_USER_ID))
+						.done(function(data) {
+							if (data && data.peopleid) {
+								_calDoctorPeopleId = data.peopleid;
+								$('#practitioner').val(data.peopleid);
+							}
+						})
+						.always(function() { renderClinicalAppointmentCalendar(); });
+				} else {
+					renderClinicalAppointmentCalendar();
+				}
+				$('.clinical-appointment-calendar-btn--today').on('click', function() {
+					clinicalAppointmentCalendarStartDate = DayPilot.Date.today();
+					$("#appointmentdate_automatonfrom").val(clinicalAppointmentCalendarStartDate.toString('dd/MM/yyyy'));
+					$("#appointmentdate_automatonto").val(clinicalAppointmentCalendarStartDate.toString('dd/MM/yyyy'));
+					renderClinicalAppointmentCalendar();
+				});
+				/* Date label click -> open datepicker */
+				if ($.fn.datetimepicker) {
+					$('#clinicalAppointmentCalendarHiddenDatePicker').datetimepicker({
+						timepicker: false,
+						scrollInput: false,
+						format: 'd/m/Y',
+						onChangeDateTime: function(dp, $el) {
+							var val = $el.val();
+							if (!val) return;
+							var parts = val.split('/');
+							if (parts.length !== 3) return;
+							var isoStr = parts[2] + '-' + parts[1] + '-' + parts[0];
+							clinicalAppointmentCalendarStartDate = new DayPilot.Date(isoStr);
+							$("#appointmentdate_automatonfrom").val(clinicalAppointmentCalendarStartDate.toString('dd/MM/yyyy'));
+							$("#appointmentdate_automatonto").val(clinicalAppointmentCalendarStartDate.toString('dd/MM/yyyy'));
+							renderClinicalAppointmentCalendar();
+						}
+					});
+				}
+				$('#clinicalAppointmentCalendarDateLabel').on('click', function() {
+					$('#clinicalAppointmentCalendarHiddenDatePicker').datetimepicker('show');
+				});
+			});
+		})();
+	</script>
+
+	<!-- Status/Origin lookup loading -->
+	<script>
+		var strstatus;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.status != null && Model.status.ToString() != "")
+		{
+			<script>
+				strstatus = "@Model.status";
+			</script>
+		}
+	}
+	<script>
+		var strorigin;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.origin != null && Model.origin.ToString() != "")
+		{
+			<script>
+				strorigin = "@Model.origin";
+			</script>
+		}
+	}
+
+	<script>
+		$(document).ready(function () {
+		$.ajax({
+		url: '@Url.Action("get_lookups_by_entity", "lookups")',
+		dataType: 'json',
+		data:{id: 'ClinicalAppointment' },
+		success: function(data) {
+				$.each(data, function(index, optionDataInner) {
+													if(optionDataInner.fieldname=="status"){
+														var ddltarget_status = "#status"
+														$(ddltarget_status).empty();
+														$(ddltarget_status).append("<option value=''>Choose</option>")
+														var options_status = optionDataInner.fielddesc.split(',');
+														options_status.sort(function (a, b) {
+																				return a.localeCompare(b);
+															});
+														options_status.forEach(function(option_status){
+															if(strstatus== option_status){
+															$(ddltarget_status).append('<option selected value="' + option_status + '">' + option_status+ '</option>')
+															}
+															else
+															$(ddltarget_status).append('<option  value="' + option_status + '">' + option_status+ '</option>')
+														})
+													}
+													if(optionDataInner.fieldname=="origin"){
+														var ddltarget_origin = "#origin"
+														$(ddltarget_origin).empty();
+														$(ddltarget_origin).append("<option value=''>Choose</option>")
+														var options_origin = optionDataInner.fielddesc.split(',');
+														options_origin.sort(function (a, b) {
+																				return a.localeCompare(b);
+															});
+														options_origin.forEach(function(option_origin){
+															if(strorigin== option_origin){
+															$(ddltarget_origin).append('<option selected value="' + option_origin + '">' + option_origin+ '</option>')
+															}
+															else
+															$(ddltarget_origin).append('<option  value="' + option_origin + '">' + option_origin+ '</option>')
+														})
+													}
+				});
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+		})
+	</script>
+
+
+
+
+								<script>
+								$(document).ready(function () {
+
+								$("#tenantid").change(function(){
+									$(document).scrollTo(0,100);
+									currentCardPageNumber = -1;
+									reachedRequestsEOF = false;
+									if ($('a[href="#cma_calendar_tab"]').parent().hasClass('active') && typeof renderClinicalAppointmentCalendar === 'function') {
+										renderClinicalAppointmentCalendar();
+									} else {
+										fill_ClinicalAppointment_cards();
+										fill_ClinicalAppointment();
+									}
+								})
+
+								$("#btnFilter").click(function(){
+									$("#ClinicalAppointmentContainer").empty();
+									$(document).scrollTo(0,100);
+									currentCardPageNumber = -1;
+									reachedRequestsEOF = false;
+									if ($('a[href="#cma_calendar_tab"]').parent().hasClass('active') && typeof renderClinicalAppointmentCalendar === 'function') {
+										renderClinicalAppointmentCalendar();
+									} else {
+										fill_ClinicalAppointment_cards();
+										fill_ClinicalAppointment();
+									}
+								})
+
+								var Actions_=getAutho("ClinicalAppointment","create")
+								if(Actions_ !=  undefined)
+								{
+									var create_URL = "@Url.Action("entry.viewname", "ClinicalAppointment")"
+									create_URL = create_URL.replace("entry.viewname", Actions_.actionmethodname);
+									$(".btnCreate").attr('href',create_URL)
+									$(".btnCreate").show()
+								}
+
+								});
+								</script> 
+
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+
+
+					
+					
+					 
+					
+					<!-- Tasktype loading -->
+	<script>
+		var strtasktype;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.tasktype != null && Model.tasktype.ToString() != "")
+		{
+			<script>
+				strtasktype="@Model.tasktype"
+			</script>
+		}
+	}
+	<script>
+		function fill_tasktype() {
+
+		$.ajax({
+		url: '@Url.Action("get_all_TaskType")',
+		dataType: 'json',
+		data:{"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid)},
+		success: function(data) {
+				if (data.length > 0) {
+					data = data.filter(item => item.tasktypename !== null);
+					data.sort((a, b) =>
+					String(a.tasktypename).toLowerCase().localeCompare(String(b.tasktypename).toLowerCase())
+					);
+				}
+
+			   var ddltarget_tasktype="#tasktype"
+				$(ddltarget_tasktype).empty();
+				$(ddltarget_tasktype).append("<option value=''>Choose</option>")
+
+
+				$.each(data, function(index, optionDataInner) {
+
+												if(strtasktype== optionDataInner.tasktypename){
+													$(ddltarget_tasktype).append('<option selected value="' + optionDataInner.tasktypename + '">' + optionDataInner.tasktypename+ '</option>')
+
+													 }
+													else
+													$(ddltarget_tasktype).append('<option  value="' + optionDataInner.tasktypename + '">' + optionDataInner.tasktypename+ '</option>')
+
+				});
+
+				$("#tasktype").select2()
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		 allowEnterKey: false
+		})
+		}
+		}
+		})
+
+		}
+	</script>
+
+					<script>
+					var strpractitioner;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.practitioner != null && Model.practitioner.ToString() != "")
+							{
+							<script>
+								 strpractitioner="@Model.practitioner"
+							</script>
+							}
+						}
+					<script>
+
+
+					function lookup_ClinicalAppointment_practitioner(tenantid) {
+
+					var ddltarget_practitioner = $('#practitioner');
+					ddltarget_practitioner.empty();;
+					ddltarget_practitioner.select2({
+						ajax: {
+							url: '@Url.Action("lookup_ClinicalAppointment_practitioner")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase())
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].Peopleid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_ClinicalAppointment_practitioner,
+						 templateSelection: formatSelectSelected_lookup_ClinicalAppointment_practitioner
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpractitioner || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_ClinicalAppointment_practitioner")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].Peopleid == strpractitioner) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname,data[i].Peopleid, true, true);
+											ddltarget_practitioner.append(option).trigger('update');
+
+											ddltarget_practitioner.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_ClinicalAppointment_practitioner(item) {
+
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname) {
+						var textValue = item.firstname+ ' ' + item.lastname
+					}
+
+					return textValue;
+				}
+				function formatSelectOption_lookup_ClinicalAppointment_practitioner(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname;
+					return textValue;
+
+				 }
+
+
+
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_ClinicalAppointment_practitioner(str_tenantid)
+								}, 3000)
+
+
+
+
+						})
+
+						</script>
+
+<script>
+	$(document).ready(function () {
+		fill_tasktype()
+		$("#tenantid").change(function(){
+			fill_tasktype();
+			lookup_ClinicalAppointment_practitioner($("#tenantid").val())
+		});
+
+		// Reschedule by practitioner: open modal and fill practitioner dropdowns
+		function openRescheduleModal(prefillFromId) {
+			var tenantId = ($("#tenantid").val() || (typeof str_tenantid !== 'undefined' ? str_tenantid : ''));
+			if (!tenantId) {
+				swal({ title: 'Select tenant', text: 'Please select a tenant first.', type: 'info' });
+				return;
+			}
+			$('#rescheduleFromPractitioner, #rescheduleToPractitioner').empty().append('<option value="">Select...</option>');
+			var _today = new Date(); var _mm = String(_today.getMonth()+1).padStart(2,'0'); var _dd = String(_today.getDate()).padStart(2,'0');
+			var _todayStr = _today.getFullYear() + '-' + _mm + '-' + _dd;
+			$('#rescheduleDate').attr('min', _todayStr).val('');
+			$('#rescheduleByPractitionerMessage').hide().text('');
+			$.ajax({
+				url: '@Url.Action("lookup_ClinicalAppointment_practitioner", "ClinicalAppointment")',
+				data: { tenantid: tenantId },
+				dataType: 'json'
+			}).done(function(data) {
+				if (!data || !data.length) { data = []; }
+				data = data.filter(function(item) { return item && (item.firstname != null || item.lastname != null); });
+				data.sort(function(a, b) {
+					var na = (a.firstname || '') + ' ' + (a.lastname || '');
+					var nb = (b.firstname || '') + ' ' + (b.lastname || '');
+					return na.localeCompare(nb);
+				});
+				$.each(data, function(i, p) {
+					var id = (p.Peopleid || p.peopleid || '').toString();
+					var name = ((p.firstname || '') + ' ' + (p.lastname || '')).trim();
+					if (!id || !name) return;
+					var opt = '<option value="' + id + '">' + name.replace(/</g, '&lt;') + '</option>';
+					$('#rescheduleFromPractitioner').append(opt);
+					$('#rescheduleToPractitioner').append(opt);
+				});
+				if (prefillFromId) $('#rescheduleFromPractitioner').val(prefillFromId);
+				$('#modalRescheduleByPractitioner').modal('show');
+			}).fail(function() {
+				swal({ title: 'Error', text: 'Could not load practitioners.', type: 'error' });
+			});
+		}
+		$('#btnRescheduleByPractitioner').on('click', function() { openRescheduleModal(); });
+		// Reschedule button in practitioner band
+		$(document).on('click', '.cal-practitioner-reschedule-btn', function(e) {
+			e.preventDefault();
+			e.stopPropagation();
+			var pid = $(this).data('practitioner-id');
+			if (pid) openRescheduleModal(pid);
+			else openRescheduleModal();
+		});
+
+		$('#btnRescheduleByPractitionerSubmit').on('click', function() {
+			var fromId    = ($('#rescheduleFromPractitioner').val() || '').trim();
+			var toId      = ($('#rescheduleToPractitioner').val()   || '').trim();
+			var dateVal   = ($('#rescheduleDate').val() || '').trim();   // YYYY-MM-DD
+			if (!dateVal) {
+				$('#rescheduleByPractitionerMessage').css('color', '#b91c1c').text('Please select a date.').show();
+				return;
+			}
+			if (!fromId || !toId) {
+				$('#rescheduleByPractitionerMessage').css('color', '#b91c1c').text('Please select both From and To practitioner.').show();
+				return;
+			}
+			if (fromId === toId) {
+				$('#rescheduleByPractitionerMessage').css('color', '#b91c1c').text('From and To practitioner must be different.').show();
+				return;
+			}
+
+			var tenantId       = ($("#tenantid").val() || (typeof str_tenantid !== 'undefined' ? str_tenantid : ''));
+			var listUrl        = '@Url.Action("get_Clinical_Appointment_List", "ClinicalAppointment")';
+			var rescheduleUrl  = '@Url.Action("Reschedule_Clinical_Appointment", "ClinicalAppointment")';
+			var durationUrl    = '@Url.Action("GetDuration_ByPractitioner", "People")';
+
+			$('#rescheduleByPractitionerMessage').css('color', '#64748b').text('Loading appointments and doctor schedule...').show();
+
+			var dateFrom = dateVal + ' 00:00:00';
+			var dateTo   = dateVal + ' 23:59:59';
+
+			// Step 1: fetch appointments + target doctor's durations in parallel
+			// GetDuration_ByPractitioner SP joins People_clinicaltaskinfo → Task (tenant-matched)
+			// and returns: tasktype_text (= Task.taskname) → durationinminutes
+			$.when(
+				$.ajax({
+					url: listUrl, type: 'GET', dataType: 'json',
+					data: {
+						tenantid: tenantId, tasktype: '', practitioner: fromId,
+						appointmentdate_automatonfrom: dateFrom, appointmentdate_automatonto: dateTo,
+						status: '', origin: '', pagesize: 5000, pagenumber: 0
+					}
+				}),
+				$.ajax({
+					url: durationUrl, type: 'GET', dataType: 'json',
+					data: { Peopleid: toId, tenantid: tenantId }
+				})
+			).done(function(apptResp, durResp) {
+
+				// Parse appointments
+				var apptData = apptResp[0];
+				if (typeof apptData === 'string') { try { apptData = JSON.parse(apptData); } catch(e) { apptData = {}; } }
+				var raw  = (apptData && (apptData.detail || apptData.Detail)) ? (apptData.detail || apptData.Detail) : (Array.isArray(apptData) ? apptData : []);
+				var list = Array.isArray(raw) ? raw : [];
+				if (list.length === 0) {
+					$('#rescheduleByPractitionerMessage').css('color', '#64748b').text('No appointments found for the selected practitioner on that date.').show();
+					return;
+				}
+
+				// Parse duration map from SP
+				// SP returns [{tasktype_text, durationinminutes}] already joined + tenant-filtered
+				var durRaw = durResp[0];
+				if (typeof durRaw === 'string') { try { durRaw = JSON.parse(durRaw); } catch(e) { durRaw = []; } }
+				var durList = Array.isArray(durRaw) ? durRaw : [];
+
+				// Build: Task.taskname text (lowercase) → durationinminutes
+				// Chain: ClinicalAppointment.tasktype (text)
+				//      = Task.taskname (text, tenant-matched via SP)
+				//      → Task.Taskid = People_clinicaltaskinfo.taskname (UUID)
+				//      → durationinminutes
+				var nameToDuration = {};
+				durList.forEach(function(row) {
+					var name = (row.tasktype_text || row.Tasktype_text || '').toString().toLowerCase().trim();
+					var dur  = parseInt(row.durationinminutes || row.Durationinminutes, 10) || 0;
+					if (name && dur > 0) nameToDuration[name] = dur;
+				});
+
+				// Step 2: fetch target doctor's existing appointments on that date to detect conflicts
+				$('#rescheduleByPractitionerMessage').css('color', '#64748b').text('Checking for conflicts...').show();
+				$.ajax({
+					url: listUrl, type: 'GET', dataType: 'json',
+					data: {
+						tenantid: tenantId, tasktype: '', practitioner: toId,
+						appointmentdate_automatonfrom: dateFrom, appointmentdate_automatonto: dateTo,
+						status: '', origin: '', pagesize: 5000, pagenumber: 0
+					}
+				}).done(function(toData) {
+					if (typeof toData === 'string') { try { toData = JSON.parse(toData); } catch(e) { toData = {}; } }
+					var toRaw  = (toData && (toData.detail || toData.Detail)) ? (toData.detail || toData.Detail) : (Array.isArray(toData) ? toData : []);
+					var toList = Array.isArray(toRaw) ? toRaw : [];
+
+					function timeToMinutes(value) {
+						var parts = (value || '').toString().split(':');
+						if (parts.length < 2) return null;
+						var hours = parseInt(parts[0], 10);
+						var minutes = parseInt(parts[1], 10);
+						if (isNaN(hours) || isNaN(minutes)) return null;
+						return (hours * 60) + minutes;
+					}
+					function rangesOverlap(fromA, toA, fromB, toB) {
+						var a1 = timeToMinutes(fromA), a2 = timeToMinutes(toA);
+						var b1 = timeToMinutes(fromB), b2 = timeToMinutes(toB);
+						if (a1 === null || a2 === null || b1 === null || b2 === null) return false;
+						return a1 < b2 && a2 > b1;
+					}
+
+					var targetSlots = [];
+					toList.forEach(function(t) {
+						var tf = (t.durationfrom || '').toString().trim();
+						var tt = (t.durationto   || '').toString().trim();
+						if (tf && tt) targetSlots.push({ from: tf, to: tt });
+					});
+
+					var prepared = [];
+					list.forEach(function(app) {
+						var id  = (app.clinicalappointmentid || app.ClinicalAppointmentid || '').toString();
+						if (!id) return;
+
+						var appTaskType = (app.tasktype || '').toString().toLowerCase().trim();
+						var appDurFrom  = (app.durationfrom || '').toString().trim();
+						var appDurTo    = (app.durationto   || '').toString().trim();
+
+						var targetDur = nameToDuration[appTaskType];
+						var newDurTo  = (targetDur > 0 && appDurFrom) ? addMinutesToTime(appDurFrom, targetDur) : appDurTo;
+						var hasConflict = targetSlots.some(function(slot) {
+							return rangesOverlap(appDurFrom, newDurTo, slot.from, slot.to);
+						});
+
+						prepared.push({
+							id: id,
+							durationfrom: appDurFrom,
+							durationto: newDurTo,
+							hasConflict: hasConflict
+						});
+					});
+
+					if (!prepared.length) {
+						$('#rescheduleByPractitionerMessage').css('color', '#b91c1c').text('No valid appointments found to reschedule.').show();
+						return;
+					}
+
+					function runBulkReschedule(allowOverlap) {
+						var done = 0, failed = 0;
+						var stoppedForConflict = false;
+						var failureMessages = [];
+						function doOne(index) {
+							if (index >= prepared.length) {
+								if (stoppedForConflict) {
+									$('#rescheduleByPractitionerMessage').css('color', '#b45309').text('Existing appointment found in the target doctor schedule. Waiting for confirmation...').show();
+									swal({
+										title: 'Appointment already exists',
+										text: 'There is an existing appointment already there. Do you want to overlap and reschedule all appointments?',
+										type: 'warning',
+										showCancelButton: true,
+										confirmButtonText: 'Yes, overlap',
+										cancelButtonText: 'Cancel'
+									}).then(function(isConfirm) {
+										var cancelled = (isConfirm === false) ||
+											(isConfirm && isConfirm.dismiss) ||
+											(typeof isConfirm === 'object' && isConfirm.value === false);
+										if (cancelled) {
+											$('#rescheduleByPractitionerMessage').css('color', '#64748b').text('Reschedule cancelled.').show();
+											return;
+										}
+										runBulkReschedule(true);
+									});
+									return;
+								}
+								var msg = 'All ' + done + ' appointment(s) rescheduled successfully.';
+								if (failed) msg = 'Rescheduled: ' + done + '. Failed: ' + failed + '.';
+								if (failureMessages.length) msg += ' ' + failureMessages[0];
+								$('#rescheduleByPractitionerMessage').css('color', (done && !failed) ? '#0d9488' : '#b91c1c').text(msg).show();
+								if (done && typeof fill_ClinicalAppointment === 'function') fill_ClinicalAppointment();
+								if (done && typeof fill_ClinicalAppointment_cards === 'function') fill_ClinicalAppointment_cards();
+								if (done && typeof renderClinicalAppointmentCalendar === 'function') renderClinicalAppointmentCalendar();
+								return;
+							}
+
+							var item = prepared[index];
+							$.ajax({
+								url: rescheduleUrl, type: 'POST', contentType: 'application/json',
+								data: JSON.stringify({
+									ClinicalAppointmentid: item.id,
+									appointmentdate: dateVal,
+									practitioner: toId,
+									durationfrom: item.durationfrom,
+									durationto: item.durationto,
+									allowOverlap: !!allowOverlap
+								})
+							}).done(function(resp) {
+								if (resp && resp.success) {
+									done++;
+								} else {
+									var serverMessage = (resp && resp.message ? resp.message : 'Update failed').toString();
+									if (!allowOverlap && serverMessage.toLowerCase().indexOf('already has an appointment') !== -1) {
+										stoppedForConflict = true;
+										doOne(prepared.length);
+										return;
+									}
+									failed++;
+									if (failureMessages.length < 1) failureMessages.push(serverMessage);
+								}
+								doOne(index + 1);
+							}).fail(function(xhr) {
+								failed++;
+								if (failureMessages.length < 1) {
+									failureMessages.push((xhr && xhr.responseText) ? xhr.responseText : 'Request failed.');
+								}
+								doOne(index + 1);
+							});
+						}
+						$('#rescheduleByPractitionerMessage').css('color', '#64748b').text('Rescheduling ' + prepared.length + ' appointment(s)...').show();
+						doOne(0);
+					}
+
+					var conflictCount = prepared.filter(function(item) { return item.hasConflict; }).length;
+					if (conflictCount > 0) {
+						$('#rescheduleByPractitionerMessage').css('color', '#b45309').text('Existing appointment found in the target doctor schedule. Waiting for confirmation...').show();
+						swal({
+							title: 'Appointment already exists',
+							text: 'There is an existing appointment already there. Do you want to overlap and reschedule all appointments?',
+							type: 'warning',
+							showCancelButton: true,
+							confirmButtonText: 'Yes, overlap',
+							cancelButtonText: 'Cancel'
+						}).then(function(isConfirm) {
+							var cancelled = (isConfirm === false) ||
+								(isConfirm && isConfirm.dismiss) ||
+								(typeof isConfirm === 'object' && isConfirm.value === false);
+							if (cancelled) {
+								$('#rescheduleByPractitionerMessage').css('color', '#64748b').text('Reschedule cancelled.').show();
+								return;
+							}
+							runBulkReschedule(true);
+						});
+						return;
+					}
+
+					runBulkReschedule(false);
+				}).fail(function() {
+					$('#rescheduleByPractitionerMessage').css('color', '#b91c1c').text('Could not check for scheduling conflicts.').show();
+				});
+
+			}).fail(function() {
+				$('#rescheduleByPractitionerMessage').css('color', '#b91c1c').text('Could not load appointments or doctor schedule.').show();
+			});
+		});
+	});
+</script>
+
+<!-- count_of_ClinicalAppointment_tasktype function -->
+<script>
+	var strtasktype_count;
+</script>
+@if (Model != null)
+{
+	if (Model.tasktype != null && Model.tasktype.ToString() != "")
+	{
+		<script>
+			strtasktype_count="@Model.tasktype"
+		</script>
+	}
+}
+<script>
+
+	function count_of_ClinicalAppointment_tasktype(tenantid,globalFilterData) {
+
+	var sendFilterData = {
+		"tenantid":tenantid
+	}
+
+	$.ajax({
+	url: '@Url.Action("get_all_TaskType")',
+	dataType: 'json',
+	data: sendFilterData,
+	success: function(data) {
+
+			if (data.length > 0) {
+				data = data.filter(item => item.tasktypename !== null);
+				data.sort((a, b) =>
+					String(a.tasktypename).toLowerCase().localeCompare(String(b.tasktypename).toLowerCase())
+				);
+			}
+
+
+
+					$.ajax({
+						url: '@Url.Action("count_of_ClinicalAppointment_tasktype")',
+						dataType: 'json',
+						data: globalFilterData,
+						success: function(rowData) {
+
+							var countofstatus = '';
+							var num = 0;
+
+							// Create status cards
+							$.each(data, function(index, optionDataInner) {
+								var tasktype = optionDataInner.tasktypename;
+								var valueToCheck = optionDataInner.tasktypename;
+								var found = 0;
+								var statecount = 0;
+
+								$.each(rowData, function(index_count, optionDataInner_count) {
+										if (optionDataInner_count.tasktype == valueToCheck) {
+										found = 1;
+										statecount = Number(optionDataInner_count.count);
+										num += statecount;
+									}
+								});
+
+								var tasktypeclass = tasktype.replace(/[\s-]/g, '').toLowerCase();
+											var backgroundcolor=getFixedColor(index);
+								countofstatus += `<div class="col-sm-2">
+											<div class="list list_status ${tasktypeclass}" style="background-color:${backgroundcolor}"  id="${valueToCheck}">
+										<span><p class="tlt-txt">${tasktype}</p></span>
+										<div class="lst-num">
+											<label>${statecount}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+										</div>
+									</div>
+								</div>`;
+							});
+
+							// Add 'All' total card + individual state counts to top bar
+							$(".dataTables__top .card-lst").remove();
+							$(".dataTables__top").prepend(
+								`<div class="card-lst">
+									<div class="col-sm-2">
+										<div class="list list_status all" id="">
+											<span><p class="tlt-txt">All</p></span>
+											<div class="lst-num">
+												<label>${num}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+											</div>
+										</div>
+									</div>
+									${countofstatus}
+								</div>`
+							);
+						}
+					});
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+
+	}
+</script>
+
+<!-- Task-type count card click handler -->
+<script>
+	$(document).ready(function () {
+		$('body').on('click', '.list_status', function(a) {
+			$("#tasktype").val($(this).attr('id'))
+			fill_ClinicalAppointment()
+		});
+	});
+</script>

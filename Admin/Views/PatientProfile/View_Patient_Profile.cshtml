@@ -1,0 +1,1747 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:41:04 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.PatientProfileModel
+					@{
+					ViewData["Title"] = "Patient Profile";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+
+					<div class="">
+
+<!-- ══ TOP-LEVEL TABS: Profile | Records ══ -->
+<style>
+/* ══ PAGE WRAPPER ══ */
+.vpp-page-wrap { padding: 0 4px; }
+.vpp-top-tabs,
+.vpp-top-panel,
+.vpp-hero,
+#cma_printableArea,
+#cma_printableArea .row.printablerow,
+#cma_printableArea .row.printablerow > [class*="col-"] {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+#cma_printableArea .row.printablerow > [class*="col-"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+/* ══ TOP-LEVEL TABS ══ */
+.vpp-top-tabs {
+    display: flex; gap: 0; border-bottom: 2px solid #e2e8f0;
+    margin: 0; background: #fff; border-radius: 12px 12px 0 0;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.vpp-top-tabs::-webkit-scrollbar { height: 0; }
+.vpp-top-tab {
+    padding: 13px 24px; font-size: 14px; font-weight: 700;
+    color: #94a3b8; border: none; background: none; cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+    transition: color .2s, border-color .2s, background .2s;
+    display: flex; align-items: center; gap: 7px; white-space: nowrap;
+    flex-shrink: 0;
+}
+.vpp-top-tab i { font-size: 15px; }
+.vpp-top-tab:hover:not(.is-active) { color: #475569; background: #f8fafc; }
+.vpp-top-tab.is-active { color: #2d5f44; border-bottom-color: #2d5f44; background: rgba(45,95,68,.04); }
+.vpp-top-panel { display: none; padding: 16px 0 0; }
+.vpp-top-panel.is-active { display: block; }
+
+/* ══ HERO CARD ═══════════════════════════════════════════════════ */
+.vpp-hero {
+    display: flex; align-items: center; gap: 22px;
+    padding: 24px; margin: 0 0 20px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 40%, #f8fafc 100%);
+    border-radius: 14px; border: 1.5px solid #a7e0c4; border-left: 4px solid #2d5f44;
+    box-shadow: 0 6px 20px rgba(45,95,68,.14), 0 1px 3px rgba(45,95,68,.08);
+}
+.vpp-hero__photo {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 3px solid #fff; box-shadow: 0 4px 16px rgba(0,0,0,.1);
+    object-fit: cover; flex-shrink: 0; background: #e2e8f0;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+}
+.vpp-hero__photo img { width: 100%; height: 100%; object-fit: cover; }
+.vpp-hero__initials {
+    font-size: 26px; font-weight: 800; color: #2d5f44;
+    width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+    background: #d1fae5;
+}
+.vpp-hero__info { flex: 1; min-width: 0; }
+.vpp-hero__name { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 3px; line-height: 1.25; }
+.vpp-hero__regid { font-size: 12.5px; color: #64748b; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.vpp-hero__regid i { color: #94a3b8; }
+.vpp-hero__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.vpp-hero__chip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 600;
+    background: #fff; border: 1px solid #e2e8f0; color: #334155;
+}
+.vpp-hero__chip i { font-size: 11px; color: #64748b; width: 14px; text-align: center; }
+
+/* ══ PROFILE SECTION CARDS ══ */
+.vpp-top-panel[data-vpp-top-panel="profile"] .printablerow { padding: 0 !important; margin: 0 !important; }
+.vpp-top-panel[data-vpp-top-panel="profile"] .card-section.cma_section_band {
+    border: 1.5px solid #dde3ea !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(15,23,42,.07);
+    margin-bottom: 16px;
+    transition: box-shadow .15s ease;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .card-section.cma_section_band:hover {
+    box-shadow: 0 4px 16px rgba(15,23,42,.1);
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .card-section .card-head {
+    background: linear-gradient(135deg, #f8fafc 0%, #fff 100%) !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    border-left: 3px solid #2d5f44 !important;
+    padding: 12px 16px !important;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .card-section .card-head header {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    letter-spacing: .3px;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .card-body.card-container-Padding-NoShadow {
+    padding: 12px 16px !important;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .form-group.form-group--float-above {
+    margin: 0 !important; padding: 8px 0 !important;
+    border-bottom: 1px solid #f8fafc;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .form-group.form-group--float-above label {
+    font-size: 10.5px !important;
+     font-weight: 600 !important; 
+    color: #94a3b8 !important;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-bottom: 2px !important;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .form-group.form-group--float-above span[class^="auto_cls_"] {
+    font-size: 13.5px !important;
+   /*  font-weight: 600 !important; */
+    color: #1e293b !important;
+    display: block;
+    word-break: break-word;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .form-group .form-group__bar { display: none !important; }
+.vpp-top-panel[data-vpp-top-panel="profile"] .col-sm-3 { padding: 2px 8px !important; }
+.vpp-top-panel[data-vpp-top-panel="profile"] .mt-3 { margin-top: 0 !important; }
+
+/* Dependent table styling */
+.vpp-top-panel[data-vpp-top-panel="profile"] .cma_dependent_band {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,.04);
+    margin-bottom: 14px;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .cma_dependent_band .card-head {
+    background: linear-gradient(135deg, #f8fafc 0%, #fff 100%) !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 12px 16px !important;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .cma_dependent_band .card-head header {
+    font-size: 13.5px !important; font-weight: 700 !important; color: #1e293b !important;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .cma_dependent_band .table { font-size: 13px; }
+.vpp-top-panel[data-vpp-top-panel="profile"] .cma_dependent_band .table th {
+    font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;
+    letter-spacing: .5px; background: #fafbfc; border-bottom: 2px solid #e5e7eb;
+    padding: 8px 14px;
+}
+.vpp-top-panel[data-vpp-top-panel="profile"] .cma_dependent_band .table td {
+    padding: 8px 14px; border-bottom: 1px solid #f1f5f9; color: #334155;
+}
+
+ 
+
+/* Back button */
+.vpp-back-row { margin-top: 16px; padding: 0 4px; }
+
+/* ══ RESPONSIVE ══════════════════════════════════════════════════ */
+ 
+@@media(max-width:768px){
+    .vpp-top-tab { padding: 11px 16px; font-size: 13px; }
+    .vpp-hero { padding: 18px 16px; gap: 16px; margin-bottom: 14px; }
+    .vpp-hero__photo { width: 64px; height: 64px; }
+    .vpp-hero__initials { font-size: 22px; }
+    .vpp-hero__name { font-size: 18px; }
+    .vpp-hero__chips { gap: 5px; }
+    .vpp-hero__chip { padding: 3px 8px; font-size: 11px; }
+    .vpp-top-panel[data-vpp-top-panel="profile"] .card-body.card-container-Padding-NoShadow { padding: 10px 12px !important; }
+    .vpp-top-panel[data-vpp-top-panel="profile"] .card-section .card-head { padding: 10px 12px !important; }
+}
+@@media(max-width:576px){
+    .vpp-page-wrap { padding: 0; }
+    .vpp-top-tab { padding: 10px 12px; font-size: 12.5px; gap: 5px; }
+    .vpp-top-tab i { font-size: 13px; }
+    .vpp-hero { flex-direction: column; text-align: center; gap: 12px; padding: 16px 14px; border-radius: 10px; }
+    .vpp-hero__photo { width: 56px; height: 56px; }
+    .vpp-hero__initials { font-size: 20px; }
+    .vpp-hero__name { font-size: 17px; }
+    .vpp-hero__regid { justify-content: center; font-size: 11.5px; }
+    .vpp-hero__chips { justify-content: center; gap: 4px; }
+    .vpp-hero__chip { padding: 3px 7px; font-size: 10.5px; }
+    .vpp-top-panel { padding: 10px 0 0; }
+    .vpp-top-panel[data-vpp-top-panel="profile"] .col-sm-3 { padding: 1px 6px !important; }
+    
+    .vpp-back-row { margin-top: 10px; }
+}
+</style>
+
+<div class="vpp-top-tabs">
+    <button type="button" class="vpp-top-tab is-active" data-vpp-top="profile">
+        <i class="fa fa-user"></i> Profile
+    </button>
+    <button type="button" class="vpp-top-tab" data-vpp-top="records">
+        <i class="fa fa-folder-open"></i> Records
+    </button>
+</div>
+
+<!-- ══ PROFILE TAB ══ -->
+<div class="vpp-top-panel is-active" data-vpp-top-panel="profile">
+
+<!-- Hero Card (populated by JS after data loads) -->
+<div class="vpp-hero" id="vppHeroCard" style="display:none;">
+    <div class="vpp-hero__photo" id="vppHeroPhotoWrap">
+        <span class="vpp-hero__initials" id="vppHeroInitials"></span>
+    </div>
+    <div class="vpp-hero__info">
+        <h2 class="vpp-hero__name" id="vppHeroName"></h2>
+        <div class="vpp-hero__regid"> <span id="vppHeroRegId"></span></div>
+        <div class="vpp-hero__chips">
+            <span class="vpp-hero__chip" id="vppHeroGender"><i class="fa fa-venus-mars"></i> <span></span></span>
+            <span class="vpp-hero__chip" id="vppHeroAge"><i class="fa fa-birthday-cake"></i> <span></span></span>
+            <span class="vpp-hero__chip" id="vppHeroBloodGroup"><i class="fa fa-tint"></i> <span></span></span>
+            <span class="vpp-hero__chip" id="vppHeroPhone"><i class="fa fa-phone"></i> <span></span></span>
+            <span class="vpp-hero__chip" id="vppHeroEmail"><i class="fa fa-envelope"></i> <span></span></span>
+            <span class="vpp-hero__chip" id="vppHeroNat"><i class="fa fa-globe"></i> <span></span></span>
+        </div>
+    </div>
+</div>
+
+						  <div id="cma_printableArea">
+
+							<div class="row printablerow"  style="padding:20px">
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Patient Profile</b>
+							</h3>
+
+							<br />
+							</div>
+							 
+				<div class="col-sm-12 col-xs-12 mt-3 BasicInfo_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.basicinfo</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 registrationid_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="registrationid">@Resource.patientprofile_registrationid</label><br>
+										<span class="auto_cls_registrationid"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 firstname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="firstname">@Resource.patientprofile_firstname</label><br>
+										<span class="auto_cls_firstname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 lastname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="lastname">@Resource.patientprofile_lastname</label><br>
+										<span class="auto_cls_lastname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 gender_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="gender">@Resource.patientprofile_gender</label><br>
+										<span class="auto_cls_gender"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 dateofbirth_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="dateofbirth">@Resource.patientprofile_dateofbirth</label><br>
+										<span class="auto_cls_dateofbirth"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 age_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="age">@Resource.patientprofile_age</label><br>
+										<span class="auto_cls_age"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+									<div class="col-sm-3 col-xs-12 p-2 bloodgroup_craftmyapp_viewcontainer">
+										<div>
+											<div class="form-group form-group--float-above my-3">
+												<label for="bloodgroup">@Resource.patientprofile_bloodgroup</label><br>
+												<span class="auto_cls_bloodgroup"></span>
+												<i class="form-group__bar"></i>
+											</div>
+										</div>
+									</div>
+<div class="col-sm-3 col-xs-12 p-2 nationality_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="nationality">@Resource.patientprofile_nationality</label><br>
+										<span class="auto_cls_nationality"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 countryoforigin_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="countryoforigin">@Resource.patientprofile_countryoforigin</label><br>
+										<span class="auto_cls_countryoforigin"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 emailaddress_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="emailaddress">@Resource.patientprofile_emailaddress</label><br>
+										<span class="auto_cls_emailaddress"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 mobilenumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="mobilenumber">@Resource.patientprofile_mobilenumber</label><br>
+										<span class="auto_cls_mobilenumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 whatsappnumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="whatsappnumber">@Resource.patientprofile_whatsappnumber</label><br>
+										<span class="auto_cls_whatsappnumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 photo_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="photo">@Resource.patientprofile_photo</label><br>
+										<span class="auto_cls_photo"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 PermanentAddress_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.permanentaddress</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 paddressline1_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paddressline1">@Resource.patientprofile_paddressline1</label><br>
+										<span class="auto_cls_paddressline1"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 paddressline2_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paddressline2">@Resource.patientprofile_paddressline2</label><br>
+										<span class="auto_cls_paddressline2"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 pzip_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="pzip">@Resource.patientprofile_pzip</label><br>
+										<span class="auto_cls_pzip"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ptown_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ptown">@Resource.patientprofile_ptown</label><br>
+										<span class="auto_cls_ptown"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 pcityordistrict_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="pcityordistrict">@Resource.patientprofile_pcityordistrict</label><br>
+										<span class="auto_cls_pcityordistrict"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ppstatename_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ppstatename">@Resource.patientprofile_ppstatename</label><br>
+										<span class="auto_cls_ppstatename"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+@* <div class="col-sm-3 col-xs-12 p-2 sameaspermanentaddress_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="sameaspermanentaddress">@Resource.patientprofile_sameaspermanentaddress</label><br>
+										<span class="auto_cls_sameaspermanentaddress"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div> *@
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 ContactAddress_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.contactaddress</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 caddressline1_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="caddressline1">@Resource.patientprofile_caddressline1</label><br>
+										<span class="auto_cls_caddressline1"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 caddressline2_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="caddressline2">@Resource.patientprofile_caddressline2</label><br>
+										<span class="auto_cls_caddressline2"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 czip_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="czip">@Resource.patientprofile_czip</label><br>
+										<span class="auto_cls_czip"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ctown_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ctown">@Resource.patientprofile_ctown</label><br>
+										<span class="auto_cls_ctown"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ccityordistrict_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ccityordistrict">@Resource.patientprofile_ccityordistrict</label><br>
+										<span class="auto_cls_ccityordistrict"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 cstatename_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="cstatename">@Resource.patientprofile_cstatename</label><br>
+										<span class="auto_cls_cstatename"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 IdentityProof_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.identityproof</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 idprooftype_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="idprooftype">@Resource.patientprofile_idprooftype</label><br>
+										<span class="auto_cls_idprooftype"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 idproofnumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="idproofnumber">@Resource.patientprofile_idproofnumber</label><br>
+										<span class="auto_cls_idproofnumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 uploadidproof_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="uploadidproof">@Resource.patientprofile_uploadidproof</label><br>
+										<span class="auto_cls_uploadidproof"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent emergencycontactinfoContainerBodyParent hide"><!--Dependent Emergency Contact Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.emergencycontactinfo
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="emergencycontactinfoContainer" class="table table-bordered mb-0 emergencycontactinfoContainer">
+							<thead id="emergencycontactinfoContainerHead">
+								<th>Person Name</th>
+<th>Relationship</th>
+<th>Phone Number</th>
+
+
+							</thead>
+							
+							<tbody id="emergencycontactinfoContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Emergency Contact Info Containder Block-->
+			 
+			
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 LanguagePreferences_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.languagepreferences</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 languagesknown_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="languagesknown">@Resource.patientprofile_languagesknown</label><br>
+										<span class="auto_cls_languagesknown"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 languagespreferrable_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="languagespreferrable">@Resource.patientprofile_languagespreferrable</label><br>
+										<span class="auto_cls_languagespreferrable"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 otherlanguages_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="otherlanguages">@Resource.patientprofile_otherlanguages</label><br>
+										<span class="auto_cls_otherlanguages"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 PersonalandLifestyleDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.personalandlifestyledetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 maritalstatus_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="maritalstatus">@Resource.patientprofile_maritalstatus</label><br>
+										<span class="auto_cls_maritalstatus"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 education_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="education">@Resource.patientprofile_education</label><br>
+										<span class="auto_cls_education"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 occupation_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="occupation">@Resource.patientprofile_occupation</label><br>
+										<span class="auto_cls_occupation"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 meditationpractice_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="meditationpractice">@Resource.patientprofile_meditationpractice</label><br>
+										<span class="auto_cls_meditationpractice"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 typeofpractice_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="typeofpractice">@Resource.patientprofile_typeofpractice</label><br>
+										<span class="auto_cls_typeofpractice"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 creativeactivities_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="creativeactivities">@Resource.patientprofile_creativeactivities</label><br>
+										<span class="auto_cls_creativeactivities"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 othercreativeactivities_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="othercreativeactivities">@Resource.patientprofile_othercreativeactivities</label><br>
+										<span class="auto_cls_othercreativeactivities"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 HealthInsuranceDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.healthinsurancedetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 insurancetype_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="insurancetype">@Resource.patientprofile_insurancetype</label><br>
+										<span class="auto_cls_insurancetype"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 insurancecompany_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="insurancecompany">@Resource.patientprofile_insurancecompany</label><br>
+										<span class="auto_cls_insurancecompany"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 policynumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="policynumber">@Resource.patientprofile_policynumber</label><br>
+										<span class="auto_cls_policynumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 policyclaimlimit_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="policyclaimlimit">@Resource.patientprofile_policyclaimlimit</label><br>
+										<span class="auto_cls_policyclaimlimit"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 policyexpirydate_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="policyexpirydate">@Resource.patientprofile_policyexpirydate</label><br>
+										<span class="auto_cls_policyexpirydate"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 ReferralSourceDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.referralsourcedetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 referralsource_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="referralsource">@Resource.patientprofile_referralsource</label><br>
+										<span class="auto_cls_referralsource"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 referraltype_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="referraltype">@Resource.patientprofile_referraltype</label><br>
+										<span class="auto_cls_referraltype"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 referrername_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="referrername">@Resource.patientprofile_referrername</label><br>
+										<span class="auto_cls_referrername"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 referrerphonenumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="referrerphonenumber">@Resource.patientprofile_referrerphonenumber</label><br>
+										<span class="auto_cls_referrerphonenumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 magazinename_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="magazinename">@Resource.patientprofile_magazinename</label><br>
+										<span class="auto_cls_magazinename"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 socialmediaplatform_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="socialmediaplatform">@Resource.patientprofile_socialmediaplatform</label><br>
+										<span class="auto_cls_socialmediaplatform"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 otherreferral_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="otherreferral">@Resource.patientprofile_otherreferral</label><br>
+										<span class="auto_cls_otherreferral"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 BlacklistDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.blacklistdetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 blacklisted_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="blacklisted">@Resource.patientprofile_blacklisted</label><br>
+										<span class="auto_cls_blacklisted"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 reasonforblacklisting_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="reasonforblacklisting">@Resource.patientprofile_reasonforblacklisting</label><br>
+										<span class="auto_cls_reasonforblacklisting"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 detailedremarks_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="detailedremarks">@Resource.patientprofile_detailedremarks</label><br>
+										<span class="auto_cls_detailedremarks"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 DeceasedInformation_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.deceasedinformation</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 deceased_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="deceased">@Resource.patientprofile_deceased</label><br>
+										<span class="auto_cls_deceased"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 causeofdeath_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="causeofdeath">@Resource.patientprofile_causeofdeath</label><br>
+										<span class="auto_cls_causeofdeath"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 dateandtimeofdeath_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="dateandtimeofdeath">@Resource.patientprofile_dateandtimeofdeath</label><br>
+										<span class="auto_cls_dateandtimeofdeath"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+
+</div><!-- /.vpp-top-panel profile -->
+
+<!-- ══ RECORDS TAB ══ -->
+<div class="vpp-top-panel" data-vpp-top-panel="records">
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PATIENT RECORDS DASHBOARD — IPD / OPD / Payments / Assessments
+     ══════════════════════════════════════════════════════════════════ -->
+<style>
+.vpp-dash { margin-top: 0; }
+.vpp-stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 18px; }
+.vpp-stat {
+    background: #fff; border-radius: 12px; padding: 14px 16px;
+    border: 1.5px solid #e2e8f0; display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 3px 12px rgba(15,23,42,.06);
+    transition: box-shadow .15s;
+}
+.vpp-stat:hover { box-shadow: 0 4px 16px rgba(0,0,0,.1); }
+.vpp-stat__icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+}
+.vpp-stat__icon--ipd { background: #ede9fe; color: #6d28d9; }
+.vpp-stat__icon--opd { background: #dbeafe; color: #1d4ed8; }
+.vpp-stat__icon--pay { background: #dcfce7; color: #15803d; }
+.vpp-stat__icon--assess { background: #fef3c7; color: #92400e; }
+.vpp-stat__val { font-size: 22px; font-weight: 800; color: #1e293b; line-height: 1; }
+.vpp-stat__lbl { font-size: 11px; color: #64748b; margin-top: 2px; font-weight: 600; }
+
+.vpp-card { background: #fff; border-radius: 14px; border: 1.5px solid #e2e8f0; overflow: hidden; box-shadow: 0 3px 12px rgba(15,23,42,.06); }
+.vpp-tabs {
+    display: flex; flex-wrap: nowrap; gap: 0;
+    padding: 0; background: linear-gradient(180deg,#f8fafc,#fff);
+    border-bottom: 2px solid #e2e8f0;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.vpp-tabs::-webkit-scrollbar { height: 0; }
+.vpp-tab {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 12px 18px; font-size: 13px; font-weight: 700;
+    color: #64748b; border: none; background: transparent;
+    cursor: pointer; border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: color .15s, border-color .15s, background .15s;
+    white-space: nowrap; flex-shrink: 0;
+}
+.vpp-tab i { font-size: 14px; }
+.vpp-tab:hover:not(.is-active) { color: #334155; background: rgba(255,255,255,.6); }
+.vpp-tab.is-active { color: #2d5f44; border-bottom-color: #2d5f44; background: #fff; }
+.vpp-tab__count {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 20px; height: 20px; border-radius: 10px;
+    font-size: 10.5px; font-weight: 800; padding: 0 6px;
+    background: #e5e7eb; color: #64748b; transition: background .2s, color .2s;
+}
+.vpp-tab.is-active .vpp-tab__count { background: #2d5f44; color: #fff; }
+.vpp-panel { display: none; }
+.vpp-panel.is-active { display: block; }
+
+.vpp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.vpp-table th {
+    padding: 10px 14px; font-size: 11px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: .5px;
+    background: #fafbfc; border-bottom: 2px solid #e5e7eb; text-align: left;
+    white-space: nowrap;
+}
+.vpp-table td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
+.vpp-table tbody tr:last-child td { border-bottom: none; }
+.vpp-table tbody tr:hover { background: #f8fafc; }
+
+.vpp-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; white-space: nowrap;
+}
+.vpp-pill--green  { background: #dcfce7; color: #15803d; }
+.vpp-pill--blue   { background: #dbeafe; color: #1d4ed8; }
+.vpp-pill--amber  { background: #fef3c7; color: #92400e; }
+.vpp-pill--red    { background: #fee2e2; color: #b91c1c; }
+.vpp-pill--purple { background: #ede9fe; color: #6d28d9; }
+.vpp-pill--gray   { background: #f1f5f9; color: #475569; }
+
+.vpp-act {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 6px; font-size: 11.5px; font-weight: 600;
+    text-decoration: none; transition: transform .12s, box-shadow .15s;
+}
+.vpp-act:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.1); text-decoration: none; }
+.vpp-act--view { background: #f0fdf4; color: #15803d; }
+.vpp-act--billing { background: #dbeafe; color: #1d4ed8; }
+.vpp-act--pay { background: #ede9fe; color: #6d28d9; }
+
+.vpp-empty { text-align: center; padding: 36px 16px; color: #94a3b8; }
+.vpp-empty i { font-size: 32px; display: block; margin-bottom: 8px; opacity: .35; }
+.vpp-empty span { font-size: 13px; }
+.vpp-loading { text-align: center; padding: 28px; color: #94a3b8; font-size: 13px; }
+.vpp-amt-pos { color: #15803d; font-weight: 700; }
+.vpp-amt-neg { color: #b91c1c; font-weight: 700; }
+
+/* ── Actions wrap on narrow tables ── */
+.vpp-table td:last-child { white-space: nowrap; }
+.vpp-act + .vpp-act { margin-left: 4px; }
+
+/* ── Records responsive ── */
+@@media(max-width:991px){
+    .vpp-stats { grid-template-columns: repeat(2,1fr); gap: 10px; }
+}
+@@media(max-width:768px){
+    .vpp-stat { padding: 12px 14px; gap: 10px; }
+    .vpp-stat__icon { width: 36px; height: 36px; font-size: 15px; }
+    .vpp-stat__val { font-size: 20px; }
+    .vpp-tab { padding: 10px 14px; font-size: 12.5px; gap: 5px; }
+    .vpp-table th { padding: 8px 10px; font-size: 10.5px; }
+    .vpp-table td { padding: 8px 10px; font-size: 12.5px; }
+    .vpp-act { padding: 3px 8px; font-size: 11px; }
+    .vpp-card { border-radius: 10px; }
+}
+@@media(max-width:576px){
+    .vpp-stats { grid-template-columns: repeat(2,1fr); gap: 8px; margin-bottom: 12px; }
+    .vpp-stat { padding: 10px 12px; gap: 8px; border-radius: 10px; }
+    .vpp-stat__icon { width: 32px; height: 32px; font-size: 14px; border-radius: 8px; }
+    .vpp-stat__val { font-size: 18px; }
+    .vpp-stat__lbl { font-size: 10px; }
+    .vpp-tab { padding: 9px 10px; font-size: 11.5px; gap: 4px; }
+    .vpp-tab__count { min-width: 18px; height: 18px; font-size: 10px; padding: 0 5px; }
+    .vpp-table th { padding: 7px 8px; font-size: 10px; }
+    .vpp-table td { padding: 7px 8px; font-size: 12px; }
+    .vpp-act { padding: 3px 6px; font-size: 10.5px; gap: 3px; }
+    .vpp-pill { padding: 2px 8px; font-size: 10.5px; }
+    .vpp-empty { padding: 28px 12px; }
+    .vpp-empty i { font-size: 28px; }
+}
+@@media(max-width:420px){
+    .vpp-stats { grid-template-columns: 1fr 1fr; gap: 6px; }
+    .vpp-tab i { display: none; }
+}
+</style>
+
+<div class="vpp-dash">
+    <div class="vpp-stats">
+        <div class="vpp-stat">
+            <div class="vpp-stat__icon vpp-stat__icon--ipd"><i class="fa fa-bed"></i></div>
+            <div><div class="vpp-stat__val" id="vppStatIPD">&mdash;</div><div class="vpp-stat__lbl">IPD Bookings</div></div>
+        </div>
+        <div class="vpp-stat">
+            <div class="vpp-stat__icon vpp-stat__icon--opd"><i class="fa fa-stethoscope"></i></div>
+            <div><div class="vpp-stat__val" id="vppStatOPD">&mdash;</div><div class="vpp-stat__lbl">OPD Consultations</div></div>
+        </div>
+        <div class="vpp-stat">
+            <div class="vpp-stat__icon vpp-stat__icon--pay"><i class="fa fa-inr"></i></div>
+            <div><div class="vpp-stat__val" id="vppStatPay">&mdash;</div><div class="vpp-stat__lbl">Total Paid</div></div>
+        </div>
+        <div class="vpp-stat">
+            <div class="vpp-stat__icon vpp-stat__icon--assess"><i class="fa fa-clipboard"></i></div>
+            <div><div class="vpp-stat__val" id="vppStatAssess">&mdash;</div><div class="vpp-stat__lbl">Assessments</div></div>
+        </div>
+    </div>
+
+    <div class="vpp-card">
+        <div class="vpp-tabs">
+            <button type="button" class="vpp-tab is-active" data-vpp-tab="ipd">
+                <i class="fa fa-bed" style="color:#6d28d9;"></i> IPD Bookings
+                <span class="vpp-tab__count" id="vppCntIPD">&hellip;</span>
+            </button>
+            <button type="button" class="vpp-tab" data-vpp-tab="opd">
+                <i class="fa fa-stethoscope" style="color:#1d4ed8;"></i> OPD Consultations
+                <span class="vpp-tab__count" id="vppCntOPD">&hellip;</span>
+            </button>
+            <button type="button" class="vpp-tab" data-vpp-tab="pay">
+                <i class="fa fa-inr" style="color:#15803d;"></i> Payments
+                <span class="vpp-tab__count" id="vppCntPay">&hellip;</span>
+            </button>
+            <button type="button" class="vpp-tab" data-vpp-tab="assess">
+                <i class="fa fa-clipboard" style="color:#92400e;"></i> Assessments
+                <span class="vpp-tab__count" id="vppCntAssess">&hellip;</span>
+            </button>
+        </div>
+
+        <!-- IPD Panel -->
+        <div class="vpp-panel is-active" data-vpp-panel="ipd">
+            <div class="vpp-loading" id="vppIpdLoading"><i class="fa fa-spinner fa-spin"></i> Loading IPD records&hellip;</div>
+            <div style="overflow-x:auto;">
+                <table class="vpp-table" id="vppIpdTable" style="display:none;">
+                    <thead><tr><th>Booking Ref</th><th>Package / Room</th><th>Check-In</th><th>Check-Out</th><th>Booking Status</th><th>Verified Status</th><th>Actions</th></tr></thead>
+                    <tbody id="vppIpdBody"></tbody>
+                </table>
+            </div>
+            <div class="vpp-empty" id="vppIpdEmpty" style="display:none;"><i class="fa fa-bed"></i><span>No IPD bookings found for this patient.</span></div>
+        </div>
+
+        <!-- OPD Panel -->
+        <div class="vpp-panel" data-vpp-panel="opd">
+            <div class="vpp-loading" id="vppOpdLoading"><i class="fa fa-spinner fa-spin"></i> Loading OPD records&hellip;</div>
+            <div style="overflow-x:auto;">
+                <table class="vpp-table" id="vppOpdTable" style="display:none;">
+                    <thead><tr><th>OPD Ref</th><th>Date</th><th>Preferred Doctor</th><th>Status</th><th>Actions</th></tr></thead>
+                    <tbody id="vppOpdBody"></tbody>
+                </table>
+            </div>
+            <div class="vpp-empty" id="vppOpdEmpty" style="display:none;"><i class="fa fa-stethoscope"></i><span>No OPD records found for this patient.</span></div>
+        </div>
+
+        <!-- Payments Panel -->
+        <div class="vpp-panel" data-vpp-panel="pay">
+            <div class="vpp-loading" id="vppPayLoading"><i class="fa fa-spinner fa-spin"></i> Loading payment records&hellip;</div>
+            <div style="overflow-x:auto;">
+                <table class="vpp-table" id="vppPayTable" style="display:none;">
+                    <thead><tr><th>Receipt No.</th><th>Payment For</th><th>Amount</th><th>Mode</th><th>Date</th><th>Status</th></tr></thead>
+                    <tbody id="vppPayBody"></tbody>
+                </table>
+            </div>
+            <div class="vpp-empty" id="vppPayEmpty" style="display:none;"><i class="fa fa-inr"></i><span>No payment records found for this patient.</span></div>
+        </div>
+
+        <!-- Assessments Panel -->
+        <div class="vpp-panel" data-vpp-panel="assess">
+            <div class="vpp-loading" id="vppAssessLoading"><i class="fa fa-spinner fa-spin"></i> Loading assessments&hellip;</div>
+            <div style="overflow-x:auto;">
+                <table class="vpp-table" id="vppAssessTable" style="display:none;">
+                    <thead><tr><th>Assessment Date</th><th>IPD / OPD</th><th>Actions</th></tr></thead>
+                    <tbody id="vppAssessBody"></tbody>
+                </table>
+            </div>
+            <div class="vpp-empty" id="vppAssessEmpty" style="display:none;"><i class="fa fa-clipboard"></i><span>No assessments found for this patient.</span></div>
+        </div>
+    </div>
+</div>
+
+</div><!-- /.vpp-top-panel records -->
+
+<div class="vpp-back-row">
+    <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>
+</div>
+
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('PatientProfile.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_PatientProfile_view_data(){
+
+					   var  PatientProfileid = getUrlVars()["PatientProfileid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_PatientProfile")',
+												dataType: 'json',
+												data:{PatientProfileid: PatientProfileid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='photo'){
+																			$('.auto_cls_photo').empty()
+																			if(obj[key] !=null)  {            
+																		  
+																			var uploaded_photo = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_photo.length; i++) {
+
+
+																				if (uploaded_photo[i] != "") {
+																						var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_photo[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																					if (iterate == 1)
+																						$('.auto_cls_photo').append('<a href=' + filepath + ' class="imgphoto auto_clr_photo"><img  src=' + filepath + ' width="100px" alt="img"/></a>')
+																					else
+
+																						$('.auto_cls_photo').append('<div style="display:none"> <a href=' + filepath + ' class="imgphoto auto_clr_photo"><img  src=' + filepath + ' width="100px" alt="img"/></a></div>')
+		 
+																				}
+
+
+																			}
+
+																			$('body').on('click', 'a.imgphoto', function (e) {
+																			e.preventDefault();
+																			$('.imgphoto').colorbox({ rel: '.imgphoto', width: "90%", height: "80%" });
+																			$.colorbox({ open: true });
+																			});
+
+
+
+
+																					}
+
+
+																	}
+if(key=='uploadidproof'){
+																			$('.auto_cls_uploadidproof').empty()
+																			if(obj[key] !=null)  {            
+  
+																			var uploaded_uploadidproof = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_uploadidproof.length; i++) {
+
+
+																				if (uploaded_uploadidproof[i] != "") {
+																							var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_uploadidproof[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																						 $('.auto_cls_uploadidproof').append('<a href=' + filepath + ' class="uploadidproof filedisplay"><i class="fa fa-file"></i></a>')
+																			
+																				}
+
+
+																			}
+
+ 
+																		  }
+
+
+																	}
+if(key=='automaton_PatientProfile_emergencycontactinfo'){
+																			$('#emergencycontactinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + PatientProfileid +'&section=automaton_PatientProfile_emergencycontactinfo_history'
+																					 $(".emergencycontactinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("PatientProfile","versionhistory")
+																				if(Actions == undefined){
+																				$("emergencycontactinfoauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.emergencycontactinfoContainerBodyParent').removeClass('hide')      
+																			   $('#emergencycontactinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.emergencycontactinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													if (obj) {
+if (obj.hasOwnProperty('insurancetype') && obj.insurancetype) {
+    str_visible_insurancetype = obj.insurancetype;
+} else {
+    str_visible_insurancetype = ''; 
+}
+if (str_visible_insurancetype === "Family/Group") {
+    $(".insurancecompany_craftmyapp_viewcontainer").show();
+    $(".policynumber_craftmyapp_viewcontainer").show();
+    $(".policyclaimlimit_craftmyapp_viewcontainer").show();
+    $(".policyexpirydate_craftmyapp_viewcontainer").show();
+} else {
+    $(".insurancecompany_craftmyapp_viewcontainer").hide();
+    $(".policynumber_craftmyapp_viewcontainer").hide();
+    $(".policyclaimlimit_craftmyapp_viewcontainer").hide();
+    $(".policyexpirydate_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('referraltype') && obj.referraltype) {
+    str_visible_referraltype = obj.referraltype;
+} else {
+    str_visible_referraltype = ''; 
+}
+if (str_visible_referraltype === "Other") {
+    $(".otherreferral_craftmyapp_viewcontainer").show();
+} else {
+    $(".otherreferral_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('nationality') && obj.nationality) {
+    str_visible_nationality = obj.nationality;
+} else {
+    str_visible_nationality = ''; 
+}
+if (str_visible_nationality === "Foreign") {
+    $(".countryoforigin_craftmyapp_viewcontainer").show();
+} else {
+    $(".countryoforigin_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('meditationpractice') && obj.meditationpractice) {
+    str_visible_meditationpractice = obj.meditationpractice;
+} else {
+    str_visible_meditationpractice = ''; 
+}
+if (str_visible_meditationpractice === "Yes") {
+    $(".typeofpractice_craftmyapp_viewcontainer").show();
+} else {
+    $(".typeofpractice_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('referraltype') && obj.referraltype) {
+    str_visible_referraltype = obj.referraltype;
+} else {
+    str_visible_referraltype = ''; 
+}
+if (str_visible_referraltype === "Person") {
+    $(".referrername_craftmyapp_viewcontainer").show();
+    $(".referrerphonenumber_craftmyapp_viewcontainer").show();
+} else {
+    $(".referrername_craftmyapp_viewcontainer").hide();
+    $(".referrerphonenumber_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('referralsource') && obj.referralsource) {
+    str_visible_referralsource = obj.referralsource;
+} else {
+    str_visible_referralsource = ''; 
+}
+if (str_visible_referralsource === "Social Media") {
+    $(".socialmediaplatform_craftmyapp_viewcontainer").show();
+} else {
+    $(".socialmediaplatform_craftmyapp_viewcontainer").hide();
+}
+}
+
+/* ── Populate Hero Card ── */
+(function buildHero() {
+    var fn = (obj.firstname || '').trim();
+    var ln = (obj.lastname || '').trim();
+    var fullName = (fn + ' ' + ln).trim() || 'Patient';
+    var initials = fullName.split(' ').map(function(w){ return w[0] || ''; }).join('').substring(0,2).toUpperCase();
+
+    $('#vppHeroName').text(fullName);
+    $('#vppHeroRegId').html('<i class="fa fa-id-badge"></i> ' + (obj.registrationid || '-'));
+    $('#vppHeroInitials').text(initials);
+
+    /* Photo */
+    if (obj.photo) {
+        var firstPhoto = obj.photo.split('|')[0];
+        if (firstPhoto) {
+            var photoPath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + firstPhoto + "@Context.Session.GetString("NalamVazhaSAStoken")";
+            $('#vppHeroPhotoWrap').html('<img src="' + photoPath + '" onerror="this.style.display=\'none\';$(this).next().show();" /><span class="vpp-hero__initials" style="display:none;">' + initials + '</span>');
+        }
+    }
+
+    /* Chips */
+    $('#vppHeroGender span').text(obj.gender || '-');
+    var ageText = (obj.age || '0') + 'y';
+    if (obj.ageinmonths) ageText += ' ' + obj.ageinmonths + 'm';
+    if (obj.dateofbirth) ageText = obj.dateofbirth + ' (' + ageText + ')';
+    $('#vppHeroAge span').text(ageText);
+    if (obj.bloodgroup) { $('#vppHeroBloodGroup span').text(obj.bloodgroup); } else { $('#vppHeroBloodGroup').hide(); }
+    if (obj.mobilenumber) {
+        $('#vppHeroPhone span').html('<a href="tel:' + obj.mobilenumber + '" style="color:inherit;text-decoration:none;">' + obj.mobilenumber + '</a>');
+    } else { $('#vppHeroPhone').hide(); }
+    if (obj.emailaddress) {
+        $('#vppHeroEmail span').html('<a href="mailto:' + obj.emailaddress + '" style="color:inherit;text-decoration:none;">' + obj.emailaddress + '</a>');
+    } else { $('#vppHeroEmail').hide(); }
+    $('#vppHeroNat span').text(obj.nationality || '-');
+
+    $('#vppHeroCard').show();
+
+    /* Hide original Basic Info fields that are now in hero */
+    $('.BasicInfo_craftmyapp_container').hide();
+
+    /* Rearrange remaining sections into two-column grid */
+    var $printRow = $('.printablerow');
+    var $sections = $printRow.children('.col-sm-12.mt-3, .col-sm-3.sameaspermanentaddress_craftmyapp_viewcontainer');
+    if ($sections.length > 1) {
+        var $grid = $('<div class="vpp-sections-grid"></div>');
+        $printRow.append($grid);
+        $sections.each(function () { $grid.append(this); });
+    }
+})();
+
+/* ── End Populate Hero Card ── */
+
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_PatientProfile_view_data()
+
+
+					/*var Actions=getAutho("PatientProfile","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						var str_visible_insurancetype;
+var str_visible_referraltype;
+var str_visible_nationality;
+var str_visible_meditationpractice;
+var str_visible_referraltype;
+var str_visible_referralsource;
+
+						$(document).ready(function () {
+							$(".countryoforigin_craftmyapp_viewcontainer").hide();
+$(".typeofpractice_craftmyapp_viewcontainer").hide();
+$(".insurancecompany_craftmyapp_viewcontainer").hide();
+$(".policynumber_craftmyapp_viewcontainer").hide();
+$(".policyclaimlimit_craftmyapp_viewcontainer").hide();
+$(".policyexpirydate_craftmyapp_viewcontainer").hide();
+$(".referralsource_craftmyapp_viewcontainer").hide();
+$(".referraltype_craftmyapp_viewcontainer").hide();
+$(".referrername_craftmyapp_viewcontainer").hide();
+$(".referrerphonenumber_craftmyapp_viewcontainer").hide();
+$(".magazinename_craftmyapp_viewcontainer").hide();
+$(".socialmediaplatform_craftmyapp_viewcontainer").hide();
+$(".otherreferral_craftmyapp_viewcontainer").hide();
+
+						});
+					</script>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   PATIENT RECORDS DASHBOARD JS
+   ══════════════════════════════════════════════════════════════════ */
+(function () {
+    var VPP_TENANT  = '@(Context.Session.GetString("NalamVazhachoosedtenantid") ?? "")';
+    var VPP_PID     = (typeof getUrlVars === 'function') ? getUrlVars()['PatientProfileid'] : '';
+    var VPP_ROLE    = '@(Context.Session.GetString("NalamVazhauserrole") ?? "")'.toLowerCase();
+    var VPP_CAN_SHOW_RESTRICTED_IPD_ACTIONS = VPP_ROLE !== 'doctor' && VPP_ROLE !== 'health seeker';
+
+    var VPP_IPD_URL     = '@Url.Action("get_Added_IPD_Application_Form", "IPDApplicationForm")';
+    var VPP_OPD_URL     = '@Url.Action("get_Added_OPD_Form", "OPDForm")';
+    var VPP_PAY_URL     = '@Url.Action("get_Billing_Payment_List", "BillingPayment")';
+    var VPP_ASSESS_URL  = '@Url.Action("get_Patient_Profile_Assessments", "Assessment")';
+
+    var VPP_VIEW_IPD    = '@Url.Action("View_IPD_Application_Form", "IPDApplicationForm")';
+    var VPP_BILLING_IPD = '@Url.Action("Billing_Dashboard", "IPDApplicationForm")';
+    var VPP_PAY_IPD     = '@Url.Action("IPD_Payment_Collection", "IPDApplicationForm")';
+    var VPP_VIEW_OPD    = '@Url.Action("View_OPD_Form", "OPDForm")';
+    var VPP_REVIEW_OPD  = '@Url.Action("Review_OPD", "OPDForm")';
+    var VPP_OPD_FEE     = '@Url.Action("OPD_Consultation_Fee", "OPDForm")';
+    var VPP_VIEW_ASSESS = '@Url.Action("View_Assessment", "Assessment")';
+
+    /* ── Helpers ── */
+    function esc(s) { return (s || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+    function num(n) { var v = parseFloat(n) || 0; return v.toLocaleString('en-IN', { maximumFractionDigits: 2 }); }
+    function fmtDate(s) {
+        if (!s) return '\u2014';
+        var d = new Date(s);
+        if (isNaN(d.getTime())) return s;
+        return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    function pick(obj, keys, def) {
+        for (var i = 0; i < keys.length; i++) {
+            if (obj[keys[i]] !== undefined && obj[keys[i]] !== null && obj[keys[i]] !== '') return obj[keys[i]];
+        }
+        return def !== undefined ? def : '';
+    }
+    function parseApi(raw) {
+        try {
+            var d = typeof raw === 'string' ? JSON.parse(raw) : raw;
+            if (Array.isArray(d)) return d;
+            if (d && Array.isArray(d.detail)) return d.detail;
+            if (d && Array.isArray(d.data)) return d.data;
+        } catch (e) {}
+        return [];
+    }
+    function bsPill(bs) {
+        bs = (bs || '').trim(); var l = bs.toLowerCase();
+        var cls = l.indexOf('admit') !== -1 || l.indexOf('confirmed') !== -1 ? 'vpp-pill--green'
+                : l.indexOf('provisional') !== -1 ? 'vpp-pill--amber'
+                : l.indexOf('cancel') !== -1 || l.indexOf('reject') !== -1 ? 'vpp-pill--red'
+                : l.indexOf('arrived') !== -1 || l.indexOf('review') !== -1 ? 'vpp-pill--blue'
+                : 'vpp-pill--gray';
+        return '<span class="vpp-pill ' + cls + '">' + esc(bs || '\u2014') + '</span>';
+    }
+    function vsPill(vs) {
+        vs = (vs || '').trim(); var l = vs.toLowerCase();
+        var cls = l.indexOf('approved') !== -1 ? 'vpp-pill--green'
+                : l.indexOf('review') !== -1 ? 'vpp-pill--purple'
+                : l.indexOf('rework') !== -1 ? 'vpp-pill--amber'
+                : l.indexOf('reject') !== -1 ? 'vpp-pill--red'
+                : 'vpp-pill--gray';
+        return '<span class="vpp-pill ' + cls + '">' + esc(vs || '\u2014') + '</span>';
+    }
+    function payPill(ps) {
+        ps = (ps || '').trim(); var l = ps.toLowerCase();
+        var cls = l === 'refunded' ? 'vpp-pill--red' : (l === 'paid' || l === 'success') ? 'vpp-pill--green' : 'vpp-pill--amber';
+        return '<span class="vpp-pill ' + cls + '">' + esc(ps) + '</span>';
+    }
+
+    /* ── Top-level tab switching (Profile / Records) ── */
+    $('.vpp-top-tab').on('click', function () {
+        var tab = $(this).attr('data-vpp-top');
+        $('.vpp-top-tab').each(function () { $(this).toggleClass('is-active', $(this).attr('data-vpp-top') === tab); });
+        $('.vpp-top-panel').each(function () { $(this).toggleClass('is-active', $(this).attr('data-vpp-top-panel') === tab); });
+    });
+
+    /* ── Sub-tab switching (IPD / OPD / Payments / Assessments) ── */
+    $('.vpp-tab').on('click', function () {
+        var tab = $(this).attr('data-vpp-tab');
+        $('.vpp-tab').each(function () { $(this).toggleClass('is-active', $(this).attr('data-vpp-tab') === tab); });
+        $('.vpp-panel').each(function () { $(this).toggleClass('is-active', $(this).attr('data-vpp-panel') === tab); });
+    });
+
+    /* ── Load IPDs ── */
+    function loadIPDs() {
+        if (!VPP_TENANT || !VPP_PID) { $('#vppIpdLoading').hide(); $('#vppIpdEmpty').show(); return; }
+        var url = VPP_IPD_URL + '?tenantid=' + encodeURIComponent(VPP_TENANT) +
+            '&patientname=' + encodeURIComponent(VPP_PID) +
+            '&bookingstatus=&verifiedstatus=&pagesize=500&pagenumber=0&searchterm=&sort_fields=';
+        $.getJSON(url, function (data) {
+            var list = parseApi(data);
+            $('#vppIpdLoading').hide();
+            $('#vppCntIPD').text(list.length);
+            $('#vppStatIPD').text(list.length);
+            if (!list.length) { $('#vppIpdEmpty').show(); return; }
+            $('#vppIpdTable').show();
+            var tbody = $('#vppIpdBody').empty();
+            $.each(list, function (_, row) {
+                var id   = pick(row, ['ipdapplicationformid', 'IPDApplicationFormid'], '');
+                var brn  = pick(row, ['bookingreferencenumber'], '\u2014');
+                var pkg  = pick(row, ['packagename_master', 'packagename', 'roompreference_master'], '\u2014');
+                var cin  = fmtDate(pick(row, ['expectedarrivaldate', 'arrivaldate', 'checkindate'], ''));
+                var cout = fmtDate(pick(row, ['expecteddischargedate', 'dischargedate', 'checkoutdate'], ''));
+                var bs   = pick(row, ['bookingstatus', 'BookingStatus'], '');
+                var vs   = pick(row, ['verifiedstatus', 'VerifiedStatus'], '');
+                var qid  = '?IPDApplicationFormid=' + encodeURIComponent(id);
+
+                var acts = '';
+                if (id) {
+                    acts += '<a href="' + VPP_VIEW_IPD + qid + '" class="vpp-act vpp-act--view"><i class="fa fa-eye"></i> View</a> ';
+                    var bsl = bs.toLowerCase();
+                    if (VPP_CAN_SHOW_RESTRICTED_IPD_ACTIONS && (bsl.indexOf('admitted') !== -1 || bsl.indexOf('admission confirmed') !== -1)) {
+                        acts += '<a href="' + VPP_BILLING_IPD + qid + '" class="vpp-act vpp-act--billing"><i class="fa fa-file-text"></i> Billing</a> ';
+                        acts += '<a href="' + VPP_PAY_IPD + qid + '" class="vpp-act vpp-act--pay"><i class="fa fa-inr"></i> Payments</a> ';
+                    }
+                }
+                tbody.append('<tr>' +
+                    '<td><strong>' + esc(brn) + '</strong></td>' +
+                    '<td>' + esc(pkg) + '</td>' +
+                    '<td>' + cin + '</td>' +
+                    '<td>' + cout + '</td>' +
+                    '<td>' + bsPill(bs) + '</td>' +
+                    '<td>' + vsPill(vs) + '</td>' +
+                    '<td>' + (acts || '\u2014') + '</td>' +
+                    '</tr>');
+            });
+        }).fail(function () { $('#vppIpdLoading').hide(); $('#vppIpdEmpty').show(); });
+    }
+
+    /* ── Load OPDs ── */
+    function loadOPDs() {
+        if (!VPP_TENANT || !VPP_PID) { $('#vppOpdLoading').hide(); $('#vppOpdEmpty').show(); return; }
+        var url = VPP_OPD_URL + '?tenantid=' + encodeURIComponent(VPP_TENANT) +
+            '&patientname=' + encodeURIComponent(VPP_PID) +
+            '&verifiedstatus=&pagesize=500&pagenumber=0&searchterm=&sort_fields=';
+        $.getJSON(url, function (data) {
+            var list = parseApi(data);
+            $('#vppOpdLoading').hide();
+            $('#vppCntOPD').text(list.length);
+            $('#vppStatOPD').text(list.length);
+            if (!list.length) { $('#vppOpdEmpty').show(); return; }
+            $('#vppOpdTable').show();
+            var tbody = $('#vppOpdBody').empty();
+            $.each(list, function (_, row) {
+                var id   = pick(row, ['opdformid', 'OPDFormid'], '');
+                var ref  = pick(row, ['bookingreferencenumber', 'bookingreferenceno', 'opdformref', 'opdformnumber'], '\u2014');
+                var date = fmtDate(pick(row, ['createddate', 'visitdate'], ''));
+                var doc  = pick(row, ['preferreddoctor_master', 'doctor_master', 'doctorname'], '\u2014');
+                var vs   = pick(row, ['verifiedstatus', 'VerifiedStatus'], '');
+                var qid  = '?OPDFormid=' + encodeURIComponent(id);
+
+                var acts = '';
+                if (id) {
+                    acts += '<a href="' + VPP_VIEW_OPD + qid + '" class="vpp-act vpp-act--view"><i class="fa fa-eye"></i> View</a> ';
+                    var vsl = vs.toLowerCase().replace(/\s+/g, '');
+                    if (vsl === 'readyforreview' || vsl === 'requestforreview') {
+                        acts += '<a href="' + VPP_REVIEW_OPD + qid + '" class="vpp-act vpp-act--billing"><i class="fa fa-search"></i> Review</a> ';
+                    }
+                    if (vs === 'Approved' || vsl === 'approved') {
+                        acts += '<a href="' + VPP_OPD_FEE + qid + '" class="vpp-act vpp-act--pay"><i class="fa fa-file-text"></i> View Billing</a> ';
+                    }
+                }
+                tbody.append('<tr>' +
+                    '<td><strong>' + esc(ref) + '</strong></td>' +
+                    '<td>' + date + '</td>' +
+                    '<td>' + esc(doc) + '</td>' +
+                    '<td>' + vsPill(vs) + '</td>' +
+                    '<td>' + (acts || '\u2014') + '</td>' +
+                    '</tr>');
+            });
+        }).fail(function () { $('#vppOpdLoading').hide(); $('#vppOpdEmpty').show(); });
+    }
+
+    /* ── Load Payments ── */
+    function loadPayments() {
+        if (!VPP_TENANT || !VPP_PID) { $('#vppPayLoading').hide(); $('#vppPayEmpty').show(); return; }
+        var url = VPP_PAY_URL + '?tenantid=' + encodeURIComponent(VPP_TENANT) +
+            '&patientname=' + encodeURIComponent(VPP_PID) +
+            '&receivablefor=&ipdnumber=&opdnumber=&currency=&paymentmode=&paymentstatus=&collectedby=&refundstatus=' +
+            '&pagesize=500&pagenumber=0&searchterm=&sort_fields=';
+        $.getJSON(url, function (data) {
+            var list = parseApi(data);
+            $('#vppPayLoading').hide();
+            $('#vppCntPay').text(list.length);
+            var totalPaid = 0;
+            $.each(list, function (_, r) {
+                var ps = (r.paymentstatus || '').toLowerCase();
+                if (ps !== 'refunded') totalPaid += Math.abs(parseFloat(r.amount) || 0);
+            });
+            $('#vppStatPay').text('\u20B9' + num(totalPaid));
+            if (!list.length) { $('#vppPayEmpty').show(); return; }
+            $('#vppPayTable').show();
+            var tbody = $('#vppPayBody').empty();
+            $.each(list, function (_, row) {
+                var isRefund = (row.paymentstatus || '').toLowerCase() === 'refunded';
+                var dispAmt  = isRefund ? (parseFloat(row.refundedamount) || Math.abs(parseFloat(row.amount) || 0))
+                                        : Math.abs(parseFloat(row.amount) || 0);
+                var amtHtml  = isRefund
+                    ? '<span class="vpp-amt-neg">\u2212 \u20B9' + num(dispAmt) + '</span>'
+                    : '<span class="vpp-amt-pos">\u20B9' + num(dispAmt) + '</span>';
+                var purpose  = row.receivablefor || '\u2014';
+
+                var tr = '<tr' + (isRefund ? ' style="background:#fff8f8;"' : '') + '>' +
+                    '<td><strong>' + esc(row.receiptno || '\u2014') + '</strong></td>' +
+                    '<td>' + esc(purpose) + '</td>' +
+                    '<td>' + amtHtml + '</td>' +
+                    '<td>' + esc(row.paymentmode || '\u2014') + '</td>' +
+                    '<td>' + fmtDate(row.createddate) + '</td>' +
+                    '<td>' + payPill(row.paymentstatus || '\u2014') + '</td>' +
+                    '</tr>';
+                tbody.append(tr);
+            });
+        }).fail(function () { $('#vppPayLoading').hide(); $('#vppPayEmpty').show(); });
+    }
+
+    /* ── Load Assessments ── */
+    function loadAssessments() {
+        if (!VPP_TENANT || !VPP_PID) { $('#vppAssessLoading').hide(); $('#vppAssessEmpty').show(); return; }
+        var url = VPP_ASSESS_URL + '?tenantid=' + encodeURIComponent(VPP_TENANT) +
+            '&patientname=' + encodeURIComponent(VPP_PID);
+        $.getJSON(url, function (data) {
+            var list = parseApi(data);
+            $('#vppAssessLoading').hide();
+            $('#vppCntAssess').text(list.length);
+            $('#vppStatAssess').text(list.length);
+            if (!list.length) { $('#vppAssessEmpty').show(); return; }
+            $('#vppAssessTable').show();
+            var tbody = $('#vppAssessBody').empty();
+            $.each(list, function (_, row) {
+                var id   = pick(row, ['assessmentid', 'Assessmentid'], '');
+                var date = fmtDate(pick(row, ['assessmentdate', 'createddate'], ''));
+                var type = pick(row, ['assessmenttype', 'AssessmentType'], '');
+                var ref = pick(row, ['assessmentref', 'opdform_master', 'ipdform_master', 'patientvisit_master', 'opdform', 'ipdform', 'patientvisit'], '\u2014');
+                var visit = type ? (type + ' - ' + ref) : ref;
+                var qid  = '?Assessmentid=' + encodeURIComponent(id);
+
+                var acts = id ? '<a href="' + VPP_VIEW_ASSESS + qid + '" class="vpp-act vpp-act--view"><i class="fa fa-eye"></i> View</a>' : '\u2014';
+
+                tbody.append('<tr>' +
+                    '<td>' + date + '</td>' +
+                    '<td>' + esc(visit) + '</td>' +
+                    '<td>' + acts + '</td>' +
+                    '</tr>');
+            });
+        }).fail(function () { $('#vppAssessLoading').hide(); $('#vppAssessEmpty').show(); });
+    }
+
+    /* ── Init ── */
+    $(document).ready(function () {
+        loadIPDs();
+        loadOPDs();
+        loadPayments();
+        loadAssessments();
+    });
+})();
+</script>
+
+

@@ -1,0 +1,1139 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 06/18/2026 05:34:29 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.GroupBookingModel
+			@{
+			ViewData["Title"] = @Resource.updategroupbooking;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_Group_Booking", "GroupBooking", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updategroupbooking</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.GroupBookingid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 groupcode_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="groupcode">@Resource.groupbooking_groupcode <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.groupcode, new {@type="text",@maxlength="128", @placeholder="Example: RM-101", @class = "form-control form-control-lg mahat_transliterate required" })
+
+								 @Html.ValidationMessageFor(model => model.groupcode)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 groupname_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="groupname">@Resource.groupbooking_groupname <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.groupname, new {@type="text",@maxlength="128", @placeholder="Example: Deluxe Room 101", @class = "form-control form-control-lg mahat_transliterate required" })
+
+								 @Html.ValidationMessageFor(model => model.groupname)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 countofmembers_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="countofmembers">@Resource.groupbooking_countofmembers</label>
+								@Html.TextBoxFor(m => m.countofmembers, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg " })
+
+								 @Html.ValidationMessageFor(model => model.countofmembers)
+							</div>
+						</div>
+					</div>
+ <div class="col-sm-12 col-xs-12 mt-3 patientinfo_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Patient Info Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.patientinfo
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-patientinfo pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="patientinfoContainer" class="patientinfoContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Patient Info Containder Block-->
+					
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 contacts_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Contacts Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.contacts
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-contacts pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="contactsContainer" class="contactsContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Contacts Containder Block-->
+					
+			 
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updategroupbooking</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("GroupBooking","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<script>
+$(document).ready(function () {
+$("#countofmembers").autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+})
+</script>
+
+			
+			
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-patientinfo", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".patientinfo").removeClass('showthelables');
+			   $(".btn-remove-row-patientinfo").removeClass('btn-remove-row');
+				$("#patientinfoContainer").prepend(
+				'<div class="row m-t-10 patientinfo dependentContainerBorder" id="patientinfo' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 name_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="name">@Resource.groupbooking_patientinfo_name <b class="iconRed">*</b></label>'+
+									'<input  name="name' + index + '" id="name' + index + '"  type="text"  maxlength="128" class="name form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 emailid_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="emailid">@Resource.groupbooking_patientinfo_emailid <b class="iconRed">*</b></label>'+
+									'<input  name="emailid' + index + '" id="emailid' + index + '"  type="email"  maxlength="128" class="emailid form-control--active form-control  form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 phonenumber_craftmyapp_container craftmyapp_phone_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="phonenumber">@Resource.groupbooking_patientinfo_phonenumber <b class="iconRed">*</b></label>'+
+									'<input  name="phonenumber_ip' + index + '" id="phonenumber_ip' + index + '"  type="tel" maxlength="20" class="phonenumber_ip form-control--active form-control form-control-lg required" />' +
+'<input  name="phonenumber' + index + '" id="phonenumber' + index + '"  type="tel" maxlength="20" class="phonenumber invalidphone form-control--active form-control form-control-lg" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-patientinfo"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#patientinfoContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('patientinfo', '')).addClass('btn-remove-row');
+				
+				
+				
+
+if($("#phonenumber_ip"+index).length > 0) {
+var phonenumber_input = document.querySelector("#phonenumber_ip"+index);
+		var itiphonenumber_input = window.intlTelInput(phonenumber_input, {
+			nationalMode: true,
+			initialCountry: "in",
+			preferredCountries: ['us','in','sg']
+		});
+		itiphonenumber_input.setNumber($('#phonenumber'+index).val());
+		var handleChange_phonenumber_input = function () {
+		   var text = "";
+		if(itiphonenumber_input.getNumber())
+			  text = (itiphonenumber_input.isValidNumber()) ? itiphonenumber_input.getNumber() : "invalid";
+			 $('#phonenumber'+index).val(text);
+		};
+
+		// listen to "keyup", but also "change" to update when the user selects a country
+		phonenumber_input.addEventListener('change', handleChange_phonenumber_input);
+		phonenumber_input.addEventListener('keyup', handleChange_phonenumber_input);
+
+		phonenumber_input.addEventListener("countrychange", function () {
+			$('#phonenumber_ip'+index).val("");
+			$('#phonenumber'+index).val("");
+		})
+}
+
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-patientinfo', function (e) {
+					 
+					 
+					
+					var patientinfoRow = $(this).closest(".patientinfo");
+					var index = patientinfoRow.attr("id").replace("patientinfo", "");
+					patientinfoRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.patientinfo" ? @Html.Raw(Json.Serialize(@Model.patientinfo)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".patientinfo").removeClass('showthelables');
+			   $(".btn-remove-row-patientinfo").removeClass('btn-remove-row');
+				$("#patientinfoContainer").prepend(
+				'<div class="row m-t-10 patientinfo dependentContainerBorder" id="patientinfo' + index + '">' +
+				'<input type="hidden" class="GroupBooking_patientinfoid" value="' + obj.GroupBooking_patientinfoid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 name_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="name">@Resource.groupbooking_patientinfo_name <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.name?obj.name:'')+'" name="name' + index + '" id="name' + index + '"  type="text"  maxlength="128" class="name form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 emailid_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="emailid">@Resource.groupbooking_patientinfo_emailid <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.emailid?obj.emailid:'')+'" name="emailid' + index + '" id="emailid' + index + '"  type="email"  maxlength="128" class="emailid form-control--active form-control  form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 phonenumber_craftmyapp_container craftmyapp_phone_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="phonenumber">@Resource.groupbooking_patientinfo_phonenumber <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.phonenumber?obj.phonenumber:'')+'" name="phonenumber_ip' + index + '" id="phonenumber_ip' + index + '"  type="tel" maxlength="20" class="phonenumber_ip form-control--active form-control form-control-lg required" />' +
+'<input value="'+(obj.phonenumber?obj.phonenumber:'')+'" name="phonenumber' + index + '" id="phonenumber' + index + '"  type="tel" maxlength="20" class="phonenumber invalidphone form-control--active form-control form-control-lg" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-patientinfo"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.patientinfoContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('patientinfo', '')).addClass('btn-remove-row');
+
+				
+
+if($("#phonenumber_ip"+index).length > 0) {
+var phonenumber_input = document.querySelector("#phonenumber_ip"+index);
+		var itiphonenumber_input = window.intlTelInput(phonenumber_input, {
+			nationalMode: true,
+			initialCountry: "in",
+			preferredCountries: ['us','in','sg']
+		});
+		itiphonenumber_input.setNumber($('#phonenumber'+index).val());
+		var handleChange_phonenumber_input = function () {
+		   var text = "";
+		if(itiphonenumber_input.getNumber())
+			  text = (itiphonenumber_input.isValidNumber()) ? itiphonenumber_input.getNumber() : "invalid";
+			 $('#phonenumber'+index).val(text);
+		};
+
+		// listen to "keyup", but also "change" to update when the user selects a country
+		phonenumber_input.addEventListener('change', handleChange_phonenumber_input);
+		phonenumber_input.addEventListener('keyup', handleChange_phonenumber_input);
+
+		phonenumber_input.addEventListener("countrychange", function () {
+			$('#phonenumber_ip'+index).val("");
+			$('#phonenumber'+index).val("");
+		})
+}
+
+ 
+				
+				
+
+				
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-contacts", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".contacts").removeClass('showthelables');
+			   $(".btn-remove-row-contacts").removeClass('btn-remove-row');
+				$("#contactsContainer").prepend(
+				'<div class="row m-t-10 contacts dependentContainerBorder" id="contacts' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 person_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="person">@Resource.groupbooking_contacts_person <b class="iconRed">*</b></label>'+
+									'<input  name="person' + index + '" id="person' + index + '"  type="text"  maxlength="128" class="person form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 email_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="email">@Resource.groupbooking_contacts_email</label>'+
+									'<input  name="email' + index + '" id="email' + index + '"  type="email"  maxlength="128" class="email form-control--active form-control  form-control-lg " />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 mobile_craftmyapp_container craftmyapp_phone_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="mobile">@Resource.groupbooking_contacts_mobile <b class="iconRed">*</b></label>'+
+									'<input  name="mobile_ip' + index + '" id="mobile_ip' + index + '"  type="tel" maxlength="20" class="mobile_ip form-control--active form-control form-control-lg required" />' +
+'<input  name="mobile' + index + '" id="mobile' + index + '"  type="tel" maxlength="20" class="mobile invalidphone form-control--active form-control form-control-lg" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-contacts"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#contactsContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('contacts', '')).addClass('btn-remove-row');
+				
+				
+				
+
+if($("#mobile_ip"+index).length > 0) {
+var mobile_input = document.querySelector("#mobile_ip"+index);
+		var itimobile_input = window.intlTelInput(mobile_input, {
+			nationalMode: true,
+			initialCountry: "in",
+			preferredCountries: ['us','in','sg']
+		});
+		itimobile_input.setNumber($('#mobile'+index).val());
+		var handleChange_mobile_input = function () {
+		   var text = "";
+		if(itimobile_input.getNumber())
+			  text = (itimobile_input.isValidNumber()) ? itimobile_input.getNumber() : "invalid";
+			 $('#mobile'+index).val(text);
+		};
+
+		// listen to "keyup", but also "change" to update when the user selects a country
+		mobile_input.addEventListener('change', handleChange_mobile_input);
+		mobile_input.addEventListener('keyup', handleChange_mobile_input);
+
+		mobile_input.addEventListener("countrychange", function () {
+			$('#mobile_ip'+index).val("");
+			$('#mobile'+index).val("");
+		})
+}
+
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-contacts', function (e) {
+					 
+					 
+					
+					var contactsRow = $(this).closest(".contacts");
+					var index = contactsRow.attr("id").replace("contacts", "");
+					contactsRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.contacts" ? @Html.Raw(Json.Serialize(@Model.contacts)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".contacts").removeClass('showthelables');
+			   $(".btn-remove-row-contacts").removeClass('btn-remove-row');
+				$("#contactsContainer").prepend(
+				'<div class="row m-t-10 contacts dependentContainerBorder" id="contacts' + index + '">' +
+				'<input type="hidden" class="GroupBooking_contactsid" value="' + obj.GroupBooking_contactsid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 person_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="person">@Resource.groupbooking_contacts_person <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.person?obj.person:'')+'" name="person' + index + '" id="person' + index + '"  type="text"  maxlength="128" class="person form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 email_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="email">@Resource.groupbooking_contacts_email</label>'+
+									'<input value="'+(obj.email?obj.email:'')+'" name="email' + index + '" id="email' + index + '"  type="email"  maxlength="128" class="email form-control--active form-control  form-control-lg " />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 mobile_craftmyapp_container craftmyapp_phone_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="mobile">@Resource.groupbooking_contacts_mobile <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.mobile?obj.mobile:'')+'" name="mobile_ip' + index + '" id="mobile_ip' + index + '"  type="tel" maxlength="20" class="mobile_ip form-control--active form-control form-control-lg required" />' +
+'<input value="'+(obj.mobile?obj.mobile:'')+'" name="mobile' + index + '" id="mobile' + index + '"  type="tel" maxlength="20" class="mobile invalidphone form-control--active form-control form-control-lg" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-contacts"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.contactsContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('contacts', '')).addClass('btn-remove-row');
+
+				
+
+if($("#mobile_ip"+index).length > 0) {
+var mobile_input = document.querySelector("#mobile_ip"+index);
+		var itimobile_input = window.intlTelInput(mobile_input, {
+			nationalMode: true,
+			initialCountry: "in",
+			preferredCountries: ['us','in','sg']
+		});
+		itimobile_input.setNumber($('#mobile'+index).val());
+		var handleChange_mobile_input = function () {
+		   var text = "";
+		if(itimobile_input.getNumber())
+			  text = (itimobile_input.isValidNumber()) ? itimobile_input.getNumber() : "invalid";
+			 $('#mobile'+index).val(text);
+		};
+
+		// listen to "keyup", but also "change" to update when the user selects a country
+		mobile_input.addEventListener('change', handleChange_mobile_input);
+		mobile_input.addEventListener('keyup', handleChange_mobile_input);
+
+		mobile_input.addEventListener("countrychange", function () {
+			$('#mobile_ip'+index).val("");
+			$('#mobile'+index).val("");
+		})
+}
+
+ 
+				
+				
+
+				
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+
+			<script>
+			
+			  function getpatientinfo() {
+		 
+					$("#patientinfo").val("");
+					var patientinfoModel = [];
+
+				
+					
+					
+					var el = $('.patientinfoContainer .patientinfo');
+					
+					el.each(function (cnt) {
+					
+							patientinfoAttributes = {}
+							
+							 patientinfoAttributes['name']=($(this).find('.name').val() ? $(this).find('.name').val().toString() :'')
+patientinfoAttributes['emailid']=($(this).find('.emailid').val() ? $(this).find('.emailid').val().toString() :'')
+patientinfoAttributes['phonenumber']=($(this).find('.phonenumber').val() ? $(this).find('.phonenumber').val().toString() :'')
+patientinfoAttributes['GroupBooking_patientinfoid']=($(this).find('.GroupBooking_patientinfoid').val() != undefined ? $(this).find('.GroupBooking_patientinfoid').val().toString() : "00000000-0000-0000-0000-000000000000")
+patientinfoAttributes['craftmyapp_actionmethodname']='Update_Group_Booking'
+patientinfoAttributes['record_order']=cnt
+patientinfoAttributes['cma_client_row_id']=$(this).attr("id").replace("patientinfo","")
+
+							
+							patientinfoModel.push(patientinfoAttributes);
+					
+					
+					
+					});
+					 
+					return patientinfoModel
+				
+				
+				}
+  function getcontacts() {
+		 
+					$("#contacts").val("");
+					var contactsModel = [];
+
+				
+					
+					
+					var el = $('.contactsContainer .contacts');
+					
+					el.each(function (cnt) {
+					
+							contactsAttributes = {}
+							
+							 contactsAttributes['person']=($(this).find('.person').val() ? $(this).find('.person').val().toString() :'')
+contactsAttributes['mobile']=($(this).find('.mobile').val() ? $(this).find('.mobile').val().toString() :'')
+contactsAttributes['email']=($(this).find('.email').val() ? $(this).find('.email').val().toString() :'')
+contactsAttributes['GroupBooking_contactsid']=($(this).find('.GroupBooking_contactsid').val() != undefined ? $(this).find('.GroupBooking_contactsid').val().toString() : "00000000-0000-0000-0000-000000000000")
+contactsAttributes['craftmyapp_actionmethodname']='Update_Group_Booking'
+contactsAttributes['record_order']=cnt
+contactsAttributes['cma_client_row_id']=$(this).attr("id").replace("contacts","")
+
+							
+							contactsModel.push(contactsAttributes);
+					
+					
+					
+					});
+					 
+					return contactsModel
+				
+				
+				}
+
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Group_Booking")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Group_Booking")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updategroupbooking;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updategroupbooking")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone") || element.hasClass("phonenumber_ip") || element.hasClass("mobile_ip")) {
+															error.addClass("invalidphoneerror");
+															error.addClass("groupbooking-phone-error");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ var patientinfoModel=getpatientinfo()
+var contactsModel=getcontacts()
+
+
+ 
+ 
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ for (var i = 0; i < patientinfoModel.length; i++) {
+formdata.append("patientinfo[" + i + "].name", patientinfoModel[i].name)
+formdata.append("patientinfo[" + i + "].record_order", patientinfoModel[i].record_order)
+formdata.append("patientinfo[" + i + "].cma_client_row_id", patientinfoModel[i].cma_client_row_id)
+formdata.append("patientinfo[" + i + "].emailid", patientinfoModel[i].emailid)
+formdata.append("patientinfo[" + i + "].phonenumber", patientinfoModel[i].phonenumber)
+formdata.append("patientinfo[" + i + "].GroupBooking_patientinfoid", patientinfoModel[i].GroupBooking_patientinfoid)
+formdata.append("patientinfo[" + i + "].GroupBookingid", $("#GroupBookingid").val())
+
+formdata.append("patientinfo[" + i + "].craftmyapp_actionmethodname", 'Update_Group_Booking')
+}
+for (var i = 0; i < contactsModel.length; i++) {
+formdata.append("contacts[" + i + "].person", contactsModel[i].person)
+formdata.append("contacts[" + i + "].record_order", contactsModel[i].record_order)
+formdata.append("contacts[" + i + "].cma_client_row_id", contactsModel[i].cma_client_row_id)
+formdata.append("contacts[" + i + "].mobile", contactsModel[i].mobile)
+formdata.append("contacts[" + i + "].email", contactsModel[i].email)
+formdata.append("contacts[" + i + "].GroupBooking_contactsid", contactsModel[i].GroupBooking_contactsid)
+formdata.append("contacts[" + i + "].GroupBookingid", $("#GroupBookingid").val())
+
+formdata.append("contacts[" + i + "].craftmyapp_actionmethodname", 'Update_Group_Booking')
+}
+
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("GroupBooking","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "GroupBooking")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 
+						})
+					
+
+					});
+					</script>
+
+
+

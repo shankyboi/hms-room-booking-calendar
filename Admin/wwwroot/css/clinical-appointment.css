@@ -1,0 +1,365 @@
+/* ============================================
+   Clinical Appointment Calendar – Resource View
+   Purpose: Display practitioners with their images in a calendar view
+   ============================================ */
+
+/* Main Calendar Container – theme variables (variables.css / Monochrome.css / Dark-Green.css) */
+.clinical-appointment-calendar-fullpage {
+    display: flex;
+    flex-direction: column;
+    min-height: 480px;
+    background: var(--body-background, #fff);
+    border-radius: var(--border-radius-10, 12px);
+    border: var(--border-primary, 1px solid rgba(0,0,0,0.06));
+    overflow: hidden;
+    box-shadow: var(--cardshadow, 0 2px 8px rgba(0,0,0,0.06));
+}
+
+/* Calendar Toolbar */
+.clinical-appointment-calendar-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    padding: 12px 16px;
+    background: var(--Header, #fff);
+    border-bottom: var(--border-primary, 1px solid #e8ecf1);
+    z-index: 10;
+}
+
+.clinical-appointment-calendar-toolbar__nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.clinical-appointment-calendar-toolbar__date {
+    font-size: var(--font-15, 15px);
+    font-weight: var(--font-weight-600, 600);
+    color: var(--Headertext, var(--body-text, #1e293b));
+    min-width: 180px;
+}
+
+/* Clickable date label with datepicker */
+.clinical-appointment-calendar-date-picker {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+}
+
+.clinical-appointment-calendar-date-picker:hover {
+    background: var(--theme-primary-light, #eef4fb);
+    color: var(--theme-primary, var(--btnprimary, #5c9fd6));
+}
+
+.clinical-appointment-calendar-date-picker i {
+    font-size: 14px;
+    color: var(--theme-primary, var(--btnprimary, #5c9fd6));
+}
+
+/* Calendar Wrapper - Fixed height with scroll */
+.clinical-appointment-calendar-wrap {
+    flex: 1;
+    min-height: 400px;
+    position: relative;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Main Calendar Container – let DayPilot set its own height */
+#clinicalAppointmentCalendar {
+    width: 100%;
+    min-height: 400px;
+}
+
+/* Calendar Header - Fixed positioning */
+#clinicalAppointmentCalendar thead {
+    position: sticky;
+    top: 0;
+    z-index: 9;
+    background: var(--Header, #fff);
+}
+
+#clinicalAppointmentCalendar thead th {
+    padding: 8px 4px;
+    vertical-align: middle;
+    height: auto;
+    border-bottom: var(--border-primary, 1px solid #e8ecf1);
+    background: var(--tableheader, #f8fafc) !important;
+    color: var(--thheader, var(--tablecolor, #000));
+}
+
+/* Calendar Column Headers */
+#clinicalAppointmentCalendar .calendar_column_header {
+    padding: 8px 4px;
+    height: auto;
+    background: var(--tableheader, #f8fafc) !important;
+    color: var(--thheader, var(--tablecolor));
+}
+
+/* Placeholder for no data */
+.clinical-appointment-calendar-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: var(--labelcolor, #64748b);
+    font-size: var(--font-14, 14px);
+    padding: 24px;
+    z-index: 1;
+}
+
+/* ============================================
+   Practitioner Header Styles
+   ============================================ */
+
+/* Practitioner column header: photo above name */
+.cal-practitioner-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 4px;
+    text-align: center;
+}
+
+/* Practitioner Photo - Responsive and always visible */
+.cal-practitioner-photo {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto;
+    background: var(--input-border, #e2e8f0);
+}
+
+/* Practitioner Name */
+.cal-practitioner-name {
+    display: block;
+    font-size: var(--font-13, 12px);
+    font-weight: var(--font-weight-600, 600);
+    color: var(--tablecolor, #1e293b);
+    line-height: 1.2;
+    word-break: break-word;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   Calendar Row and Cell Styles
+   ============================================ */
+
+/* Let DayPilot control row/cell heights via its cellHeight config.
+   Do NOT override tr/td height here – it causes half-cell offset
+   between the grid lines and the selection/event overlays. */
+#clinicalAppointmentCalendar tbody td {
+    padding: 0;
+    vertical-align: top;
+    box-sizing: border-box;
+}
+
+/* ============================================
+   DayPilot Calendar Customizations
+   ============================================ */
+
+/* DayPilot uses content-box sizing internally – do not override */
+
+/* Hide borders on calendar cells for cleaner look */
+#clinicalAppointmentCalendar .calendar_header {
+    border: var(--border-primary, 1px solid #e8ecf1);
+}
+
+#clinicalAppointmentCalendar .calendar_header_line {
+    border-bottom: var(--border-primary, 1px solid #e8ecf1);
+}
+
+/* Ensure proper display of all practitioner rows */
+#clinicalAppointmentCalendar .daypilot-calendar-resource {
+    display: block;
+    visibility: visible;
+}
+
+/* Column header cells - ensure practitioner info displays */
+#clinicalAppointmentCalendar .calendar_column_header {
+    min-height: 100px;
+    vertical-align: middle;
+}
+
+/* ============================================
+   Responsive Adjustments
+   ============================================ */
+
+/* Ensure calendar remains responsive on smaller screens */
+@media (max-width: 768px) {
+    .clinical-appointment-calendar-fullpage {
+        min-height: 300px;
+    }
+
+    .clinical-appointment-calendar-wrap {
+        min-height: 300px;
+    }
+
+    #clinicalAppointmentCalendar {
+        min-height: 300px;
+    }
+
+    .cal-practitioner-photo {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        min-height: 48px;
+    }
+
+    .cal-practitioner-name {
+        font-size: 11px;
+    }
+}
+
+/* ============================================
+   Event and Time Slot Styles
+   ============================================ */
+
+/* Appointment event cards – gradient style */
+#clinicalAppointmentCalendar .calendar_default_event,
+#clinicalAppointmentCalendar .calendar_default_event_inner {
+    border-radius: 8px !important;
+    border: none !important;
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+#clinicalAppointmentCalendar .calendar_default_event:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+#clinicalAppointmentCalendar .calendar_default_event_inner {
+    padding: 6px 10px !important;
+    color: #fff !important;
+    font-size: var(--fs-small, 12px);
+    line-height: 1.35;
+}
+
+/* Event card inner layout */
+.cal-evt-card {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    height: 100%;
+    justify-content: center;
+}
+.cal-evt-name {
+    font-weight: 700;
+    font-size: 1.05em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+}
+.cal-evt-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9em;
+    opacity: 0.92;
+    color: rgba(255,255,255,0.95);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cal-evt-ico {
+    font-size: 0.85em;
+    opacity: 0.8;
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* DayPilot manages cell visibility internally – no overrides needed */
+
+/* ============================================
+   Loading and Empty States
+   ============================================ */
+
+.clinical-appointment-calendar-wrap.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.clinical-appointment-calendar-wrap.empty #clinicalAppointmentCalendar {
+    opacity: 0.3;
+}
+
+/* ============================================
+   Minimal Fixes for Layout Issues
+   ============================================ */
+
+/* Ensure thead has proper height for practitioner photos – do not set color here so time header rule can use white */
+#clinicalAppointmentCalendar thead th {
+    min-height: 110px !important;
+    height: auto !important;
+    padding: 10px 8px !important;
+    overflow: visible !important;
+    background: var(--tableheader, #f8fafc) !important;
+    border-color: var(--input-border, #e8ecf1) !important;
+}
+
+/* DayPilot time header (month/year + day numbers) and left hour column – white bold text */
+#clinicalAppointmentCalendar .calendar_default_timeheadercol,
+#clinicalAppointmentCalendar .calendar_default_timeheadergroup,
+#clinicalAppointmentCalendar thead th:first-child {
+    background: var(--tableheader, #f8fafc) !important;
+    color: #fff !important;
+    font-weight: bold !important;
+    border-color: var(--input-border, #e8ecf1) !important;
+}
+#clinicalAppointmentCalendar .calendar_default_timeheadercol *,
+#clinicalAppointmentCalendar .calendar_default_timeheadergroup *,
+#clinicalAppointmentCalendar thead th:first-child * {
+    color: #fff !important;
+    font-weight: bold !important;
+}
+
+/* Ensure practitioner header is properly sized */
+.cal-practitioner-header {
+    min-height: 100px;
+    padding: 10px 8px;
+}
+
+/* Ensure images in headers are visible */
+#clinicalAppointmentCalendar img {
+    display: block;
+    max-width: 100%;
+}
+
+/* Fix DayPilot column headers to show full content – theme */
+#clinicalAppointmentCalendar .calendar_column_header,
+#clinicalAppointmentCalendar .calendar_default_colheader,
+#clinicalAppointmentCalendar .calendar_default_colheader_inner {
+    min-height: 120px !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: var(--tableheader, #f8fafc) !important;
+    color: var(--thheader, var(--tablecolor, #000)) !important;
+}
+
+/* Ensure practitioner photo is fully visible */
+.cal-practitioner-photo {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 6px auto;
+}
+
+/* Fix any parent containers that might clip the images */
+#clinicalAppointmentCalendar thead th > div,
+#clinicalAppointmentCalendar thead th > * {
+    overflow: visible !important;
+}

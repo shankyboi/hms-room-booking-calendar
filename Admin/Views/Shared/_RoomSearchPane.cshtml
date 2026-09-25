@@ -1,0 +1,1134 @@
+@*
+  ═══════════════════════════════════════════════════════════════
+  Global Room Search – slide-in side pane (opens from header icon)
+  ───────────────────────────────────────────────────────────────
+  Searches rooms by keyword, filters by block/building/floor/
+  room-type/occupancy-status.  Results rendered as rich cards
+  with room image, status badges, key details.
+  ═══════════════════════════════════════════════════════════════
+*@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IConfiguration Configuration
+
+<!-- ══════ Overlay ══════ -->
+<div id="rspOverlay" class="rsp-overlay"></div>
+
+<!-- ══════ Pane ══════ -->
+<div id="rspPane" class="rsp-pane">
+
+    <!-- ── Header ── -->
+    <div class="rsp-header">
+        <h2 class="rsp-title"><i class="fa fa-door-open"></i> Room Search</h2>
+        <button type="button" class="rsp-close" id="rspClose" aria-label="Close"><i class="fa fa-times"></i></button>
+    </div>
+
+    <!-- ── Body ── -->
+    <div class="rsp-body">
+
+        <!-- Search bar -->
+        <div class="rsp-search-row">
+            <div class="rsp-search-bar">
+                <i class="fa fa-search rsp-search-icon"></i>
+                <input type="text" id="rspSearchInput" class="rsp-search-input" placeholder="Search by room number, code, type..." autocomplete="off" />
+                <button type="button" class="rsp-filter-btn" id="rspFilterBtn" title="Toggle filters">
+                    <i class="fa fa-sliders-h"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Collapsible filter panel -->
+        <div class="rsp-filters" id="rspFilters">
+            <div class="rsp-filter-grid">
+                <div class="rsp-filter-group">
+                    <label class="rsp-label">Block</label>
+                    <select class="form-control form-control-sm rsp-select" id="rspFltBlock">
+                        <option value="">All Blocks</option>
+                    </select>
+                </div>
+                <div class="rsp-filter-group">
+                    <label class="rsp-label">Building</label>
+                    <select class="form-control form-control-sm rsp-select" id="rspFltBuilding">
+                        <option value="">All Buildings</option>
+                    </select>
+                </div>
+                <div class="rsp-filter-group">
+                    <label class="rsp-label">Floor</label>
+                    <select class="form-control form-control-sm rsp-select" id="rspFltFloor">
+                        <option value="">All Floors</option>
+                    </select>
+                </div>
+                <div class="rsp-filter-group">
+                    <label class="rsp-label">Room Type</label>
+                    <select class="form-control form-control-sm rsp-select" id="rspFltRoomType">
+                        <option value="">All Types</option>
+                    </select>
+                </div>
+                <div class="rsp-filter-group">
+                    <label class="rsp-label">Occupancy</label>
+                    <select class="form-control form-control-sm rsp-select" id="rspFltOccupancy">
+                        <option value="">All Status</option>
+                    </select>
+                </div>
+                <div class="rsp-filter-group">
+                    <label class="rsp-label">Maintenance</label>
+                    <select class="form-control form-control-sm rsp-select" id="rspFltMaintenance">
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="rsp-filter-group">
+                    <label class="rsp-label">Housekeeping</label>
+                    <select class="form-control form-control-sm rsp-select" id="rspFltHousekeeping">
+                        <option value="">All</option>
+                    </select>
+                </div>
+                <div class="rsp-filter-group">
+                    <label class="rsp-label">From Date</label>
+                    <input type="date" class="form-control form-control-sm rsp-date-input" id="rspFltDateFrom" />
+                </div>
+                <div class="rsp-filter-group">
+                    <label class="rsp-label">To Date</label>
+                    <input type="date" class="form-control form-control-sm rsp-date-input" id="rspFltDateTo" />
+                </div>
+                <div class="rsp-filter-group rsp-filter-actions">
+                    <button type="button" class="btn btn-sm cma_primary_button rsp-apply-btn" id="rspApplyFilters">
+                        <i class="fa fa-search"></i> Search
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rsp-clear-btn" id="rspClearFilters">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results count bar -->
+        <div class="rsp-results-bar" id="rspResultsBar" style="display:none;">
+            <span id="rspResultCount" class="rsp-count-badge">0 rooms</span>
+        </div>
+
+        <!-- Results area -->
+        <div class="rsp-results-wrap" id="rspResultsWrap">
+            <div id="rspResults" class="rsp-results"></div>
+            <div id="rspLoading" class="rsp-state-msg" style="display:none;"><i class="fa fa-spinner fa-spin"></i> Searching rooms&hellip;</div>
+            <div id="rspEmpty" class="rsp-state-msg rsp-state-empty" style="display:none;">
+                <i class="fa fa-door-open rsp-empty-icon"></i>
+                <span>Search for rooms to get started.</span>
+            </div>
+        </div>
+
+        <!-- Room Detail Sub-Panel (slides over results) -->
+        <div id="rspDetailPanel" class="rsp-detail-panel">
+            <div class="rsp-detail-back">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="rspDetailBack">
+                    <i class="fa fa-arrow-left"></i> Back to results
+                </button>
+            </div>
+            <div class="rsp-detail-content">
+                <div id="rspDetailLoading" class="rsp-state-msg"><i class="fa fa-spinner fa-spin"></i> Loading room details&hellip;</div>
+                <div id="rspDetailBody" style="display:none;">
+                    <!-- Gallery -->
+                    <div class="rsp-detail-gallery">
+                        <div class="rsp-detail-main-img" id="rspDetailMainImg">
+                            <i class="fa fa-image rsp-detail-no-img"></i>
+                        </div>
+                        <div class="rsp-detail-thumbs" id="rspDetailThumbs"></div>
+                    </div>
+                    <!-- Info -->
+                    <div class="rsp-detail-info">
+                        <h4 class="rsp-detail-title" id="rspDetailTitle">-</h4>
+                        <div class="rsp-detail-subtitle" id="rspDetailSubtitle">-</div>
+                        <div class="rsp-detail-price" id="rspDetailPrice">-</div>
+                        <div class="rsp-detail-badges" id="rspDetailBadges"></div>
+                        <div class="rsp-detail-rows">
+                            <div class="rsp-detail-row"><span class="rsp-detail-label">Block</span><span class="rsp-detail-value" id="rspDetBlock">-</span></div>
+                            <div class="rsp-detail-row"><span class="rsp-detail-label">Building</span><span class="rsp-detail-value" id="rspDetBuilding">-</span></div>
+                            <div class="rsp-detail-row"><span class="rsp-detail-label">Floor</span><span class="rsp-detail-value" id="rspDetFloor">-</span></div>
+                            <div class="rsp-detail-row"><span class="rsp-detail-label">Room Type</span><span class="rsp-detail-value" id="rspDetRoomType">-</span></div>
+                            <div class="rsp-detail-row"><span class="rsp-detail-label">Room Number</span><span class="rsp-detail-value" id="rspDetRoomNumber">-</span></div>
+                            <div class="rsp-detail-row"><span class="rsp-detail-label">Room Code</span><span class="rsp-detail-value" id="rspDetRoomCode">-</span></div>
+                        </div>
+                        <!-- Date-range occupancy info -->
+                        <div id="rspDetailOccupancyInfo" class="rsp-detail-occupancy-info" style="display:none;">
+                            <div class="rsp-detail-occ-title"><i class="fa fa-calendar-alt"></i> Occupancy for Selected Dates</div>
+                            <div id="rspDetailOccupancyList" class="rsp-detail-occ-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     STYLES
+     ══════════════════════════════════════════════════════════ -->
+<style>
+    /* ── Overlay ── */
+    .rsp-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.38);
+        z-index: 1040;
+        opacity: 0; visibility: hidden;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .rsp-overlay.is-open { opacity: 1; visibility: visible; }
+
+    /* ── Pane ── */
+    .rsp-pane {
+        position: fixed; top: 0; right: 0;
+        width: 100%; max-width: 560px;
+        height: 100%;
+        background: #fff;
+        z-index: 1050;
+        box-shadow: -6px 0 32px rgba(0,0,0,0.14);
+        transform: translateX(100%);
+        transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+        display: flex; flex-direction: column;
+        overflow: hidden;
+    }
+    .rsp-pane.is-open { transform: translateX(0); }
+
+    /* ── Header ── */
+    .rsp-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid #e8ecf1;
+        background: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 100%);
+        flex-shrink: 0;
+    }
+    .rsp-title {
+        margin: 0; font-size: 1.15rem; font-weight: 700; color: #1e293b;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .rsp-title i { color: var(--btnprimary, #2d5f44); font-size: 1.1em; }
+    .rsp-close {
+        width: 36px; height: 36px; border: none; background: transparent;
+        color: #64748b; border-radius: 8px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 16px; transition: background 0.2s, color 0.2s;
+    }
+    .rsp-close:hover { background: #fee2e2; color: #dc2626; }
+
+    /* ── Body ── */
+    .rsp-body {
+        flex: 1; overflow: hidden;
+        display: flex; flex-direction: column;
+        padding: 0; position: relative;
+    }
+
+    /* ── Search bar ── */
+    .rsp-search-row { padding: 14px 20px 0; flex-shrink: 0; }
+    .rsp-search-bar {
+        display: flex; align-items: center;
+        border: 1.5px solid #e2e8f0; border-radius: 10px;
+        background: #f8fafc; overflow: hidden;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .rsp-search-bar:focus-within {
+        border-color: var(--btnprimary, #2d5f44);
+        box-shadow: 0 0 0 3px rgba(45,95,68,0.1);
+        background: #fff;
+    }
+    .rsp-search-icon { padding: 0 0 0 14px; color: #94a3b8; font-size: 14px; }
+    .rsp-search-input {
+        flex: 1; border: none; outline: none; background: transparent;
+        font-size: 14px; padding: 10px 12px; color: #1e293b;
+    }
+    .rsp-search-input::placeholder { color: #94a3b8; }
+    .rsp-filter-btn {
+        flex-shrink: 0; border: none; background: transparent;
+        color: #94a3b8; padding: 10px 14px; cursor: pointer;
+        font-size: 15px; border-left: 1px solid #e5e7eb;
+        transition: color 0.2s, background 0.2s;
+    }
+    .rsp-filter-btn:hover, .rsp-filter-btn.is-active {
+        color: var(--btnprimary, #2d5f44); background: #f0fdf4;
+    }
+
+    /* ── Filter panel (collapsible) ── */
+    .rsp-filters {
+        max-height: 0; overflow: hidden;
+        transition: max-height 0.3s ease, padding 0.3s ease;
+        padding: 0 20px; flex-shrink: 0;
+    }
+    .rsp-filters.is-open {
+        max-height: 500px; padding: 12px 20px 8px;
+    }
+    .rsp-filter-grid {
+        display: grid; grid-template-columns: 1fr 1fr 1fr;
+        gap: 10px;
+    }
+    .rsp-filter-group { display: flex; flex-direction: column; gap: 3px; }
+    .rsp-label { font-size: 11px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.4px; }
+    .rsp-select {
+        font-size: 13px !important; border-radius: 6px !important;
+        border: 1px solid #e2e8f0 !important; padding: 5px 8px !important;
+        height: 34px !important;
+    }
+    .rsp-select:focus { border-color: var(--btnprimary, #2d5f44) !important; box-shadow: 0 0 0 2px rgba(45,95,68,0.1) !important; }
+    .rsp-filter-actions {
+        display: flex; flex-direction: row; align-items: flex-end;
+        gap: 6px; justify-content: flex-start;
+    }
+    .rsp-apply-btn { font-size: 12px; padding: 6px 16px; }
+    .rsp-clear-btn { font-size: 12px; padding: 6px 12px; }
+
+    /* ── Results count bar ── */
+    .rsp-results-bar {
+        padding: 8px 20px; flex-shrink: 0;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex; align-items: center;
+    }
+    .rsp-count-badge {
+        font-size: 12px; font-weight: 600; color: #64748b;
+        background: #f1f5f9; padding: 3px 10px; border-radius: 20px;
+    }
+
+    /* ── Results wrap ── */
+    .rsp-results-wrap { flex: 1; overflow-y: auto; padding: 12px 20px 20px; min-height: 120px; }
+    .rsp-results {
+        display: flex; flex-direction: column; gap: 14px;
+        list-style: none; padding: 0; margin: 0;
+    }
+
+    /* ── State messages ── */
+    .rsp-state-msg { text-align: center; padding: 32px 16px; font-size: 14px; color: #94a3b8; }
+    .rsp-state-empty { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .rsp-empty-icon { font-size: 36px; opacity: 0.3; }
+
+    /* ═════════════════════════════════════════════
+       Room cards inside the pane
+       ═════════════════════════════════════════════ */
+    .rsp-card {
+        background: #fff;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: box-shadow 0.2s, transform 0.15s;
+        display: flex; flex-direction: column;
+        cursor: pointer;
+    }
+    .rsp-card:hover {
+        box-shadow: 0 6px 24px rgba(0,0,0,0.09);
+        transform: translateY(-1px);
+    }
+
+    /* Card hero image */
+    .rsp-card__hero {
+        position: relative;
+        height: 140px; overflow: hidden;
+        background: linear-gradient(135deg, #e2e8f0 0%, #f1f5f9 100%);
+    }
+    .rsp-card__hero img {
+        width: 100%; height: 100%; object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    .rsp-card:hover .rsp-card__hero img { transform: scale(1.05); }
+    .rsp-card__hero-placeholder {
+        width: 100%; height: 100%;
+        display: flex; align-items: center; justify-content: center;
+        color: #cbd5e1; font-size: 40px;
+    }
+    .rsp-card__img-count {
+        position: absolute; bottom: 8px; right: 8px;
+        background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+        color: #fff; font-size: 11px; font-weight: 600;
+        padding: 3px 9px; border-radius: 20px;
+        display: flex; align-items: center; gap: 4px;
+    }
+
+    /* Status ribbon on hero */
+    .rsp-card__status-ribbon {
+        position: absolute; top: 10px; left: 10px;
+        display: flex; gap: 5px; flex-wrap: wrap;
+    }
+    .rsp-card__badge {
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.3px; padding: 3px 9px; border-radius: 20px;
+        display: inline-flex; align-items: center; gap: 3px;
+    }
+    .rsp-card__badge--available  { background: #dcfce7; color: #15803d; }
+    .rsp-card__badge--occupied   { background: #fee2e2; color: #b91c1c; }
+    .rsp-card__badge--booked     { background: #fef3c7; color: #92400e; }
+    .rsp-card__badge--maintenance{ background: #ffedd5; color: #c2410c; }
+    .rsp-card__badge--housekeeping{background: #dbeafe; color: #1d4ed8; }
+
+    /* Card body */
+    .rsp-card__body { padding: 12px 14px; flex: 1; }
+    .rsp-card__title-row {
+        display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+    }
+    .rsp-card__name {
+        font-size: 15px; font-weight: 700; color: #1e293b; margin: 0;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .rsp-card__code {
+        font-size: 11px; font-weight: 500; color: #64748b;
+        background: #f1f5f9; padding: 2px 8px; border-radius: 4px;
+        white-space: nowrap;
+    }
+    .rsp-card__subtitle {
+        font-size: 12px; color: #64748b; margin-top: 2px;
+    }
+    .rsp-card__details {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 6px 12px; margin-top: 10px;
+    }
+    .rsp-card__detail {
+        font-size: 12px; color: #475569;
+        display: flex; align-items: center; gap: 6px;
+        min-width: 0;
+    }
+    .rsp-card__detail i {
+        color: var(--btnprimary, #2d5f44); font-size: 11px;
+        opacity: 0.7; min-width: 14px; text-align: center;
+    }
+    .rsp-card__detail span {
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* Card footer */
+    .rsp-card__footer {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 8px 14px; border-top: 1px solid #f1f5f9;
+        background: #fafbfc;
+    }
+    .rsp-card__deposit {
+        font-size: 13px; font-weight: 700;
+        color: var(--btnprimary, #2d5f44);
+    }
+    .rsp-card__deposit small {
+        font-size: 10px; font-weight: 500; color: #94a3b8;
+        display: block; line-height: 1;
+    }
+    .rsp-card__view-btn {
+        font-size: 12px; padding: 5px 14px;
+        border-radius: 6px; text-decoration: none;
+        display: inline-flex; align-items: center; gap: 4px;
+    }
+
+    /* ── Date inputs ── */
+    .rsp-date-input {
+        font-size: 13px !important; border-radius: 6px !important;
+        border: 1px solid #e2e8f0 !important; padding: 5px 8px !important;
+        height: 34px !important;
+    }
+    .rsp-date-input:focus { border-color: var(--btnprimary, #2d5f44) !important; box-shadow: 0 0 0 2px rgba(45,95,68,0.1) !important; }
+
+    /* ═════════════════════════════════════════════
+       Room Detail Sub-Panel
+       ═════════════════════════════════════════════ */
+    .rsp-detail-panel {
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: #fff; z-index: 5;
+        display: flex; flex-direction: column;
+        transform: translateX(100%);
+        transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+        overflow: hidden;
+    }
+    .rsp-detail-panel.is-active { transform: translateX(0); }
+
+    .rsp-detail-back {
+        padding: 12px 16px; flex-shrink: 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .rsp-detail-content {
+        flex: 1; overflow-y: auto; padding: 16px;
+    }
+
+    /* Gallery in detail panel */
+    .rsp-detail-gallery { margin-bottom: 16px; }
+    .rsp-detail-main-img {
+        width: 100%; aspect-ratio: 16/10; border-radius: 10px;
+        overflow: hidden; background: #f1f5f9;
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid #e5e7eb; cursor: pointer;
+    }
+    .rsp-detail-main-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .rsp-detail-main-img:hover img { transform: scale(1.03); }
+    .rsp-detail-no-img { color: #94a3b8; font-size: 40px; }
+    .rsp-detail-thumbs {
+        display: flex; gap: 8px; margin-top: 8px; overflow-x: auto; padding-bottom: 4px;
+    }
+    .rsp-detail-thumb {
+        flex: 0 0 60px; width: 60px; height: 45px; border-radius: 6px;
+        overflow: hidden; border: 2px solid transparent;
+        cursor: pointer; opacity: 0.6; transition: opacity 0.2s, border-color 0.2s;
+    }
+    .rsp-detail-thumb.active, .rsp-detail-thumb:hover {
+        border-color: var(--btnprimary, #2d5f44); opacity: 1;
+    }
+    .rsp-detail-thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Detail info */
+    .rsp-detail-title {
+        font-size: 18px; font-weight: 700; color: #1e293b; margin: 0 0 2px;
+    }
+    .rsp-detail-subtitle { font-size: 13px; color: #64748b; margin-bottom: 12px; }
+    .rsp-detail-price {
+        font-size: 22px; font-weight: 700; color: var(--btnprimary, #2d5f44); margin-bottom: 12px;
+    }
+    .rsp-detail-price small { font-size: 11px; font-weight: 400; color: #64748b; display: block; line-height: 1; }
+    .rsp-detail-badges { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .rsp-detail-rows { border-top: 1px solid #f1f5f9; padding-top: 12px; }
+    .rsp-detail-row {
+        display: flex; align-items: baseline; padding: 6px 0;
+        border-bottom: 1px solid #f8fafc;
+    }
+    .rsp-detail-row:last-child { border-bottom: none; }
+    .rsp-detail-label { flex: 0 0 110px; font-size: 12px; font-weight: 500; color: #64748b; }
+    .rsp-detail-value { flex: 1; font-size: 13px; font-weight: 600; color: #1e293b; }
+
+    /* Occupancy info for date range */
+    .rsp-detail-occupancy-info {
+        margin-top: 16px; padding: 12px; border-radius: 8px;
+        background: #f8fafc; border: 1px solid #e2e8f0;
+    }
+    .rsp-detail-occ-title {
+        font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 8px;
+        display: flex; align-items: center; gap: 6px;
+    }
+    .rsp-detail-occ-list { display: flex; flex-direction: column; gap: 4px; }
+    .rsp-detail-occ-item {
+        font-size: 12px; padding: 4px 8px; border-radius: 4px;
+        display: flex; align-items: center; gap: 6px;
+    }
+    .rsp-detail-occ-item--occupied { background: #fee2e2; color: #b91c1c; }
+    .rsp-detail-occ-item--available { background: #dcfce7; color: #15803d; }
+
+    /* ── Responsive ── */
+    @@media (max-width: 600px) {
+        .rsp-pane { max-width: 100%; }
+        .rsp-filter-grid { grid-template-columns: 1fr 1fr; }
+        .rsp-card__hero { height: 110px; }
+    }
+    @@media (max-width: 400px) {
+        .rsp-filter-grid { grid-template-columns: 1fr; }
+    }
+</style>
+
+<!-- ══════════════════════════════════════════════════════════
+     SCRIPT
+     ══════════════════════════════════════════════════════════ -->
+<script>
+(function () {
+    'use strict';
+
+    /* ── URLs ── */
+    var LIST_URL     = '@Url.Action("get_Room_List", "Room")';
+    var DETAIL_URL   = '@Url.Action("getById_allinfo_Room", "Room")';
+    var BLOCK_URL    = '@Url.Action("get_all_Block", "Room")';
+    var BUILDING_URL = '@Url.Action("get_all_Building", "Room")';
+    var FLOOR_URL    = '@Url.Action("get_all_Floor", "Room")';
+    var ROOMTYPE_URL = '@Url.Action("get_all_RoomType", "Room")';
+    var LOOKUPS_URL  = '@Url.Action("get_lookups_by_entity", "lookups")';
+    var VIEW_URL     = '@Url.Action("View_Room", "Room")';
+    var OCCUPANCY_LIST_URL = '@Url.Action("get_Room_Occupancy_Status_List", "RoomOccupancyStatus")';
+    var cloudPath    = '@(Context.Session.GetString("NalamVazhacloudpath") ?? "")';
+    var sasToken     = '@(Context.Session.GetString("NalamVazhaSAStoken") ?? "")';
+    var blankImg     = (typeof vBaseurl !== 'undefined' && vBaseurl ? vBaseurl : '@(Configuration.GetSection("ApiSettings")["baseURL"] ?? "")') + '/images/blank.jpg';
+
+    /* ── DOM refs ── */
+    var overlay    = document.getElementById('rspOverlay');
+    var pane       = document.getElementById('rspPane');
+    var btnClose   = document.getElementById('rspClose');
+    var btnOpen    = document.getElementById('btnOpenRoomSearch');
+    var searchInput= document.getElementById('rspSearchInput');
+    var filterBtn  = document.getElementById('rspFilterBtn');
+    var filtersDiv = document.getElementById('rspFilters');
+    var applyBtn   = document.getElementById('rspApplyFilters');
+    var clearBtn   = document.getElementById('rspClearFilters');
+    var resultsEl  = document.getElementById('rspResults');
+    var loadingEl  = document.getElementById('rspLoading');
+    var emptyEl    = document.getElementById('rspEmpty');
+    var resultsBar = document.getElementById('rspResultsBar');
+    var countBadge = document.getElementById('rspResultCount');
+
+    /* Detail panel refs */
+    var detailPanel  = document.getElementById('rspDetailPanel');
+    var detailBack   = document.getElementById('rspDetailBack');
+    var detailLoading= document.getElementById('rspDetailLoading');
+    var detailBody   = document.getElementById('rspDetailBody');
+    var resultsWrap  = document.getElementById('rspResultsWrap');
+
+    var _timer = null;
+    var _lookupsLoaded = false;
+    var _detailImages = [];
+    var _detailActiveIdx = 0;
+
+    /* ══════════════════════════════════════
+       Helpers
+       ══════════════════════════════════════ */
+    function esc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+    function getTenant() { return (typeof str_tenantid !== 'undefined' && str_tenantid) ? str_tenantid : ''; }
+
+    function getRoomImageUrl(roomimage) {
+        if (!roomimage) return '';
+        var parts = roomimage.split('|');
+        for (var i = 0; i < parts.length; i++) {
+            if (parts[i]) return cloudPath + '/' + parts[i] + sasToken;
+        }
+        return '';
+    }
+    function countRoomImages(roomimage) {
+        if (!roomimage) return 0;
+        return roomimage.split('|').filter(function(p) { return p.trim() !== ''; }).length;
+    }
+
+    function badgeClass(status) {
+        if (!status) return 'rsp-card__badge--available';
+        var s = status.toLowerCase().trim();
+        if (s === 'occupied')       return 'rsp-card__badge--occupied';
+        if (s === 'booked')         return 'rsp-card__badge--booked';
+        if (s === 'maintenance' || s === 'under maintenance') return 'rsp-card__badge--maintenance';
+        if (s === 'housekeeping')   return 'rsp-card__badge--housekeeping';
+        return 'rsp-card__badge--available';
+    }
+
+    /* ══════════════════════════════════════
+       Open / Close pane
+       ══════════════════════════════════════ */
+    function openPane() {
+        overlay.classList.add('is-open');
+        pane.classList.add('is-open');
+        loadLookups();
+        setTimeout(function() { searchInput.focus(); }, 250);
+        if (!resultsEl.innerHTML.trim()) {
+            emptyEl.style.display = 'flex';
+        }
+    }
+    function closePane() {
+        overlay.classList.remove('is-open');
+        pane.classList.remove('is-open');
+    }
+
+    /* ══════════════════════════════════════
+       Load filter dropdowns (once)
+       ══════════════════════════════════════ */
+    function loadLookups() {
+        if (_lookupsLoaded) return;
+        _lookupsLoaded = true;
+        var tid = getTenant();
+
+        /* Blocks */
+        fetch(BLOCK_URL + '?tenantid=' + tid, { credentials: 'same-origin' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (typeof data === 'string') data = JSON.parse(data);
+                var list = Array.isArray(data) ? data : (data && data.detail ? data.detail : []);
+                var sel = document.getElementById('rspFltBlock');
+                list.sort(function(a,b){ return (a.blockname||'').localeCompare(b.blockname||''); });
+                list.forEach(function(d) {
+                    var o = document.createElement('option');
+                    o.value = d.Blockid || d.blockid || '';
+                    o.textContent = d.blockname || '';
+                    sel.appendChild(o);
+                });
+            }).catch(function(){});
+
+        /* Buildings */
+        fetch(BUILDING_URL + '?tenantid=' + tid, { credentials: 'same-origin' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (typeof data === 'string') data = JSON.parse(data);
+                var list = Array.isArray(data) ? data : (data && data.detail ? data.detail : []);
+                var sel = document.getElementById('rspFltBuilding');
+                list.sort(function(a,b){ return (a.buildingname||'').localeCompare(b.buildingname||''); });
+                list.forEach(function(d) {
+                    var o = document.createElement('option');
+                    o.value = d.Buildingid || d.buildingid || '';
+                    o.textContent = d.buildingname || '';
+                    sel.appendChild(o);
+                });
+            }).catch(function(){});
+
+        /* Floors */
+        fetch(FLOOR_URL + '?tenantid=' + tid, { credentials: 'same-origin' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (typeof data === 'string') data = JSON.parse(data);
+                var list = Array.isArray(data) ? data : (data && data.detail ? data.detail : []);
+                var sel = document.getElementById('rspFltFloor');
+                list.sort(function(a,b){ return (a.floorname||'').localeCompare(b.floorname||''); });
+                list.forEach(function(d) {
+                    var o = document.createElement('option');
+                    o.value = d.Floorid || d.floorid || '';
+                    o.textContent = d.floorname || '';
+                    sel.appendChild(o);
+                });
+            }).catch(function(){});
+
+        /* Room types */
+        fetch(ROOMTYPE_URL + '?tenantid=' + tid, { credentials: 'same-origin' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (typeof data === 'string') data = JSON.parse(data);
+                var list = Array.isArray(data) ? data : (data && data.detail ? data.detail : []);
+                var sel = document.getElementById('rspFltRoomType');
+                list.sort(function(a,b){ return (a.roomtypename||'').localeCompare(b.roomtypename||''); });
+                list.forEach(function(d) {
+                    if (d.roomtypename) {
+                        var o = document.createElement('option');
+                        o.value = d.roomtypename;
+                        o.textContent = d.roomtypename;
+                        sel.appendChild(o);
+                    }
+                });
+            }).catch(function(){});
+
+        /* Occupancy, Maintenance, Housekeeping status from entity lookups */
+        fetch(LOOKUPS_URL + '?id=Room', { credentials: 'same-origin' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (typeof data === 'string') data = JSON.parse(data);
+                if (!Array.isArray(data)) return;
+                var fieldMap = {
+                    'occupancystatus':    'rspFltOccupancy',
+                    'maintenancestatus':  'rspFltMaintenance',
+                    'housekeepingstatus': 'rspFltHousekeeping'
+                };
+                data.forEach(function(item) {
+                    var selId = fieldMap[item.fieldname];
+                    if (selId) {
+                        var sel = document.getElementById(selId);
+                        var opts = (item.fielddesc || '').split(',').sort();
+                        opts.forEach(function(v) {
+                            v = v.trim();
+                            if (v) {
+                                var o = document.createElement('option');
+                                o.value = v; o.textContent = v;
+                                sel.appendChild(o);
+                            }
+                        });
+                    }
+                });
+            }).catch(function(){});
+    }
+
+    /* ══════════════════════════════════════
+       Search & fetch rooms
+       ══════════════════════════════════════ */
+    function doSearch() {
+        /* Close detail panel if open */
+        hideRoomDetail();
+
+        var term = (searchInput.value || '').trim().toLowerCase();
+        var fBlock    = document.getElementById('rspFltBlock').value;
+        var fBuilding = document.getElementById('rspFltBuilding').value;
+        var fFloor    = document.getElementById('rspFltFloor').value;
+        var fType     = document.getElementById('rspFltRoomType').value;
+        var fOcc      = document.getElementById('rspFltOccupancy').value;
+        var fMaint    = document.getElementById('rspFltMaintenance').value;
+        var fHk       = document.getElementById('rspFltHousekeeping').value;
+        var fDateFrom = document.getElementById('rspFltDateFrom').value;
+        var fDateTo   = document.getElementById('rspFltDateTo').value;
+
+        resultsEl.innerHTML = '';
+        emptyEl.style.display = 'none';
+        loadingEl.style.display = 'block';
+        resultsBar.style.display = 'none';
+
+        var params = 'tenantid=' + encodeURIComponent(getTenant())
+            + '&block='    + encodeURIComponent(fBlock)
+            + '&building=' + encodeURIComponent(fBuilding)
+            + '&floor='    + encodeURIComponent(fFloor)
+            + '&roomtype=' + encodeURIComponent(fType)
+            + '&occupancystatus=' + encodeURIComponent(fOcc)
+            + '&maintenancestatus=' + encodeURIComponent(fMaint)
+            + '&housekeepingstatus=' + encodeURIComponent(fHk)
+            + '&nextdaycheckin=&nextdaycheckout=';
+
+        var hasDateRange = fDateFrom && fDateTo;
+
+        /* Fetch room list */
+        var roomListPromise = fetch(LIST_URL + '?' + params, { credentials: 'same-origin' })
+            .then(function(r) { return r.text(); })
+            .then(function(t) {
+                try { var d = JSON.parse(t); if (typeof d === 'string') d = JSON.parse(d); return d; }
+                catch(e) { return { detail: [] }; }
+            });
+
+        /* If date range provided, also fetch occupancy data */
+        var occupancyPromise;
+        if (hasDateRange) {
+            var occParams = 'tenantid=' + encodeURIComponent(getTenant())
+                + '&block=&building=&floor=&room='
+                + '&rodate_automatonfrom=' + encodeURIComponent(fDateFrom)
+                + '&rodate_automatonto=' + encodeURIComponent(fDateTo)
+                + '&status=Occupied'
+                + '&pagesize=0&pagenumber=0&searchterm=&sortFieldsJson=&returnAllRecords=true';
+            occupancyPromise = fetch(OCCUPANCY_LIST_URL + '?' + occParams, { credentials: 'same-origin' })
+                .then(function(r) { return r.text(); })
+                .then(function(t) {
+                    try { var d = JSON.parse(t); if (typeof d === 'string') d = JSON.parse(d); return d; }
+                    catch(e) { return { detail: [] }; }
+                });
+        } else {
+            occupancyPromise = Promise.resolve(null);
+        }
+
+        Promise.all([roomListPromise, occupancyPromise])
+            .then(function(results) {
+                loadingEl.style.display = 'none';
+                var data = results[0];
+                var occData = results[1];
+                var rows = (data && data.detail) ? data.detail : (Array.isArray(data) ? data : []);
+
+                /* Build set of occupied room IDs from occupancy data */
+                var occupiedRoomIds = {};
+                if (occData && occData.detail && Array.isArray(occData.detail)) {
+                    occData.detail.forEach(function(rec) {
+                        var rid = (rec.room || '').toString();
+                        if (rid) occupiedRoomIds[rid] = true;
+                    });
+                }
+
+                /* Client-side keyword filter */
+                if (term) {
+                    rows = rows.filter(function(d) {
+                        var haystack = ((d.roomnumber||'') + ' ' + (d.roomcode||'') + ' ' + (d.roomtype||'')).toLowerCase();
+                        return haystack.indexOf(term) !== -1;
+                    });
+                }
+
+                /* Override occupancy status based on date range */
+                if (hasDateRange) {
+                    rows.forEach(function(d) {
+                        var rid = (d.Roomid || d.roomid || '').toString();
+                        d._dateRangeOccupied = !!occupiedRoomIds[rid];
+                        d._dateRangeStatus = d._dateRangeOccupied ? 'Occupied' : 'Available';
+                    });
+
+                    /* Apply occupancy filter based on date-range status */
+                    if (fOcc) {
+                        var fOccLower = fOcc.toLowerCase();
+                        if (fOccLower === 'available' || fOccLower === 'empty') {
+                            rows = rows.filter(function(d) { return !d._dateRangeOccupied; });
+                        } else if (fOccLower === 'occupied') {
+                            rows = rows.filter(function(d) { return d._dateRangeOccupied; });
+                        }
+                    }
+                }
+
+                rows.sort(function(a,b) {
+                    return (a.roomnumber||'').localeCompare(b.roomnumber||'', undefined, { numeric: true });
+                });
+
+                if (rows.length === 0) {
+                    emptyEl.querySelector('span').textContent = term || fBlock || fBuilding || fFloor || fType || fOcc || fDateFrom
+                        ? 'No rooms found matching your criteria.'
+                        : 'Search for rooms to get started.';
+                    emptyEl.style.display = 'flex';
+                    resultsBar.style.display = 'none';
+                    return;
+                }
+
+                resultsBar.style.display = 'flex';
+                countBadge.textContent = rows.length + ' room' + (rows.length > 1 ? 's' : '') + ' found';
+
+                rows.forEach(function(obj) {
+                    resultsEl.insertAdjacentHTML('beforeend', buildCard(obj, hasDateRange));
+                });
+            })
+            .catch(function() {
+                loadingEl.style.display = 'none';
+                emptyEl.querySelector('span').textContent = 'Search failed. Please try again.';
+                emptyEl.style.display = 'flex';
+            });
+    }
+
+    /* ══════════════════════════════════════
+       Build card HTML
+       ══════════════════════════════════════ */
+    function buildCard(obj, hasDateRange) {
+        var id       = (obj.Roomid || obj.roomid || '').toString();
+        var number   = obj.roomnumber || '—';
+        var code     = obj.roomcode || '';
+        var type     = obj.roomtype || '';
+        var block    = obj.blockname || obj.block || '';
+        var building = obj.buildingname || obj.building || '';
+        var floor    = obj.floorname || obj.floor || '';
+        var occStat  = hasDateRange ? (obj._dateRangeStatus || '') : (obj.occupancystatus || '');
+        var maintStat= obj.maintenancestatus || '';
+        var hkStat   = obj.housekeepingstatus || '';
+        var deposit  = obj.bookingdeposit || '';
+
+        /* Hero image */
+        var imgUrl   = getRoomImageUrl(obj.roomimage);
+        var imgCount = countRoomImages(obj.roomimage);
+        var heroHtml;
+        if (imgUrl) {
+            heroHtml = '<img src="' + esc(imgUrl) + '" alt="Room ' + esc(number) + '" onerror="this.parentElement.innerHTML=\'<div class=rsp-card__hero-placeholder><i class=fa fa-door-open></i></div>\';" />';
+            if (imgCount > 1) heroHtml += '<span class="rsp-card__img-count"><i class="fa fa-images"></i> ' + imgCount + '</span>';
+        } else {
+            heroHtml = '<div class="rsp-card__hero-placeholder"><i class="fa fa-door-open"></i></div>';
+        }
+
+        /* Status badges */
+        var badges = '';
+        if (occStat) badges += '<span class="rsp-card__badge ' + badgeClass(occStat) + '">' + esc(occStat) + '</span>';
+        if (maintStat && maintStat.toLowerCase() !== 'none') badges += '<span class="rsp-card__badge rsp-card__badge--maintenance"><i class="fa fa-tools"></i> ' + esc(maintStat) + '</span>';
+        if (hkStat && hkStat.toLowerCase() !== 'none') badges += '<span class="rsp-card__badge rsp-card__badge--housekeeping"><i class="fa fa-broom"></i> ' + esc(hkStat) + '</span>';
+
+        /* Details grid */
+        var details = '';
+        if (block)    details += '<div class="rsp-card__detail"><i class="fa fa-building"></i><span>' + esc(block) + '</span></div>';
+        if (building) details += '<div class="rsp-card__detail"><i class="fa fa-city"></i><span>' + esc(building) + '</span></div>';
+        if (floor)    details += '<div class="rsp-card__detail"><i class="fa fa-layer-group"></i><span>' + esc(floor) + '</span></div>';
+        if (type)     details += '<div class="rsp-card__detail"><i class="fa fa-bed"></i><span>' + esc(type) + '</span></div>';
+
+        /* Deposit */
+        var depositHtml = '';
+        if (deposit) {
+            depositHtml = '<div class="rsp-card__deposit"><small>Booking Deposit</small>&#8377; ' + esc(deposit) + '</div>';
+        }
+
+        return '<div class="rsp-card" data-room-id="' + esc(id) + '">' +
+            '<div class="rsp-card__hero">' +
+                heroHtml +
+                (badges ? '<div class="rsp-card__status-ribbon">' + badges + '</div>' : '') +
+            '</div>' +
+            '<div class="rsp-card__body">' +
+                '<div class="rsp-card__title-row">' +
+                    '<h6 class="rsp-card__name">Room ' + esc(number) + '</h6>' +
+                    (code ? '<span class="rsp-card__code">' + esc(code) + '</span>' : '') +
+                '</div>' +
+                (type ? '<div class="rsp-card__subtitle">' + esc(type) + '</div>' : '') +
+                (details ? '<div class="rsp-card__details">' + details + '</div>' : '') +
+            '</div>' +
+            '<div class="rsp-card__footer">' +
+                depositHtml +
+                '<button type="button" class="btn btn-sm cma_primary_button rsp-card__view-btn" onclick="event.stopPropagation(); window.RoomSearchPane.showDetail(\'' + esc(id) + '\');"><i class="fa fa-eye"></i> View</button>' +
+            '</div>' +
+        '</div>';
+    }
+
+    /* ══════════════════════════════════════
+       Room Detail Panel
+       ══════════════════════════════════════ */
+    function showRoomDetail(roomId) {
+        detailLoading.style.display = 'block';
+        detailBody.style.display = 'none';
+        detailPanel.classList.add('is-active');
+
+        fetch(DETAIL_URL + '?Roomid=' + encodeURIComponent(roomId), { credentials: 'same-origin' })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (typeof data === 'string') data = JSON.parse(data);
+                var arr = Array.isArray(data) ? data : (data && data.detail ? data.detail : []);
+                if (!arr.length) {
+                    detailLoading.innerHTML = '<i class="fa fa-exclamation-circle"></i> Room not found.';
+                    return;
+                }
+                var obj = arr[0];
+
+                /* Gallery images */
+                var imageUrls = [];
+                if (obj.roomimage) {
+                    var parts = obj.roomimage.split('|');
+                    for (var i = 0; i < parts.length; i++) {
+                        if (parts[i]) imageUrls.push(cloudPath + '/' + parts[i] + sasToken);
+                    }
+                }
+                buildDetailGallery(imageUrls);
+
+                /* Info */
+                document.getElementById('rspDetailTitle').textContent = (obj.roomtype || 'Room') + ' — Room ' + (obj.roomnumber || '');
+                document.getElementById('rspDetailSubtitle').textContent = 'Code: ' + (obj.roomcode || '—');
+
+                var deposit = obj.bookingdeposit;
+                var priceEl = document.getElementById('rspDetailPrice');
+                if (deposit != null && deposit !== '') {
+                    priceEl.innerHTML = '<small>Booking Deposit</small>&#8377; ' + parseFloat(deposit).toLocaleString('en-IN');
+                } else {
+                    priceEl.innerHTML = '';
+                }
+
+                /* Badges */
+                var $badges = document.getElementById('rspDetailBadges');
+                $badges.innerHTML = '';
+                if (obj.occupancystatus) $badges.innerHTML += '<span class="rsp-card__badge ' + badgeClass(obj.occupancystatus) + '">' + esc(obj.occupancystatus) + '</span>';
+                if (obj.maintenancestatus && obj.maintenancestatus.toLowerCase() !== 'none') $badges.innerHTML += '<span class="rsp-card__badge rsp-card__badge--maintenance"><i class="fa fa-tools"></i> ' + esc(obj.maintenancestatus) + '</span>';
+                if (obj.housekeepingstatus && obj.housekeepingstatus.toLowerCase() !== 'none') $badges.innerHTML += '<span class="rsp-card__badge rsp-card__badge--housekeeping"><i class="fa fa-broom"></i> ' + esc(obj.housekeepingstatus) + '</span>';
+
+                /* Detail rows */
+                document.getElementById('rspDetBlock').textContent = obj.block || obj.blockname || '—';
+                document.getElementById('rspDetBuilding').textContent = obj.building || obj.buildingname || '—';
+                document.getElementById('rspDetFloor').textContent = obj.floor || obj.floorname || '—';
+                document.getElementById('rspDetRoomType').textContent = obj.roomtype || '—';
+                document.getElementById('rspDetRoomNumber').textContent = obj.roomnumber || '—';
+                document.getElementById('rspDetRoomCode').textContent = obj.roomcode || '—';
+
+                /* If date range is selected, fetch and show occupancy for this room */
+                var fDateFrom = document.getElementById('rspFltDateFrom').value;
+                var fDateTo   = document.getElementById('rspFltDateTo').value;
+                var occInfoEl = document.getElementById('rspDetailOccupancyInfo');
+                var occListEl = document.getElementById('rspDetailOccupancyList');
+
+                if (fDateFrom && fDateTo) {
+                    var occParams = 'tenantid=' + encodeURIComponent(getTenant())
+                        + '&block=&building=&floor='
+                        + '&room=' + encodeURIComponent(roomId)
+                        + '&rodate_automatonfrom=' + encodeURIComponent(fDateFrom)
+                        + '&rodate_automatonto=' + encodeURIComponent(fDateTo)
+                        + '&status=&pagesize=0&pagenumber=0&searchterm=&sortFieldsJson=&returnAllRecords=true';
+                    fetch(OCCUPANCY_LIST_URL + '?' + occParams, { credentials: 'same-origin' })
+                        .then(function(r) { return r.text(); })
+                        .then(function(t) {
+                            try { var d = JSON.parse(t); if (typeof d === 'string') d = JSON.parse(d); return d; }
+                            catch(e) { return { detail: [] }; }
+                        })
+                        .then(function(occData) {
+                            var records = (occData && occData.detail) ? occData.detail : [];
+                            occListEl.innerHTML = '';
+                            if (records.length === 0) {
+                                occListEl.innerHTML = '<div class="rsp-detail-occ-item rsp-detail-occ-item--available"><i class="fa fa-check-circle"></i> Available for entire period</div>';
+                            } else {
+                                records.forEach(function(rec) {
+                                    var cls = (rec.status || '').toLowerCase() === 'occupied' ? 'rsp-detail-occ-item--occupied' : 'rsp-detail-occ-item--available';
+                                    var icon = (rec.status || '').toLowerCase() === 'occupied' ? 'fa-times-circle' : 'fa-check-circle';
+                                    var patientInfo = rec.patientname ? ' — ' + esc(rec.patientname) : '';
+                                    var bookingInfo = rec.bookingid ? ' (Booking: ' + esc(rec.bookingid) + ')' : '';
+                                    occListEl.innerHTML += '<div class="rsp-detail-occ-item ' + cls + '"><i class="fa ' + icon + '"></i> ' + esc(rec.rodate || '') + ' — ' + esc(rec.status || '') + patientInfo + bookingInfo + '</div>';
+                                });
+                            }
+                            occInfoEl.style.display = 'block';
+                        }).catch(function() {
+                            occInfoEl.style.display = 'none';
+                        });
+                } else {
+                    occInfoEl.style.display = 'none';
+                }
+
+                detailLoading.style.display = 'none';
+                detailBody.style.display = 'block';
+            })
+            .catch(function() {
+                detailLoading.innerHTML = '<i class="fa fa-exclamation-circle"></i> Failed to load room details.';
+            });
+    }
+
+    function hideRoomDetail() {
+        detailPanel.classList.remove('is-active');
+        /* Reset loading state for next time */
+        detailLoading.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Loading room details&hellip;';
+        detailLoading.style.display = 'block';
+        detailBody.style.display = 'none';
+    }
+
+    /* Detail gallery helpers */
+    function buildDetailGallery(imageUrls) {
+        _detailImages = imageUrls;
+        _detailActiveIdx = 0;
+        var mainImg = document.getElementById('rspDetailMainImg');
+        var thumbsEl = document.getElementById('rspDetailThumbs');
+
+        if (!imageUrls.length) {
+            mainImg.innerHTML = '<i class="fa fa-image rsp-detail-no-img"></i>';
+            thumbsEl.innerHTML = '';
+            return;
+        }
+
+        mainImg.innerHTML = '<img src="' + imageUrls[0] + '" alt="Room" />';
+        thumbsEl.innerHTML = '';
+        if (imageUrls.length > 1) {
+            imageUrls.forEach(function(url, i) {
+                var cls = (i === 0) ? 'rsp-detail-thumb active' : 'rsp-detail-thumb';
+                thumbsEl.insertAdjacentHTML('beforeend', '<div class="' + cls + '" data-idx="' + i + '"><img src="' + url + '" alt="thumb" /></div>');
+            });
+        }
+    }
+
+    function setDetailMainImage(idx) {
+        if (!_detailImages.length) return;
+        _detailActiveIdx = idx;
+        document.getElementById('rspDetailMainImg').innerHTML = '<img src="' + _detailImages[idx] + '" alt="Room" />';
+        var thumbs = document.querySelectorAll('#rspDetailThumbs .rsp-detail-thumb');
+        thumbs.forEach(function(t, i) {
+            t.classList.toggle('active', i === idx);
+        });
+    }
+
+    /* ══════════════════════════════════════
+       Event bindings
+       ══════════════════════════════════════ */
+    /* Open / close */
+    if (btnOpen) btnOpen.addEventListener('click', openPane);
+    if (btnClose) btnClose.addEventListener('click', closePane);
+    if (overlay) overlay.addEventListener('click', closePane);
+
+    /* Escape key */
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && pane.classList.contains('is-open')) closePane();
+    });
+
+    /* Search input – debounced */
+    searchInput.addEventListener('input', function() {
+        clearTimeout(_timer);
+        _timer = setTimeout(doSearch, 500);
+    });
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); clearTimeout(_timer); doSearch(); }
+    });
+
+    /* Filter toggle */
+    filterBtn.addEventListener('click', function() {
+        var isOpen = filtersDiv.classList.toggle('is-open');
+        filterBtn.classList.toggle('is-active', isOpen);
+    });
+
+    /* Filter actions */
+    applyBtn.addEventListener('click', function() { doSearch(); });
+    clearBtn.addEventListener('click', function() {
+        document.getElementById('rspFltBlock').value = '';
+        document.getElementById('rspFltBuilding').value = '';
+        document.getElementById('rspFltFloor').value = '';
+        document.getElementById('rspFltRoomType').value = '';
+        document.getElementById('rspFltOccupancy').value = '';
+        document.getElementById('rspFltMaintenance').value = '';
+        document.getElementById('rspFltHousekeeping').value = '';
+        document.getElementById('rspFltDateFrom').value = '';
+        document.getElementById('rspFltDateTo').value = '';
+        searchInput.value = '';
+        resultsEl.innerHTML = '';
+        resultsBar.style.display = 'none';
+        emptyEl.querySelector('span').textContent = 'Search for rooms to get started.';
+        emptyEl.style.display = 'flex';
+        hideRoomDetail();
+    });
+
+    /* Enter in filter selects triggers search */
+    filtersDiv.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
+    });
+
+    /* Card click – open detail panel inline */
+    document.addEventListener('click', function(e) {
+        var card = e.target.closest('.rsp-card');
+        if (!card || e.target.closest('button')) return; /* don't double-trigger if they clicked the View button */
+        var roomId = card.getAttribute('data-room-id');
+        if (roomId) showRoomDetail(roomId);
+    });
+
+    /* Detail panel – back button */
+    detailBack.addEventListener('click', hideRoomDetail);
+
+    /* Detail panel – thumbnail click */
+    document.addEventListener('click', function(e) {
+        var thumb = e.target.closest('.rsp-detail-thumb');
+        if (thumb) {
+            var idx = parseInt(thumb.getAttribute('data-idx'), 10);
+            if (!isNaN(idx)) setDetailMainImage(idx);
+        }
+    });
+
+    /* ══════════════════════════════════════
+       Global API
+       ══════════════════════════════════════ */
+    window.RoomSearchPane = {
+        open:   openPane,
+        close:  closePane,
+        search: doSearch,
+        showDetail: showRoomDetail
+    };
+})();
+</script>

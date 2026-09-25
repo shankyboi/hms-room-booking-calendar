@@ -1,0 +1,1394 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:39 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.ClinicalTaskModel
+			@{
+			ViewData["Title"] = @Resource.updateclinicaltask;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_Clinical_Task", "ClinicalTask", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updateclinicaltask</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.ClinicalTaskid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 workprofile_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="workprofile">@Resource.clinicaltask_workprofile <b class="iconRed">*</b></label>
+										<select name="workprofile" id="workprofile" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.workprofile)
+									<div id="workprofile-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 competency_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="competency">@Resource.clinicaltask_competency <b class="iconRed">*</b></label>
+										<select name="competency" id="competency" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.competency)
+									<div id="competency-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+ <div class="col-sm-12 col-xs-12 mt-3 taskduration_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Task Duration Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.taskduration
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-taskduration pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="taskdurationContainer" class="taskdurationContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Task Duration Containder Block-->
+					
+			 
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updateclinicaltask</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("ClinicalTask","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			
+			
+			<script>
+var dataworkprofile
+function fill_workprofile() {
+$.ajax({
+url: '@Url.Action("get_all_WorkProfile")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.workprofilename !== null);
+				data.sort((a, b) =>
+					String(a.workprofilename).toLowerCase().localeCompare(String(b.workprofilename).toLowerCase()) 
+				);
+dataworkprofile=data
+}
+})
+}
+function buildselectworkprofile(selected, index) {
+if (dataworkprofile == undefined) fill_workprofile()
+var select = '<select name="workprofile' + index + '" id="workprofile' + index + '"  class="workprofile form-control  required" >'
+select = select + '<option value="">Choose</option>';
+if (dataworkprofile != null && dataworkprofile.length > 0)
+{
+$.each(dataworkprofile, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.WorkProfileid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.WorkProfileid  + '">' + optionDataInner.workprofilename  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.WorkProfileid+ '">' + optionDataInner.workprofilename + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.WorkProfileid + '">' + optionDataInner.workprofilename+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+<script>
+var datatasktype
+function fill_tasktype() {
+$.ajax({
+url: '@Url.Action("get_all_TaskType")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.tasktypename !== null);
+				data.sort((a, b) =>
+					String(a.tasktypename).toLowerCase().localeCompare(String(b.tasktypename).toLowerCase()) 
+				);
+datatasktype=data
+}
+})
+}
+function buildselecttasktype(selected, index) {
+if (datatasktype == undefined) fill_tasktype()
+var select = '<select name="tasktype' + index + '" id="tasktype' + index + '"  class="tasktype form-control  required" >'
+select = select + '<option value="">Choose</option>';
+if (datatasktype != null && datatasktype.length > 0)
+{
+$.each(datatasktype, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.TaskTypeid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.TaskTypeid  + '">' + optionDataInner.tasktypename  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.TaskTypeid+ '">' + optionDataInner.tasktypename + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.TaskTypeid + '">' + optionDataInner.tasktypename+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+<script>
+var datataskname
+function filterClinicalTaskTaskNames(data) {
+return (data || []).filter(item => item.taskname !== null && String(item.taskname).trim().toLowerCase() !== 'default template');
+}
+function getUsedTaskNamesForType(tasktype, excludeRowID) {
+var used = {};
+if (!tasktype) return used;
+$('.taskduration').each(function () {
+	var rowId = ($(this).attr('id') || '').replace('taskduration', '');
+	if (rowId === (excludeRowID || '').toString()) return;
+	var rowTaskType = ($(this).find('select.tasktype').val() || '').toString();
+	if (rowTaskType.toUpperCase() !== (tasktype || '').toString().toUpperCase()) return;
+	var rowTaskName = ($(this).find('select.taskname').val() || '').toString();
+	if (rowTaskName) used[rowTaskName.toUpperCase()] = true;
+});
+return used;
+}
+function fill_taskname() {
+$.ajax({
+url: '@Url.Action("get_all_Task")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = filterClinicalTaskTaskNames(data);
+				data.sort((a, b) =>
+					String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase()) 
+				);
+datataskname=data
+}
+})
+}
+function buildselecttaskname(selected, index) {
+var select = '<select name="taskname' + index + '" id="taskname' + index + '"  class="taskname form-control select2 select2-list  required" >'
+select = select + '<option value="">Choose</option>';
+return select + '</select>';
+}
+</script>
+
+
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-taskduration", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".taskduration").removeClass('showthelables');
+			   $(".btn-remove-row-taskduration").removeClass('btn-remove-row');
+				$("#taskdurationContainer").prepend(
+				'<div class="row m-t-10 taskduration dependentContainerBorder" id="taskduration' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 workprofile_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="workprofile">@Resource.clinicaltask_taskduration_workprofile <b class="iconRed">*</b></label>'+
+										buildselectworkprofile('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="workprofile' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 tasktype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="tasktype">@Resource.clinicaltask_taskduration_tasktype <b class="iconRed">*</b></label>'+
+										buildselecttasktype('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="tasktype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="taskname">@Resource.clinicaltask_taskduration_taskname <b class="iconRed">*</b></label>'+
+										buildselecttaskname('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="taskname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 durationinminutes_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="durationinminutes">@Resource.clinicaltask_taskduration_durationinminutes <b class="iconRed">*</b></label>'+
+									'<input   name="durationinminutes' + index + '" id="durationinminutes' + index + '"  type="text" min="0" max="1440" data-rule-max="1440" data-msg-max="Duration in Minutes cannot exceed 1440." class="durationinminutes form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 overbookingcount_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="overbookingcount">@Resource.clinicaltask_taskduration_overbookingcount</label>'+
+									'<input   name="overbookingcount' + index + '" id="overbookingcount' + index + '"  type="text" min="0" max="99999999" class="overbookingcount form-control--active form-control form-control-lg " />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-taskduration"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#taskdurationContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('taskduration', '')).addClass('btn-remove-row');
+				
+				
+				$("#taskname"+index).select2()
+if ($("#durationinminutes" + index).data('autoNumeric') == undefined)
+$("#durationinminutes" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '1440'})
+if ($("#overbookingcount" + index).data('autoNumeric') == undefined)
+$("#overbookingcount" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-taskduration', function (e) {
+					 
+					 
+					
+					var taskdurationRow = $(this).closest(".taskduration");
+					var index = taskdurationRow.attr("id").replace("taskduration", "");
+					taskdurationRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.taskduration" ? @Html.Raw(Json.Serialize(@Model.taskduration)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".taskduration").removeClass('showthelables');
+			   $(".btn-remove-row-taskduration").removeClass('btn-remove-row');
+				$("#taskdurationContainer").prepend(
+				'<div class="row m-t-10 taskduration dependentContainerBorder" id="taskduration' + index + '">' +
+				'<input type="hidden" class="ClinicalTask_taskdurationid" value="' + obj.ClinicalTask_taskdurationid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 workprofile_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="workprofile">@Resource.clinicaltask_taskduration_workprofile <b class="iconRed">*</b></label>'+
+										buildselectworkprofile(obj.workprofile, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="workprofile' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 tasktype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="tasktype">@Resource.clinicaltask_taskduration_tasktype <b class="iconRed">*</b></label>'+
+										buildselecttasktype(obj.tasktype, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="tasktype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="taskname">@Resource.clinicaltask_taskduration_taskname <b class="iconRed">*</b></label>'+
+										buildselecttaskname(obj.taskname, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="taskname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 durationinminutes_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="durationinminutes">@Resource.clinicaltask_taskduration_durationinminutes <b class="iconRed">*</b></label>'+
+									'<input  value="'+(obj.durationinminutes?obj.durationinminutes:'')+'" name="durationinminutes' + index + '" id="durationinminutes' + index + '"  type="text" min="0" max="1440" data-rule-max="1440" data-msg-max="Duration in Minutes cannot exceed 1440." class="durationinminutes form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 overbookingcount_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="overbookingcount">@Resource.clinicaltask_taskduration_overbookingcount</label>'+
+									'<input  value="'+(obj.overbookingcount?obj.overbookingcount:'')+'" name="overbookingcount' + index + '" id="overbookingcount' + index + '"  type="text" min="0" max="99999999" class="overbookingcount form-control--active form-control form-control-lg " />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-taskduration"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.taskdurationContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('taskduration', '')).addClass('btn-remove-row');
+
+				$("#taskname"+index).select2()
+if ($("#durationinminutes" + index).data('autoNumeric') == undefined)
+$("#durationinminutes" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '1440'})
+if ($("#overbookingcount" + index).data('autoNumeric') == undefined)
+$("#overbookingcount" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+ 
+				
+				 
+  
+			var sendFilterDatataskname = {
+			"tenantid":$("#tenantid").val(),
+"tasktype":obj.tasktype
+			}
+
+
+			var currentRowID =index
+
+
+			$.ajax({
+			url: '@Url.Action("lookup_ClinicalTask_taskduration_taskname")',
+			dataType: 'json',
+			data: sendFilterDatataskname,
+			success: function(data) {
+
+				if (data.length > 0) {
+					data = filterClinicalTaskTaskNames(data);
+					var usedTaskNames = getUsedTaskNamesForType(obj.tasktype, currentRowID.toString());
+					data = data.filter(function(item) {
+						var tid = (item.Taskid || '').toString().toUpperCase();
+						return !usedTaskNames[tid] || tid === (obj.taskname || '').toString().toUpperCase();
+					});
+					data.sort((a, b) =>
+						String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase())
+					);
+				}
+
+				var ddltarget_taskname="#taskname"+currentRowID
+
+				$(ddltarget_taskname).empty();
+				$(ddltarget_taskname).append("<option value=''>Choose</option>");
+				$.each(data, function(index_, optionDataInner) {
+
+					if(obj.taskname.toUpperCase()==(optionDataInner.Taskid).toUpperCase())
+					$(ddltarget_taskname).append('<option selected value="' + optionDataInner.Taskid+ '">' + optionDataInner.taskname+ '</option>')
+					else
+					$(ddltarget_taskname).append('<option  value="' +  optionDataInner.Taskid+ '">' + optionDataInner.taskname+ '</option>')
+				});
+				$(ddltarget_taskname).select2()
+			}
+
+
+			});
+ 
+
+
+				
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+
+			<script>
+			
+			  function gettaskduration() {
+		 
+					$("#taskduration").val("");
+					var taskdurationModel = [];
+
+				
+					
+					
+					var el = $('.taskdurationContainer .taskduration');
+					
+					el.each(function (cnt) {
+					
+							taskdurationAttributes = {}
+							
+							 taskdurationAttributes['workprofile']=($(this).find('.workprofile').val() ? $(this).find('.workprofile').val().toString() :'')
+taskdurationAttributes['tasktype']=($(this).find('.tasktype').val() ? $(this).find('.tasktype').val().toString() :'')
+taskdurationAttributes['taskname']=($(this).find('.taskname').select2("val") ? $(this).find('.taskname').select2("val").toString() :'')
+taskdurationAttributes['durationinminutes']=$(this).find('.durationinminutes').val() ? $(this).find('.durationinminutes').val():0
+taskdurationAttributes['overbookingcount']=$(this).find('.overbookingcount').val() ? $(this).find('.overbookingcount').val():0
+taskdurationAttributes['ClinicalTask_taskdurationid']=($(this).find('.ClinicalTask_taskdurationid').val() != undefined ? $(this).find('.ClinicalTask_taskdurationid').val().toString() : "00000000-0000-0000-0000-000000000000")
+taskdurationAttributes['craftmyapp_actionmethodname']='Update_Clinical_Task'
+taskdurationAttributes['record_order']=cnt
+taskdurationAttributes['cma_client_row_id']=$(this).attr("id").replace("taskduration","")
+
+							
+							taskdurationModel.push(taskdurationAttributes);
+					
+					
+					
+					});
+					 
+					return taskdurationModel
+
+
+				}
+
+				// Same Task Type + Task Name combination should only appear once across the
+				// Task Duration rows (blank/unselected cells are ignored here — the "required"
+				// validation on those fields already blocks empty rows on its own).
+				function findDuplicateTaskDurationCombo(taskdurationModel) {
+					var seen = {};
+					for (var i = 0; i < taskdurationModel.length; i++) {
+						var tt = (taskdurationModel[i].tasktype || '').toString();
+						var tn = (taskdurationModel[i].taskname || '').toString();
+						if (!tt || !tn) continue;
+						var key = tt + '|' + tn;
+						if (seen[key]) return true;
+						seen[key] = true;
+					}
+					return false;
+				}
+
+
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Clinical_Task")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Clinical_Task")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updateclinicaltask;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updateclinicaltask")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ var taskdurationModel=gettaskduration()
+if(taskdurationModel.length ==0)
+							{
+									swal({
+									title: 'Validation !',
+									text: "Please add Task Duration",
+									type: 'error',
+									buttonsStyling: false,
+									confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+									})
+
+									return;
+							}
+
+if (findDuplicateTaskDurationCombo(taskdurationModel)) {
+									swal({
+									title: 'Duplicate Task Duration',
+									text: "The same Task Type and Task Name combination has been added more than once. Please remove the duplicate row.",
+									type: 'error',
+									buttonsStyling: false,
+									confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+									})
+
+									return;
+							}
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ for (var i = 0; i < taskdurationModel.length; i++) {
+formdata.append("taskduration[" + i + "].workprofile", taskdurationModel[i].workprofile)
+formdata.append("taskduration[" + i + "].record_order", taskdurationModel[i].record_order)
+formdata.append("taskduration[" + i + "].cma_client_row_id", taskdurationModel[i].cma_client_row_id)
+formdata.append("taskduration[" + i + "].tasktype", taskdurationModel[i].tasktype)
+formdata.append("taskduration[" + i + "].taskname", taskdurationModel[i].taskname)
+formdata.append("taskduration[" + i + "].durationinminutes", taskdurationModel[i].durationinminutes)
+formdata.append("taskduration[" + i + "].overbookingcount", taskdurationModel[i].overbookingcount)
+formdata.append("taskduration[" + i + "].ClinicalTask_taskdurationid", taskdurationModel[i].ClinicalTask_taskdurationid)
+formdata.append("taskduration[" + i + "].ClinicalTaskid", $("#ClinicalTaskid").val())
+
+formdata.append("taskduration[" + i + "].craftmyapp_actionmethodname", 'Update_Clinical_Task')
+}
+
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("ClinicalTask","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "ClinicalTask")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			<script>
+			$(document).ready(function () {
+				fill_workprofile()
+fill_tasktype()
+fill_taskname()
+
+				$("#tenantid").change(function(){
+						$("#taskdurationContainer").empty()
+
+						fill_workprofile()
+fill_tasktype()
+fill_taskname()
+
+				})
+			
+
+			});
+			</script>
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+
+<script>
+var strworkprofile;
+</script>
+	@if (Model != null)
+	{
+		if(Model.workprofile != null && Model.workprofile.ToString() != "")
+		{
+		<script>
+			 strworkprofile="@Model.workprofile"
+		</script>
+		}
+	}
+<script>
+function lookup_ClinicalTask_workprofile(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_ClinicalTask_workprofile")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.workprofilename !== null);
+			data.sort((a, b) =>
+				String(a.workprofilename).toLowerCase().localeCompare(String(b.workprofilename).toLowerCase()) 
+			);
+		}
+	   var ddltarget_workprofile="#workprofile"
+		$(ddltarget_workprofile).empty();
+		
+		$(ddltarget_workprofile).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strworkprofile== optionDataInner.WorkProfileid){
+					$(ddltarget_workprofile).append('<option selected value="' + optionDataInner.WorkProfileid + '">' + optionDataInner.workprofilename+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_workprofile).append('<option  value="' + optionDataInner.WorkProfileid+ '">' + optionDataInner.workprofilename+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_ClinicalTask_workprofile(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strcompetency;
+</script>
+	@if (Model != null)
+	{
+		if(Model.competency != null && Model.competency.ToString() != "")
+		{
+		<script>
+			 strcompetency="@Model.competency"
+		</script>
+		}
+	}
+<script>
+function lookup_ClinicalTask_competency(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_ClinicalTask_competency")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.competencyname !== null);
+			data.sort((a, b) =>
+				String(a.competencyname).toLowerCase().localeCompare(String(b.competencyname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_competency="#competency"
+		$(ddltarget_competency).empty();
+		
+		$(ddltarget_competency).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strcompetency== optionDataInner.Competencyid){
+					$(ddltarget_competency).append('<option selected value="' + optionDataInner.Competencyid + '">' + optionDataInner.competencyname+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_competency).append('<option  value="' + optionDataInner.Competencyid+ '">' + optionDataInner.competencyname+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_ClinicalTask_competency(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_ClinicalTask_workprofile($("#tenantid").val())
+lookup_ClinicalTask_competency($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script><script>
+function lookup_ClinicalTask_taskduration_taskname(tenantid,tasktype,currentRowID) {
+var ddltarget_taskname="#taskname"+currentRowID
+$(ddltarget_taskname).empty();
+$(ddltarget_taskname).append("<option value=''>Choose</option>");
+if (!tasktype) {
+	$(ddltarget_taskname).select2()
+	return;
+}
+
+var sendFilterData = {
+	"tenantid":tenantid,
+"tasktype":tasktype
+}
+
+$.ajax({
+url: '@Url.Action("lookup_ClinicalTask_taskduration_taskname")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = filterClinicalTaskTaskNames(data);
+			var usedTaskNames = getUsedTaskNamesForType(tasktype, (currentRowID || '').toString());
+			data = data.filter(function(item) {
+				return !usedTaskNames[(item.Taskid || '').toString().toUpperCase()];
+			});
+			data.sort((a, b) =>
+				String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase())
+			);
+		}
+		$.each(data, function(index, optionDataInner) {
+
+
+					$(ddltarget_taskname).append('<option  value="' + optionDataInner.Taskid+ '">' + optionDataInner.taskname+ '</option>')
+
+
+
+		});
+
+		$(ddltarget_taskname).select2()
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							 
+							
+									 $('body').on('change', '.tasktype', function (e) {
+			
+										var currentRowID =($(this).attr('id')).replace('tasktype','')
+										lookup_ClinicalTask_taskduration_taskname($("#tenantid").val(),$("#tasktype"+currentRowID).val(),currentRowID)
+
+									})
+
+
+
+						})
+						
+						</script>

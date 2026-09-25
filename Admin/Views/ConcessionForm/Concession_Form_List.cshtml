@@ -1,0 +1,695 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 05/26/2026 07:14:54 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.ConcessionFormModel
+					@{
+					ViewData["Title"] = @Resource.concessionformlist;
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="card " style="padding:20px;">
+					<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<h3 class="formHdr">@Resource.concessionformlist</h3>
+					</div>
+					</div>
+					</div><!--form_card_header-->
+					<div class="card-body" style="padding:1px;padding-top:0px;">
+
+					@if(TempData["errMessage"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["errMessage"]
+					</div>
+					</div>
+					</div>
+					}
+
+					@if(TempData["message"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["message"]
+					</div>
+					</div>
+					</div>
+					}
+
+					<input type="hidden" id="ConcessionFormid" name="ConcessionFormid"/>
+					<div class="row">
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+								<div class="form-group form-group--float-above my-3" > 
+								<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+								<select name="tenantid" id="tenantid" class="form-control">
+								</select>
+								<i class="form-group__bar"></i>
+								</div>
+
+								<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+								</div>
+								
+								</div>
+
+					<div class="row"><div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+					<table id="tblConcessionForm" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+					<thead class="thead-default">
+					<tr>
+					
+					<th>@Resource.concessionform_patientname</th>
+<th>@Resource.concessionform_bookingreferencenumber</th>
+<th>@Resource.concessionform_residentialhousetype</th>
+<th>@Resource.concessionform_totalannualfamilyincome</th>
+<th>@Resource.concessionform_whichofthesedoyouown</th>
+<th>@Resource.concessionform_haveyoutraveledinternationallyinthelast5years</th>
+<th>@Resource.concessionform_purposeoftravel</th>
+<th>@Resource.concessionform_doanyofthefollowingapplytoyou</th>
+<th>@Resource.concessionform_requestedconcessionamount</th>
+<th>@Resource.concessionform_approvedconcessionamount</th>
+<th>@Resource.concessionform_verifiedstatus</th>
+<th>@Resource.tenantdisplayname</th>
+
+					<th class="all">Action</th>
+					
+
+					</tr>
+					</thead>
+					<tbody></tbody>
+					
+					</table>
+					</div>
+
+					</div>
+					
+					
+					</div>
+					
+					</div>
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					
+					<script type="text/javascript">
+
+				 var arr_selected_for_verification = [];
+
+					function fill_ConcessionForm()
+					{
+						
+
+					var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								 
+								}
+
+					
+
+
+					
+
+var table=$("#tblConcessionForm").DataTable({
+columnDefs: [{ 
+	 targets: -1,
+	 title: '<i class="fa fa-pencil fa-lg"></i>'
+  }],
+		
+		destroy:true,
+"orderMulti": false,
+	"order": [],"aaSorting": [],
+	autoWidth: !1,responsive:!0,
+	lengthMenu: [
+	[15, 30, 45, -1],
+	["15 Rows", "30 Rows", "45 Rows", "Everything"]
+	],
+	language: {
+	searchPlaceholder: "Search for records..."
+	},
+	 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+	dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+  
+	buttons: [{
+	extend: "excelHtml5",
+	title: "List Of ConcessionForm Data"
+	}, {
+	extend: "csvHtml5",
+	title: "List Of ConcessionForm Data"
+	}, {
+	extend: "print",
+	title: "List Of ConcessionForm Data"
+	}],
+ initComplete: function(a, b) {
+
+
+
+	  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+	  
+if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+$(this).closest(".dataTables_wrapper").find(".dataTables_length").prepend(`
+		<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+	  `);
+
+		 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+			$("#cma_card_tab_action_container").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			`);
+		}
+ }
+
+var Actions=getAutho("ConcessionForm","create")
+		if(Actions != undefined){
+			var create_URL = "@Url.Action("entry.viewname", "ConcessionForm")"
+			create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+			
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+		   
+		   
+		<div class="dataTables_buttons actions">
+			<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.concessionform_patientname
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_bookingreferencenumber
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_residentialhousetype
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_totalannualfamilyincome
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_whichofthesedoyouown
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_haveyoutraveledinternationallyinthelast5years
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_purposeoftravel
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_doanyofthefollowingapplytoyou
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_requestedconcessionamount
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_approvedconcessionamount
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_verifiedstatus
+ <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+
+		 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+		</div>
+	  `.replace("create_URL", create_URL))
+}
+
+		$("#cma_card_tab_action_container .card-lst").remove();
+		$("#cma_card_tab_action_container_action_btn").empty()
+		$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+	   
+
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+			else{
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(` 
+		
+		
+		<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.concessionform_patientname
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_bookingreferencenumber
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_residentialhousetype
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_totalannualfamilyincome
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_whichofthesedoyouown
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_haveyoutraveledinternationallyinthelast5years
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_purposeoftravel
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_doanyofthefollowingapplytoyou
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_requestedconcessionamount
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_approvedconcessionamount
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.concessionform_verifiedstatus
+ <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+		</div>
+	  `)
+}
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+		
+	}
+	 ,columns: [
+		    
+		{data: 'patientname_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('PatientProfile','detail')
+ if(row["patientname_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "PatientProfile")?PatientProfileid=" + row['patientname']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["patientname_master"]+ '</a>' 
+}else {
+ 
+return row['patientname_master'] 
+}
+}
+}},
+{data: 'bookingreferencenumber_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('IPDApplicationForm','detail')
+ if(row["bookingreferencenumber_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "IPDApplicationForm")?IPDApplicationFormid=" + row['bookingreferencenumber']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["bookingreferencenumber_master"]+ '</a>' 
+}else {
+ 
+return row['bookingreferencenumber_master'] 
+}
+}
+}},
+{data: 'residentialhousetype'},
+{data: 'totalannualfamilyincome'},
+{data: 'whichofthesedoyouown'},
+{data: 'haveyoutraveledinternationallyinthelast5years'},
+{data: 'purposeoftravel'},
+{data: 'doanyofthefollowingapplytoyou'},
+{data: 'requestedconcessionamount',mRender: function (data, type, row) {if(row["requestedconcessionamount"]==null) {
+ return '-' 
+}else {
+ return '&#8377;'+ Math.abs(Number(row["requestedconcessionamount"]) || 0)
+}
+}},
+{data: 'approvedconcessionamount',mRender: function (data, type, row) {if(row["approvedconcessionamount"]==null) {
+ return '-' 
+}else {
+ return '&#8377;'+ Math.abs(Number(row["approvedconcessionamount"]) || 0)
+}
+}},
+{data: 'verifiedstatus'},
+{data: '_tenantname'},
+
+		{
+					"sName": "concessionformid",
+					"bSearchable": false,
+					"bSortable": false,
+					data: 'concessionformid', "className": "dt-center",
+					mRender: function(data, type, row) {
+											var Actions=getAuthoController("ConcessionForm")
+											var appendMessage='';
+											var concessionStatus = (row["verifiedstatus"] || "").toString().toLowerCase();
+											if (concessionStatus === "approved" || concessionStatus === "rejected") {
+												return '-';
+											}
+											if(Actions !=undefined)
+											{
+												for (var index = 0; index < Actions.length; ++index) {
+													var entry = Actions[index];
+														
+													var URL = "@Url.Action("entry.viewname", "ConcessionForm")?ConcessionFormid=" + row["concessionformid"]
+													URL = URL.replace("entry.viewname",entry.actionmethodname);
+													if ((entry.viewname == "approved_detail")) {
+														appendMessage += '<a href="' + URL + '" class="dropdown-item">' + entry.actiondisplayname + '</a>'
+													}				 
+													
+												}
+					 
+												return '<div class="dropdown actions__item">' +
+												'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+												'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+		 
+
+												'</div>' +
+												'</div>'
+											}
+									}
+
+						}
+	
+
+	 ],
+	ajax: {
+	url: "@Url.Action("get_Concession_Form_List", "ConcessionForm")",
+	type: 'GET',
+	dataType: 'json',
+	dataSrc: '',
+	data: sendFilterData,
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+							allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+		}) 
+	}
+	}
+	}
+	})
+	 
+	  
+ $('body').on('click', '.ColVis_collection li', function(a) {
+	event.stopPropagation();
+  });
+ 
+ $('body').on('change', '.colvis_switch', function(a) {
+	var column = table.column($(this).attr('data-column'));
+	column.visible(!column.visible());
+  });
+
+
+ 
+
+   
+	 
+
+
+	
+
+
+							
+					}
+						
+
+					$(document).ready(function () {
+
+
+					fill_ConcessionForm()
+
+
+					var Actions=getAutho("ConcessionForm","list_verify_approved")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}
+
+
+
+
+					});
+					
+
+					$("body").on("click", "[data-table-action]", function(a) {
+					a.preventDefault();
+					var b = $(this).data("table-action");
+					console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+					if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+					var c = $(this).closest(".card");
+					c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+					}
+					});
+					</script>
+					
+					
+					
+					
+								<script>
+								$(document).ready(function () {
+								$("#tenantid").change(function(){
+								fill_ConcessionForm();
+								})
+
+								$("#btnFilter").click(function(){
+								fill_ConcessionForm();
+								})
+								});
+								</script> 
+
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+
+
+					
+					
+					
+					
+					

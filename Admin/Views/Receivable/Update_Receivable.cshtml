@@ -1,0 +1,2311 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 04/21/2026 05:37:59 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.ReceivableModel
+			@{
+			ViewData["Title"] = @Resource.updatereceivable;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_Receivable", "Receivable", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updatereceivable</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.Receivableid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 receivableno_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="receivableno">@Resource.receivable_receivableno</label>
+											@Html.TextBoxFor(m => m.receivableno, new {@placeholder="Auto Number YYYYMMDD-99999" ,@maxlength="128", @readonly="readonly", @class = "form-control form-control-lg " })
+
+										</div>
+									</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 receivabledate_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="receivabledate">@Resource.receivable_receivabledate <b class="iconRed">*</b></label>
+											@Html.TextBoxFor(m => m.receivabledate, "{0:dd/MM/yyyy}", new {@placeholder="dd/mm/yyyy" ,@type="text", @autocomplete="off", @class = "form-control form-control-lg required" })
+
+											<i class="form-group__bar" ></i>
+										</div>
+										@Html.ValidationMessageFor(model => model.receivabledate)
+										<div id="receivabledate-error" class="help-block" style="display: none" role="alert"></div>
+									</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 patientname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientname">@Resource.receivable_patientname <b class="iconRed">*</b></label>
+										<select name="patientname" id="patientname" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientname)
+									<div id="patientname-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 patientvisit_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientvisit">@Resource.receivable_patientvisit</label>
+										<select name="patientvisit" id="patientvisit" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientvisit)
+									<div id="patientvisit-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ipdnumber_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ipdnumber">@Resource.receivable_ipdnumber</label>
+										<select name="ipdnumber" id="ipdnumber" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.ipdnumber)
+									<div id="ipdnumber-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 opdnumber_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="opdnumber">@Resource.receivable_opdnumber</label>
+										<select name="opdnumber" id="opdnumber" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.opdnumber)
+									<div id="opdnumber-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 receivablefor_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="receivablefor">@Resource.receivable_receivablefor <b class="iconRed">*</b></label>
+										<select name="receivablefor" id="receivablefor"  class="form-control select2 select2-list  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.receivablefor)
+									<div id="receivablefor-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+					<div class="col-sm-3 col-xs-12 p-2 specifyothers_craftmyapp_container">
+						<div>
+							<div class="form-group">
+								<label for="specifyothers">@Resource.receivable_specifyothers</label>
+								@Html.TextBoxFor(m => m.specifyothers, new { @type = "text", @maxlength = "128", @class = "form-control form-control-lg mahat_transliterate " })
+
+								@Html.ValidationMessageFor(model => model.specifyothers)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 therapy_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapy">@Resource.receivable_therapy</label>
+										<select name="therapy" id="therapy" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.therapy)
+									<div id="therapy-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+								<div class="col-sm-3 col-xs-12 p-2 my-2 therapycost_craftmyapp_container">
+									<div class="form-group">
+									<label for="therapycost">@Resource.receivable_therapycost</label><br>
+									<div class="input-group prefix">
+										<span class="input-group-addon">&#8377;</span>
+										@Html.TextBoxFor(m => m.therapycost, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg " })
+
+									</div>
+								@Html.ValidationMessageFor(model => model.therapycost)
+								</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 therapykit_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapykit">@Resource.receivable_therapykit</label>
+										<select name="therapykit" id="therapykit" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.therapykit)
+									<div id="therapykit-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 kitprice_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-2" > 
+										<label for="kitprice">@Resource.receivable_kitprice</label><br>
+										@Html.TextBoxFor(m => m.kitprice, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.kitprice)
+									<div id="kitprice-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 medicine_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="medicine">@Resource.receivable_medicine</label>
+										<select name="medicine" id="medicine" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.medicine)
+									<div id="medicine-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+								<div class="col-sm-3 col-xs-12 p-2 my-2 price_craftmyapp_container">
+									<div class="form-group">
+									<label for="price">@Resource.receivable_price</label><br>
+									<div class="input-group prefix">
+										<span class="input-group-addon">&#8377;</span>
+										@Html.TextBoxFor(m => m.price, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg " })
+
+									</div>
+								@Html.ValidationMessageFor(model => model.price)
+								</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 package_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="package">@Resource.receivable_package</label>
+										<select name="package" id="package" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.package)
+									<div id="package-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 room_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="room">@Resource.receivable_room</label>
+										<select name="room" id="room"  class="form-control select2 select2-list  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.room)
+									<div id="room-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 amount_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="amount">@Resource.receivable_amount <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.amount, new {@type="text",@min="-9999999999999999",@max="9999999999999999", @class = "form-control form-control-lg required" })
+
+								 @Html.ValidationMessageFor(model => model.amount)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-12 col-xs-12 p-2 remarks_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="remarks">@Resource.receivable_remarks</label>
+										@Html.TextAreaFor(m => m.remarks, new {@minlength="0",@maxlength="256", @class = "form-control form-control-lg mahat_transliterate " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.remarks)
+									<div id="remarks-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updatereceivable</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("Receivable","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+<script>
+$(document).ready(function () {
+	$('#receivabledate').datetimepicker({
+		 minDate: moment().add(1, 'days').toDate(),
+		 timepicker: false,
+		 scrollInput: false,
+		 format: "d/m/Y",
+		 formatDate: "d/m/Y"
+});
+
+})
+</script>
+
+<script>
+var strreceivablefor;
+</script>
+@if (Model != null)
+{
+if (Model.receivablefor != null && Model.receivablefor.ToString() != "")
+{
+<script>
+strreceivablefor = "@Model.receivablefor";
+</script>
+}
+}
+<script>
+$(document).ready(function () {
+$("#therapycost").autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+})
+</script>
+<script>
+$(document).ready(function () {
+$('body').on('change', '.linetotal', function() {
+							var aggregatevalue = 0;
+							$('.linetotal').each(function(){
+												const iterationalaggregatevalue = parseFloat($(this).val().trim());
+												if(!isNaN(iterationalaggregatevalue)){
+													aggregatevalue += iterationalaggregatevalue; 
+												}							                
+											});
+							$("#kitprice").val(aggregatevalue.toFixed(2))
+							$("#kitprice").trigger('change')
+
+							})
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#price").autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#amount").autoNumeric('init',{aSep: '',vMin: '-9999999999999999.00',vMax: '9999999999999999.00'})
+})
+</script>
+
+			<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'Receivable' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+				
+							if(optionDataInner.fieldname=="receivablefor"){
+								var ddltarget_receivablefor = "#receivablefor"
+								$(ddltarget_receivablefor).empty();
+								$(ddltarget_receivablefor).append("<option value=''>Choose</option>")
+								var options_receivablefor = optionDataInner.fielddesc.split(',');
+								options_receivablefor.sort(function (a, b) {
+													return a.localeCompare(b);
+								});
+								options_receivablefor.forEach(function(option_receivablefor){
+									if(strreceivablefor== option_receivablefor){
+									 $(ddltarget_receivablefor).append('<option selected value="' + option_receivablefor + '">' + option_receivablefor+ '</option>')
+									 
+									 }
+									else
+									  $(ddltarget_receivablefor).append('<option  value="' + option_receivablefor + '">' + option_receivablefor+ '</option>')
+
+									
+								}) 
+								 $(ddltarget_receivablefor).select2();
+							}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+			
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			
+			<script>
+			
+			
+			$("#price").prop('disabled', true)
+$("#kitprice").prop('disabled', true)
+$("#therapycost").prop('disabled', true)
+
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Receivable")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Receivable")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updatereceivable;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updatereceivable")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ if (typeof window.normalizeReceivableAdjustmentAmount === "function") {
+ window.normalizeReceivableAdjustmentAmount();
+ }
+ 
+ 
+
+ 
+
+ $("#price").prop('disabled', false)
+ $("#kitprice").prop('disabled', false)
+ $("#therapycost").prop('disabled', false)
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ 
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("Receivable","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "Receivable")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+					<script>
+					var strpatientname;
+
+					function receivableJoinDisplayParts() {
+						var parts = [];
+						for (var i = 0; i < arguments.length; i++) {
+							var value = arguments[i];
+							if (value !== undefined && value !== null && value !== "") {
+								parts.push(value);
+							}
+						}
+						return parts.join(" ");
+					}
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientname != null && Model.patientname.ToString() != "")
+							{
+							<script>
+								 strpatientname="@Model.patientname"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Receivable_patientname(tenantid) {
+
+					var ddltarget_patientname = $('#patientname');
+					ddltarget_patientname.empty();;
+					ddltarget_patientname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Receivable_patientname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientProfileid;
+									data[i].name = receivableJoinDisplayParts(data[i].firstname, data[i].lastname, data[i].mobilenumber);
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Receivable_patientname,
+						 templateSelection: formatSelectSelected_lookup_Receivable_patientname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Receivable_patientname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientProfileid == strpatientname) {
+											var option = new Option(receivableJoinDisplayParts(data[i].firstname, data[i].lastname, data[i].mobilenumber),data[i].PatientProfileid, true, true);
+											ddltarget_patientname.append(option).trigger('update');
+
+											ddltarget_patientname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Receivable_patientname(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (receivableJoinDisplayParts(item.firstname, item.lastname, item.mobilenumber)) {
+						var textValue = receivableJoinDisplayParts(item.firstname, item.lastname, item.mobilenumber)
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Receivable_patientname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = receivableJoinDisplayParts(item.firstname, item.lastname, item.mobilenumber);
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Receivable_patientname(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strpatientvisit;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientvisit != null && Model.patientvisit.ToString() != "")
+							{
+							<script>
+								 strpatientvisit="@Model.patientvisit"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Receivable_patientvisit(tenantid,patientname) {
+
+					var ddltarget_patientvisit = $('#patientvisit');
+					ddltarget_patientvisit.empty();;
+					ddltarget_patientvisit.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Receivable_patientvisit")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patientname":patientname,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.visitnumber !== null);
+									data.sort((a, b) =>
+										String(a.visitnumber).toLowerCase().localeCompare(String(b.visitnumber).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientVisitid;
+									data[i].name = data[i].visitnumber+ ' ' + data[i].ipdnumber+ ' ' + data[i].opdnumber;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Receivable_patientvisit,
+						 templateSelection: formatSelectSelected_lookup_Receivable_patientvisit
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patientname":patientname,
+
+									'searchterm': strpatientvisit || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Receivable_patientvisit")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientVisitid == strpatientvisit) {
+											var option = new Option(data[i].visitnumber+ ' ' + data[i].ipdnumber+ ' ' + data[i].opdnumber,data[i].PatientVisitid, true, true);
+											ddltarget_patientvisit.append(option).trigger('update');
+
+											ddltarget_patientvisit.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Receivable_patientvisit(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.visitnumber+ ' ' + item.ipdnumber+ ' ' + item.opdnumber) {
+						var textValue = item.visitnumber+ ' ' + item.ipdnumber+ ' ' + item.opdnumber
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Receivable_patientvisit(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.visitnumber+ ' ' + item.ipdnumber+ ' ' + item.opdnumber;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Receivable_patientvisit(str_tenantid,strpatientname)
+								}, 3000)
+							
+							$("#patientname").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Receivable_patientvisit($("#tenantid").val(),$("#patientname").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var stripdnumber;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.ipdnumber != null && Model.ipdnumber.ToString() != "")
+							{
+							<script>
+								 stripdnumber="@Model.ipdnumber"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Receivable_ipdnumber(tenantid,patientname) {
+
+					var ddltarget_ipdnumber = $('#ipdnumber');
+					ddltarget_ipdnumber.empty();;
+					ddltarget_ipdnumber.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Receivable_ipdnumber")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patientname":patientname,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].IPDApplicationFormid;
+									data[i].name = receivableJoinDisplayParts(data[i].firstname, data[i].lastname, data[i].bookingreferencenumber);
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Receivable_ipdnumber,
+						 templateSelection: formatSelectSelected_lookup_Receivable_ipdnumber
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patientname":patientname,
+
+									'searchterm': stripdnumber || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Receivable_ipdnumber")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].IPDApplicationFormid == stripdnumber) {
+											var option = new Option(receivableJoinDisplayParts(data[i].firstname, data[i].lastname, data[i].bookingreferencenumber),data[i].IPDApplicationFormid, true, true);
+											ddltarget_ipdnumber.append(option).trigger('update');
+
+											ddltarget_ipdnumber.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Receivable_ipdnumber(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (receivableJoinDisplayParts(item.firstname, item.lastname, item.bookingreferencenumber)) {
+						var textValue = receivableJoinDisplayParts(item.firstname, item.lastname, item.bookingreferencenumber)
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Receivable_ipdnumber(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = receivableJoinDisplayParts(item.firstname, item.lastname, item.bookingreferencenumber);
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Receivable_ipdnumber(str_tenantid,strpatientname)
+								}, 3000)
+							
+							$("#patientname").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Receivable_ipdnumber($("#tenantid").val(),$("#patientname").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var stropdnumber;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.opdnumber != null && Model.opdnumber.ToString() != "")
+							{
+							<script>
+								 stropdnumber="@Model.opdnumber"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Receivable_opdnumber(tenantid,patientname) {
+
+					var ddltarget_opdnumber = $('#opdnumber');
+					ddltarget_opdnumber.empty();;
+					ddltarget_opdnumber.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Receivable_opdnumber")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patientname":patientname,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.bookingreferencenumber !== null);
+									data.sort((a, b) =>
+										String(a.bookingreferencenumber).toLowerCase().localeCompare(String(b.bookingreferencenumber).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].OPDFormid;
+									data[i].name = data[i].bookingreferencenumber;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Receivable_opdnumber,
+						 templateSelection: formatSelectSelected_lookup_Receivable_opdnumber
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patientname":patientname,
+
+									'searchterm': stropdnumber || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Receivable_opdnumber")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].OPDFormid == stropdnumber) {
+											var option = new Option(data[i].bookingreferencenumber,data[i].OPDFormid, true, true);
+											ddltarget_opdnumber.append(option).trigger('update');
+
+											ddltarget_opdnumber.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Receivable_opdnumber(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.bookingreferencenumber) {
+						var textValue = item.bookingreferencenumber
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Receivable_opdnumber(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.bookingreferencenumber;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Receivable_opdnumber(str_tenantid,strpatientname)
+								}, 3000)
+							
+							$("#patientname").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Receivable_opdnumber($("#tenantid").val(),$("#patientname").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strtherapy;
+</script>
+	@if (Model != null)
+	{
+		if(Model.therapy != null && Model.therapy.ToString() != "")
+		{
+		<script>
+			 strtherapy="@Model.therapy"
+		</script>
+		}
+	}
+<script>
+function lookup_Receivable_therapy(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_Receivable_therapy")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.therapyname !== null);
+			data.sort((a, b) =>
+				String(a.therapyname).toLowerCase().localeCompare(String(b.therapyname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_therapy="#therapy"
+		$(ddltarget_therapy).empty();
+		
+		$(ddltarget_therapy).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strtherapy== optionDataInner.Therapiesid){
+					$(ddltarget_therapy).append('<option selected value="' + optionDataInner.Therapiesid + '">' + optionDataInner.therapyname+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_therapy).append('<option  value="' + optionDataInner.Therapiesid+ '">' + optionDataInner.therapyname+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_Receivable_therapy(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strtherapykit;
+</script>
+	@if (Model != null)
+	{
+		if(Model.therapykit != null && Model.therapykit.ToString() != "")
+		{
+		<script>
+			 strtherapykit="@Model.therapykit"
+		</script>
+		}
+	}
+<script>
+function lookup_Receivable_therapykit(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_Receivable_therapykit")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.therapykitname !== null);
+			data.sort((a, b) =>
+				String(a.therapykitname).toLowerCase().localeCompare(String(b.therapykitname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_therapykit="#therapykit"
+		$(ddltarget_therapykit).empty();
+		
+		$(ddltarget_therapykit).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strtherapykit== optionDataInner.TherapyKitid){
+					$(ddltarget_therapykit).append('<option selected value="' + optionDataInner.TherapyKitid + '">' + optionDataInner.therapykitname+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_therapykit).append('<option  value="' + optionDataInner.TherapyKitid+ '">' + optionDataInner.therapykitname+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_Receivable_therapykit(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strmedicine;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.medicine != null && Model.medicine.ToString() != "")
+							{
+							<script>
+								 strmedicine="@Model.medicine"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Receivable_medicine(tenantid) {
+
+					var ddltarget_medicine = $('#medicine');
+					ddltarget_medicine.empty();;
+					ddltarget_medicine.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Receivable_medicine")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.medicinename !== null);
+									data.sort((a, b) =>
+										String(a.medicinename).toLowerCase().localeCompare(String(b.medicinename).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].Medicineid;
+									data[i].name = data[i].medicinename;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Receivable_medicine,
+						 templateSelection: formatSelectSelected_lookup_Receivable_medicine
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strmedicine || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Receivable_medicine")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].Medicineid == strmedicine) {
+											var option = new Option(data[i].medicinename,data[i].Medicineid, true, true);
+											ddltarget_medicine.append(option).trigger('update');
+
+											ddltarget_medicine.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Receivable_medicine(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.medicinename) {
+						var textValue = item.medicinename
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Receivable_medicine(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.medicinename;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Receivable_medicine(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strpackage;
+</script>
+	@if (Model != null)
+	{
+		if(Model.package != null && Model.package.ToString() != "")
+		{
+		<script>
+			 strpackage="@Model.package"
+		</script>
+		}
+	}
+<script>
+function lookup_Receivable_package(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_Receivable_package")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.packagename !== null);
+			data.sort((a, b) =>
+				String(a.packagename).toLowerCase().localeCompare(String(b.packagename).toLowerCase()) 
+			);
+		}
+	   var ddltarget_package="#package"
+		$(ddltarget_package).empty();
+		
+		$(ddltarget_package).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strpackage== optionDataInner.TreatmentPackageid){
+					$(ddltarget_package).append('<option selected value="' + optionDataInner.TreatmentPackageid + '">' + optionDataInner.packagename+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_package).append('<option  value="' + optionDataInner.TreatmentPackageid+ '">' + optionDataInner.packagename+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_Receivable_package(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strroom;
+</script>
+	@if (Model != null)
+	{
+		if(Model.room != null && Model.room.ToString() != "")
+		{
+		<script>
+			 strroom="@Model.room"
+		</script>
+		}
+	}
+<script>
+function lookup_Receivable_room(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_Receivable_room")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.roomnumber !== null);
+			data.sort((a, b) =>
+				String(a.roomnumber).toLowerCase().localeCompare(String(b.roomnumber).toLowerCase()) 
+			);
+		}
+	   var ddltarget_room="#room"
+		$(ddltarget_room).empty();
+		
+		$(ddltarget_room).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strroom== optionDataInner.Roomid){
+					$(ddltarget_room).append('<option selected value="' + optionDataInner.Roomid + '">' + optionDataInner.roomnumber+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_room).append('<option  value="' + optionDataInner.Roomid+ '">' + optionDataInner.roomnumber+ '</option>')
+
+
+		});
+
+		$(ddltarget_room).select2()
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_Receivable_room(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_Receivable_patientname($("#tenantid").val())
+lookup_Receivable_patientvisit($("#tenantid").val(),$("#patientname").val())
+lookup_Receivable_ipdnumber($("#tenantid").val(),$("#patientname").val())
+lookup_Receivable_opdnumber($("#tenantid").val(),$("#patientname").val())
+lookup_Receivable_therapy($("#tenantid").val())
+lookup_Receivable_therapykit($("#tenantid").val())
+lookup_Receivable_medicine($("#tenantid").val())
+lookup_Receivable_package($("#tenantid").val())
+lookup_Receivable_room($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script>
+
+<script>
+
+function lookup_change_Receivable_medicine(Medicineid)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_Receivable_medicine")',
+dataType: 'json',
+data:{'Medicineid':Medicineid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#price").val(data[0].price)
+$("#price").addClass('form-control--active')
+
+				
+
+		 }else{
+
+			 $("#price").val('')
+$("#price").removeClass('form-control--active')
+
+			
+		 }
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+
+	$("#medicine").change(function(){
+
+			lookup_change_Receivable_medicine($(this).val())
+			$("#price").prop('disabled', true)
+
+
+	})
+
+
+})
+</script>
+<script>
+
+function lookup_change_Receivable_therapykit(TherapyKitid)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_Receivable_therapykit")',
+dataType: 'json',
+data:{'TherapyKitid':TherapyKitid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#kitprice").val(data[0].kitprice)
+$("#kitprice").addClass('form-control--active')
+
+				
+
+		 }else{
+
+			 $("#kitprice").val('')
+$("#kitprice").removeClass('form-control--active')
+
+			
+		 }
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+
+	$("#therapykit").change(function(){
+
+			lookup_change_Receivable_therapykit($(this).val())
+			$("#kitprice").prop('disabled', true)
+
+
+	})
+
+
+})
+</script>
+<script>
+
+function lookup_change_Receivable_therapy(Therapiesid)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_Receivable_therapy")',
+dataType: 'json',
+data:{'Therapiesid':Therapiesid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#therapycost").val(data[0].therapycost)
+$("#therapycost").addClass('form-control--active')
+
+				
+
+		 }else{
+
+			 $("#therapycost").val('')
+$("#therapycost").removeClass('form-control--active')
+
+			
+		 }
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+
+	$("#therapy").change(function(){
+
+			lookup_change_Receivable_therapy($(this).val())
+			$("#therapycost").prop('disabled', true)
+
+
+	})
+
+
+})
+</script>
+
+
+							
+	<script>
+	$(document).ready(function () {
+
+	window.isNegativeReceivableAdjustmentType = function (value) {
+	var receivableFor = (value || "").toString().toLowerCase().trim();
+	return receivableFor === "discount" ||
+	receivableFor === "cancellation refund" ||
+	receivableFor === "concession";
+	};
+
+	window.isPositiveReceivableChargeType = function (value) {
+	return (value || "").toString().toLowerCase().trim() === "penalty";
+	};
+
+	window.normalizeReceivableAdjustmentAmount = function () {
+	var $amount = $("#amount");
+	var rawValue = ($amount.val() || "").toString().replace(/,/g, "");
+	var amount = parseFloat(rawValue);
+	if (isNaN(amount) || amount === 0) return;
+
+	var receivableFor = $("#receivablefor").val();
+	var normalizedAmount;
+	if (window.isNegativeReceivableAdjustmentType(receivableFor)) {
+	normalizedAmount = -Math.abs(amount);
+	} else if (window.isPositiveReceivableChargeType(receivableFor)) {
+	normalizedAmount = Math.abs(amount);
+	} else {
+	return;
+	}
+
+	try {
+	$amount.autoNumeric("set", normalizedAmount);
+	} catch (_error) {
+	$amount.val(normalizedAmount);
+	}
+	};
+
+	$("#amount").on("blur.negativeReceivable change.negativeReceivable", window.normalizeReceivableAdjustmentAmount);
+	$("#receivablefor").on("change.negativeReceivable", window.normalizeReceivableAdjustmentAmount);
+	setTimeout(window.normalizeReceivableAdjustmentAmount, 2000);
+
+	});
+</script>

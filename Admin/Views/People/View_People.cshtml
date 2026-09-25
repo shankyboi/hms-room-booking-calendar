@@ -1,0 +1,953 @@
+<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 11:34:40 -->
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@model NalamVazha.Models.PeopleModel
+@{
+	ViewData["Title"] = "People";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="">
+
+	<div class="">
+
+		<div id="cma_printableArea">
+
+						   
+			<div class="row printablerow" style="padding:20px">
+				<div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+					<h3>
+						<img src="~/images/logo.png" style="height:60px;width:60px;">
+						<b>People</b>
+					</h3>
+
+					<br />
+				</div>
+
+				<div class="col-sm-12 col-xs-12 mt-3 BasicInfo_craftmyapp_container">
+					<!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+						<div class="card-head">
+							<header>@Resource.basicinfo</header>
+						</div>
+						<div class="card-body card-container-Padding-NoShadow">
+							<div class="row">
+								<div class="col-sm-3 col-xs-12 p-2 practitionerid_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="practitionerid">@Resource.people_practitionerid</label><br>
+											<span class="auto_cls_practitionerid"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 firstname_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="firstname">@Resource.people_firstname</label><br>
+											<span class="auto_cls_firstname"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 lastname_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="lastname">@Resource.people_lastname</label><br>
+											<span class="auto_cls_lastname"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 workprofile_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="workprofile">@Resource.people_workprofile</label><br>
+											<span class="auto_cls_workprofile"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 competencylevel_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="competencylevel">@Resource.people_competencylevel</label><br>
+											<span class="auto_cls_competencylevel"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 designation_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="designation">@Resource.people_designation</label><br>
+											<span class="auto_cls_designation"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 contactnumber_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="contactnumber">@Resource.people_contactnumber</label><br>
+											<span class="auto_cls_contactnumber"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 whatsappnumber_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="whatsappnumber">@Resource.people_whatsappnumber</label><br>
+											<span class="auto_cls_whatsappnumber"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 emailid_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="emailid">@Resource.people_emailid</label><br>
+											<span class="auto_cls_emailid"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 gender_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="gender">@Resource.people_gender</label><br>
+											<span class="auto_cls_gender"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 dob_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="dob">@Resource.people_dob</label><br>
+											<span class="auto_cls_dob"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 age_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="age">@Resource.people_age</label><br>
+											<span class="auto_cls_age"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 employmentstatus_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="employmentstatus">@Resource.people_employmentstatus</label><br>
+											<span class="auto_cls_employmentstatus"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 joiningdate_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="joiningdate">@Resource.people_joiningdate</label><br>
+											<span class="auto_cls_joiningdate"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 contractrenewaldate_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="contractrenewaldate">@Resource.people_contractrenewaldate</label><br>
+											<span class="auto_cls_contractrenewaldate"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 photo_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="photo">@Resource.people_photo</label><br>
+											<span class="auto_cls_photo"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 nationality_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="nationality">@Resource.people_nationality</label><br>
+											<span class="auto_cls_nationality"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 specifycountry_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="specifycountry">@Resource.people_specifycountry</label><br>
+											<span class="auto_cls_specifycountry"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</div><!--form_group_div_block-->
+
+			 
+				<div class="col-sm-12 col-xs-12 mt-3 IDProof_craftmyapp_container">
+					<!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+						<div class="card-head">
+							<header>@Resource.idproof</header>
+						</div>
+						<div class="card-body card-container-Padding-NoShadow">
+							<div class="row">
+								<div class="col-sm-3 col-xs-12 p-2 idtype_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="idtype">@Resource.people_idtype</label><br>
+											<span class="auto_cls_idtype"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 idnumber_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="idnumber">@Resource.people_idnumber</label><br>
+											<span class="auto_cls_idnumber"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 iddocument_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="iddocument">@Resource.people_iddocument</label><br>
+											<span class="auto_cls_iddocument"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</div><!--form_group_div_block-->
+
+			 
+				<div class="col-sm-12 col-xs-12 mt-3 PermanentAddress_craftmyapp_container">
+					<!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+						<div class="card-head">
+							<header>@Resource.permanentaddress</header>
+						</div>
+						<div class="card-body card-container-Padding-NoShadow">
+							<div class="row">
+								<div class="col-sm-3 col-xs-12 p-2 paddressline1_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="paddressline1">@Resource.people_paddressline1</label><br>
+											<span class="auto_cls_paddressline1"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 paddressline2_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="paddressline2">@Resource.people_paddressline2</label><br>
+											<span class="auto_cls_paddressline2"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 pzip_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="pzip">@Resource.people_pzip</label><br>
+											<span class="auto_cls_pzip"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 ptown_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="ptown">@Resource.people_ptown</label><br>
+											<span class="auto_cls_ptown"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 pcityordistrict_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="pcityordistrict">@Resource.people_pcityordistrict</label><br>
+											<span class="auto_cls_pcityordistrict"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 pstatename_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="pstatename">@Resource.people_pstatename</label><br>
+											<span class="auto_cls_pstatename"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</div><!--form_group_div_block-->
+
+				<div class="col-sm-3 col-xs-12 p-2 sameaspermanentaddress_craftmyapp_viewcontainer">
+					<div>
+						<div class="form-group form-group--float-above my-3">
+							<label for="sameaspermanentaddress">@Resource.people_sameaspermanentaddress</label><br>
+							<span class="auto_cls_sameaspermanentaddress"></span>
+							<i class="form-group__bar"></i>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-12 col-xs-12 mt-3 ContactAddress_craftmyapp_container">
+					<!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+						<div class="card-head">
+							<header>@Resource.contactaddress</header>
+						</div>
+						<div class="card-body card-container-Padding-NoShadow">
+							<div class="row">
+								<div class="col-sm-3 col-xs-12 p-2 caddressline1_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="caddressline1">@Resource.people_caddressline1</label><br>
+											<span class="auto_cls_caddressline1"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 caddressline2_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="caddressline2">@Resource.people_caddressline2</label><br>
+											<span class="auto_cls_caddressline2"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 czip_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="czip">@Resource.people_czip</label><br>
+											<span class="auto_cls_czip"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 ctown_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="ctown">@Resource.people_ctown</label><br>
+											<span class="auto_cls_ctown"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 ccityordistrict_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="ccityordistrict">@Resource.people_ccityordistrict</label><br>
+											<span class="auto_cls_ccityordistrict"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 cstatename_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="cstatename">@Resource.people_cstatename</label><br>
+											<span class="auto_cls_cstatename"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</div><!--form_group_div_block-->
+
+			 
+				<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent emergencycontactContainerBodyParent hide">
+					<!--Dependent Emergency Contact Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								@Resource.emergencycontact
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+							<div class="col-12">
+								<div class="table-responsive-lg">
+									<table id="emergencycontactContainer" class="table table-bordered mb-0 emergencycontactContainer">
+										<thead id="emergencycontactContainerHead">
+											<th>Person Name</th>
+											<th>Relationship</th>
+											<th>Phone Number</th>
+
+
+										</thead>
+
+										<tbody id="emergencycontactContainerBody">
+										</tbody>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--Dependent Emergency Contact Containder Block-->
+
+			 
+			
+				<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent educationinfoContainerBodyParent hide">
+					<!--Dependent Education Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								@Resource.educationinfo
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+							<div class="col-12">
+								<div class="table-responsive-lg">
+									<table id="educationinfoContainer" class="table table-bordered mb-0 educationinfoContainer">
+										<thead id="educationinfoContainerHead">
+											<th>Field of Study</th>
+											<th>Degree</th>
+											<th>Education Institution</th>
+											<th>Certification Number</th>
+											<th>Year of Graduation</th>
+											<th>Degree Status</th>
+
+
+										</thead>
+
+										<tbody id="educationinfoContainerBody">
+										</tbody>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--Dependent Education Info Containder Block-->
+
+			 
+			
+				<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent workexperienceContainerBodyParent hide">
+					<!--Dependent Work Experience Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								@Resource.workexperience
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+							<div class="col-12">
+								<div class="table-responsive-lg">
+									<table id="workexperienceContainer" class="table table-bordered mb-0 workexperienceContainer">
+										<thead id="workexperienceContainerHead">
+											<th>Designation</th>
+											<th>Institution Name</th>
+											<th>From Date</th>
+											<th>To Date</th>
+
+
+										</thead>
+
+										<tbody id="workexperienceContainerBody">
+										</tbody>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--Dependent Work Experience Containder Block-->
+
+			 
+			
+				<div class="col-sm-12 col-xs-12 mt-3 LicenseInfo_craftmyapp_container">
+					<!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+						<div class="card-head">
+							<header>@Resource.licenseinfo</header>
+						</div>
+						<div class="card-body card-container-Padding-NoShadow">
+							<div class="row">
+								<div class="col-sm-3 col-xs-12 p-2 registrationnumber_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="registrationnumber">@Resource.people_registrationnumber</label><br>
+											<span class="auto_cls_registrationnumber"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 validtill_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="validtill">@Resource.people_validtill</label><br>
+											<span class="auto_cls_validtill"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 licenceupload_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="licenceupload">@Resource.people_licenceupload</label><br>
+											<span class="auto_cls_licenceupload"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 issuingauthority_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="issuingauthority">@Resource.people_issuingauthority</label><br>
+											<span class="auto_cls_issuingauthority"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</div><!--form_group_div_block-->
+
+			 
+				<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent preferredlanguageinfoContainerBodyParent hide">
+					<!--Dependent Preferred Language Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								@Resource.preferredlanguageinfo
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+							<div class="col-12">
+								<div class="table-responsive-lg">
+									<table id="preferredlanguageinfoContainer" class="table table-bordered mb-0 preferredlanguageinfoContainer">
+										<thead id="preferredlanguageinfoContainerHead">
+											<th>Languages Known</th>
+											<th>Proficiency</th>
+											<th>Ability</th>
+
+
+										</thead>
+
+										<tbody id="preferredlanguageinfoContainerBody">
+										</tbody>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--Dependent Preferred Language Info Containder Block-->
+
+			 
+			
+				<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent clinicaltaskinfoContainerBodyParent hide">
+					<!--Dependent Clinical Task Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								@Resource.clinicaltaskinfo
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+							<div class="col-12">
+								<div class="table-responsive-lg">
+									<table id="clinicaltaskinfoContainer" class="table table-bordered mb-0 clinicaltaskinfoContainer">
+										<thead id="clinicaltaskinfoContainerHead">
+
+								
+											<th>Task Type</th>
+											<th>Task Name</th>
+											<th>Duration in Minutes</th>
+											<th>Over Booking Count</th>
+											<th>Available on</th>
+											<th>Work Hour Starts</th>
+											<th>Work Hour Ends</th>
+											<th>Priority</th>
+											<th>Fees Amount</th>
+
+
+										</thead>
+
+										<tbody id="clinicaltaskinfoContainerBody">
+										</tbody>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--Dependent Clinical Task Info Containder Block-->
+
+			 
+				<div class="col-sm-3 col-xs-12 p-2 bio_craftmyapp_viewcontainer">
+					<div>
+						<div class="form-group form-group--float-above my-3">
+							<label for="bio">@Resource.people_bio</label><br>
+							<span class="auto_cls_bio"></span>
+							<i class="form-group__bar"></i>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-3 col-xs-12 p-2 screeningmeetinglink_craftmyapp_viewcontainer">
+					<div>
+						<div class="form-group form-group--float-above my-3">
+							<label for="screeningmeetinglink">@Resource.people_screeningmeetinglink</label><br>
+							<span class="auto_cls_screeningmeetinglink"></span>
+							<i class="form-group__bar"></i>
+						</div>
+					</div>
+				</div>
+
+
+
+			</div>
+		</div>
+		<div id="comparisonContainer"></div>
+		<div class="row">
+			<div class="col-sm-12 col-xs-12">
+
+				<button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>
+
+			</div>
+		</div>
+
+	</div>
+
+	<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+	<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+	<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+	<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+	<script type="text/javascript">
+		function download() {
+		const element = document.getElementById('cma_printableArea');
+
+		const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+		// Hide the elements
+		elementsToHide.forEach(function (el) {
+		el.style.display = '';
+		});
+
+		html2pdf()
+		.from(element)
+		.save('People.pdf')
+		.then(function () {
+		// Show the hidden elements after generating PDF
+		elementsToHide.forEach(function (el) {
+		el.style.display = 'none';
+		});
+		});
+		}
+
+		function fill_People_view_data(){
+
+		var  Peopleid = getUrlVars()["Peopleid"];
+		$("#viewDetails_Auto").show()
+		$(".auto_checker_action").hide()
+		$.ajax({
+		url: '@Url.Action("getById_allinfo_People")',
+		dataType: 'json',
+		data:{Peopleid: Peopleid },
+		success: function(data) {
+
+		var obj=eval(data[0]);
+		for (var key in obj) {
+
+													
+		$(".auto_cls_"+key).html(obj[key]|| '-');
+
+		if(key=='photo'){
+		$('.auto_cls_photo').empty()
+		if(obj[key] !=null)  {
+
+		var uploaded_photo = obj[key].split('|');
+		var iterate = 0;
+		for (var i = 0; i < uploaded_photo.length; i++) {
+
+
+		if (uploaded_photo[i] != "") {
+		var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_photo[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+		iterate = iterate + 1;
+		if (iterate == 1)
+		$('.auto_cls_photo').append('<a href=' + filepath + ' class="imgphoto auto_clr_photo"><img  src=' + filepath + ' width="100px" alt="img"/></a>')
+		else
+
+		$('.auto_cls_photo').append('<div style="display:none"> <a href=' + filepath + ' class="imgphoto auto_clr_photo"><img  src=' + filepath + ' width="100px" alt="img"/></a></div>')
+
+		}
+
+
+		}
+
+		$('body').on('click', 'a.imgphoto', function (e) {
+		e.preventDefault();
+		$('.imgphoto').colorbox({ rel: '.imgphoto', width: "90%", height: "80%" });
+		$.colorbox({ open: true });
+		});
+
+
+
+
+		}
+
+
+		}
+		if(key=='iddocument'){
+		$('.auto_cls_iddocument').empty()
+		if(obj[key] !=null)  {
+
+		var uploaded_iddocument = obj[key].split('|');
+		var iterate = 0;
+		for (var i = 0; i < uploaded_iddocument.length; i++) {
+
+
+		if (uploaded_iddocument[i] != "") {
+		var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_iddocument[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+		iterate = iterate + 1;
+		$('.auto_cls_iddocument').append('<a href=' + filepath + ' class="iddocument filedisplay"><i class="fa fa-file"></i></a>')
+
+		}
+
+
+		}
+
+ 
+		}
+
+
+		}
+		if(key=='automaton_People_emergencycontact'){
+		$('#emergencycontactContainerBody').empty()
+		if(obj[key]!=null && obj[key] !=""){
+		var audit = '@Url.Action("audit")?id=' + Peopleid +'&section=automaton_People_emergencycontact_history'
+		$(".emergencycontactauditheaderlink").attr('href',audit)
+
+		var Actions=getAutho("People","versionhistory")
+		if(Actions == undefined){
+		$("emergencycontactauditheaderlink").parent().hide()
+		}
+
+		$('.emergencycontactContainerBodyParent').removeClass('hide')
+		$('#emergencycontactContainerBody').append(get_dependent_table(obj[key]))
+		}else{
+		$('.emergencycontactContainerBodyParent').addClass('hide')
+		}
+		}
+		if(key=='automaton_People_educationinfo'){
+		$('#educationinfoContainerBody').empty()
+		if(obj[key]!=null && obj[key] !=""){
+		var audit = '@Url.Action("audit")?id=' + Peopleid +'&section=automaton_People_educationinfo_history'
+		$(".educationinfoauditheaderlink").attr('href',audit)
+
+		var Actions=getAutho("People","versionhistory")
+		if(Actions == undefined){
+		$("educationinfoauditheaderlink").parent().hide()
+		}
+
+		$('.educationinfoContainerBodyParent').removeClass('hide')
+		$('#educationinfoContainerBody').append(get_dependent_table(obj[key]))
+		}else{
+		$('.educationinfoContainerBodyParent').addClass('hide')
+		}
+		}
+		if(key=='automaton_People_workexperience'){
+		$('#workexperienceContainerBody').empty()
+		if(obj[key]!=null && obj[key] !=""){
+		var audit = '@Url.Action("audit")?id=' + Peopleid +'&section=automaton_People_workexperience_history'
+		$(".workexperienceauditheaderlink").attr('href',audit)
+
+		var Actions=getAutho("People","versionhistory")
+		if(Actions == undefined){
+		$("workexperienceauditheaderlink").parent().hide()
+		}
+
+		$('.workexperienceContainerBodyParent').removeClass('hide')
+		$('#workexperienceContainerBody').append(get_dependent_table(obj[key]))
+		}else{
+		$('.workexperienceContainerBodyParent').addClass('hide')
+		}
+		}
+		if(key=='licenceupload'){
+		$('.auto_cls_licenceupload').empty()
+		if(obj[key] !=null)  {
+
+		var uploaded_licenceupload = obj[key].split('|');
+		var iterate = 0;
+		for (var i = 0; i < uploaded_licenceupload.length; i++) {
+
+
+		if (uploaded_licenceupload[i] != "") {
+		var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_licenceupload[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+		iterate = iterate + 1;
+		$('.auto_cls_licenceupload').append('<a href=' + filepath + ' class="licenceupload filedisplay"><i class="fa fa-file"></i></a>')
+
+		}
+
+
+		}
+
+ 
+		}
+
+
+		}
+		if(key=='automaton_People_preferredlanguageinfo'){
+		$('#preferredlanguageinfoContainerBody').empty()
+		if(obj[key]!=null && obj[key] !=""){
+		var audit = '@Url.Action("audit")?id=' + Peopleid +'&section=automaton_People_preferredlanguageinfo_history'
+		$(".preferredlanguageinfoauditheaderlink").attr('href',audit)
+
+		var Actions=getAutho("People","versionhistory")
+		if(Actions == undefined){
+		$("preferredlanguageinfoauditheaderlink").parent().hide()
+		}
+
+		$('.preferredlanguageinfoContainerBodyParent').removeClass('hide')
+		$('#preferredlanguageinfoContainerBody').append(get_dependent_table(obj[key]))
+		}else{
+		$('.preferredlanguageinfoContainerBodyParent').addClass('hide')
+		}
+		}
+		if(key=='automaton_People_clinicaltaskinfo'){
+		$('#clinicaltaskinfoContainerBody').empty()
+		if(obj[key]!=null && obj[key] !=""){
+		var audit = '@Url.Action("audit")?id=' + Peopleid +'&section=automaton_People_clinicaltaskinfo_history'
+		$(".clinicaltaskinfoauditheaderlink").attr('href',audit)
+
+		var Actions=getAutho("People","versionhistory")
+		if(Actions == undefined){
+		$("clinicaltaskinfoauditheaderlink").parent().hide()
+		}
+
+		$('.clinicaltaskinfoContainerBodyParent').removeClass('hide')
+		$('#clinicaltaskinfoContainerBody').append(get_dependent_table(obj[key]))
+
+		$('#clinicaltaskinfoContainerBody tr').each(function(){ $(this).find('td:eq(5)').hide(); });
+		$('#clinicaltaskinfoContainerBody tr').each(function(){ $(this).find('td:eq(6)').hide(); });
+		$('#clinicaltaskinfoContainerHead th:eq(5)').hide();
+		$('#clinicaltaskinfoContainerHead th:eq(6)').hide();
+
+		}else{
+		$('.clinicaltaskinfoContainerBodyParent').addClass('hide')
+		}
+		}
+
+
+															
+
+		}
+
+		if (obj) {
+		if (obj.hasOwnProperty('nationality') && obj.nationality) {
+		str_visible_nationality = obj.nationality;
+		} else {
+		str_visible_nationality = '';
+		}
+		if (str_visible_nationality === "Foreign") {
+		$(".specifycountry_craftmyapp_viewcontainer").show();
+		} else {
+		$(".specifycountry_craftmyapp_viewcontainer").hide();
+		}
+		if (obj.hasOwnProperty('employmentstatus') && obj.employmentstatus) {
+		str_visible_employmentstatus = obj.employmentstatus;
+		} else {
+		str_visible_employmentstatus = '';
+		}
+		if (str_visible_employmentstatus === "Contract") {
+		$(".contractrenewaldate_craftmyapp_viewcontainer").show();
+		} else {
+		$(".contractrenewaldate_craftmyapp_viewcontainer").hide();
+		}
+		}
+
+		}
+
+		})
+
+		}
+
+				   
+		$(document).ready(function () {
+
+
+		fill_People_view_data()
+
+
+		/*var Actions=getAutho("People","list")
+		if(Actions == undefined){
+		window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+		}*/
+
+
+
+
+		});
+
+	</script>
+
+					
+	<script type="text/javascript">
+		var str_visible_nationality;
+		var str_visible_employmentstatus;
+
+		$(document).ready(function () {
+		$(".contractrenewaldate_craftmyapp_viewcontainer").hide();
+		$(".specifycountry_craftmyapp_viewcontainer").hide();
+
+		});
+	</script>
+
+					
+					
+					

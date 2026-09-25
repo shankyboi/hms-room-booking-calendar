@@ -1,0 +1,597 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/14/2026 05:00:21 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.TreatmentPackageModel
+					@{
+					ViewData["Title"] = "Treatment Package";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+						   
+							
+							<div class="row printablerow"  style="padding:20px"> 
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Treatment Package</b>
+							</h3>
+				
+							<br />
+							</div>
+							<div class="col-sm-3 col-xs-12 p-2 packagename_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="packagename">@Resource.treatmentpackage_packagename</label><br>
+										<span class="auto_cls_packagename"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 noofdays_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="noofdays">@Resource.treatmentpackage_noofdays</label><br>
+										<span class="auto_cls_noofdays"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent roomtypesContainerBodyParent hide"><!--Dependent Room Types Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.roomtypes
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="roomtypesContainer" class="table table-bordered mb-0 roomtypesContainer">
+							<thead id="roomtypesContainerHead">
+								<th>Room Type</th>
+<th>Cost Per Day</th>
+<th>Percentage Covered</th>
+<th>Room Cost</th>
+
+
+							</thead>
+							
+							<tbody id="roomtypesContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Room Types Containder Block-->
+			 
+			
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent therapyContainerBodyParent hide"><!--Dependent Therapy Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.therapy
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="therapyContainer" class="table table-bordered mb-0 therapyContainer">
+							<thead id="therapyContainerHead">
+								<th>Therapy Name</th>
+<th>Therapy Cost</th>
+<th>Number of Times</th>
+<th>Therapy Price</th>
+
+
+							</thead>
+							
+							<tbody id="therapyContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Therapy Containder Block-->
+			 
+			
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent therapykitsContainerBodyParent hide"><!--Dependent Therapy Kits Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.therapykits
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="therapykitsContainer" class="table table-bordered mb-0 therapykitsContainer">
+							<thead id="therapykitsContainerHead">
+								<th>Therapy Kit Name</th>
+<th>Kit Price</th>
+<th>Number of Kits</th>
+<th>Therapy Kit Cost</th>
+
+
+							</thead>
+							
+							<tbody id="therapykitsContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Therapy Kits Containder Block-->
+			 
+			
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent therapyitemsContainerBodyParent hide"><!--Dependent Therapy Items Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.therapyitems
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="therapyitemsContainer" class="table table-bordered mb-0 therapyitemsContainer">
+							<thead id="therapyitemsContainerHead">
+								<th>Therapy Item</th>
+<th>Price</th>
+<th>Therapy Item Count</th>
+<th>Therapy Item Cost</th>
+
+
+							</thead>
+							
+							<tbody id="therapyitemsContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Therapy Items Containder Block-->
+			 
+			
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicinesContainerBodyParent hide"><!--Dependent Medicines Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.medicines
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="medicinesContainer" class="table table-bordered mb-0 medicinesContainer">
+							<thead id="medicinesContainerHead">
+								<th>Medicine Name</th>
+<th>Price</th>
+<th>Medicine Count</th>
+<th>Medicine Cost</th>
+
+
+							</thead>
+							
+							<tbody id="medicinesContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Medicines Containder Block-->
+			 
+			
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 PricingSummary_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.pricingsummary</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 roomtypeamountaverage_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="roomtypeamountaverage">@Resource.treatmentpackage_roomtypeamountaverage</label><br>
+										<span class="auto_cls_roomtypeamountaverage"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyamount_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapyamount">@Resource.treatmentpackage_therapyamount</label><br>
+										<span class="auto_cls_therapyamount"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapykitamount_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapykitamount">@Resource.treatmentpackage_therapykitamount</label><br>
+										<span class="auto_cls_therapykitamount"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyitemamount_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapyitemamount">@Resource.treatmentpackage_therapyitemamount</label><br>
+										<span class="auto_cls_therapyitemamount"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 medicineamount_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="medicineamount">@Resource.treatmentpackage_medicineamount</label><br>
+										<span class="auto_cls_medicineamount"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 calculatedpackagecost_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="calculatedpackagecost">@Resource.treatmentpackage_calculatedpackagecost</label><br>
+										<span class="auto_cls_calculatedpackagecost"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 packagecost_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="packagecost">@Resource.treatmentpackage_packagecost</label><br>
+										<span class="auto_cls_packagecost"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 packagebookingadvance_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="packagebookingadvance">@Resource.treatmentpackage_packagebookingadvance</label><br>
+										<span class="auto_cls_packagebookingadvance"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 packagebookingdeposit_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="packagebookingdeposit">@Resource.treatmentpackage_packagebookingdeposit</label><br>
+										<span class="auto_cls_packagebookingdeposit"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent refundpolicyContainerBodyParent hide"><!--Dependent Refund Policy Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.refundpolicy
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="refundpolicyContainer" class="table table-bordered mb-0 refundpolicyContainer">
+							<thead id="refundpolicyContainerHead">
+								<th>Refund Type</th>
+<th>Cancellation By</th>
+<th>Cancellation Window (Days)</th>
+<th>Refund Percentage</th>
+
+
+							</thead>
+							
+							<tbody id="refundpolicyContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Refund Policy Containder Block-->
+			 
+			
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 BillingPolicy_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.billingpolicy</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 billingwaiverfordelayedstart_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="billingwaiverfordelayedstart">@Resource.treatmentpackage_billingwaiverfordelayedstart</label><br>
+										<span class="auto_cls_billingwaiverfordelayedstart"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 waiverpercentage_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="waiverpercentage">@Resource.treatmentpackage_waiverpercentage</label><br>
+										<span class="auto_cls_waiverpercentage"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 roomtransfercost_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="roomtransfercost">@Resource.treatmentpackage_roomtransfercost</label><br>
+										<span class="auto_cls_roomtransfercost"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+<div class="col-sm-3 col-xs-12 p-2 packagedescription_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="packagedescription">@Resource.treatmentpackage_packagedescription</label><br>
+										<span class="auto_cls_packagedescription"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('TreatmentPackage.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_TreatmentPackage_view_data(){
+
+					   var  TreatmentPackageid = getUrlVars()["TreatmentPackageid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_TreatmentPackage")',
+												dataType: 'json',
+												data:{TreatmentPackageid: TreatmentPackageid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='automaton_TreatmentPackage_roomtypes'){
+																			$('#roomtypesContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + TreatmentPackageid +'&section=automaton_TreatmentPackage_roomtypes_history'
+																					 $(".roomtypesauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("TreatmentPackage","versionhistory")
+																				if(Actions == undefined){
+																				$("roomtypesauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.roomtypesContainerBodyParent').removeClass('hide')      
+																			   $('#roomtypesContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.roomtypesContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_TreatmentPackage_therapy'){
+																			$('#therapyContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + TreatmentPackageid +'&section=automaton_TreatmentPackage_therapy_history'
+																					 $(".therapyauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("TreatmentPackage","versionhistory")
+																				if(Actions == undefined){
+																				$("therapyauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.therapyContainerBodyParent').removeClass('hide')      
+																			   $('#therapyContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.therapyContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_TreatmentPackage_therapykits'){
+																			$('#therapykitsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + TreatmentPackageid +'&section=automaton_TreatmentPackage_therapykits_history'
+																					 $(".therapykitsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("TreatmentPackage","versionhistory")
+																				if(Actions == undefined){
+																				$("therapykitsauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.therapykitsContainerBodyParent').removeClass('hide')      
+																			   $('#therapykitsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.therapykitsContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_TreatmentPackage_therapyitems'){
+																			$('#therapyitemsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + TreatmentPackageid +'&section=automaton_TreatmentPackage_therapyitems_history'
+																					 $(".therapyitemsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("TreatmentPackage","versionhistory")
+																				if(Actions == undefined){
+																				$("therapyitemsauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.therapyitemsContainerBodyParent').removeClass('hide')      
+																			   $('#therapyitemsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.therapyitemsContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_TreatmentPackage_medicines'){
+																			$('#medicinesContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + TreatmentPackageid +'&section=automaton_TreatmentPackage_medicines_history'
+																					 $(".medicinesauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("TreatmentPackage","versionhistory")
+																				if(Actions == undefined){
+																				$("medicinesauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.medicinesContainerBodyParent').removeClass('hide')      
+																			   $('#medicinesContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicinesContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_TreatmentPackage_refundpolicy'){
+																			$('#refundpolicyContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + TreatmentPackageid +'&section=automaton_TreatmentPackage_refundpolicy_history'
+																					 $(".refundpolicyauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("TreatmentPackage","versionhistory")
+																				if(Actions == undefined){
+																				$("refundpolicyauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.refundpolicyContainerBodyParent').removeClass('hide')      
+																			   $('#refundpolicyContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.refundpolicyContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_TreatmentPackage_view_data()
+
+
+					/*var Actions=getAutho("TreatmentPackage","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						
+						$(document).ready(function () {
+							
+						});
+					</script>
+					
+					
+					

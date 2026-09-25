@@ -1,0 +1,384 @@
+
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@using Newtonsoft.Json.Linq
+@model NalamVazha.Models.IPDPaymentDetailsModel
+@{
+    ViewData["Title"] = "IPD Booking Deposit Payment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card card-block contCard">
+    <div class="mobileHeader">
+        <div class="row">
+            <div class="col-sm-12 col-xs-12">
+                <h4 class="formHdr">IPD Booking Deposit Payment</h4>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["errMessage"] != null)
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">x</span></button>
+                    @TempData["errMessage"]
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="card-block">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Booking Reference</label>
+                    <p class="form-control-static"><strong>@Model.bookingreferencenumber</strong></p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Patient Name</label>
+                    <p class="form-control-static"><strong>@Model.firstname @Model.lastname</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Package</label>
+                    <p class="form-control-static">@Model.packagename_master</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Accommodation Type</label>
+                    <p class="form-control-static">@Model.accommodationtype</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Days of Stay</label>
+                    <p class="form-control-static">@Model.daysofstay day(s)</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Attendants</label>
+                    <p class="form-control-static">@Model.attendantcount</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Mobile</label>
+                    <p class="form-control-static">@Model.mobilenumber</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Booking Status</label>
+                    <p class="form-control-static"><span class="label label-warning">@Model.bookingstatus</span></p>
+                </div>
+            </div>
+        </div>
+
+        @{
+            var roomDetails = new JArray();
+            if (!string.IsNullOrWhiteSpace(Model.blocked_room_details_json))
+            {
+                try { roomDetails = JArray.Parse(Model.blocked_room_details_json); } catch { roomDetails = new JArray(); }
+            }
+            var roomTypeRefundPolicies = new JArray();
+            if (!string.IsNullOrWhiteSpace(Model.roomtype_refundpolicy_json))
+            {
+                try { roomTypeRefundPolicies = JArray.Parse(Model.roomtype_refundpolicy_json); } catch { roomTypeRefundPolicies = new JArray(); }
+            }
+            JObject bookingDepositPolicy = null;
+            foreach (var p in roomTypeRefundPolicies)
+            {
+                var rft = (p["refundtype"]?.ToString() ?? "").Trim().ToLower().Replace(" ", "");
+                if (rft == "bookingdeposit")
+                {
+                    bookingDepositPolicy = p as JObject;
+                    break;
+                }
+            }
+            var attendantRoomRows = 0;
+            var patientRoomRows = 0;
+            if (roomDetails.Count > 0)
+            {
+                foreach (var rr in roomDetails)
+                {
+                    var role = (rr["allottedto"]?.ToString() ?? "").Trim().ToLower();
+                    if (role == "attendant") { attendantRoomRows++; }
+                    if (role == "patient") { patientRoomRows++; }
+                }
+            }
+            var days = Model.daysofstay.GetValueOrDefault() > 0 ? Model.daysofstay.GetValueOrDefault() : 1;
+            var totalAmount = Model.totalamount.GetValueOrDefault();
+            var patientCostPerDay = Model.costperday.GetValueOrDefault();
+            var stayCharges = patientCostPerDay * days;
+            var patientTotal = Model.patient_booking_deposit.GetValueOrDefault();
+            if (patientTotal <= 0) { patientTotal = Model.bookingdepositamount.GetValueOrDefault(); }
+            if (patientTotal <= 0) { patientTotal = Model.advanceamount.GetValueOrDefault(); }
+            var attendantTotal = Model.attendant_booking_deposit.GetValueOrDefault();
+            if (attendantTotal <= 0) { attendantTotal = Model.attendant_room_cost.GetValueOrDefault(); }
+            var attendantPerRoom = attendantRoomRows > 0 ? (attendantTotal / 1) : attendantTotal;
+            var receiveNow = patientTotal; //;+ attendantTotal;
+            // Display total for this screen as room deposit + attendant amount.
+            totalAmount = patientTotal + attendantTotal;
+            var balance = stayCharges;
+            var receiveNowText = patientTotal.ToString("N2");
+        }
+
+        <hr />
+
+        <div class="row">
+            <div class="col-sm-8">
+                <h5>Blocked Room Details</h5>
+                @if (roomDetails.Count > 0)
+                {
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Allotted To</th>
+                                <th>Blocked Room Number</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th class="text-right">No. of Days</th>
+                                <th class="text-right">Cost Per Day</th>
+                                <th class="text-right">Line Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                decimal blockedRoomsGrandTotal = 0;
+                            }
+                            @foreach (var room in roomDetails)
+                            {
+                                var role = (room["allottedto"]?.ToString() ?? "").Trim();
+                                var roomNo = (room["roomnumber"]?.ToString() ?? "").Trim();
+                                var fromDateRaw = (room["fromdate"]?.ToString() ?? "").Trim();
+                                var toDateRaw = (room["todate"]?.ToString() ?? "").Trim();
+                                DateTime parsedFrom;
+                                DateTime parsedTo;
+                                var fromDate = DateTime.TryParse(fromDateRaw, out parsedFrom) ? parsedFrom.ToString("dd/MM/yyyy") : fromDateRaw.Split(' ')[0];
+                                var toDate = DateTime.TryParse(toDateRaw, out parsedTo) ? parsedTo.ToString("dd/MM/yyyy") : toDateRaw.Split(' ')[0];
+                                var patientCpd = (decimal?)room["costperday"] ?? 0;
+                                var attendantCpd = (decimal?)room["attendantcostperday"] ?? 0;
+                                var rowCost = role.Equals("Attendant", StringComparison.OrdinalIgnoreCase) ? attendantCpd : patientCpd;
+                                var rowDays = (DateTime.TryParse(fromDateRaw, out parsedFrom) && DateTime.TryParse(toDateRaw, out parsedTo))
+                                    ? Math.Max(1, (parsedTo.Date - parsedFrom.Date).Days + 1)
+                                    : days;
+                                var lineTotal = rowCost * rowDays;
+                                blockedRoomsGrandTotal += lineTotal;
+                                <tr>
+                                    <td>@role</td>
+                                    <td><strong>@(string.IsNullOrWhiteSpace(roomNo) ? "-" : roomNo)</strong></td>
+                                    <td>@(string.IsNullOrWhiteSpace(fromDate) ? "-" : fromDate)</td>
+                                    <td>@(string.IsNullOrWhiteSpace(toDate) ? "-" : toDate)</td>
+                                    <td class="text-right">@rowDays</td>
+                                    <td class="text-right">&#8377; @rowCost.ToString("N2")</td>
+                                    <td class="text-right"><strong>&#8377; @lineTotal.ToString("N2")</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-info">
+                                <th colspan="6" class="text-right">Payable at Admission </th>
+                                <th class="text-right">&#8377; @blockedRoomsGrandTotal.ToString("N2")</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-warning">Room details are not available for this booking.</div>
+                }
+            </div>
+            <div class="col-sm-4">
+                <h5>Amount Summary</h5>
+                <table class="table table-bordered table-sm">
+                    <tbody>
+                        <tr>
+                            <td>Booking Deposit</td>
+                            <td class="text-right">&#8377; @patientTotal.ToString("N2")</td>
+                        </tr>
+                       @*  <tr>
+                            <td>Cost Per Day (from Payment Details)</td>
+                            <td class="text-right">&#8377; @patientCostPerDay.ToString("N2")</td>
+                        </tr> *@
+                         
+                       @*  @if (Model.attendantcount.GetValueOrDefault() > 0 || attendantRoomRows > 0)
+                        {
+                            <tr>
+                                <td>Attendant Room Cost (Total)</td>
+                                <td class="text-right">&#8377; @attendantTotal.ToString("N2")</td>
+                            </tr>
+                            <tr>
+                                <td>Attendant Room Cost (Per Room)</td>
+                                <td class="text-right">&#8377; @attendantPerRoom.ToString("N2")</td>
+                            </tr>
+                        }
+                        <tr class="table-info">
+                            <td><strong>Total Amount</strong></td>
+                            <td class="text-right"><strong>&#8377; @totalAmount.ToString("N2")</strong></td>
+                        </tr> *@
+                        <tr class="table-success">
+                            <td><strong>Amount to Receive Now</strong></td>
+                            <td class="text-right"><strong class="text-success" style="font-size:1.2em;">&#8377; @patientTotal.ToString("N2")</strong></td>
+                        </tr>
+                        @if (bookingDepositPolicy != null)
+                        {
+                            <tr>
+                                <td>Booking Deposit Refund Policy</td>
+                                <td class="text-right">
+                                    @bookingDepositPolicy["refundtype"]
+                                    @if ((decimal?)bookingDepositPolicy["refundpercentage"] > 0)
+                                    {
+                                        <text> (@(((decimal?)bookingDepositPolicy["refundpercentage"] ?? 0).ToString("N2"))%)</text>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        @* <tr>
+                            <td><em>Balance payable at admission (Cost/day * Days)</em></td>
+                            <td class="text-right"><em>&#8377; @balance.ToString("N2")</em></td>
+                        </tr> *@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+
+@*         <div class="row" style="margin-top:10px;">
+            <div class="col-sm-12 text-right">
+                <div id="payment-status-msg" class="alert" style="display:none;"></div>
+                <button id="btn-pay" class="btn btn-success btn-lg" type="button">
+                    <i class="fa fa-credit-card"></i>&nbsp; Recieve &#8377; @receiveNowText via Razorpay
+                </button>
+                &nbsp;
+                <a href="javascript:history.back()" class="btn btn-default">Back</a>
+            </div>
+        </div> *@
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+        var ipdFormId = '@Model.IPDApplicationFormid';
+        var createRazorpayOrderUrl = '@Url.Action("Create_Razorpay_Order", "IPDApplicationForm")';
+    document.getElementById('btn-pay').addEventListener('click', function () {
+        var btn = this;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Awaiting Payment...';
+
+        fetch(createRazorpayOrderUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ IPDApplicationFormid: ipdFormId })
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(order) {
+            if (!order || !order.order_id) {
+                showError(order && order.error ? order.error : 'Failed to create payment order. Please try again.');
+                resetBtn(btn);
+                return;
+            }
+
+            var options = {
+                key: order.razorpay_key_id,
+                amount: order.amount,
+                currency: order.currency || 'INR',
+                name: 'NalamVazha Health',
+                description: order.description,
+                order_id: order.order_id,
+                prefill: {
+                    name: order.name,
+                    contact: order.contact
+                },
+                theme: { color: '#3399cc' },
+                handler: function (response) {
+                    completePayment(response, order.paymentrequestid);
+                },
+                modal: {
+                    ondismiss: function () {
+                        resetBtn(btn);
+                    }
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                showError('Payment failed: ' + (response.error.description || 'Unknown error'));
+                resetBtn(btn);
+            });
+            rzp.open();
+        })
+        .catch(function(err) {
+            showError('Error: ' + err.message);
+            resetBtn(btn);
+        });
+    });
+
+    function completePayment(rzpResponse, paymentrequestid) {
+        var payload = {
+            IPDApplicationFormid: ipdFormId,
+            paymentrequestid: paymentrequestid,
+            razorpay_order_id: rzpResponse.razorpay_order_id,
+            razorpay_payment_id: rzpResponse.razorpay_payment_id,
+            razorpay_signature: rzpResponse.razorpay_signature,
+                          amount: rzpResponse.amount
+        };
+
+        fetch('@Url.Action("Complete_IPD_Payment", "IPDApplicationForm")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(result) {
+            if (result && (result.message === '"201.1"' || result.message === '201.1')) {
+                showSuccess('Advance payment successful! Booking is now Confirmed. Redirecting...');
+                setTimeout(function() {
+                        window.location.href = '@Url.Action("Added_IPD_Application_Form", "IPDApplicationForm")';
+                }, 2000);
+            } else {
+                showError('Payment recorded but status update failed. Contact administrator.');
+            }
+        })
+        .catch(function(err) {
+            showError('Error recording payment: ' + err.message);
+        });
+    }
+
+    function showError(msg) {
+        var el = document.getElementById('payment-status-msg');
+        el.className = 'alert alert-danger';
+        el.innerHTML = '<strong>Error:</strong> ' + msg;
+        el.style.display = 'block';
+    }
+
+    function showSuccess(msg) {
+        var el = document.getElementById('payment-status-msg');
+        el.className = 'alert alert-success';
+        el.innerHTML = '<strong>Success!</strong> ' + msg;
+        el.style.display = 'block';
+    }
+
+    function resetBtn(btn) {
+        btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-credit-card"></i>&nbsp; Pay Booking Deposit &#8377; @receiveNowText via Razorpay';
+    }
+</script>
+}

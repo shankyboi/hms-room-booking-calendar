@@ -1,0 +1,1729 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:43:07 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.RoomOccupancyStatusModel
+			@{
+			ViewData["Title"] = @Resource.addroomoccupancystatus;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Add_Room_Occupancy_Status", "RoomOccupancyStatus", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.addroomoccupancystatus</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.RoomOccupancyStatusid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 roomallocationno_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="roomallocationno">@Resource.roomoccupancystatus_roomallocationno</label>
+											@Html.TextBoxFor(m => m.roomallocationno, new {@placeholder="Auto Number YYYY-MM-9999" ,@maxlength="128", @readonly="readonly", @class = "form-control form-control-lg " })
+
+										</div>
+									</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 patientvisit_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientvisit">@Resource.roomoccupancystatus_patientvisit <b class="iconRed">*</b></label>
+										<select name="patientvisit" id="patientvisit" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientvisit)
+									<div id="patientvisit-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 patientname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientname">@Resource.roomoccupancystatus_patientname</label>
+										<select name="patientname" id="patientname"  class="form-control select2 select2-list  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientname)
+									<div id="patientname-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ipdno_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ipdno">@Resource.roomoccupancystatus_ipdno <b class="iconRed">*</b></label>
+										<select name="ipdno" id="ipdno"  class="form-control select2 select2-list  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.ipdno)
+									<div id="ipdno-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 block_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="block">@Resource.roomoccupancystatus_block <b class="iconRed">*</b></label>
+										<select name="block" id="block" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.block)
+									<div id="block-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 building_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="building">@Resource.roomoccupancystatus_building <b class="iconRed">*</b></label>
+										<select name="building" id="building" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.building)
+									<div id="building-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 floor_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="floor">@Resource.roomoccupancystatus_floor <b class="iconRed">*</b></label>
+										<select name="floor" id="floor" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.floor)
+									<div id="floor-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 room_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="room">@Resource.roomoccupancystatus_room <b class="iconRed">*</b></label>
+										<select name="room" id="room" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.room)
+									<div id="room-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 bookeddate_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="bookeddate">@Resource.roomoccupancystatus_bookeddate <b class="iconRed">*</b></label>
+											@Html.TextBoxFor(m => m.bookeddate, "{0:dd/MM/yyyy}", new {@placeholder="dd/mm/yyyy" ,@type="text", @autocomplete="off", @class = "form-control form-control-lg required" })
+
+											<i class="form-group__bar" ></i>
+										</div>
+										@Html.ValidationMessageFor(model => model.bookeddate)
+										<div id="bookeddate-error" class="help-block" style="display: none" role="alert"></div>
+									</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 status_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="status">@Resource.roomoccupancystatus_status <b class="iconRed">*</b></label>
+										<select name="status" id="status" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.status)
+									<div id="status-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.addroomoccupancystatus</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("RoomOccupancyStatus","create")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+<script>
+$(document).ready(function () {
+	$('#bookeddate').datetimepicker({
+		 minDate: moment(),
+		 timepicker: false,
+		 scrollInput: false,
+		 format: "d/m/Y",
+		 formatDate: "d/m/Y"
+});
+
+})
+</script>
+@if (Model == null)
+{
+<script>
+var currentDate = new Date().toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric'});
+																		$("#bookeddate").val(currentDate);
+																		</script>
+}
+
+<script>
+var strstatus;
+</script>
+@if (Model != null)
+{
+if (Model.status != null && Model.status.ToString() != "")
+{
+<script>
+strstatus = "@Model.status";
+</script>
+}
+}
+
+			<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'RoomOccupancyStatus' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="status"){
+												var ddltarget_status = "#status"
+												$(ddltarget_status).empty();
+												$(ddltarget_status).append("<option value=''>Choose</option>")
+												var options_status = optionDataInner.fielddesc.split(',');
+												options_status.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_status.forEach(function(option_status){
+													if(strstatus== option_status){
+													$(ddltarget_status).append('<option selected value="' + option_status + '">' + option_status+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_status).append('<option  value="' + option_status + '">' + option_status+ '</option>')
+													  
+												})  
+ 
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+			
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			
+			<script>
+			
+			
+			$("#patientname").prop('disabled', true)
+
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Room_Occupancy_Status")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Room_Occupancy_Status")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updateroomoccupancystatus;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updateroomoccupancystatus")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ 
+
+ 
+ 
+
+ $("#patientname").prop('disabled', false)
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ 
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("RoomOccupancyStatus","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "RoomOccupancyStatus")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+					<script>
+					var strpatientvisit;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientvisit != null && Model.patientvisit.ToString() != "")
+							{
+							<script>
+								 strpatientvisit="@Model.patientvisit"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_RoomOccupancyStatus_patientvisit(tenantid) {
+
+					var ddltarget_patientvisit = $('#patientvisit');
+					ddltarget_patientvisit.empty();;
+					ddltarget_patientvisit.select2({
+						ajax: {
+							url: '@Url.Action("lookup_RoomOccupancyStatus_patientvisit")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.visitnumber !== null);
+									data.sort((a, b) =>
+										String(a.visitnumber).toLowerCase().localeCompare(String(b.visitnumber).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientVisitid;
+									data[i].name = data[i].visitnumber;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_RoomOccupancyStatus_patientvisit,
+						 templateSelection: formatSelectSelected_lookup_RoomOccupancyStatus_patientvisit
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientvisit || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_RoomOccupancyStatus_patientvisit")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientVisitid == strpatientvisit) {
+											var option = new Option(data[i].visitnumber,data[i].PatientVisitid, true, true);
+											ddltarget_patientvisit.append(option).trigger('update');
+
+											ddltarget_patientvisit.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_RoomOccupancyStatus_patientvisit(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.visitnumber) {
+						var textValue = item.visitnumber
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_RoomOccupancyStatus_patientvisit(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.visitnumber;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_RoomOccupancyStatus_patientvisit(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strpatientname;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientname != null && Model.patientname.ToString() != "")
+							{
+							<script>
+								 strpatientname="@Model.patientname"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_RoomOccupancyStatus_patientname(tenantid) {
+
+					var ddltarget_patientname = $('#patientname');
+					ddltarget_patientname.empty();;
+					ddltarget_patientname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_RoomOccupancyStatus_patientname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientProfileid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname+ ' ' + data[i].mobilenumber;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_RoomOccupancyStatus_patientname,
+						 templateSelection: formatSelectSelected_lookup_RoomOccupancyStatus_patientname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_RoomOccupancyStatus_patientname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientProfileid == strpatientname) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname+ ' ' + data[i].mobilenumber,data[i].PatientProfileid, true, true);
+											ddltarget_patientname.append(option).trigger('update');
+
+											ddltarget_patientname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_RoomOccupancyStatus_patientname(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname+ ' ' + item.mobilenumber) {
+						var textValue = item.firstname+ ' ' + item.lastname+ ' ' + item.mobilenumber
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_RoomOccupancyStatus_patientname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname+ ' ' + item.mobilenumber;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_RoomOccupancyStatus_patientname(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var stripdno;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.ipdno != null && Model.ipdno.ToString() != "")
+							{
+							<script>
+								 stripdno="@Model.ipdno"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_RoomOccupancyStatus_ipdno(tenantid,patientname) {
+
+					var ddltarget_ipdno = $('#ipdno');
+					ddltarget_ipdno.empty();;
+					ddltarget_ipdno.select2({
+						ajax: {
+							url: '@Url.Action("lookup_RoomOccupancyStatus_ipdno")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patientname":patientname,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].IPDApplicationFormid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_RoomOccupancyStatus_ipdno,
+						 templateSelection: formatSelectSelected_lookup_RoomOccupancyStatus_ipdno
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patientname":patientname,
+
+									'searchterm': stripdno || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_RoomOccupancyStatus_ipdno")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].IPDApplicationFormid == stripdno) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname,data[i].IPDApplicationFormid, true, true);
+											ddltarget_ipdno.append(option).trigger('update');
+
+											ddltarget_ipdno.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_RoomOccupancyStatus_ipdno(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname) {
+						var textValue = item.firstname+ ' ' + item.lastname
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_RoomOccupancyStatus_ipdno(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_RoomOccupancyStatus_ipdno(str_tenantid,strpatientname)
+								}, 3000)
+							
+							$("#patientname").change(function(){
+									 
+										 
+									  
+									 
+										lookup_RoomOccupancyStatus_ipdno($("#tenantid").val(),$("#patientname").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strblock;
+</script>
+	@if (Model != null)
+	{
+		if(Model.block != null && Model.block.ToString() != "")
+		{
+		<script>
+			 strblock="@Model.block"
+		</script>
+		}
+	}
+<script>
+function lookup_RoomOccupancyStatus_block(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_RoomOccupancyStatus_block")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.blockname !== null);
+			data.sort((a, b) =>
+				String(a.blockname).toLowerCase().localeCompare(String(b.blockname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_block="#block"
+		$(ddltarget_block).empty();
+		
+		$(ddltarget_block).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strblock== optionDataInner.Blockid){
+					$(ddltarget_block).append('<option selected value="' + optionDataInner.Blockid + '">' + optionDataInner.blockname+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_block).append('<option  value="' + optionDataInner.Blockid+ '">' + optionDataInner.blockname+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_RoomOccupancyStatus_block(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strbuilding;
+</script>
+	@if (Model != null)
+	{
+		if(Model.building != null && Model.building.ToString() != "")
+		{
+		<script>
+			 strbuilding="@Model.building"
+		</script>
+		}
+	}
+<script>
+function lookup_RoomOccupancyStatus_building(tenantid,block) {
+
+var sendFilterData = {
+	"tenantid":tenantid,
+"block":block
+}
+
+$.ajax({
+url: '@Url.Action("lookup_RoomOccupancyStatus_building")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.buildingname !== null);
+			data.sort((a, b) =>
+				String(a.buildingname).toLowerCase().localeCompare(String(b.buildingname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_building="#building"
+		$(ddltarget_building).empty();
+		
+		$(ddltarget_building).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strbuilding== optionDataInner.Buildingid){
+					$(ddltarget_building).append('<option selected value="' + optionDataInner.Buildingid + '">' + optionDataInner.buildingname+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_building).append('<option  value="' + optionDataInner.Buildingid+ '">' + optionDataInner.buildingname+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_RoomOccupancyStatus_building(str_tenantid,strblock)
+							$("#block").change(function(){
+									 
+										 
+									  
+									 
+										lookup_RoomOccupancyStatus_building($("#tenantid").val(),$("#block").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strfloor;
+</script>
+	@if (Model != null)
+	{
+		if(Model.floor != null && Model.floor.ToString() != "")
+		{
+		<script>
+			 strfloor="@Model.floor"
+		</script>
+		}
+	}
+<script>
+function lookup_RoomOccupancyStatus_floor(tenantid,block,building) {
+
+var sendFilterData = {
+	"tenantid":tenantid,
+"block":block,
+"building":building
+}
+
+$.ajax({
+url: '@Url.Action("lookup_RoomOccupancyStatus_floor")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.floorname !== null);
+			data.sort((a, b) =>
+				String(a.floorname).toLowerCase().localeCompare(String(b.floorname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_floor="#floor"
+		$(ddltarget_floor).empty();
+		
+		$(ddltarget_floor).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strfloor== optionDataInner.Floorid){
+					$(ddltarget_floor).append('<option selected value="' + optionDataInner.Floorid + '">' + optionDataInner.floorname+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_floor).append('<option  value="' + optionDataInner.Floorid+ '">' + optionDataInner.floorname+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_RoomOccupancyStatus_floor(str_tenantid,strblock,strbuilding)
+							$("#block,#building").change(function(){
+									 
+										 
+									  
+									 
+										lookup_RoomOccupancyStatus_floor($("#tenantid").val(),$("#block").val(),$("#building").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strroom;
+</script>
+	@if (Model != null)
+	{
+		if(Model.room != null && Model.room.ToString() != "")
+		{
+		<script>
+			 strroom="@Model.room"
+		</script>
+		}
+	}
+<script>
+function lookup_RoomOccupancyStatus_room(tenantid,block,building,floor) {
+
+var sendFilterData = {
+	"tenantid":tenantid,
+"block":block,
+"building":building,
+"floor":floor
+}
+
+$.ajax({
+url: '@Url.Action("lookup_RoomOccupancyStatus_room")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.roomnumber !== null);
+			data.sort((a, b) =>
+				String(a.roomnumber).toLowerCase().localeCompare(String(b.roomnumber).toLowerCase()) 
+			);
+		}
+	   var ddltarget_room="#room"
+		$(ddltarget_room).empty();
+		
+		$(ddltarget_room).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strroom== optionDataInner.Roomid){
+					$(ddltarget_room).append('<option selected value="' + optionDataInner.Roomid + '">' + optionDataInner.roomnumber+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_room).append('<option  value="' + optionDataInner.Roomid+ '">' + optionDataInner.roomnumber+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_RoomOccupancyStatus_room(str_tenantid,strblock,strbuilding,strfloor)
+							$("#block,#building,#floor").change(function(){
+									 
+										 
+									  
+									 
+										lookup_RoomOccupancyStatus_room($("#tenantid").val(),$("#block").val(),$("#building").val(),$("#floor").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_RoomOccupancyStatus_patientvisit($("#tenantid").val())
+lookup_RoomOccupancyStatus_patientname($("#tenantid").val())
+lookup_RoomOccupancyStatus_ipdno($("#tenantid").val(),$("#patientname").val())
+lookup_RoomOccupancyStatus_block($("#tenantid").val())
+lookup_RoomOccupancyStatus_building($("#tenantid").val(),$("#block").val())
+lookup_RoomOccupancyStatus_floor($("#tenantid").val(),$("#block").val(),$("#building").val())
+lookup_RoomOccupancyStatus_room($("#tenantid").val(),$("#block").val(),$("#building").val(),$("#floor").val())
+
+						})
+					
+
+					});
+					</script>
+
+
+<script>
+
+function lookup_change_RoomOccupancyStatus_patientvisit(PatientVisitid)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_RoomOccupancyStatus_patientvisit")',
+dataType: 'json',
+data:{'PatientVisitid':PatientVisitid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#patientname").val(data[0].patientname)
+$("#patientname").trigger('change')
+$("#patientname").addClass('form-control--active')
+
+				
+
+		 }else{
+
+			 $("#patientname").val('')
+$("#patientname").removeClass('form-control--active')
+
+			
+		 }
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+
+	$("#patientvisit").change(function(){
+
+			lookup_change_RoomOccupancyStatus_patientvisit($(this).val())
+			$("#patientname").prop('disabled', true)
+
+
+	})
+
+
+})
+</script>
+
+

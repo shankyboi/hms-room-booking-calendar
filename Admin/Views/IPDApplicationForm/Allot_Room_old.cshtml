@@ -1,0 +1,2034 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:09 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.IPDApplicationFormModel
+			@{
+			ViewData["Title"] = @Resource.allotroom;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Allot_Room", "IPDApplicationForm", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.allotroom</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.IPDApplicationFormid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								 
+				<div class="col-sm-12 col-xs-12 mt-3 BasicInfo_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.basicinfo</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 bookingreferencenumber_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="bookingreferencenumber">@Resource.ipdapplicationform_bookingreferencenumber</label>
+											@Html.TextBoxFor(m => m.bookingreferencenumber, new {@placeholder="Auto Number YYYYMMDD-999" ,@maxlength="128", @readonly="readonly", @class = "form-control form-control-lg " })
+
+										</div>
+									</div>
+								</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 PackageInfo_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.packageinfo</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 packagename_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="packagename">@Resource.ipdapplicationform_packagename</label>
+										<select name="packagename" id="packagename"  class="form-control select2 select2-list  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.packagename)
+									<div id="packagename-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 room_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Room Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.room
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-room pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="roomContainer" class="roomContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Room Containder Block-->
+					
+			 
+<div class="col-sm-3 col-xs-12 p-2 verifiedstatus_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="verifiedstatus">@Resource.ipdapplicationform_verifiedstatus</label>
+										<select name="verifiedstatus" id="verifiedstatus" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.verifiedstatus)
+									<div id="verifiedstatus-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.allotroom</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("IPDApplicationForm","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+<script>
+var strverifiedstatus;
+</script>
+@if (Model != null)
+{
+if (Model.verifiedstatus != null && Model.verifiedstatus.ToString() != "")
+{
+<script>
+strverifiedstatus = "@Model.verifiedstatus";
+</script>
+}
+}
+
+			<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'IPDApplicationForm' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="verifiedstatus"){
+												var ddltarget_verifiedstatus = "#verifiedstatus"
+												$(ddltarget_verifiedstatus).empty();
+												$(ddltarget_verifiedstatus).append("<option value=''>Choose</option>")
+												var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+												options_verifiedstatus.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_verifiedstatus.forEach(function(option_verifiedstatus){
+													if(strverifiedstatus== option_verifiedstatus){
+													$(ddltarget_verifiedstatus).append('<option selected value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_verifiedstatus).append('<option  value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+													  
+												})  
+ 
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+			<script>
+var dataroomnumber
+function fill_roomnumber() {
+$.ajax({
+url: '@Url.Action("get_all_Room")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.roomnumber !== null);
+				data.sort((a, b) =>
+					String(a.roomnumber).toLowerCase().localeCompare(String(b.roomnumber).toLowerCase()) 
+				);
+dataroomnumber=data
+}
+})
+}
+function buildselectroomnumber(selected, index) {
+if (dataroomnumber == undefined) fill_roomnumber()
+var select = '<select name="roomnumber' + index + '" id="roomnumber' + index + '"  class="roomnumber form-control  " >'
+select = select + '<option value="">Choose</option>';
+if (dataroomnumber != null && dataroomnumber.length > 0)
+{
+$.each(dataroomnumber, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.Roomid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.Roomid  + '">' + optionDataInner.roomnumber  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.Roomid+ '">' + optionDataInner.roomnumber + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.Roomid + '">' + optionDataInner.roomnumber+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			<script>
+				$(document).ready(function () {
+				setTimeout(function () {
+					$(".btn-add-room").trigger("click");
+				}, 500);
+			  $("body").on("click", ".btn-add-room", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".room").removeClass('showthelables');
+			   $(".btn-remove-row-room").removeClass('btn-remove-row');
+				$("#roomContainer").prepend(
+				'<div class="row m-t-10 room dependentContainerBorder" id="room' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 allottedto_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="allottedto">@Resource.ipdapplicationform_room_allottedto</label>'+
+										buildselectIPDApplicationForm('allottedto','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="allottedto' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 roomnumber_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="roomnumber">@Resource.ipdapplicationform_room_roomnumber</label>'+
+										buildselectroomnumber('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="roomnumber' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 fromdate_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="fromdate">@Resource.ipdapplicationform_room_fromdate</label>'+
+											'<input  name="fromdate' + index + '" id="fromdate' + index + '" autocomplete="off" type="text" class="fromdate form-control--active form-control form-control-lg " placeholder="dd/mm/yyyy HH:mm" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="fromdate' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 todate_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="todate">@Resource.ipdapplicationform_room_todate</label>'+
+											'<input  name="todate' + index + '" id="todate' + index + '" autocomplete="off" type="text" class="todate form-control--active form-control form-control-lg " placeholder="dd/mm/yyyy HH:mm" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="todate' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-room"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#roomContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('room', '')).addClass('btn-remove-row');
+				
+				
+					$('#fromdate'+ index).datetimepicker({
+		 minDate: moment(),
+		 timepicker: true,
+		 format: "d/m/Y H:i",
+		 formatDate: "d/m/Y H:i"
+});
+
+	$('#todate'+ index).datetimepicker({
+		 minDate: moment(),
+		 timepicker: true,
+		 format: "d/m/Y H:i",
+		 formatDate: "d/m/Y H:i"
+});
+
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-room', function (e) {
+					 
+					 
+					
+					var roomRow = $(this).closest(".room");
+					var index = roomRow.attr("id").replace("room", "");
+					roomRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.room" ? @Html.Raw(Json.Serialize(@Model.room)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".room").removeClass('showthelables');
+			   $(".btn-remove-row-room").removeClass('btn-remove-row');
+				$("#roomContainer").prepend(
+				'<div class="row m-t-10 room dependentContainerBorder" id="room' + index + '">' +
+				'<input type="hidden" class="IPDApplicationForm_roomid" value="' + obj.IPDApplicationForm_roomid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 allottedto_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="allottedto">@Resource.ipdapplicationform_room_allottedto</label>'+
+										buildselectIPDApplicationForm('allottedto',obj.allottedto, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="allottedto' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 roomnumber_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="roomnumber">@Resource.ipdapplicationform_room_roomnumber</label>'+
+										buildselectroomnumber(obj.roomnumber, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="roomnumber' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 fromdate_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="fromdate">@Resource.ipdapplicationform_room_fromdate</label>'+
+											'<input value="'+(obj.fromdate ?ISOtoSelectedFormat(obj.fromdate):'')+'" name="fromdate' + index + '" id="fromdate' + index + '" autocomplete="off" type="text" class="fromdate form-control--active form-control form-control-lg " placeholder="dd/mm/yyyy HH:mm" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="fromdate' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 todate_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="todate">@Resource.ipdapplicationform_room_todate</label>'+
+											'<input value="'+(obj.todate ?ISOtoSelectedFormat(obj.todate):'')+'" name="todate' + index + '" id="todate' + index + '" autocomplete="off" type="text" class="todate form-control--active form-control form-control-lg " placeholder="dd/mm/yyyy HH:mm" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="todate' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-room"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.roomContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('room', '')).addClass('btn-remove-row');
+
+					$('#fromdate'+ index).datetimepicker({
+		 minDate: moment(),
+		 timepicker: true,
+		 format: "d/m/Y H:i",
+		 formatDate: "d/m/Y H:i"
+});
+
+	$('#todate'+ index).datetimepicker({
+		 minDate: moment(),
+		 timepicker: true,
+		 format: "d/m/Y H:i",
+		 formatDate: "d/m/Y H:i"
+});
+
+ 
+				
+				
+
+				
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+var dataIPDApplicationForm
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'IPDApplicationForm' },
+async:false,
+success: function(data) {
+dataIPDApplicationForm=data
+}
+})
+function buildselectIPDApplicationForm(columnName,selected, index) {
+if(columnName=='allottedto')
+{
+var select;
+$.each(dataIPDApplicationForm, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='allottedto')
+{
+select = '<select name="allottedto' + index + '" id="allottedto' + index + '" class="allottedto form-control--active form-control  ">'
+ select = select + '<option value="">Choose</option>';
+
+								
+										var options_allottedto = optionDataInner.fielddesc.split(',');
+										options_allottedto.sort(function (a, b) {
+										return a.localeCompare(b);
+										});
+										options_allottedto.forEach(function(option_allottedto){
+											if(selected== option_allottedto)
+											select = select + '<option selected value="' + option_allottedto + '">' + option_allottedto+ '</option>'
+											else
+											select = select + '<option  value="' + option_allottedto + '">' + option_allottedto+ '</option>'
+										
+										})  
+
+									
+select=select + '</select>';
+}
+})
+return select;
+}
+
+}
+</script>
+
+
+			<script>
+			
+			  function getroom() {
+		 
+					$("#room").val("");
+					var roomModel = [];
+
+				
+					
+					
+					var el = $('.roomContainer .room');
+					
+					el.each(function (cnt) {
+					
+							roomAttributes = {}
+							
+							 roomAttributes['allottedto']=($(this).find('.allottedto').val() ? $(this).find('.allottedto').val().toString() :'')
+roomAttributes['roomnumber']=($(this).find('.roomnumber').val() ? $(this).find('.roomnumber').val().toString() :'')
+roomAttributes['fromdate']=$(this).find('.fromdate').val()?getSqlDateTime($(this).find('.fromdate').val()):''
+roomAttributes['todate']=$(this).find('.todate').val()?getSqlDateTime($(this).find('.todate').val()):''
+roomAttributes['IPDApplicationForm_roomid']=($(this).find('.IPDApplicationForm_roomid').val() != undefined ? $(this).find('.IPDApplicationForm_roomid').val().toString() : "00000000-0000-0000-0000-000000000000")
+roomAttributes['craftmyapp_actionmethodname']='Allot_Room'
+roomAttributes['record_order']=cnt
+roomAttributes['cma_client_row_id']=$(this).attr("id").replace("room","")
+
+							
+							roomModel.push(roomAttributes);
+					
+					
+					
+					});
+					 
+					return roomModel
+				
+				
+				}
+
+			$("#consentfile").prop('disabled', true)
+
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Allot_Room")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Allot_Room")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.allotroom;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.allotroom")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ var roomModel=getroom()
+
+
+ 
+ 
+
+ $("#consentfile").prop('disabled', false)
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ for (var i = 0; i < roomModel.length; i++) {
+formdata.append("room[" + i + "].allottedto", roomModel[i].allottedto)
+formdata.append("room[" + i + "].record_order", roomModel[i].record_order)
+formdata.append("room[" + i + "].cma_client_row_id", roomModel[i].cma_client_row_id)
+formdata.append("room[" + i + "].roomnumber", roomModel[i].roomnumber)
+formdata.append("room[" + i + "].fromdate", roomModel[i].fromdate)
+formdata.append("room[" + i + "].todate", roomModel[i].todate)
+formdata.append("room[" + i + "].IPDApplicationForm_roomid", roomModel[i].IPDApplicationForm_roomid)
+formdata.append("room[" + i + "].IPDApplicationFormid", $("#IPDApplicationFormid").val())
+
+formdata.append("room[" + i + "].craftmyapp_actionmethodname", 'Allot_Room')
+}
+
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("IPDApplicationForm","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "IPDApplicationForm")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+ }else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+} 
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			<script>
+			$(document).ready(function () {
+				fill_roomnumber()
+
+				$("#tenantid").change(function(){
+						$("#preferreddatesofadmissionContainer").empty()
+$("#medicalinfoContainer").empty()
+$("#medicationinfoContainer").empty()
+$("#medicalrecordsContainer").empty()
+$("#attendantinfoContainer").empty()
+$("#roompreferenceContainer").empty()
+$("#roomContainer").empty()
+
+						fill_roomnumber()
+
+				})
+			
+
+			});
+			</script>
+			
+			
+			
+
+			 
+			
+				<script>
+													var str_visible_groupbooking;
+													</script>
+													@if (Model != null)
+													{
+														if(Model.groupbooking != null && Model.groupbooking.ToString() != "")
+														{
+														<script>
+														 str_visible_groupbooking="@Model.groupbooking"
+														</script>
+													}
+													}
+<script>
+													var str_visible_nationality;
+													</script>
+													@if (Model != null)
+													{
+														if(Model.nationality != null && Model.nationality.ToString() != "")
+														{
+														<script>
+														 str_visible_nationality="@Model.nationality"
+														</script>
+													}
+													}
+
+				<script type="text/javascript">
+			   $(".countryoforigin_craftmyapp_container").hide()
+$(".areyouthegroupleader_craftmyapp_container").hide()
+$(".numberofmember_craftmyapp_container").hide()
+$(".groupleadersbookingreferencenumber_craftmyapp_container").hide()
+$(".PassportandVisaDetails_craftmyapp_container").hide()
+
+				callvisibility()
+				 
+					function callvisibility(updateselectedval,attributeName) {               
+					
+						
+                         if(updateselectedval =="Yes" && attributeName=="groupbooking"){
+								
+								$(".areyouthegroupleader_craftmyapp_container").show()
+
+						}
+
+						$('#groupbooking').on('change', function() {
+						var selectedText = $(this).find('option:selected').text();	
+						
+$(".areyouthegroupleader_craftmyapp_container").hide()
+
+
+								
+                                
+								if(selectedText=="Yes"){
+								
+								$(".areyouthegroupleader_craftmyapp_container").show()
+
+						}
+
+
+
+						
+					});
+
+						
+                         if(updateselectedval =="Foreign" && attributeName=="nationality"){
+								
+								$(".countryoforigin_craftmyapp_container").show()
+$(".PassportandVisaDetails_craftmyapp_container").show()
+
+						}
+
+						$('#nationality').on('change', function() {
+						var selectedText = $(this).find('option:selected').text();	
+						
+$(".countryoforigin_craftmyapp_container").hide()
+$(".PassportandVisaDetails_craftmyapp_container").hide()
+
+
+								
+                                
+								if(selectedText=="Foreign"){
+								
+								$(".countryoforigin_craftmyapp_container").show()
+$(".PassportandVisaDetails_craftmyapp_container").show()
+
+						}
+
+
+
+						
+					});
+
+
+       if(updateselectedval =="Yes" && attributeName=="groupbooking"){
+								
+								$('label[for="areyouthegroupleader"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#areyouthegroupleader").addClass("required")
+
+						}
+
+   $('#groupbooking').on('change', function() {
+		
+
+						var selectedText = $(this).find('option:selected').text();	
+						
+$('label[for="areyouthegroupleader"]').find('.dynamic-asterisk').remove();
+																	$("#areyouthegroupleader").removeClass("required")
+
+
+						                                
+								if(selectedText=="Yes"){
+								
+								$('label[for="areyouthegroupleader"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#areyouthegroupleader").addClass("required")
+
+						}
+
+		});
+
+
+       if(updateselectedval =="Foreign" && attributeName=="nationality"){
+								
+								$('label[for="countryoforigin"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#countryoforigin").addClass("required")
+$('label[for="passportnumber"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#passportnumber").addClass("required")
+$('label[for="passportissuingcountry"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#passportissuingcountry").addClass("required")
+$('label[for="passportexpirydate"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#passportexpirydate").addClass("required")
+$('label[for="uploadpassportcopy"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#uploadpassportcopy").addClass("required")
+$('label[for="visatype"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visatype").addClass("required")
+$('label[for="visanumber"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visanumber").addClass("required")
+$('label[for="visaissuedcountry"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visaissuedcountry").addClass("required")
+$('label[for="visaissuedate"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visaissuedate").addClass("required")
+$('label[for="visaexpirydate"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visaexpirydate").addClass("required")
+$('label[for="uploadvisacopy"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#uploadvisacopy").addClass("required")
+
+						}
+
+   $('#nationality').on('change', function() {
+		
+
+						var selectedText = $(this).find('option:selected').text();	
+						
+$('label[for="countryoforigin"]').find('.dynamic-asterisk').remove();
+																	$("#countryoforigin").removeClass("required")
+$('label[for="passportnumber"]').find('.dynamic-asterisk').remove();
+																	$("#passportnumber").removeClass("required")
+$('label[for="passportissuingcountry"]').find('.dynamic-asterisk').remove();
+																	$("#passportissuingcountry").removeClass("required")
+$('label[for="passportexpirydate"]').find('.dynamic-asterisk').remove();
+																	$("#passportexpirydate").removeClass("required")
+$('label[for="uploadpassportcopy"]').find('.dynamic-asterisk').remove();
+																	$("#uploadpassportcopy").removeClass("required")
+$('label[for="visatype"]').find('.dynamic-asterisk').remove();
+																	$("#visatype").removeClass("required")
+$('label[for="visanumber"]').find('.dynamic-asterisk').remove();
+																	$("#visanumber").removeClass("required")
+$('label[for="visaissuedcountry"]').find('.dynamic-asterisk').remove();
+																	$("#visaissuedcountry").removeClass("required")
+$('label[for="visaissuedate"]').find('.dynamic-asterisk').remove();
+																	$("#visaissuedate").removeClass("required")
+$('label[for="visaexpirydate"]').find('.dynamic-asterisk').remove();
+																	$("#visaexpirydate").removeClass("required")
+$('label[for="uploadvisacopy"]').find('.dynamic-asterisk').remove();
+																	$("#uploadvisacopy").removeClass("required")
+
+
+						                                
+								if(selectedText=="Foreign"){
+								
+								$('label[for="countryoforigin"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#countryoforigin").addClass("required")
+$('label[for="passportnumber"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#passportnumber").addClass("required")
+$('label[for="passportissuingcountry"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#passportissuingcountry").addClass("required")
+$('label[for="passportexpirydate"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#passportexpirydate").addClass("required")
+$('label[for="uploadpassportcopy"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#uploadpassportcopy").addClass("required")
+$('label[for="visatype"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visatype").addClass("required")
+$('label[for="visanumber"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visanumber").addClass("required")
+$('label[for="visaissuedcountry"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visaissuedcountry").addClass("required")
+$('label[for="visaissuedate"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visaissuedate").addClass("required")
+$('label[for="visaexpirydate"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#visaexpirydate").addClass("required")
+$('label[for="uploadvisacopy"]').append('<b class="iconRed dynamic-asterisk">*</b>');
+																$("#uploadvisacopy").addClass("required")
+
+						}
+
+		});
+
+					
+					}
+				</script> 
+			    
+
+
+
+			 <!--to_cma_script-->
+			<script>
+				$(".verifiedstatus_craftmyapp_container").hide()
+				</script>
+					<script>
+					var strpatientname;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientname != null && Model.patientname.ToString() != "")
+							{
+							<script>
+								 strpatientname="@Model.patientname"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_IPDApplicationForm_patientname(tenantid) {
+
+					var ddltarget_patientname = $('#patientname');
+					ddltarget_patientname.empty();;
+					ddltarget_patientname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_IPDApplicationForm_patientname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientProfileid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_IPDApplicationForm_patientname,
+						 templateSelection: formatSelectSelected_lookup_IPDApplicationForm_patientname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_IPDApplicationForm_patientname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientProfileid == strpatientname) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname,data[i].PatientProfileid, true, true);
+											ddltarget_patientname.append(option).trigger('update');
+
+											ddltarget_patientname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_IPDApplicationForm_patientname(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname) {
+						var textValue = item.firstname+ ' ' + item.lastname
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_IPDApplicationForm_patientname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_IPDApplicationForm_patientname(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strcountryoforigin;
+</script>
+	@if (Model != null)
+	{
+		if(Model.countryoforigin != null && Model.countryoforigin.ToString() != "")
+		{
+		<script>
+			 strcountryoforigin="@Model.countryoforigin"
+		</script>
+		}
+	}
+<script>
+function lookup_IPDApplicationForm_countryoforigin() {
+
+var sendFilterData = {
+	
+}
+
+$.ajax({
+url: '@Url.Action("lookup_IPDApplicationForm_countryoforigin")',
+dataType: 'json',
+
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.countryname !== null);
+			data.sort((a, b) =>
+				String(a.countryname).toLowerCase().localeCompare(String(b.countryname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_countryoforigin="#countryoforigin"
+		$(ddltarget_countryoforigin).empty();
+		
+		$(ddltarget_countryoforigin).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strcountryoforigin== optionDataInner.Countryid){
+					$(ddltarget_countryoforigin).append('<option selected value="' + optionDataInner.Countryid + '">' + optionDataInner.countryname+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_countryoforigin).append('<option  value="' + optionDataInner.Countryid+ '">' + optionDataInner.countryname+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_IPDApplicationForm_countryoforigin()
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strpassportissuingcountry;
+</script>
+	@if (Model != null)
+	{
+		if(Model.passportissuingcountry != null && Model.passportissuingcountry.ToString() != "")
+		{
+		<script>
+			 strpassportissuingcountry="@Model.passportissuingcountry"
+		</script>
+		}
+	}
+<script>
+function lookup_IPDApplicationForm_passportissuingcountry() {
+
+var sendFilterData = {
+	
+}
+
+$.ajax({
+url: '@Url.Action("lookup_IPDApplicationForm_passportissuingcountry")',
+dataType: 'json',
+
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.countryname !== null);
+			data.sort((a, b) =>
+				String(a.countryname).toLowerCase().localeCompare(String(b.countryname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_passportissuingcountry="#passportissuingcountry"
+		$(ddltarget_passportissuingcountry).empty();
+		
+		$(ddltarget_passportissuingcountry).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strpassportissuingcountry== optionDataInner.Countryid){
+					$(ddltarget_passportissuingcountry).append('<option selected value="' + optionDataInner.Countryid + '">' + optionDataInner.countryname+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_passportissuingcountry).append('<option  value="' + optionDataInner.Countryid+ '">' + optionDataInner.countryname+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_IPDApplicationForm_passportissuingcountry()
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strvisaissuedcountry;
+</script>
+	@if (Model != null)
+	{
+		if(Model.visaissuedcountry != null && Model.visaissuedcountry.ToString() != "")
+		{
+		<script>
+			 strvisaissuedcountry="@Model.visaissuedcountry"
+		</script>
+		}
+	}
+<script>
+function lookup_IPDApplicationForm_visaissuedcountry() {
+
+var sendFilterData = {
+	
+}
+
+$.ajax({
+url: '@Url.Action("lookup_IPDApplicationForm_visaissuedcountry")',
+dataType: 'json',
+
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.countryname !== null);
+			data.sort((a, b) =>
+				String(a.countryname).toLowerCase().localeCompare(String(b.countryname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_visaissuedcountry="#visaissuedcountry"
+		$(ddltarget_visaissuedcountry).empty();
+		
+		$(ddltarget_visaissuedcountry).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strvisaissuedcountry== optionDataInner.Countryid){
+					$(ddltarget_visaissuedcountry).append('<option selected value="' + optionDataInner.Countryid + '">' + optionDataInner.countryname+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_visaissuedcountry).append('<option  value="' + optionDataInner.Countryid+ '">' + optionDataInner.countryname+ '</option>')
+
+
+		});
+
+		$(ddltarget_visaissuedcountry).select2()
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_IPDApplicationForm_visaissuedcountry()
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strconsentform;
+</script>
+	@if (Model != null)
+	{
+		if(Model.consentform != null && Model.consentform.ToString() != "")
+		{
+		<script>
+			 strconsentform="@Model.consentform"
+		</script>
+		}
+	}
+<script>
+function lookup_IPDApplicationForm_consentform(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_IPDApplicationForm_consentform")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.consenttype !== null);
+			data.sort((a, b) =>
+				String(a.consenttype).toLowerCase().localeCompare(String(b.consenttype).toLowerCase()) 
+			);
+		}
+	   var ddltarget_consentform="#consentform"
+		$(ddltarget_consentform).empty();
+		
+		$(ddltarget_consentform).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strconsentform== optionDataInner.PatientConsentid){
+					$(ddltarget_consentform).append('<option selected value="' + optionDataInner.PatientConsentid + '">' + optionDataInner.consenttype+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_consentform).append('<option  value="' + optionDataInner.PatientConsentid+ '">' + optionDataInner.consenttype+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_IPDApplicationForm_consentform(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strpackagename;
+</script>
+	@if (Model != null)
+	{
+		if(Model.packagename != null && Model.packagename.ToString() != "")
+		{
+		<script>
+			 strpackagename="@Model.packagename"
+		</script>
+		}
+	}
+<script>
+function lookup_IPDApplicationForm_packagename(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_IPDApplicationForm_packagename")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.packagename !== null);
+			data.sort((a, b) =>
+				String(a.packagename).toLowerCase().localeCompare(String(b.packagename).toLowerCase()) 
+			);
+		}
+	   var ddltarget_packagename="#packagename"
+		$(ddltarget_packagename).empty();
+		
+		$(ddltarget_packagename).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strpackagename== optionDataInner.TreatmentPackageid){
+					$(ddltarget_packagename).append('<option selected value="' + optionDataInner.TreatmentPackageid + '">' + optionDataInner.packagename+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_packagename).append('<option  value="' + optionDataInner.TreatmentPackageid+ '">' + optionDataInner.packagename+ '</option>')
+
+
+		});
+
+		$(ddltarget_packagename).select2()
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_IPDApplicationForm_packagename(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_IPDApplicationForm_patientname($("#tenantid").val())
+lookup_IPDApplicationForm_countryoforigin()
+lookup_IPDApplicationForm_passportissuingcountry()
+lookup_IPDApplicationForm_visaissuedcountry()
+lookup_IPDApplicationForm_consentform($("#tenantid").val())
+lookup_IPDApplicationForm_packagename($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script>
+
+<script>
+
+function lookup_change_IPDApplicationForm_consentform(PatientConsentid)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_IPDApplicationForm_consentform")',
+dataType: 'json',
+data:{'PatientConsentid':PatientConsentid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				consentfileuploaded_attachments = data[0].consentfile.split('|').filter(Boolean);
+												$("#consentfile_existing").val(data[0].consentfile)
+												consentfileexistingFiles = consentfileuploaded_attachments;
+												renderExistingFileListOfconsentfile()
+												updateFileCountofconsentfile();
+
+				
+
+		 }else{
+
+			 $("#consentfile").val('')
+$("#consentfile").removeClass('form-control--active')
+
+			
+		 }
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+
+	$("#consentform").change(function(){
+
+			lookup_change_IPDApplicationForm_consentform($(this).val())
+			$("#consentfile").prop('disabled', true)
+
+
+	})
+
+
+})
+</script>
+
+

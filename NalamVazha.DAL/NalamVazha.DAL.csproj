@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+                          <ItemGroup>
+                            <None Remove="Add_Treatment_Package.cshtml" />
+                          </ItemGroup>
+
+                          <ItemGroup>
+                            <ProjectReference Include="..\NalamVazha.Models\NalamVazha.Models.csproj" />
+                          </ItemGroup>
+
+                          <ItemGroup>
+		                        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.8" />
+		                        <PackageReference Include="Npgsql" Version="9.0.3" />
+		                        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+                          </ItemGroup>
+
+                          <PropertyGroup>
+                            <TargetFramework>net10.0</TargetFramework>
+                          </PropertyGroup>
+
+                        </Project>
+
+                        

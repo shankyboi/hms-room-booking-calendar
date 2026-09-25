@@ -1,0 +1,48 @@
+@model string
+@* Filters popover for the Room Preference pool (Patient/Attendant). One instance
+   per pool, distinguished only by the id prefix passed in as the model, so the
+   markup is written once and the matching JS controller (ipdCreateRoomFilterController)
+   is likewise shared between the two pools. *@
+<div class="nrtp-filter-popover" id="@(Model)FilterPopover" hidden>
+    <div class="nrtp-filter-popover__head">
+        <div class="nrtp-filter-popover__title"><i class="fa fa-search" aria-hidden="true"></i> Preferred Room Filters</div>
+        <button type="button" class="nrtp-filter-popover__close" aria-label="Close filters">&times;</button>
+    </div>
+
+    <div class="nrtp-filter-section">
+        <div class="nrtp-filter-section__label">
+            Gender Suitability
+            <span class="nrtp-filter-badge" id="@(Model)FilterGenderBadge"></span>
+        </div>
+        <div class="nrtp-filter-gender">
+            <button type="button" id="@(Model)FilterGenderAll" class="active">All Genders</button>
+            <button type="button" id="@(Model)FilterGenderOnly">Gender Suitable</button>
+        </div>
+    </div>
+
+    <div class="nrtp-filter-section">
+        <div class="nrtp-filter-section__label">
+            Room Category Types
+            <span class="nrtp-filter-select-links">
+                <button type="button" data-filter-select-all>Select All</button><span>&middot;</span><button type="button" data-filter-clear>Clear</button>
+            </span>
+        </div>
+        <div class="nrtp-filter-category-list" id="@(Model)FilterCategoryList"></div>
+    </div>
+
+    <div class="nrtp-filter-section">
+        <div class="nrtp-filter-rate-row"><span>Min: <b id="@(Model)FilterMinLabel">&#8377;0</b></span><span>Max: <b id="@(Model)FilterMaxLabel">&#8377;0</b></span></div>
+        <div class="nrtp-filter-rate-label">Minimum Rate</div>
+        <input type="range" class="nrtp-filter-range" id="@(Model)FilterMinRange" min="0" max="0" value="0" />
+        <div class="nrtp-filter-rate-label">Maximum Rate</div>
+        <input type="range" class="nrtp-filter-range" id="@(Model)FilterMaxRange" min="0" max="0" value="0" />
+
+        <div class="nrtp-filter-section__label" style="margin-top:12px;">Quick Presets</div>
+        <div class="nrtp-filter-presets" id="@(Model)FilterPresets"></div>
+    </div>
+
+    <div class="nrtp-filter-popover__footer">
+        <button type="button" class="nrtp-filter-reset" data-filter-reset>Reset All</button>
+        <button type="button" class="btn btn-primary nrtp-filter-apply" data-filter-apply>Apply Filters</button>
+    </div>
+</div>

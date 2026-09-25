@@ -1,0 +1,1788 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 08/03/2026 08:27:36 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.TaskTemplateModel
+			@{
+			ViewData["Title"] = @Resource.updatetasktemplate;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_Task_Template", "TaskTemplate", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updatetasktemplate</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.TaskTemplateid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								 
+				<div class="col-sm-12 col-xs-12 mt-3 TaskDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.taskdetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 tasktype_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="tasktype">@Resource.tasktemplate_tasktype</label>
+										<select name="tasktype" id="tasktype" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.tasktype)
+									<div id="tasktype-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 taskname_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="taskname">@Resource.tasktemplate_taskname</label>
+								@Html.TextBoxFor(m => m.taskname, new {@type="text",@maxlength="128", @class = "form-control form-control-lg mahat_transliterate " })
+
+								 @Html.ValidationMessageFor(model => model.taskname)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 priority_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="priority">@Resource.tasktemplate_priority</label>
+										<select name="priority" id="priority" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.priority)
+									<div id="priority-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 duration_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="duration">@Resource.tasktemplate_duration</label>
+								@Html.TextBoxFor(m => m.duration, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg " })
+
+								 @Html.ValidationMessageFor(model => model.duration)
+							</div>
+						</div>
+					</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 escalationdetails_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Escalation Details  Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.escalationdetails
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-escalationdetails pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="escalationdetailsContainer" class="escalationdetailsContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Escalation Details  Containder Block-->
+					
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 nextactiondetails_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Next Action Details  Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.nextactiondetails
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-nextactiondetails pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="nextactiondetailsContainer" class="nextactiondetailsContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Next Action Details  Containder Block-->
+					
+			 
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updatetasktemplate</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("TaskTemplate","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<script>
+var strpriority;
+</script>
+@if (Model != null)
+{
+if (Model.priority != null && Model.priority.ToString() != "")
+{
+<script>
+strpriority = "@Model.priority";
+</script>
+}
+}
+<script>
+$(document).ready(function () {
+$("#duration").autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+})
+</script>
+
+			<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'TaskTemplate' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="priority"){
+												var ddltarget_priority = "#priority"
+												$(ddltarget_priority).empty();
+												$(ddltarget_priority).append("<option value=''>Choose</option>")
+												var options_priority = optionDataInner.fielddesc.split(',');
+												options_priority.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_priority.forEach(function(option_priority){
+													if(strpriority== option_priority){
+													$(ddltarget_priority).append('<option selected value="' + option_priority + '">' + option_priority+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_priority).append('<option  value="' + option_priority + '">' + option_priority+ '</option>')
+													  
+												})  
+ 
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+			<script>
+var datanotifyto
+function fill_notifyto() {
+$.ajax({
+url: '@Url.Action("get_all_users")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.firstname !== null);
+				data.sort((a, b) =>
+					String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+				);
+datanotifyto=data
+}
+})
+}
+function buildselectnotifyto(selected, index) {
+if (datanotifyto == undefined) fill_notifyto()
+var select = '<select name="notifyto' + index + '" id="notifyto' + index + '"  class="notifyto form-control  " >'
+select = select + '<option value="">Choose</option>';
+if (datanotifyto != null && datanotifyto.length > 0)
+{
+$.each(datanotifyto, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.usersid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.usersid  + '">' + optionDataInner.firstname+ ' ' + optionDataInner.lastname  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.usersid+ '">' + optionDataInner.firstname+ ' ' + optionDataInner.lastname + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.usersid + '">' + optionDataInner.firstname+ ' ' + optionDataInner.lastname+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+<script>
+
+					function buildselectactiontype(stractiontype,index) {
+
+					var ddltarget_actiontype = $('#actiontype'+index);
+					ddltarget_actiontype.empty();
+					ddltarget_actiontype.select2({
+						ajax: {
+							url: '@Url.Action("get_all_ActionType")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									'tenantid':$("#tenantid").val()
+									,'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.actiontype !== null);
+									data.sort((a, b) =>
+										String(a.actiontype).toLowerCase().localeCompare(String(b.actiontype).toLowerCase()) 
+									);                                
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id = data[i].ActionTypeid;
+									data[i].name = data[i].actiontype;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_actiontype,
+						 templateSelection: formatSelectSelected_actiontype
+
+					});
+
+							  var sendFilterData = {
+									'tenantid':$("#tenantid").val()
+									,'searchterm': stractiontype || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("get_all_ActionType")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].ActionTypeid == stractiontype) {
+											var option = new Option(data[i].actiontype, data[i].ActionTypeid, true, true);
+											ddltarget_actiontype.append(option).trigger('update');
+
+											ddltarget_actiontype.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_actiontype(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.actiontype) {
+						var textValue = item.actiontype
+					} 
+					return textValue;
+				}
+				function formatSelectOption_actiontype(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.actiontype;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+
+<script>
+var dataactionname
+function fill_actionname() {
+$.ajax({
+url: '@Url.Action("get_all_Actions")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.actionname !== null);
+				data.sort((a, b) =>
+					String(a.actionname).toLowerCase().localeCompare(String(b.actionname).toLowerCase()) 
+				);
+dataactionname=data
+}
+})
+}
+function buildselectactionname(selected, index) {
+if (dataactionname == undefined) fill_actionname()
+var select = '<select name="actionname' + index + '" id="actionname' + index + '"  class="actionname form-control  " >'
+select = select + '<option value="">Choose</option>';
+if (dataactionname != null && dataactionname.length > 0)
+{
+$.each(dataactionname, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.Actionsid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.Actionsid  + '">' + optionDataInner.actionname  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.Actionsid+ '">' + optionDataInner.actionname + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.Actionsid + '">' + optionDataInner.actionname+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-escalationdetails", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".escalationdetails").removeClass('showthelables');
+			   $(".btn-remove-row-escalationdetails").removeClass('btn-remove-row');
+				$("#escalationdetailsContainer").prepend(
+				'<div class="row m-t-10 escalationdetails dependentContainerBorder" id="escalationdetails' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 priority_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="priority">@Resource.tasktemplate_escalationdetails_priority</label>'+
+										buildselectTaskTemplate('priority','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="priority' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 notifyto_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="notifyto">@Resource.tasktemplate_escalationdetails_notifyto</label>'+
+										buildselectnotifyto('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="notifyto' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 emailid_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="emailid">@Resource.tasktemplate_escalationdetails_emailid</label>'+
+									'<input  name="emailid' + index + '" id="emailid' + index + '"  type="email"  maxlength="128" class="emailid form-control--active form-control  form-control-lg " />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 mobilenumber_craftmyapp_container craftmyapp_phone_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="mobilenumber">@Resource.tasktemplate_escalationdetails_mobilenumber</label>'+
+									'<input  name="mobilenumber_ip' + index + '" id="mobilenumber_ip' + index + '"  type="tel" maxlength="20" class="mobilenumber_ip form-control--active form-control form-control-lg " />' +
+'<input  name="mobilenumber' + index + '" id="mobilenumber' + index + '"  type="tel" maxlength="20" class="mobilenumber invalidphone form-control--active form-control form-control-lg " />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-escalationdetails"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#escalationdetailsContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('escalationdetails', '')).addClass('btn-remove-row');
+				
+				
+				
+
+if($("#mobilenumber_ip"+index).length > 0) {
+var mobilenumber_input = document.querySelector("#mobilenumber_ip"+index);
+		var itimobilenumber_input = window.intlTelInput(mobilenumber_input, {
+			nationalMode: true,
+			initialCountry: "in",
+			preferredCountries: ['us','in','sg']
+		});
+		itimobilenumber_input.setNumber($('#mobilenumber'+index).val());
+		var handleChange_mobilenumber_input = function () {
+		   var text = "";
+		if(itimobilenumber_input.getNumber())
+			  text = (itimobilenumber_input.isValidNumber()) ? itimobilenumber_input.getNumber() : "invalid";
+			 $('#mobilenumber'+index).val(text);
+		};
+
+		// listen to "keyup", but also "change" to update when the user selects a country
+		mobilenumber_input.addEventListener('change', handleChange_mobilenumber_input);
+		mobilenumber_input.addEventListener('keyup', handleChange_mobilenumber_input);
+
+		mobilenumber_input.addEventListener("countrychange", function () {
+			$('#mobilenumber_ip'+index).val("");
+			$('#mobilenumber'+index).val("");
+		})
+}
+
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-escalationdetails', function (e) {
+					 
+					 
+					
+					var escalationdetailsRow = $(this).closest(".escalationdetails");
+					var index = escalationdetailsRow.attr("id").replace("escalationdetails", "");
+					escalationdetailsRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.escalationdetails" ? @Html.Raw(Json.Serialize(@Model.escalationdetails)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".escalationdetails").removeClass('showthelables');
+			   $(".btn-remove-row-escalationdetails").removeClass('btn-remove-row');
+				$("#escalationdetailsContainer").prepend(
+				'<div class="row m-t-10 escalationdetails dependentContainerBorder" id="escalationdetails' + index + '">' +
+				'<input type="hidden" class="TaskTemplate_escalationdetailsid" value="' + obj.TaskTemplate_escalationdetailsid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 priority_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="priority">@Resource.tasktemplate_escalationdetails_priority</label>'+
+										buildselectTaskTemplate('priority',obj.priority, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="priority' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 notifyto_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="notifyto">@Resource.tasktemplate_escalationdetails_notifyto</label>'+
+										buildselectnotifyto(obj.notifyto, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="notifyto' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 emailid_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="emailid">@Resource.tasktemplate_escalationdetails_emailid</label>'+
+									'<input value="'+(obj.emailid?obj.emailid:'')+'" name="emailid' + index + '" id="emailid' + index + '"  type="email"  maxlength="128" class="emailid form-control--active form-control  form-control-lg " />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 mobilenumber_craftmyapp_container craftmyapp_phone_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="mobilenumber">@Resource.tasktemplate_escalationdetails_mobilenumber</label>'+
+									'<input value="'+(obj.mobilenumber?obj.mobilenumber:'')+'" name="mobilenumber_ip' + index + '" id="mobilenumber_ip' + index + '"  type="tel" maxlength="20" class="mobilenumber_ip form-control--active form-control form-control-lg " />' +
+'<input value="'+(obj.mobilenumber?obj.mobilenumber:'')+'" name="mobilenumber' + index + '" id="mobilenumber' + index + '"  type="tel" maxlength="20" class="mobilenumber invalidphone form-control--active form-control form-control-lg " />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-escalationdetails"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.escalationdetailsContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('escalationdetails', '')).addClass('btn-remove-row');
+
+				
+
+if($("#mobilenumber_ip"+index).length > 0) {
+var mobilenumber_input = document.querySelector("#mobilenumber_ip"+index);
+		var itimobilenumber_input = window.intlTelInput(mobilenumber_input, {
+			nationalMode: true,
+			initialCountry: "in",
+			preferredCountries: ['us','in','sg']
+		});
+		itimobilenumber_input.setNumber($('#mobilenumber'+index).val());
+		var handleChange_mobilenumber_input = function () {
+		   var text = "";
+		if(itimobilenumber_input.getNumber())
+			  text = (itimobilenumber_input.isValidNumber()) ? itimobilenumber_input.getNumber() : "invalid";
+			 $('#mobilenumber'+index).val(text);
+		};
+
+		// listen to "keyup", but also "change" to update when the user selects a country
+		mobilenumber_input.addEventListener('change', handleChange_mobilenumber_input);
+		mobilenumber_input.addEventListener('keyup', handleChange_mobilenumber_input);
+
+		mobilenumber_input.addEventListener("countrychange", function () {
+			$('#mobilenumber_ip'+index).val("");
+			$('#mobilenumber'+index).val("");
+		})
+}
+
+ 
+				
+				
+
+				  $(".emailid").prop('disabled', true)
+  $(".mobilenumber_ip").prop('disabled', true)
+
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-nextactiondetails", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".nextactiondetails").removeClass('showthelables');
+			   $(".btn-remove-row-nextactiondetails").removeClass('btn-remove-row');
+				$("#nextactiondetailsContainer").prepend(
+				'<div class="row m-t-10 nextactiondetails dependentContainerBorder" id="nextactiondetails' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 actiontype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="actiontype">@Resource.tasktemplate_nextactiondetails_actiontype</label>'+
+										'<select name="actiontype' + index + '" id="actiontype' + index + '"  class="actiontype form-control"></select>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="actiontype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 actionname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="actionname">@Resource.tasktemplate_nextactiondetails_actionname</label>'+
+										buildselectactionname('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="actionname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-nextactiondetails"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#nextactiondetailsContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('nextactiondetails', '')).addClass('btn-remove-row');
+				
+				
+				 
+				buildselectactiontype("",index)
+
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-nextactiondetails', function (e) {
+					 
+					 
+					
+					var nextactiondetailsRow = $(this).closest(".nextactiondetails");
+					var index = nextactiondetailsRow.attr("id").replace("nextactiondetails", "");
+					nextactiondetailsRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.nextactiondetails" ? @Html.Raw(Json.Serialize(@Model.nextactiondetails)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".nextactiondetails").removeClass('showthelables');
+			   $(".btn-remove-row-nextactiondetails").removeClass('btn-remove-row');
+				$("#nextactiondetailsContainer").prepend(
+				'<div class="row m-t-10 nextactiondetails dependentContainerBorder" id="nextactiondetails' + index + '">' +
+				'<input type="hidden" class="TaskTemplate_nextactiondetailsid" value="' + obj.TaskTemplate_nextactiondetailsid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 actiontype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="actiontype">@Resource.tasktemplate_nextactiondetails_actiontype</label>'+
+										'<select name="actiontype' + index + '" id="actiontype' + index + '"  class="actiontype form-control"></select>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="actiontype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 actionname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="actionname">@Resource.tasktemplate_nextactiondetails_actionname</label>'+
+										buildselectactionname(obj.actionname, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="actionname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-nextactiondetails"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.nextactiondetailsContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('nextactiondetails', '')).addClass('btn-remove-row');
+
+				 
+				
+				 
+  
+			var sendFilterDataactionname = {
+			"tenantid":$("#tenantid").val(),
+"actiontype":obj.actiontype
+			}
+
+
+			var currentRowID =index
+
+
+			$.ajax({
+			url: '@Url.Action("lookup_TaskTemplate_nextactiondetails_actionname")',
+			dataType: 'json',
+			data: sendFilterDataactionname,
+			success: function(data) {
+
+				if (data.length > 0) {
+					data = data.filter(item => item.actionname !== null);
+					data.sort((a, b) =>
+						String(a.actionname).toLowerCase().localeCompare(String(b.actionname).toLowerCase()) 
+					);
+				}
+
+				var ddltarget_actionname="#actionname"+currentRowID
+
+				$(ddltarget_actionname).empty();
+				$(ddltarget_actionname).append("<option value=''>Choose</option>");
+				$.each(data, function(index_, optionDataInner) {
+					
+					if(obj.actionname.toUpperCase()==(optionDataInner.Actionsid).toUpperCase())
+					$(ddltarget_actionname).append('<option selected value="' + optionDataInner.Actionsid+ '">' + optionDataInner.actionname+ '</option>')
+					else
+					$(ddltarget_actionname).append('<option  value="' +  optionDataInner.Actionsid+ '">' + optionDataInner.actionname+ '</option>')
+				});
+				    
+			}
+
+
+			});
+ 
+
+
+				
+				buildselectactiontype(obj.actiontype,index)
+
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+var dataTaskTemplate
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'TaskTemplate' },
+async:false,
+success: function(data) {
+dataTaskTemplate=data
+}
+})
+function buildselectTaskTemplate(columnName,selected, index) {
+if(columnName=='priority')
+{
+var select;
+$.each(dataTaskTemplate, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='priority')
+{
+select = '<select name="priority' + index + '" id="priority' + index + '" class="priority form-control--active form-control  ">'
+ select = select + '<option value="">Choose</option>';
+
+								
+										var options_priority = optionDataInner.fielddesc.split(',');
+										options_priority.sort(function (a, b) {
+										return a.localeCompare(b);
+										});
+										options_priority.forEach(function(option_priority){
+											if(selected== option_priority)
+											select = select + '<option selected value="' + option_priority + '">' + option_priority+ '</option>'
+											else
+											select = select + '<option  value="' + option_priority + '">' + option_priority+ '</option>'
+										
+										})  
+
+									
+select=select + '</select>';
+}
+})
+return select;
+}
+
+}
+</script>
+
+
+			<script>
+			
+			  function getescalationdetails() {
+		 
+					$("#escalationdetails").val("");
+					var escalationdetailsModel = [];
+
+				
+					
+					
+					var el = $('.escalationdetailsContainer .escalationdetails');
+					
+					el.each(function (cnt) {
+					
+							escalationdetailsAttributes = {}
+							
+							 escalationdetailsAttributes['priority']=($(this).find('.priority').val() ? $(this).find('.priority').val().toString() :'')
+escalationdetailsAttributes['notifyto']=($(this).find('.notifyto').val() ? $(this).find('.notifyto').val().toString() :'')
+escalationdetailsAttributes['emailid']=($(this).find('.emailid').val() ? $(this).find('.emailid').val().toString() :'')
+escalationdetailsAttributes['mobilenumber']=($(this).find('.mobilenumber').val() ? $(this).find('.mobilenumber').val().toString() :'')
+escalationdetailsAttributes['TaskTemplate_escalationdetailsid']=($(this).find('.TaskTemplate_escalationdetailsid').val() != undefined ? $(this).find('.TaskTemplate_escalationdetailsid').val().toString() : "00000000-0000-0000-0000-000000000000")
+escalationdetailsAttributes['craftmyapp_actionmethodname']='Update_Task_Template'
+escalationdetailsAttributes['record_order']=cnt
+escalationdetailsAttributes['cma_client_row_id']=$(this).attr("id").replace("escalationdetails","")
+
+							
+							escalationdetailsModel.push(escalationdetailsAttributes);
+					
+					
+					
+					});
+					 
+					return escalationdetailsModel
+				
+				
+				}
+  function getnextactiondetails() {
+		 
+					$("#nextactiondetails").val("");
+					var nextactiondetailsModel = [];
+
+				
+					
+					
+					var el = $('.nextactiondetailsContainer .nextactiondetails');
+					
+					el.each(function (cnt) {
+					
+							nextactiondetailsAttributes = {}
+							
+							 nextactiondetailsAttributes['actiontype']=($(this).find('.actiontype').val() ? $(this).find('.actiontype').val().toString() :'')
+nextactiondetailsAttributes['actionname']=($(this).find('.actionname').val() ? $(this).find('.actionname').val().toString() :'')
+nextactiondetailsAttributes['TaskTemplate_nextactiondetailsid']=($(this).find('.TaskTemplate_nextactiondetailsid').val() != undefined ? $(this).find('.TaskTemplate_nextactiondetailsid').val().toString() : "00000000-0000-0000-0000-000000000000")
+nextactiondetailsAttributes['craftmyapp_actionmethodname']='Update_Task_Template'
+nextactiondetailsAttributes['record_order']=cnt
+nextactiondetailsAttributes['cma_client_row_id']=$(this).attr("id").replace("nextactiondetails","")
+
+							
+							nextactiondetailsModel.push(nextactiondetailsAttributes);
+					
+					
+					
+					});
+					 
+					return nextactiondetailsModel
+				
+				
+				}
+
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Task_Template")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Task_Template")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updatetasktemplate;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updatetasktemplate")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ var escalationdetailsModel=getescalationdetails()
+var nextactiondetailsModel=getnextactiondetails()
+
+
+ 
+ 
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ for (var i = 0; i < escalationdetailsModel.length; i++) {
+formdata.append("escalationdetails[" + i + "].priority", escalationdetailsModel[i].priority)
+formdata.append("escalationdetails[" + i + "].record_order", escalationdetailsModel[i].record_order)
+formdata.append("escalationdetails[" + i + "].cma_client_row_id", escalationdetailsModel[i].cma_client_row_id)
+formdata.append("escalationdetails[" + i + "].notifyto", escalationdetailsModel[i].notifyto)
+formdata.append("escalationdetails[" + i + "].emailid", escalationdetailsModel[i].emailid)
+formdata.append("escalationdetails[" + i + "].mobilenumber", escalationdetailsModel[i].mobilenumber)
+formdata.append("escalationdetails[" + i + "].TaskTemplate_escalationdetailsid", escalationdetailsModel[i].TaskTemplate_escalationdetailsid)
+formdata.append("escalationdetails[" + i + "].TaskTemplateid", $("#TaskTemplateid").val())
+
+formdata.append("escalationdetails[" + i + "].craftmyapp_actionmethodname", 'Update_Task_Template')
+}
+for (var i = 0; i < nextactiondetailsModel.length; i++) {
+formdata.append("nextactiondetails[" + i + "].actiontype", nextactiondetailsModel[i].actiontype)
+formdata.append("nextactiondetails[" + i + "].record_order", nextactiondetailsModel[i].record_order)
+formdata.append("nextactiondetails[" + i + "].cma_client_row_id", nextactiondetailsModel[i].cma_client_row_id)
+formdata.append("nextactiondetails[" + i + "].actionname", nextactiondetailsModel[i].actionname)
+formdata.append("nextactiondetails[" + i + "].TaskTemplate_nextactiondetailsid", nextactiondetailsModel[i].TaskTemplate_nextactiondetailsid)
+formdata.append("nextactiondetails[" + i + "].TaskTemplateid", $("#TaskTemplateid").val())
+
+formdata.append("nextactiondetails[" + i + "].craftmyapp_actionmethodname", 'Update_Task_Template')
+}
+
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("TaskTemplate","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "TaskTemplate")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			<script>
+			$(document).ready(function () {
+				fill_notifyto()
+fill_actionname()
+
+				$("#tenantid").change(function(){
+						$("#escalationdetailsContainer").empty()
+$("#nextactiondetailsContainer").empty()
+
+						fill_notifyto()
+fill_actionname()
+
+				})
+			
+
+			});
+			</script>
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+
+<script>
+var strtasktype;
+</script>
+	@if (Model != null)
+	{
+		if(Model.tasktype != null && Model.tasktype.ToString() != "")
+		{
+		<script>
+			 strtasktype="@Model.tasktype"
+		</script>
+		}
+	}
+<script>
+function lookup_TaskTemplate_tasktype(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_TaskTemplate_tasktype")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.tasktype !== null);
+			data.sort((a, b) =>
+				String(a.tasktype).toLowerCase().localeCompare(String(b.tasktype).toLowerCase()) 
+			);
+		}
+	   var ddltarget_tasktype="#tasktype"
+		$(ddltarget_tasktype).empty();
+		
+		$(ddltarget_tasktype).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strtasktype== optionDataInner.TypeofTaskid){
+					$(ddltarget_tasktype).append('<option selected value="' + optionDataInner.TypeofTaskid + '">' + optionDataInner.tasktype+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_tasktype).append('<option  value="' + optionDataInner.TypeofTaskid+ '">' + optionDataInner.tasktype+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_TaskTemplate_tasktype(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_TaskTemplate_tasktype($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script><script>
+function lookup_TaskTemplate_nextactiondetails_actionname(tenantid,actiontype,currentRowID) {
+
+var sendFilterData = {
+	"tenantid":tenantid,
+"actiontype":actiontype
+}
+
+$.ajax({
+url: '@Url.Action("lookup_TaskTemplate_nextactiondetails_actionname")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.actionname !== null);
+			data.sort((a, b) =>
+				String(a.actionname).toLowerCase().localeCompare(String(b.actionname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_actionname="#actionname"+currentRowID
+		$(ddltarget_actionname).empty();
+		
+		$(ddltarget_actionname).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					
+					$(ddltarget_actionname).append('<option  value="' + optionDataInner.Actionsid+ '">' + optionDataInner.actionname+ '</option>')
+						
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							 
+							
+									 $('body').on('change', '.actiontype', function (e) {
+			
+										var currentRowID =($(this).attr('id')).replace('actiontype','')
+										lookup_TaskTemplate_nextactiondetails_actionname($("#tenantid").val(),$("#actiontype"+currentRowID).val(),currentRowID)
+
+									})
+
+
+
+						})
+						
+						</script>
+
+
+
+<script>
+
+function lookup_change_escalationdetails_TaskTemplate_notifyto(usersid,RowNumb)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_escalationdetails_TaskTemplate_notifyto")',
+dataType: 'json',
+data:{'usersid':usersid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#emailid"+RowNumb).val(data[0].emailid)
+$("#emailid"+RowNumb).addClass('form-control--active')
+var phoneInputInstance;
+phoneInputInstance = window.intlTelInput(
+    document.querySelector("#mobilenumber_ip"+RowNumb),
+    {
+        nationalMode: true,
+        initialCountry: "in",
+        preferredCountries: ['us', 'in', 'sg']
+    }
+);
+phoneInputInstance.setNumber(data[0].mobilenumber );
+$("#mobilenumber"+RowNumb).val(data[0].mobilenumber);
+$("#mobilenumber"+RowNumb).trigger('change')
+$("#mobilenumber_ip"+RowNumb).val(data[0].mobilenumber);
+$("#mobilenumber_ip"+RowNumb).trigger('change')
+
+				
+		 }else{
+
+			 $("#mobilenumber_ip"+RowNumb).val('')
+
+			
+		 }
+ 
+		
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+ 
+	$('body').on('change', '.notifyto', function() {
+			var id=$(this).attr("id")
+		
+		id=id.replace("notifyto","")
+
+		lookup_change_escalationdetails_TaskTemplate_notifyto($(this).val(),id)	 
+
+		$(".emailid").prop('disabled', true)
+$(".mobilenumber_ip").prop('disabled', true)
+
+
+	});
+	
+
+})
+</script>
+

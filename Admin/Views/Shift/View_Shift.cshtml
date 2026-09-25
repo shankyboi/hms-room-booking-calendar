@@ -1,0 +1,293 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:20 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.ShiftModel
+					@{
+					ViewData["Title"] = "Shift";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+						   
+							
+							<div class="row printablerow"  style="padding:20px"> 
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Shift</b>
+							</h3>
+				
+							<br />
+							</div>
+							 
+				<div class="col-sm-12 col-xs-12 mt-3 ShiftDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.shiftdetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 shiftcode_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="shiftcode">@Resource.shift_shiftcode</label><br>
+										<span class="auto_cls_shiftcode"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 shiftname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="shiftname">@Resource.shift_shiftname</label><br>
+										<span class="auto_cls_shiftname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 shiftstarttime_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="shiftstarttime">@Resource.shift_shiftstarttime</label><br>
+										<span class="auto_cls_shiftstarttime"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 shiftendtime_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="shiftendtime">@Resource.shift_shiftendtime</label><br>
+										<span class="auto_cls_shiftendtime"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 shifthours_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="shifthours">@Resource.shift_shifthours</label><br>
+										<span class="auto_cls_shifthours"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 description_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="description">@Resource.shift_description</label><br>
+										<span class="auto_cls_description"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent breakdurationdetailsContainerBodyParent hide"><!--Dependent Break Duration Details Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.breakdurationdetails
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="breakdurationdetailsContainer" class="table table-bordered mb-0 breakdurationdetailsContainer">
+							<thead id="breakdurationdetailsContainerHead">
+								<th>Break Name</th>
+<th>Start Time</th>
+<th>End Time</th>
+<th>Duration in Min</th>
+
+
+							</thead>
+							
+							<tbody id="breakdurationdetailsContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Break Duration Details Containder Block-->
+			 
+			
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 ShiftSummary_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.shiftsummary</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 totalbreakinmins_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="totalbreakinmins">@Resource.shift_totalbreakinmins</label><br>
+										<span class="auto_cls_totalbreakinmins"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 totalbreakinhrs_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="totalbreakinhrs">@Resource.shift_totalbreakinhrs</label><br>
+										<span class="auto_cls_totalbreakinhrs"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 workhours_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="workhours">@Resource.shift_workhours</label><br>
+										<span class="auto_cls_workhours"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('Shift.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_Shift_view_data(){
+
+					   var  Shiftid = getUrlVars()["Shiftid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_Shift")',
+												dataType: 'json',
+												data:{Shiftid: Shiftid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='automaton_Shift_breakdurationdetails'){
+																			$('#breakdurationdetailsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + Shiftid +'&section=automaton_Shift_breakdurationdetails_history'
+																					 $(".breakdurationdetailsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("Shift","versionhistory")
+																				if(Actions == undefined){
+																				$("breakdurationdetailsauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.breakdurationdetailsContainerBodyParent').removeClass('hide')      
+																			   $('#breakdurationdetailsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.breakdurationdetailsContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_Shift_view_data()
+
+
+					/*var Actions=getAutho("Shift","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						
+						$(document).ready(function () {
+							
+						});
+					</script>
+					
+					
+					

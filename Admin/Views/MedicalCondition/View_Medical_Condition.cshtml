@@ -1,0 +1,207 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:40:56 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.MedicalConditionModel
+					@{
+					ViewData["Title"] = "Medical Condition";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+						   
+							
+							<div class="row printablerow"  style="padding:20px"> 
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Medical Condition</b>
+							</h3>
+				
+							<br />
+							</div>
+							<div class="col-sm-3 col-xs-12 p-2 conditionname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="conditionname">@Resource.medicalcondition_conditionname</label><br>
+										<span class="auto_cls_conditionname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 snomedid_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="snomedid">@Resource.medicalcondition_snomedid</label><br>
+										<span class="auto_cls_snomedid"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 description_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="description">@Resource.medicalcondition_description</label><br>
+										<span class="auto_cls_description"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent synonymsContainerBodyParent hide"><!--Dependent Synonyms Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.synonyms
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="synonymsContainer" class="table table-bordered mb-0 synonymsContainer">
+							<thead id="synonymsContainerHead">
+								<th>Synonym Name</th>
+<th>Language</th>
+
+
+							</thead>
+							
+							<tbody id="synonymsContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Synonyms Containder Block-->
+			 
+			
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('MedicalCondition.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_MedicalCondition_view_data(){
+
+					   var  MedicalConditionid = getUrlVars()["MedicalConditionid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_MedicalCondition")',
+												dataType: 'json',
+												data:{MedicalConditionid: MedicalConditionid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='automaton_MedicalCondition_synonyms'){
+																			$('#synonymsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + MedicalConditionid +'&section=automaton_MedicalCondition_synonyms_history'
+																					 $(".synonymsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("MedicalCondition","versionhistory")
+																				if(Actions == undefined){
+																				$("synonymsauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.synonymsContainerBodyParent').removeClass('hide')      
+																			   $('#synonymsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.synonymsContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_MedicalCondition_view_data()
+
+
+					/*var Actions=getAutho("MedicalCondition","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						
+						$(document).ready(function () {
+							
+						});
+					</script>
+					
+					
+					

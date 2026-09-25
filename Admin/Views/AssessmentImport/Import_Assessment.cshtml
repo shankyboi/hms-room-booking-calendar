@@ -1,0 +1,649 @@
+@{
+    Layout = "~/Views/Shared/_LayoutImport.cshtml";
+    ViewBag.Title = "Import Assessment Questions";
+}
+
+@section Head {
+<style>
+/* ════════════════════════════════════════════════════════
+   Import Assessment — page-level styles (ia-* namespace)
+   ════════════════════════════════════════════════════════ */
+
+/* card shell */
+.ia-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,.09);
+    overflow: visible;
+    margin-bottom: 24px;
+}
+.ia-card-head {
+    padding: 18px 26px 15px;
+    border-bottom: 1px solid #edf0f4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.ia-card-head > i   { font-size: 18px; color: #2d6a9f; }
+.ia-card-head h5    { margin: 0; font-size: 15px; font-weight: 700; color: #1a3c5e; }
+.ia-card-head p     { margin: 2px 0 0; font-size: 12px; color: #888; }
+.ia-card-body       { padding: 24px 26px 28px; }
+
+/* hint accordion */
+.ia-hint-toggle {
+    background: #e8f4fd;
+    border: 1px solid #b8ddf5;
+    border-radius: 7px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #0c5460;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.ia-hint-toggle .chev { margin-left: auto; transition: transform .2s; }
+.ia-hint-body {
+    display: none;
+    margin-top: -14px;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    background: #f4fbff;
+    border: 1px solid #b8ddf5;
+    border-top: none;
+    border-radius: 0 0 7px 7px;
+    font-size: 12px;
+    color: #444;
+}
+.ia-hint-body table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+.ia-hint-body th    { background: #2d6a9f; color: #fff; padding: 7px 10px; text-align: left; font-weight: 600; }
+.ia-hint-body td    { padding: 6px 10px; border-bottom: 1px solid #dee6f0; vertical-align: top; }
+.ia-hint-body tr:last-child td { border-bottom: none; }
+
+/* two-col layout */
+.ia-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+.ia-col-drop { flex: 1 1 300px; }
+.ia-col-opts { flex: 1 1 280px; display: flex; flex-direction: column; gap: 18px; }
+
+/* drop zone */
+.ia-drop {
+    border: 2px dashed #2d6a9f;
+    border-radius: 10px;
+    padding: 0 18px;
+    text-align: center;
+    cursor: pointer;
+    background: #f5f8fc;
+    transition: background .2s, border-color .2s;
+    min-height: 190px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+}
+.ia-drop:hover,
+.ia-drop.drag-over { background: #dbeeff; border-color: #1a3c5e; }
+.ia-drop .drop-ico  { font-size: 42px; color: #2d6a9f; margin-bottom: 6px; }
+.ia-drop .drop-ttl  { font-size: 14px; font-weight: 700; color: #1a3c5e; }
+.ia-drop .drop-sub  { font-size: 12px; color: #aaa; margin: 2px 0 10px; }
+.ia-drop .drop-file { font-size: 13px; color: #2e7d32; margin-top: 8px; display: none; }
+.ia-browse-btn {
+    display: inline-block;
+    padding: 5px 20px;
+    border-radius: 20px;
+    border: 1.5px solid #2d6a9f;
+    color: #2d6a9f;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: #fff;
+    transition: background .15s, color .15s;
+}
+.ia-browse-btn:hover { background: #2d6a9f; color: #fff; }
+
+/* field */
+.ia-field { display: flex; flex-direction: column; gap: 5px; }
+.ia-field label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a3c5e;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.ia-field label .opt { font-weight: 400; color: #aaa; font-size: 12px; margin-left: 3px; }
+.ia-field input[type="text"] {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1.5px solid #d0d7e2;
+    border-radius: 7px;
+    font-size: 14px;
+    transition: border-color .15s, box-shadow .15s;
+    box-sizing: border-box;
+    color: #333;
+}
+.ia-field input[type="text"]:focus {
+    outline: none;
+    border-color: #2d6a9f;
+    box-shadow: 0 0 0 3px rgba(45,106,159,.13);
+}
+.ia-field small { font-size: 11.5px; color: #aaa; }
+
+/* Select2 scoped overrides */
+.ia-field .select2-container { width: 100% !important; }
+.ia-field .select2-container--default .select2-selection--single {
+    height: 40px;
+    border: 1.5px solid #d0d7e2;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    transition: border-color .15s, box-shadow .15s;
+}
+.ia-field .select2-container--default.select2-container--open .select2-selection--single {
+    border-color: #2d6a9f;
+    box-shadow: 0 0 0 3px rgba(45,106,159,.13);
+}
+.ia-field .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 38px;
+    font-size: 13.5px;
+    padding-left: 12px;
+    color: #333;
+}
+.ia-field .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+}
+.ia-field .select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #aaa;
+}
+
+/* divider */
+.ia-divider { border: none; border-top: 1px solid #edf0f4; margin: 4px 0 22px; }
+
+/* action bar */
+.ia-actions { display: flex; gap: 12px; align-items: center; }
+.ia-btn-run {
+    background: linear-gradient(135deg, #1a3c5e, #2d6a9f);
+    color: #fff;
+    border: none;
+    padding: 11px 30px;
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    transition: opacity .15s;
+    letter-spacing: .2px;
+}
+.ia-btn-run:hover    { opacity: .88; }
+.ia-btn-run:disabled { opacity: .5; cursor: not-allowed; }
+.ia-btn-reset {
+    background: #f1f3f6;
+    color: #555;
+    border: 1.5px solid #d0d7e2;
+    padding: 10px 20px;
+    border-radius: 7px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: background .15s;
+}
+.ia-btn-reset:hover { background: #e3e7ef; }
+
+/* results card */
+.ia-results { display: none; }
+.ia-alert {
+    border-radius: 9px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+.ia-alert-icon      { font-size: 21px; margin-top: 2px; }
+.ia-alert-ok        { background: #d4edda; border: 1px solid #b8dab9; }
+.ia-alert-ok  .ia-alert-icon  { color: #28a745; }
+.ia-alert-ok  .ia-alert-title { color: #155724; font-weight: 700; font-size: 15px; }
+.ia-alert-ok  p               { color: #155724; margin: 3px 0 0; font-size: 13px; }
+.ia-alert-err       { background: #f8d7da; border: 1px solid #f0c0c4; }
+.ia-alert-err .ia-alert-icon  { color: #dc3545; }
+.ia-alert-err .ia-alert-title { color: #721c24; font-weight: 700; font-size: 15px; }
+.ia-alert-err p               { color: #721c24; margin: 3px 0 0; font-size: 13px; }
+
+/* stat cards */
+.ia-stats { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.ia-stat {
+    flex: 1 1 110px;
+    border-radius: 9px;
+    padding: 15px 10px 13px;
+    text-align: center;
+}
+.ia-stat .st-n   { font-size: 32px; font-weight: 800; line-height: 1; }
+.ia-stat .st-lbl { font-size: 10.5px; color: #666; margin-top: 5px; font-weight: 600;
+                   text-transform: uppercase; letter-spacing: .4px; }
+.ia-stat--cat  { background: #e3f2fd; } .ia-stat--cat  .st-n { color: #1565c0; }
+.ia-stat--sub  { background: #e8f5e9; } .ia-stat--sub  .st-n { color: #2e7d32; }
+.ia-stat--add  { background: #fff8e1; } .ia-stat--add  .st-n { color: #e65100; }
+.ia-stat--skip { background: #fce4ec; } .ia-stat--skip .st-n { color: #880e4f; }
+.ia-stat--tmpl { background: #ede7f6; }
+.ia-stat--tmpl .st-n  { font-size: 22px; color: #6a1b9a; padding-top: 4px; }
+.ia-stat--tmpl .st-lbl { color: #6a1b9a; }
+.ia-stat--tmpl .st-name { font-size: 11px; font-weight: 700; color: #4a148c;
+                          word-break: break-all; margin-top: 4px; }
+
+/* warnings */
+.ia-warnings {
+    background: #fffde7;
+    border: 1px solid #ffe082;
+    border-radius: 7px;
+    padding: 12px 16px;
+    margin-top: 10px;
+}
+.ia-warnings strong { color: #795548; }
+.ia-warnings ul     { margin: 6px 0 0; padding-left: 18px; color: #6d4c41; font-size: 12.5px; }
+</style>
+}
+
+<!-- ═══════════════════════════════════════════════════
+     CARD 1 — Upload & Options
+     ═══════════════════════════════════════════════════ -->
+<div class="ia-card">
+    <div class="ia-card-head">
+        <i class="fa fa-cloud-upload"></i>
+        <div>
+            <h5>Upload &amp; Configure</h5>
+            <p>Select the Excel file and set the import options below</p>
+        </div>
+    </div>
+    <div class="ia-card-body">
+
+        <!-- Hint accordion -->
+        <div class="ia-hint-toggle" id="hintToggle">
+            <i class="fa fa-info-circle" style="color:#17a2b8;"></i>
+            <span>Expected Excel column format &mdash; click to expand</span>
+            <i class="fa fa-chevron-down chev" id="hintChevron"></i>
+        </div>
+        <div class="ia-hint-body" id="hintBody">
+            <table>
+                <thead>
+                    <tr>
+                        <th>A &mdash; Sub-Category</th>
+                        <th>B &mdash; Question Text</th>
+                        <th>C &mdash; Option Value</th>
+                        <th>D &mdash; Field Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Body &amp; Energy - Indicators</td>
+                        <td>Weight pattern over last 6 months</td>
+                        <td>Losing, Stable, Gaining</td>
+                        <td>SingleSelect</td>
+                    </tr>
+                    <tr>
+                        <td>Body &amp; Energy - Habits &amp; Context</td>
+                        <td>Physical activity includes</td>
+                        <td>Walking, Running, Yoga, Gym</td>
+                        <td>MultiSelect</td>
+                    </tr>
+                    <tr>
+                        <td>Indicators</td>
+                        <td colspan="2">Occupation <em style="color:#999;">(bare name inherits last category)</em></td>
+                        <td>Text</td>
+                    </tr>
+                    <tr>
+                        <td>Habits &amp; Context</td>
+                        <td>Stress level</td>
+                        <td>0-10</td>
+                        <td>Scale</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="line-height:1.8;">
+                <strong>Column A:</strong> Use <em>"Category - SubCategory"</em> to set the parent.
+                Bare names inherit the last seen category. &nbsp;&bull;&nbsp;
+                <strong>Field Types:</strong> SingleSelect, MultiSelect, Boolean, Text, Number, Scale, MultilineText.
+                Blank type defaults to <em>SingleSelect</em> (if options present) or <em>Text</em>.
+            </div>
+        </div>
+
+        <!-- Two-column: drop zone + options -->
+        <div class="ia-row">
+
+            <!-- Drop zone -->
+            <div class="ia-col-drop">
+                <div class="ia-drop" id="dropZone">
+                    <i class="fa fa-file-excel-o drop-ico"></i>
+                    <div class="drop-ttl">Drag &amp; drop your .xlsx file here</div>
+                    <div class="drop-sub">— or —</div>
+                    <label class="ia-browse-btn" for="excelFileInput">
+                        <i class="fa fa-folder-open-o"></i>&nbsp; Browse
+                    </label>
+                    <input type="file" id="excelFileInput" accept=".xlsx,.xls" style="display:none;" />
+                    <div class="drop-file" id="fileDisplay">
+                        <i class="fa fa-check-circle" style="color:#28a745;"></i>
+                        <span id="fileName" style="margin-left:4px;"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Options -->
+            <div class="ia-col-opts">
+
+                <!-- Tenant dropdown -->
+                <div class="ia-field">
+                    <label>
+                        <i class="fa fa-building-o" style="color:#2d6a9f;"></i>
+                        Healthcare Provider
+                        <span class="opt">(optional)</span>
+                    </label>
+                    <select id="ddlTenant" style="width:100%;">
+                        <option value="">&#127760; Global &mdash; shared across all tenants</option>
+                    </select>
+                    <small>Leave as Global to share questions across all tenants.</small>
+                </div>
+
+                <!-- Template name -->
+                <div class="ia-field">
+                    <label>
+                        <i class="fa fa-bookmark-o" style="color:#2d6a9f;"></i>
+                        Assessment Template Name
+                        <span class="opt">(optional)</span>
+                    </label>
+                    <input type="text" id="templatename"
+                           placeholder="e.g. NK Assessment — blank skips template creation" />
+                    <small>All imported questions will be linked into this template.</small>
+                </div>
+
+            </div>
+        </div><!-- /ia-row -->
+
+        <hr class="ia-divider" />
+
+        <div class="ia-actions">
+            <button type="button" id="btnImport" class="ia-btn-run">
+                <i class="fa fa-database"></i> Run Import
+            </button>
+            <button type="button" id="btnReset" class="ia-btn-reset">
+                <i class="fa fa-refresh"></i> Reset
+            </button>
+        </div>
+
+    </div><!-- /ia-card-body -->
+</div><!-- /card 1 -->
+
+<!-- ═══════════════════════════════════════════════════
+     CARD 2 — Results  (shown after import runs)
+     ═══════════════════════════════════════════════════ -->
+<div class="ia-card ia-results" id="resultsPanel">
+    <div class="ia-card-head">
+        <i class="fa fa-bar-chart"></i>
+        <div>
+            <h5>Import Results</h5>
+            <p id="resultHeadSub">&mdash;</p>
+        </div>
+    </div>
+    <div class="ia-card-body">
+
+        <!-- Success -->
+        <div id="resultOk" style="display:none;">
+            <div class="ia-alert ia-alert-ok">
+                <i class="fa fa-check-circle ia-alert-icon"></i>
+                <div>
+                    <div class="ia-alert-title">Import Completed Successfully</div>
+                    <p id="resultMsg"></p>
+                </div>
+            </div>
+            <div class="ia-stats">
+                <div class="ia-stat ia-stat--cat">
+                    <div class="st-n" id="sCats">0</div>
+                    <div class="st-lbl">Categories</div>
+                </div>
+                <div class="ia-stat ia-stat--sub">
+                    <div class="st-n" id="sSubs">0</div>
+                    <div class="st-lbl">Sub-Categories</div>
+                </div>
+                <div class="ia-stat ia-stat--add">
+                    <div class="st-n" id="sQAdd">0</div>
+                    <div class="st-lbl">Questions Added</div>
+                </div>
+                <div class="ia-stat ia-stat--skip">
+                    <div class="st-n" id="sQSkip">0</div>
+                    <div class="st-lbl">Skipped (dup)</div>
+                </div>
+                <div class="ia-stat ia-stat--tmpl" id="sTmplBox" style="display:none;">
+                    <div class="st-n"><i class="fa fa-bookmark"></i></div>
+                    <div class="st-lbl" id="sTmplLbl">Template</div>
+                    <div class="st-name" id="sTmplName"></div>
+                </div>
+            </div>
+            <div class="ia-warnings" id="warnBox" style="display:none;">
+                <strong><i class="fa fa-exclamation-triangle"></i>&nbsp; Warnings</strong>
+                <ul id="warnList"></ul>
+            </div>
+        </div>
+
+        <!-- Error -->
+        <div id="resultErr" style="display:none;">
+            <div class="ia-alert ia-alert-err">
+                <i class="fa fa-times-circle ia-alert-icon"></i>
+                <div>
+                    <div class="ia-alert-title">Import Failed</div>
+                    <p id="errMsg"></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div><!-- /card 2 -->
+
+@section Scripts {
+<script>
+(function () {
+    'use strict';
+
+    /* ── Tenant dropdown ─────────────────────────────────────── */
+    function loadTenants() {
+        $.ajax({
+            url:      '@Url.Action("get_all_tenant", "tenant")',
+            data:     { tenantid: '' },
+            dataType: 'json',
+            success: function (data) {
+                var list = (data && data.detail)
+                    ? data.detail
+                    : (Array.isArray(data) ? data : []);
+
+                list = list.filter(function (t) {
+                    return t && (t.businessname || t.BusinessName);
+                });
+                list.sort(function (a, b) {
+                    return String(a.businessname || a.BusinessName).toLowerCase()
+                           .localeCompare(
+                               String(b.businessname || b.BusinessName).toLowerCase());
+                });
+
+                var sel = document.getElementById('ddlTenant');
+                list.forEach(function (t) {
+                    var opt        = document.createElement('option');
+                    opt.value       = String(t.tenantid || t.Tenantid || '');
+                    opt.textContent = String(t.businessname || t.BusinessName || opt.value);
+                    sel.appendChild(opt);
+                });
+
+                /* refresh Select2 after options are added */
+                $('#ddlTenant').trigger('change.select2');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $('#ddlTenant').select2({
+            placeholder:       '&#127760; Global — shared across all tenants',
+            allowClear:        true,
+            width:             '100%',
+            dropdownAutoWidth: false
+        });
+        loadTenants();
+    });
+
+    /* ── Hint toggle ─────────────────────────────────────────── */
+    document.getElementById('hintToggle').addEventListener('click', function () {
+        var body = document.getElementById('hintBody');
+        var chev = document.getElementById('hintChevron');
+        var open = body.style.display === 'block';
+        body.style.display   = open ? 'none' : 'block';
+        chev.style.transform = open ? '' : 'rotate(180deg)';
+    });
+
+    /* ── Drag & drop ─────────────────────────────────────────── */
+    var dropZone  = document.getElementById('dropZone');
+    var fileInput = document.getElementById('excelFileInput');
+
+    dropZone.addEventListener('click', function (e) {
+        if (e.target.tagName !== 'LABEL' && e.target.tagName !== 'INPUT')
+            fileInput.click();
+    });
+    dropZone.addEventListener('dragover',  function (e) { e.preventDefault(); dropZone.classList.add('drag-over'); });
+    dropZone.addEventListener('dragleave', function ()  { dropZone.classList.remove('drag-over'); });
+    dropZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        if (e.dataTransfer && e.dataTransfer.files.length) showFile(e.dataTransfer.files[0]);
+    });
+    fileInput.addEventListener('change', function () {
+        if (this.files.length) showFile(this.files[0]);
+    });
+
+    function showFile(file) {
+        document.getElementById('fileName').textContent     = file.name;
+        document.getElementById('fileDisplay').style.display = 'block';
+    }
+
+    /* ── Reset ───────────────────────────────────────────────── */
+    document.getElementById('btnReset').addEventListener('click', function () {
+        fileInput.value = '';
+        document.getElementById('fileDisplay').style.display = 'none';
+        document.getElementById('fileName').textContent       = '';
+        document.getElementById('templatename').value         = '';
+        $('#ddlTenant').val('').trigger('change');
+        document.getElementById('resultsPanel').style.display = 'none';
+    });
+
+    /* ── Run Import ──────────────────────────────────────────── */
+    document.getElementById('btnImport').addEventListener('click', function () {
+        if (!fileInput.files || !fileInput.files.length) {
+            swal({ title: 'No file selected',
+                   text:  'Please select or drop an .xlsx / .xls file first.',
+                   type:  'warning' });
+            return;
+        }
+
+        var btn = document.getElementById('btnImport');
+        btn.disabled  = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i>&nbsp; Importing&hellip;';
+
+        document.getElementById('resultsPanel').style.display = 'none';
+        document.getElementById('resultOk').style.display     = 'none';
+        document.getElementById('resultErr').style.display    = 'none';
+        document.getElementById('impLoader').classList.add('active');
+
+        var fd = new FormData();
+        fd.append('excelFile',    fileInput.files[0]);
+        fd.append('templatename', document.getElementById('templatename').value.trim());
+        fd.append('tenantid',     ($('#ddlTenant').val() || '').trim());
+
+        $.ajax({
+            url:         '@Url.Action("Import_Assessment", "AssessmentImport")',
+            type:        'POST',
+            data:        fd,
+            processData: false,
+            contentType: false,
+            cache:       false,
+            success: function (raw) {
+                document.getElementById('impLoader').classList.remove('active');
+                btn.disabled  = false;
+                btn.innerHTML = '<i class="fa fa-database"></i> Run Import';
+
+                var d;
+                try   { d = typeof raw === 'string' ? JSON.parse(raw) : raw; }
+                catch (e) { d = { success: false, message: 'Unexpected server response.' }; }
+
+                renderResults(d);
+            },
+            error: function (xhr) {
+                document.getElementById('impLoader').classList.remove('active');
+                btn.disabled  = false;
+                btn.innerHTML = '<i class="fa fa-database"></i> Run Import';
+                renderResults({
+                    success: false,
+                    message: xhr.status === 401
+                        ? 'Authorization failed — please log in again.'
+                        : 'Server error (' + xhr.status + '): ' + xhr.statusText
+                });
+            }
+        });
+    });
+
+    function renderResults(d) {
+        var panel = document.getElementById('resultsPanel');
+        panel.style.display = 'block';
+
+        document.getElementById('resultHeadSub').textContent = d.success
+            ? 'The file was processed successfully.'
+            : 'Something went wrong — see details below.';
+
+        if (d.success) {
+            document.getElementById('sCats').textContent  = d.categoriesAdded    || 0;
+            document.getElementById('sSubs').textContent  = d.subcategoriesAdded || 0;
+            document.getElementById('sQAdd').textContent  = d.questionsAdded     || 0;
+            document.getElementById('sQSkip').textContent = d.questionsSkipped   || 0;
+
+            var tmplBox = document.getElementById('sTmplBox');
+            if (d.templatename) {
+                document.getElementById('sTmplName').textContent = d.templatename;
+                document.getElementById('sTmplLbl').textContent  = d.templateCreated
+                    ? 'Template Created' : 'Template Linked';
+                tmplBox.style.display = 'block';
+            } else {
+                tmplBox.style.display = 'none';
+            }
+
+            document.getElementById('resultMsg').textContent = d.message || '';
+
+            var warnBox  = document.getElementById('warnBox');
+            var warnList = document.getElementById('warnList');
+            warnList.innerHTML = '';
+            if (d.warnings && d.warnings.length) {
+                d.warnings.forEach(function (w) {
+                    var li = document.createElement('li');
+                    li.textContent = w;
+                    warnList.appendChild(li);
+                });
+                warnBox.style.display = 'block';
+            } else {
+                warnBox.style.display = 'none';
+            }
+
+            document.getElementById('resultOk').style.display = 'block';
+        } else {
+            document.getElementById('errMsg').textContent = d.message || 'Unknown error.';
+            document.getElementById('resultErr').style.display = 'block';
+        }
+
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+})();
+</script>
+}

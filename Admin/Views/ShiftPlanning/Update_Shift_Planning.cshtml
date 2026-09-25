@@ -1,0 +1,1627 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:43:23 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.ShiftPlanningModel
+			@{
+			ViewData["Title"] = @Resource.updateshiftplanning;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_Shift_Planning", "ShiftPlanning", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updateshiftplanning</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.ShiftPlanningid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								 
+				<div class="col-sm-12 col-xs-12 mt-3 ShiftPlanningDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.shiftplanningdetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 shiftname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="shiftname">@Resource.shiftplanning_shiftname <b class="iconRed">*</b></label>
+										<select name="shiftname" id="shiftname" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.shiftname)
+									<div id="shiftname-error" class="help-block" style="display: none" role="alert"></div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-xs-12 p-2 shiftstarttime_craftmyapp_container">
+										<div>
+											<div class="form-group form-group--float-above my-2">
+												<label for="shiftstarttime">@Resource.shiftplanning_shiftstarttime</label>
+												@Html.TextBoxFor(m => m.shiftstarttime, new { @type = "time", @maxlength = "256", @class = "form-control form-control-lg mahat_transliterate " })
+
+												<i class="form-group__bar"></i>
+											</div>
+											@Html.ValidationMessageFor(model => model.shiftstarttime)
+											<div id="shiftstarttime-error" class="help-block" style="display: none" role="alert"></div>
+										</div>
+									</div>
+									<div class="col-sm-3 col-xs-12 p-2 shiftendtime_craftmyapp_container">
+										<div>
+											<div class="form-group form-group--float-above my-2">
+												<label for="shiftendtime">@Resource.shiftplanning_shiftendtime</label>
+												@Html.TextBoxFor(m => m.shiftendtime, new { @type = "time", @maxlength = "256", @class = "form-control form-control-lg mahat_transliterate " })
+
+												<i class="form-group__bar"></i>
+											</div>
+											@Html.ValidationMessageFor(model => model.shiftendtime)
+											<div id="shiftendtime-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 validfrom_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="validfrom">@Resource.shiftplanning_validfrom <b class="iconRed">*</b></label>
+											@Html.TextBoxFor(m => m.validfrom, "{0:dd/MM/yyyy}", new {@placeholder="dd/mm/yyyy" ,@type="text", @autocomplete="off", @class = "form-control form-control-lg required" })
+
+											<i class="form-group__bar" ></i>
+										</div>
+										@Html.ValidationMessageFor(model => model.validfrom)
+										<div id="validfrom-error" class="help-block" style="display: none" role="alert"></div>
+									</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 validto_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="validto">@Resource.shiftplanning_validto <b class="iconRed">*</b></label>
+											@Html.TextBoxFor(m => m.validto, "{0:dd/MM/yyyy}", new {@placeholder="dd/mm/yyyy" ,@type="text", @autocomplete="off", @class = "form-control form-control-lg required" })
+
+											<i class="form-group__bar" ></i>
+										</div>
+										@Html.ValidationMessageFor(model => model.validto)
+										<div id="validto-error" class="help-block" style="display: none" role="alert"></div>
+									</div>
+								</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 people_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent People Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.people
+							</header><div style="display:none;"><label for="peoplebulkupload" class="upload-label">
+	<input type="file" id="peoplebulkupload" name="peoplebulkupload" accept="application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+</label>
+<a class="error-file"><button type="button" class="btn" data-toggle="modal" data-target="#examplepeoplebulkuploadModal">
+	<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+		<path d="M7.99979 14.2733H3.95979C1.64646 14.2733 0.679793 12.6199 1.79979 10.5999L3.87979 6.85327L5.83979 3.33327C7.02646 1.19327 8.97313 1.19327 10.1598 3.33327L12.1198 6.85994L14.1998 10.6066C15.3198 12.6266 14.3465 14.2799 12.0398 14.2799H7.99979V14.2733Z" fill="#B52B23" stroke="#B52B23" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+		<path d="M7.99609 11.3333H8.00208" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+		<path d="M8 6V9.33333" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+	</svg>
+	<span class="errorCount"></span>
+	<span>Errors</span>
+	<span class="expand-arrow">
+		<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
+			<path d="M8.39982 5.99999C8.39982 6.34999 8.26482 6.69999 7.99982 6.96499L4.73982 10.225C4.59482 10.37 4.35482 10.37 4.20982 10.225C4.06482 10.08 4.06482 9.83999 4.20982 9.69499L7.46982 6.43499C7.70982 6.19499 7.70982 5.80499 7.46982 5.56499L4.20982 2.30499C4.06482 2.15999 4.06482 1.91999 4.20982 1.77499C4.35482 1.62999 4.59482 1.62999 4.73982 1.77499L7.99982 5.03499C8.26482 5.29999 8.39982 5.64999 8.39982 5.99999Z" fill="#333333" />
+		</svg>
+	</span>
+</button></a>
+
+<button type="button" class="template-download" onclick="Download_peopleExcelTemplate()">
+	<svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" viewBox="0 0 14 15" fill="none">
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M1.33865 9.88013C1.73629 9.88013 2.05865 10.2025 2.05865 10.6001V12.0401C2.05865 12.2311 2.1345 12.4142 2.26955 12.5492C2.40456 12.6842 2.58769 12.7601 2.77865 12.7601H11.4186C11.6096 12.7601 11.7927 12.6843 11.9277 12.5492C12.0628 12.4142 12.1386 12.2311 12.1386 12.0401V10.6001C12.1386 10.2025 12.461 9.88013 12.8586 9.88013C13.2563 9.88013 13.5786 10.2025 13.5786 10.6001V12.0401C13.5786 12.613 13.3511 13.1624 12.946 13.5675C12.5409 13.9725 11.9915 14.2001 11.4186 14.2001H2.77865C2.2058 14.2001 1.65637 13.9726 1.25129 13.5675C0.84623 13.1624 0.618652 12.613 0.618652 12.0401V10.6001C0.618652 10.2025 0.941004 9.88013 1.33865 9.88013Z" fill="black"></path>
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M2.98969 5.77094C3.27087 5.48976 3.72675 5.48976 4.00793 5.77094L7.09879 8.86183L10.1897 5.77094C10.4708 5.48976 10.9267 5.48976 11.2079 5.77094C11.4891 6.0521 11.4891 6.50801 11.2079 6.78917L7.60791 10.3892C7.32675 10.6703 6.87084 10.6703 6.58968 10.3892L2.98969 6.78917C2.70851 6.50801 2.70851 6.0521 2.98969 5.77094Z" fill="black"></path>
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M7.09842 0.52002C7.49607 0.52002 7.81842 0.842378 7.81842 1.24002V9.88002C7.81842 10.2777 7.49607 10.6 7.09842 10.6C6.70076 10.6 6.37842 10.2777 6.37842 9.88002V1.24002C6.37842 0.842378 6.70076 0.52002 7.09842 0.52002Z" fill="black"></path>
+	</svg>
+</button></div>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-people pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="peopleContainer" class="peopleContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent People Containder Block-->
+					<div class="modal result-popup fade" id="examplepeoplebulkuploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h1 class="modal-title">
+					<span class="ico">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+							<path d="M9 6.75V10.5" stroke="#372C2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+							<path d="M9.00007 16.0575H4.45507C1.85257 16.0575 0.765072 14.1975 2.02507 11.925L4.36507 7.70996L6.57007 3.74996C7.90507 1.34246 10.0951 1.34246 11.4301 3.74996L13.6351 7.71746L15.9751 11.9325C17.2351 14.205 16.1401 16.065 13.5451 16.065H9.00007V16.0575Z" stroke="#372C2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+							<path d="M8.99609 12.75H9.00283" stroke="#372C2E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+						</svg>
+					</span>
+					Result Found <span class="errorCount"></span><span>Errors</span>
+				</h1>
+				<button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+						<path opacity="0.6" d="M8.51667 7L13.175 2.34167C13.6083 1.90833 13.6083 1.25833 13.175 0.825C12.7417 0.391667 12.0917 0.391667 11.6583 0.825L7 5.48333L2.34167 0.825C1.90833 0.391667 1.25833 0.391667 0.825 0.825C0.391667 1.25833 0.391667 1.90833 0.825 2.34167L5.48333 7L0.825 11.6583C0.391667 12.0917 0.391667 12.7417 0.825 13.175C1.04167 13.3917 1.25833 13.5 1.58333 13.5C1.90833 13.5 2.125 13.3917 2.34167 13.175L7 8.51667L11.6583 13.175C11.875 13.3917 12.2 13.5 12.4167 13.5C12.6333 13.5 12.9583 13.3917 13.175 13.175C13.6083 12.7417 13.6083 12.0917 13.175 11.6583L8.51667 7Z" fill="black" />
+					</svg>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="table-responsive" style="margin:0px;">
+					<table id="tblerrorlog" class="table order-column hover nowrap" width="100%" style="margin:0px;">
+						<thead class="thead-default" id="errorTableHeader">
+							<!-- Dynamic headers will be generated here -->
+							<tr>
+							<th>personname</th><th>workprofile</th><th>coveragetype</th><th>errordescription</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+			 
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updateshiftplanning</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("ShiftPlanning","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+<script>
+$(document).ready(function () {
+	window.parseShiftPlanningDate = function(value) {
+		if (!value) return null;
+		var parts = value.split('/');
+		if (parts.length !== 3) return null;
+		var date = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+		return isNaN(date.getTime()) ? null : date;
+	}
+
+	window.updateValidToMinDate = function() {
+		var validFromDate = parseShiftPlanningDate($('#validfrom').val());
+		if (validFromDate) {
+			validFromDate.setDate(validFromDate.getDate() + 1);
+			$('#validto').datetimepicker('setOptions', { minDate: validFromDate });
+			var validToDate = parseShiftPlanningDate($('#validto').val());
+			if (validToDate && validToDate < validFromDate) {
+				$('#validto').val('');
+			}
+		}
+	}
+
+	$('#validfrom').datetimepicker({
+		 minDate: moment(),
+		 timepicker: false,
+		 scrollInput: false,
+		 format: "d/m/Y",
+		 formatDate: "d/m/Y",
+		 onChangeDateTime: updateValidToMinDate,
+		 onShow: updateValidToMinDate
+});
+
+	$('#validfrom').on('change', updateValidToMinDate);
+
+})
+</script>
+@if (Model == null)
+{
+<script>
+var currentDate = new Date().toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric'});
+																		$("#validfrom").val(currentDate);
+																		</script>
+}
+
+<script>
+$(document).ready(function () {
+	$('#validto').datetimepicker({
+		 minDate: moment().add(1, 'days').toDate(),
+		 timepicker: false,
+		 scrollInput: false,
+		 format: "d/m/Y",
+		 formatDate: "d/m/Y",
+		 onShow: updateValidToMinDate
+});
+	updateValidToMinDate();
+
+})
+</script>
+
+
+			
+			<script>
+
+					function getShiftPlanningNamePart(value) {
+						if (value === null || value === undefined) return '';
+						var text = value.toString().trim();
+						return text.toLowerCase() === 'null' ? '' : text;
+					}
+
+					function getShiftPlanningPersonName(item) {
+						return [
+							getShiftPlanningNamePart(item && item.firstname),
+							getShiftPlanningNamePart(item && item.lastname)
+						].filter(function (part) { return part !== ''; }).join(' ');
+					}
+
+					function buildselectpersonname(strpersonname,index) {
+
+					var ddltarget_personname = $('#personname'+index);
+					ddltarget_personname.empty();
+					ddltarget_personname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_ShiftPlanning_people_personname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									'tenantid':$("#tenantid").val()
+									,'workprofile':$("#workprofile"+index).val()
+									,'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);                                
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id = data[i].Peopleid;
+									data[i].name = getShiftPlanningPersonName(data[i]);
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_personname,
+						 templateSelection: formatSelectSelected_personname
+
+					});
+
+							  var sendFilterData = {
+									'tenantid':$("#tenantid").val()
+									,'workprofile':$("#workprofile"+index).val()
+									,'searchterm': strpersonname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_ShiftPlanning_people_personname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].Peopleid == strpersonname) {
+											var option = new Option(getShiftPlanningPersonName(data[i]), data[i].Peopleid, true, true);
+											ddltarget_personname.append(option).trigger('update');
+
+											ddltarget_personname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_personname(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text && item.text != "") {
+						var textValue = item.text;
+					}
+					else if (getShiftPlanningPersonName(item)) {
+						var textValue = getShiftPlanningPersonName(item)
+					} 
+					return textValue;
+				}
+				function formatSelectOption_personname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = getShiftPlanningPersonName(item);
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+
+<script>
+var dataworkprofile
+function fill_workprofile() {
+$.ajax({
+url: '@Url.Action("get_all_WorkProfile")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.workprofilename !== null);
+				data.sort((a, b) =>
+					String(a.workprofilename).toLowerCase().localeCompare(String(b.workprofilename).toLowerCase()) 
+				);
+dataworkprofile=data
+}
+})
+}
+function buildselectworkprofile(selected, index) {
+if (dataworkprofile == undefined) fill_workprofile()
+var select = '<select name="workprofile' + index + '" id="workprofile' + index + '"  class="workprofile form-control select2 select2-list  " >'
+select = select + '<option value="">Choose</option>';
+if (dataworkprofile != null && dataworkprofile.length > 0)
+{
+$.each(dataworkprofile, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.WorkProfileid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.WorkProfileid  + '">' + optionDataInner.workprofilename  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.WorkProfileid+ '">' + optionDataInner.workprofilename + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.WorkProfileid + '">' + optionDataInner.workprofilename+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-people", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".people").removeClass('showthelables');
+			   $(".btn-remove-row-people").removeClass('btn-remove-row');
+				$("#peopleContainer").prepend(
+				'<div class="row m-t-10 people dependentContainerBorder" id="people' + index + '">' +
+					
+ 
+'<div class="col-sm-2 col-xs-12 p-2 workprofile_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="workprofile">@Resource.shiftplanning_people_workprofile</label>'+
+										buildselectworkprofile('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="workprofile' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+					'<div class="col-sm-2 col-xs-12 p-2 personname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="personname">@Resource.shiftplanning_people_personname <b class="iconRed">*</b></label>'+
+										'<select name="personname' + index + '" id="personname' + index + '"  class="personname form-control"></select>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="personname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 coveragetype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="coveragetype">@Resource.shiftplanning_people_coveragetype <b class="iconRed">*</b></label>'+
+										buildselectShiftPlanning('coveragetype','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="coveragetype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-people"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#peopleContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('people', '')).addClass('btn-remove-row');
+				
+				
+				$("#workprofile"+index).select2()
+ 
+				buildselectpersonname("",index)
+
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-people', function (e) {
+					 
+					 
+					
+					var peopleRow = $(this).closest(".people");
+					var index = peopleRow.attr("id").replace("people", "");
+					peopleRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.people" ? @Html.Raw(Json.Serialize(@Model.people)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".people").removeClass('showthelables');
+			   $(".btn-remove-row-people").removeClass('btn-remove-row');
+				$("#peopleContainer").prepend(
+				'<div class="row m-t-10 people dependentContainerBorder" id="people' + index + '">' +
+				'<input type="hidden" class="ShiftPlanning_peopleid" value="' + obj.ShiftPlanning_peopleid + '">'+
+
+'<div class="col-sm-2 col-xs-12 p-2 workprofile_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="workprofile">@Resource.shiftplanning_people_workprofile</label>'+
+										buildselectworkprofile(obj.workprofile, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="workprofile' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+				'<div class="col-sm-2 col-xs-12 p-2 personname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="personname">@Resource.shiftplanning_people_personname <b class="iconRed">*</b></label>'+
+										'<select name="personname' + index + '" id="personname' + index + '"  class="personname form-control"></select>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="personname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 coveragetype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="coveragetype">@Resource.shiftplanning_people_coveragetype <b class="iconRed">*</b></label>'+
+										buildselectShiftPlanning('coveragetype',obj.coveragetype, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="coveragetype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-people"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.peopleContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('people', '')).addClass('btn-remove-row');
+
+				$("#workprofile"+index).select2()
+ 
+				
+				
+
+				buildselectpersonname(obj.personname,index)
+
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+var dataShiftPlanning
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'ShiftPlanning' },
+async:false,
+success: function(data) {
+dataShiftPlanning=data
+}
+})
+function buildselectShiftPlanning(columnName,selected, index) {
+if(columnName=='coveragetype')
+{
+var select;
+$.each(dataShiftPlanning, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='coveragetype')
+{
+select = '<select name="coveragetype' + index + '" id="coveragetype' + index + '" class="coveragetype form-control--active form-control  required">'
+ select = select + '<option value="">Choose</option>';
+
+								
+										var options_coveragetype = optionDataInner.fielddesc.split(',');
+										options_coveragetype.sort(function (a, b) {
+										return a.localeCompare(b);
+										});
+										options_coveragetype.forEach(function(option_coveragetype){
+											if(selected== option_coveragetype)
+											select = select + '<option selected value="' + option_coveragetype + '">' + option_coveragetype+ '</option>'
+											else
+											select = select + '<option  value="' + option_coveragetype + '">' + option_coveragetype+ '</option>'
+										
+										})  
+
+									
+select=select + '</select>';
+}
+})
+return select;
+}
+
+}
+</script>
+
+
+			<script>
+			
+			  function getpeople() {
+		 
+					$("#people").val("");
+					var peopleModel = [];
+
+				
+					
+					
+					var el = $('.peopleContainer .people');
+					
+					el.each(function (cnt) {
+					
+							peopleAttributes = {}
+							
+							 peopleAttributes['personname']=($(this).find('.personname').val() ? $(this).find('.personname').val().toString() :'')
+peopleAttributes['workprofile']=($(this).find('.workprofile').select2("val") ? $(this).find('.workprofile').select2("val").toString() :'')
+peopleAttributes['coveragetype']=($(this).find('.coveragetype').val() ? $(this).find('.coveragetype').val().toString() :'')
+peopleAttributes['ShiftPlanning_peopleid']=($(this).find('.ShiftPlanning_peopleid').val() != undefined ? $(this).find('.ShiftPlanning_peopleid').val().toString() : "00000000-0000-0000-0000-000000000000")
+peopleAttributes['craftmyapp_actionmethodname']='Update_Shift_Planning'
+peopleAttributes['record_order']=cnt
+peopleAttributes['cma_client_row_id']=$(this).attr("id").replace("people","")
+
+							
+							peopleModel.push(peopleAttributes);
+					
+					
+					
+					});
+					 
+					return peopleModel
+				
+				
+				}
+
+				$("#shiftstarttime").prop('disabled', true)
+	$("#shiftendtime").prop('disabled', true)
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Shift_Planning")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Shift_Planning")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updateshiftplanning;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updateshiftplanning")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+				$.validator.addMethod("validToAfterValidFrom", function (value, element) {
+				if (this.optional(element)) {
+				return true;
+				}
+				var validFromDate = parseShiftPlanningDate($("#validfrom").val());
+				var validToDate = parseShiftPlanningDate(value);
+				if (!validFromDate || !validToDate) {
+				return true;
+				}
+				return validToDate > validFromDate;
+				}, "Valid To should be greater than Valid From");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										rules: {
+										validto: {
+										validToAfterValidFrom: true
+										}
+										},
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ var peopleModel=getpeople()
+
+
+
+
+
+
+	 $("#shiftstarttime").prop('disabled', false)
+	 $("#shiftendtime").prop('disabled', false)
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ for (var i = 0; i < peopleModel.length; i++) {
+formdata.append("people[" + i + "].personname", peopleModel[i].personname)
+formdata.append("people[" + i + "].record_order", peopleModel[i].record_order)
+formdata.append("people[" + i + "].cma_client_row_id", peopleModel[i].cma_client_row_id)
+formdata.append("people[" + i + "].workprofile", peopleModel[i].workprofile)
+formdata.append("people[" + i + "].coveragetype", peopleModel[i].coveragetype)
+formdata.append("people[" + i + "].ShiftPlanning_peopleid", peopleModel[i].ShiftPlanning_peopleid)
+formdata.append("people[" + i + "].ShiftPlanningid", $("#ShiftPlanningid").val())
+
+formdata.append("people[" + i + "].craftmyapp_actionmethodname", 'Update_Shift_Planning')
+}
+
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("ShiftPlanning","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "ShiftPlanning")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	else if($('#peoplebulkupload').val() != '') {
+	var Actions = getAutho("ShiftPlanning", "edit");
+if(data.includes("BadRequest : result:")){
+	if(Actions != undefined) {
+		var id = data.replace('BadRequest : result:', '');
+		var edit_URL = "@Url.Action("entry.viewname", "ShiftPlanning")";
+		edit_URL = edit_URL.replace("entry.viewname", Actions.actionmethodname);
+		edit_URL += "?ShiftPlanningid=" + encodeURIComponent(id);
+		window.location = edit_URL;
+		}
+}
+else{
+			$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+	}
+	}
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			<script>
+			$(document).ready(function () {
+				fill_workprofile()
+
+				$("#tenantid").change(function(){
+						$("#peopleContainer").empty()
+
+						fill_workprofile()
+
+				})
+			
+
+			});
+			</script>
+			
+			
+			
+
+			 
+			 
+			    
+
+<script>
+function Download_peopleExcelTemplate() {
+	var downloadUrl = '@Url.Action("Download_peopleExcelTemplate", "ShiftPlanning")'; // Razor-generated URL
+
+	fetch(downloadUrl, {
+		method: 'GET'
+	})
+		.then(response => {
+			if (!response.ok) throw new Error('Network response was not ok');
+			return response.blob(); // Convert response to Blob
+		})
+		.then(blob => {
+			// Create a download link
+			var link = document.createElement('a');
+			link.href = window.URL.createObjectURL(blob);
+			link.download = 'Upload_ShiftPlanning_people_Template.xlsx'; // Set the file name
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		})
+		.catch(error => {
+			console.error("Download failed:", error);
+			alert('Error downloading template. Please try again.');
+		});
+}
+</script>
+
+
+	@if (Model != null)
+	{
+		<script>
+		$(document).ready(function () {
+			 if("@Model.ShiftPlanningid" != null){
+			initializeErrorLogTable_ShiftPlanning();
+				
+			}
+		});
+		function initializeErrorLogTable_ShiftPlanning() {
+			try {
+				// Clear existing table
+				var table = $("#tblerrorlog");
+				if ($.fn.DataTable.isDataTable(table)) {
+					table.DataTable().destroy();
+				}
+				
+				// Recreate table structure
+				table.empty().html(`
+					<thead>
+						<tr>
+							<th>personname</th><th>workprofile</th><th>coveragetype</th><th>errordescription</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				`);
+
+				// AJAX call
+				$.ajax({
+					url: "@Url.Action("getById_allinfo_shiftplanningerror", "ShiftPlanning")",
+					type: 'GET',
+					data: {"ShiftPlanningid": getUrlVars()["ShiftPlanningid"]},
+					success: function (json) {
+						try {
+						if(json.tableData !=null && json.tableData !=""){
+							const parsedData = JSON.parse(json.tableData);
+							
+							// Update UI
+							if (!json.bulkUploadErrorCount || json.bulkUploadErrorCount.length == 0) 
+								$('.error-file').hide();
+							$('.errorCount').text(json.bulkUploadErrorCount || '0');
+							
+							// Initialize DataTable with dynamic columns
+							table.DataTable({
+								data: parsedData,
+								columns: [
+											{ data: 'personname', title: 'personname' },
+		{ data: 'workprofile', title: 'workprofile' },
+		{ data: 'coveragetype', title: 'coveragetype' },
+		{ data: 'errordescription', title: 'Error Description' }
+
+								],
+								paging: false,
+								searching: true,
+								destroy: true,
+								orderMulti: false,
+								order: [],
+								language: {
+									search: '<i class="fa fa-search"></i>',
+									searchPlaceholder: "Search for records..."
+								},
+								fixedColumns: {
+									left: 0,
+									right: 1
+								},
+								dom: "Bfrtip"
+							});
+							
+							console.log("DataTable initialized successfully for ShiftPlanning");
+						}
+							else{
+							$('.error-file').hide();
+							}
+							
+						} catch (parseError) {
+							console.error("Data parsing error:", parseError);
+							swal({
+								title: 'Data Error!',
+								text: 'Failed to parse table data',
+								type: 'error',
+								buttonsStyling: false,
+								confirmButtonClass: 'btn btn-primary'
+							});
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						console.error("AJAX Error:", errorThrown);
+						if (jqXHR.responseText === "\"API Authorization failed\"") {
+							swal({
+								title: 'Failed!',
+								text: jqXHR.responseText,
+								type: 'error',
+								buttonsStyling: false,
+								confirmButtonClass: 'btn btn-primary',
+								allowOutsideClick: false
+							}).then(function () {
+								window.location = "@Url.Action("AuthorizationFailed", "users")";
+							});
+						} else {
+							swal({
+								title: 'Contact Administrator!',
+								text: jqXHR.responseText,
+								type: 'error',
+								buttonsStyling: false,
+								confirmButtonClass: 'btn btn-primary'
+							});
+						}
+					}
+				});
+				
+			} catch (initError) {
+				console.error("Initialization error for ShiftPlanning:", initError);
+			}
+		}
+		</script>
+	}
+	
+			 <!--to_cma_script-->
+			
+					<script>
+					var strshiftname;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.shiftname != null && Model.shiftname.ToString() != "")
+							{
+							<script>
+								 strshiftname="@Model.shiftname"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_ShiftPlanning_shiftname(tenantid) {
+
+					var ddltarget_shiftname = $('#shiftname');
+					ddltarget_shiftname.empty();;
+					ddltarget_shiftname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_ShiftPlanning_shiftname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.shiftname !== null);
+									data.sort((a, b) =>
+										String(a.shiftname).toLowerCase().localeCompare(String(b.shiftname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].Shiftid;
+									data[i].name = data[i].shiftname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_ShiftPlanning_shiftname,
+						 templateSelection: formatSelectSelected_lookup_ShiftPlanning_shiftname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strshiftname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_ShiftPlanning_shiftname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].Shiftid == strshiftname) {
+											var option = new Option(data[i].shiftname,data[i].Shiftid, true, true);
+											ddltarget_shiftname.append(option).trigger('update');
+
+											ddltarget_shiftname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_ShiftPlanning_shiftname(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.shiftname) {
+						var textValue = item.shiftname
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_ShiftPlanning_shiftname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.shiftname;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_ShiftPlanning_shiftname(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_ShiftPlanning_shiftname($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script>
+<script>
+
+	function lookup_change_ShiftPlanning_shiftname(Shiftid)
+	{
+	$.ajax({
+	url: '@Url.Action("lookup_change_ShiftPlanning_shiftname")',
+	dataType: 'json',
+	data:{'Shiftid':Shiftid },
+	success: function(data) {
+
+			 if(data.length >0)
+			 {
+					$("#shiftstarttime").val(data[0].shiftstarttime)
+	$("#shiftstarttime").addClass('form-control--active')
+	$("#shiftendtime").val(data[0].shiftendtime)
+	$("#shiftendtime").addClass('form-control--active')
+
+
+
+			 }else{
+
+				 $("#shiftstarttime").val('')
+	$("#shiftstarttime").removeClass('form-control--active')
+	$("#shiftendtime").val('')
+	$("#shiftendtime").removeClass('form-control--active')
+
+
+			 }
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+
+				  }
+
+
+	$(document).ready(function () {
+
+		$("#shiftname").change(function(){
+
+				lookup_change_ShiftPlanning_shiftname($(this).val())
+				$("#shiftstarttime").prop('disabled', true)
+	$("#shiftendtime").prop('disabled', true)
+
+
+		})
+
+
+	})
+</script>
+
+
+<script>
+
+$(document).ready(function () {
+
+	$('body').on('change', '.workprofile', function() {
+			var id=$(this).attr("id")
+
+		id=id.replace("workprofile","")
+		$("#personname"+id).val(null).trigger('change')
+	});
+	
+
+})
+</script>

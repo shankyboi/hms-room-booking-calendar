@@ -1,0 +1,986 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:41:04 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.PatientProfileModel
+					@{
+					ViewData["Title"] = "Patient Profile";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+						   
+							
+							<div class="row printablerow"  style="padding:20px"> 
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Patient Profile</b>
+							</h3>
+				
+							<br />
+							</div>
+							 
+				<div class="col-sm-12 col-xs-12 mt-3 BasicInfo_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.basicinfo</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 registrationid_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="registrationid">@Resource.patientprofile_registrationid</label><br>
+										<span class="auto_cls_registrationid"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 firstname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="firstname">@Resource.patientprofile_firstname</label><br>
+										<span class="auto_cls_firstname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 lastname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="lastname">@Resource.patientprofile_lastname</label><br>
+										<span class="auto_cls_lastname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 gender_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="gender">@Resource.patientprofile_gender</label><br>
+										<span class="auto_cls_gender"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 dateofbirth_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="dateofbirth">@Resource.patientprofile_dateofbirth</label><br>
+										<span class="auto_cls_dateofbirth"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 age_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="age">@Resource.patientprofile_age</label><br>
+										<span class="auto_cls_age"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 nationality_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="nationality">@Resource.patientprofile_nationality</label><br>
+										<span class="auto_cls_nationality"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 countryoforigin_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="countryoforigin">@Resource.patientprofile_countryoforigin</label><br>
+										<span class="auto_cls_countryoforigin"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 emailaddress_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="emailaddress">@Resource.patientprofile_emailaddress</label><br>
+										<span class="auto_cls_emailaddress"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 mobilenumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="mobilenumber">@Resource.patientprofile_mobilenumber</label><br>
+										<span class="auto_cls_mobilenumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 whatsappnumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="whatsappnumber">@Resource.patientprofile_whatsappnumber</label><br>
+										<span class="auto_cls_whatsappnumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 photo_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="photo">@Resource.patientprofile_photo</label><br>
+										<span class="auto_cls_photo"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 PermanentAddress_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.permanentaddress</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 paddressline1_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paddressline1">@Resource.patientprofile_paddressline1</label><br>
+										<span class="auto_cls_paddressline1"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 paddressline2_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paddressline2">@Resource.patientprofile_paddressline2</label><br>
+										<span class="auto_cls_paddressline2"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 pzip_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="pzip">@Resource.patientprofile_pzip</label><br>
+										<span class="auto_cls_pzip"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ptown_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ptown">@Resource.patientprofile_ptown</label><br>
+										<span class="auto_cls_ptown"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 pcityordistrict_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="pcityordistrict">@Resource.patientprofile_pcityordistrict</label><br>
+										<span class="auto_cls_pcityordistrict"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ppstatename_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ppstatename">@Resource.patientprofile_ppstatename</label><br>
+										<span class="auto_cls_ppstatename"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+<div class="col-sm-3 col-xs-12 p-2 sameaspermanentaddress_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="sameaspermanentaddress">@Resource.patientprofile_sameaspermanentaddress</label><br>
+										<span class="auto_cls_sameaspermanentaddress"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 ContactAddress_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.contactaddress</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 caddressline1_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="caddressline1">@Resource.patientprofile_caddressline1</label><br>
+										<span class="auto_cls_caddressline1"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 caddressline2_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="caddressline2">@Resource.patientprofile_caddressline2</label><br>
+										<span class="auto_cls_caddressline2"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 czip_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="czip">@Resource.patientprofile_czip</label><br>
+										<span class="auto_cls_czip"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ctown_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ctown">@Resource.patientprofile_ctown</label><br>
+										<span class="auto_cls_ctown"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ccityordistrict_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ccityordistrict">@Resource.patientprofile_ccityordistrict</label><br>
+										<span class="auto_cls_ccityordistrict"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 cstatename_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="cstatename">@Resource.patientprofile_cstatename</label><br>
+										<span class="auto_cls_cstatename"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 IdentityProof_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.identityproof</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 idprooftype_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="idprooftype">@Resource.patientprofile_idprooftype</label><br>
+										<span class="auto_cls_idprooftype"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 idproofnumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="idproofnumber">@Resource.patientprofile_idproofnumber</label><br>
+										<span class="auto_cls_idproofnumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 uploadidproof_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="uploadidproof">@Resource.patientprofile_uploadidproof</label><br>
+										<span class="auto_cls_uploadidproof"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent emergencycontactinfoContainerBodyParent hide"><!--Dependent Emergency Contact Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.emergencycontactinfo
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="emergencycontactinfoContainer" class="table table-bordered mb-0 emergencycontactinfoContainer">
+							<thead id="emergencycontactinfoContainerHead">
+								<th>Person Name</th>
+<th>Relationship</th>
+<th>Phone Number</th>
+
+
+							</thead>
+							
+							<tbody id="emergencycontactinfoContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Emergency Contact Info Containder Block-->
+			 
+			
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 LanguagePreferences_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.languagepreferences</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 languagesknown_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="languagesknown">@Resource.patientprofile_languagesknown</label><br>
+										<span class="auto_cls_languagesknown"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 languagespreferrable_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="languagespreferrable">@Resource.patientprofile_languagespreferrable</label><br>
+										<span class="auto_cls_languagespreferrable"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 otherlanguages_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="otherlanguages">@Resource.patientprofile_otherlanguages</label><br>
+										<span class="auto_cls_otherlanguages"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 PersonalandLifestyleDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.personalandlifestyledetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 maritalstatus_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="maritalstatus">@Resource.patientprofile_maritalstatus</label><br>
+										<span class="auto_cls_maritalstatus"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 education_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="education">@Resource.patientprofile_education</label><br>
+										<span class="auto_cls_education"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 occupation_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="occupation">@Resource.patientprofile_occupation</label><br>
+										<span class="auto_cls_occupation"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 meditationpractice_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="meditationpractice">@Resource.patientprofile_meditationpractice</label><br>
+										<span class="auto_cls_meditationpractice"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 typeofpractice_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="typeofpractice">@Resource.patientprofile_typeofpractice</label><br>
+										<span class="auto_cls_typeofpractice"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 creativeactivities_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="creativeactivities">@Resource.patientprofile_creativeactivities</label><br>
+										<span class="auto_cls_creativeactivities"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 othercreativeactivities_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="othercreativeactivities">@Resource.patientprofile_othercreativeactivities</label><br>
+										<span class="auto_cls_othercreativeactivities"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 HealthInsuranceDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.healthinsurancedetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 insurancetype_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="insurancetype">@Resource.patientprofile_insurancetype</label><br>
+										<span class="auto_cls_insurancetype"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 insurancecompany_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="insurancecompany">@Resource.patientprofile_insurancecompany</label><br>
+										<span class="auto_cls_insurancecompany"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 policynumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="policynumber">@Resource.patientprofile_policynumber</label><br>
+										<span class="auto_cls_policynumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 policyclaimlimit_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="policyclaimlimit">@Resource.patientprofile_policyclaimlimit</label><br>
+										<span class="auto_cls_policyclaimlimit"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 policyexpirydate_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="policyexpirydate">@Resource.patientprofile_policyexpirydate</label><br>
+										<span class="auto_cls_policyexpirydate"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 ReferralSourceDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.referralsourcedetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 referralsource_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="referralsource">@Resource.patientprofile_referralsource</label><br>
+										<span class="auto_cls_referralsource"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 referraltype_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="referraltype">@Resource.patientprofile_referraltype</label><br>
+										<span class="auto_cls_referraltype"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 referrername_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="referrername">@Resource.patientprofile_referrername</label><br>
+										<span class="auto_cls_referrername"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 referrerphonenumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="referrerphonenumber">@Resource.patientprofile_referrerphonenumber</label><br>
+										<span class="auto_cls_referrerphonenumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 magazinename_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="magazinename">@Resource.patientprofile_magazinename</label><br>
+										<span class="auto_cls_magazinename"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 socialmediaplatform_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="socialmediaplatform">@Resource.patientprofile_socialmediaplatform</label><br>
+										<span class="auto_cls_socialmediaplatform"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 otherreferral_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="otherreferral">@Resource.patientprofile_otherreferral</label><br>
+										<span class="auto_cls_otherreferral"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 BlacklistDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.blacklistdetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 blacklisted_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="blacklisted">@Resource.patientprofile_blacklisted</label><br>
+										<span class="auto_cls_blacklisted"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 reasonforblacklisting_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="reasonforblacklisting">@Resource.patientprofile_reasonforblacklisting</label><br>
+										<span class="auto_cls_reasonforblacklisting"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 detailedremarks_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="detailedremarks">@Resource.patientprofile_detailedremarks</label><br>
+										<span class="auto_cls_detailedremarks"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 DeceasedInformation_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.deceasedinformation</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 deceased_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="deceased">@Resource.patientprofile_deceased</label><br>
+										<span class="auto_cls_deceased"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 causeofdeath_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="causeofdeath">@Resource.patientprofile_causeofdeath</label><br>
+										<span class="auto_cls_causeofdeath"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 dateandtimeofdeath_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="dateandtimeofdeath">@Resource.patientprofile_dateandtimeofdeath</label><br>
+										<span class="auto_cls_dateandtimeofdeath"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('PatientProfile.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_PatientProfile_view_data(){
+
+					   var  PatientProfileid = getUrlVars()["PatientProfileid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_PatientProfile")',
+												dataType: 'json',
+												data:{PatientProfileid: PatientProfileid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='photo'){
+																			$('.auto_cls_photo').empty()
+																			if(obj[key] !=null)  {            
+																		  
+																			var uploaded_photo = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_photo.length; i++) {
+
+
+																				if (uploaded_photo[i] != "") {
+																						var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_photo[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																					if (iterate == 1)
+																						$('.auto_cls_photo').append('<a href=' + filepath + ' class="imgphoto auto_clr_photo"><img  src=' + filepath + ' width="100px" alt="img"/></a>')
+																					else
+
+																						$('.auto_cls_photo').append('<div style="display:none"> <a href=' + filepath + ' class="imgphoto auto_clr_photo"><img  src=' + filepath + ' width="100px" alt="img"/></a></div>')
+		 
+																				}
+
+
+																			}
+
+																			$('body').on('click', 'a.imgphoto', function (e) {
+																			e.preventDefault();
+																			$('.imgphoto').colorbox({ rel: '.imgphoto', width: "90%", height: "80%" });
+																			$.colorbox({ open: true });
+																			});
+
+
+
+
+																					}
+
+
+																	}
+if(key=='uploadidproof'){
+																			$('.auto_cls_uploadidproof').empty()
+																			if(obj[key] !=null)  {            
+  
+																			var uploaded_uploadidproof = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_uploadidproof.length; i++) {
+
+
+																				if (uploaded_uploadidproof[i] != "") {
+																							var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_uploadidproof[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																						 $('.auto_cls_uploadidproof').append('<a href=' + filepath + ' class="uploadidproof filedisplay"><i class="fa fa-file"></i></a>')
+																			
+																				}
+
+
+																			}
+
+ 
+																		  }
+
+
+																	}
+if(key=='automaton_PatientProfile_emergencycontactinfo'){
+																			$('#emergencycontactinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + PatientProfileid +'&section=automaton_PatientProfile_emergencycontactinfo_history'
+																					 $(".emergencycontactinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("PatientProfile","versionhistory")
+																				if(Actions == undefined){
+																				$("emergencycontactinfoauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.emergencycontactinfoContainerBodyParent').removeClass('hide')      
+																			   $('#emergencycontactinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.emergencycontactinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													if (obj) {
+if (obj.hasOwnProperty('insurancetype') && obj.insurancetype) {
+    str_visible_insurancetype = obj.insurancetype;
+} else {
+    str_visible_insurancetype = ''; 
+}
+if (str_visible_insurancetype === "Family/Group") {
+    $(".insurancecompany_craftmyapp_viewcontainer").show();
+    $(".policynumber_craftmyapp_viewcontainer").show();
+    $(".policyclaimlimit_craftmyapp_viewcontainer").show();
+    $(".policyexpirydate_craftmyapp_viewcontainer").show();
+} else {
+    $(".insurancecompany_craftmyapp_viewcontainer").hide();
+    $(".policynumber_craftmyapp_viewcontainer").hide();
+    $(".policyclaimlimit_craftmyapp_viewcontainer").hide();
+    $(".policyexpirydate_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('referraltype') && obj.referraltype) {
+    str_visible_referraltype = obj.referraltype;
+} else {
+    str_visible_referraltype = ''; 
+}
+if (str_visible_referraltype === "Other") {
+    $(".otherreferral_craftmyapp_viewcontainer").show();
+} else {
+    $(".otherreferral_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('nationality') && obj.nationality) {
+    str_visible_nationality = obj.nationality;
+} else {
+    str_visible_nationality = ''; 
+}
+if (str_visible_nationality === "Foreign") {
+    $(".countryoforigin_craftmyapp_viewcontainer").show();
+} else {
+    $(".countryoforigin_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('meditationpractice') && obj.meditationpractice) {
+    str_visible_meditationpractice = obj.meditationpractice;
+} else {
+    str_visible_meditationpractice = ''; 
+}
+if (str_visible_meditationpractice === "Yes") {
+    $(".typeofpractice_craftmyapp_viewcontainer").show();
+} else {
+    $(".typeofpractice_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('referraltype') && obj.referraltype) {
+    str_visible_referraltype = obj.referraltype;
+} else {
+    str_visible_referraltype = ''; 
+}
+if (str_visible_referraltype === "Person") {
+    $(".referrername_craftmyapp_viewcontainer").show();
+    $(".referrerphonenumber_craftmyapp_viewcontainer").show();
+} else {
+    $(".referrername_craftmyapp_viewcontainer").hide();
+    $(".referrerphonenumber_craftmyapp_viewcontainer").hide();
+}
+if (obj.hasOwnProperty('referralsource') && obj.referralsource) {
+    str_visible_referralsource = obj.referralsource;
+} else {
+    str_visible_referralsource = ''; 
+}
+if (str_visible_referralsource === "Social Media") {
+    $(".socialmediaplatform_craftmyapp_viewcontainer").show();
+} else {
+    $(".socialmediaplatform_craftmyapp_viewcontainer").hide();
+}
+}
+
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_PatientProfile_view_data()
+
+
+					/*var Actions=getAutho("PatientProfile","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						var str_visible_insurancetype;
+var str_visible_referraltype;
+var str_visible_nationality;
+var str_visible_meditationpractice;
+var str_visible_referraltype;
+var str_visible_referralsource;
+
+						$(document).ready(function () {
+							$(".countryoforigin_craftmyapp_viewcontainer").hide();
+$(".typeofpractice_craftmyapp_viewcontainer").hide();
+$(".insurancecompany_craftmyapp_viewcontainer").hide();
+$(".policynumber_craftmyapp_viewcontainer").hide();
+$(".policyclaimlimit_craftmyapp_viewcontainer").hide();
+$(".policyexpirydate_craftmyapp_viewcontainer").hide();
+$(".referralsource_craftmyapp_viewcontainer").hide();
+$(".referraltype_craftmyapp_viewcontainer").hide();
+$(".referrername_craftmyapp_viewcontainer").hide();
+$(".referrerphonenumber_craftmyapp_viewcontainer").hide();
+$(".magazinename_craftmyapp_viewcontainer").hide();
+$(".socialmediaplatform_craftmyapp_viewcontainer").hide();
+$(".otherreferral_craftmyapp_viewcontainer").hide();
+
+						});
+					</script>
+					
+					
+					

@@ -1,0 +1,145 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 05:46:08 -->
+			@using Microsoft.AspNetCore.Http
+@model NalamVazha.Models.lookupsModel
+@{
+ViewData["Title"] = "Update  Lookup  Data";
+Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using(Html.BeginForm("Create", "lookups", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+{
+<div class="" style="margin-left:5px;">
+@if(ViewData["message"] != null)
+{
+<div class="row">
+<div class="col-sm-12 col-xs-12">
+<div class="alert alert-danger alert-dismissible">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+<span aria-hidden="true">x</span>
+</button>
+Info :  @ViewData["message"]
+</div>
+</div>
+</div>
+}
+<div class="card card-container-Padding">
+<div class="card-block">
+					@Html.HiddenFor(m => m.lookupid)
+					@Html.HiddenFor(m => m.attributetype)
+					
+		<div class="row">
+		<div class="col-sm-4 p-2">
+			<div>
+			   <label>Entity Name</label>
+				<div class="form-group" > 
+					@Html.TextBoxFor(m => m.entityname, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg required" })
+					<i class="form-group__bar" ></i>
+					
+				</div>
+				@Html.ValidationMessageFor(model => model.entityname)
+				<label id="entityname-error" class="help-block" style="display: none" for="entityname"></label>
+			</div>
+		</div>
+		<div class="col-sm-4 p-2">
+			<div>
+			   <label>Field Name</label>
+				<div class="form-group" > 
+					@Html.TextBoxFor(m => m.fieldname, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg required" })
+					<i class="form-group__bar" ></i>
+					
+				</div>
+				@Html.ValidationMessageFor(model => model.fieldname)
+				<label id="fieldname-error" class="help-block" style="display: none" for="fieldname"></label>
+			</div>
+		</div>
+		<div class="col-sm-12 col-xs-12 p-2">
+			<div>
+				<label>Lookup Values</label>
+				<div class="form-group" > 
+					@Html.TextBoxFor(m => m.fielddesc, new {@type="text",@maxlength="1084",@placeholder="Type to Add More Items..." ,  @class = "required" })
+					<i class="form-group__bar" ></i>
+					
+					<label id="fielddesc-error" class="help-block" style="display: block" for="fielddesc"></label>
+				</div>
+				@Html.ValidationMessageFor(model => model.fielddesc)
+				
+				
+			</div>
+		</div> 
+
+		</div>
+		<div class="card-block">
+				<a href= "@Url.Action("Index","lookups")" class="btn btn-secondary waves-effect cma_cancel_button">Cancel</a>
+				<button type="submit" id="btnSubmit" class="btn btn-blue  waves-effect pull-right cma_primary_button">Submit</button>
+		</div>
+</div>
+</div>
+</div>
+}
+<script src="~/components/jquery/jquery.validate.js"></script>
+<script src="~/components/jquery/additional-methods.min.js"></script>
+
+<link rel="stylesheet" href="~/components/Selectize/dist/css/selectize.default.css">
+<script src="~/components/Selectize/dist/js/standalone/selectize.js"></script>
+<script src="~/components/Selectize/basic/js/index.js"></script>
+
+<script>
+$(document).ready(function () {
+
+  $("#fielddesc").selectize({
+                persist: true,
+                createOnBlur: true,
+                create: true
+                });
+				
+		$('#formId').validate({
+		ignore: ':hidden:not([class~=selectized]),:hidden > .selectized, .selectize-control .selectize-input input',
+		highlight: function(element) {
+		$(element).closest('.form-group').addClass('has-danger');
+		$(element).closest('.form-group').removeClass('has-success');
+		$(element).addClass('form-control-danger');
+		$(element).removeClass('form-control-success');
+		},
+		unhighlight: function(element) {
+		$(element).closest('.form-group').removeClass('has-danger');
+		$(element).closest('.form-group').addClass('has-success');
+		$(element).addClass('form-control-success');
+		$(element).removeClass('form-control-danger');
+		},
+		errorElement: 'label',
+		errorClass: 'help-block'
+		});
+})
+var str = "";
+</script>
+
+
+
+
+
+
+
+<script>
+$(document).ready(function () {
+var validator = $("#formId").validate({ /* settings */ });
+$("#btnSubmit").click(function(){
+if ($("#formId").valid()){
+$(".page-loader").show()
+$("#formId").submit();
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation !',
+text: "Please fill Empty Fields",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary'
+ })
+}
+})
+})
+$('form:first *:input[type!=hidden]:first').focus();
+</script>
+
+

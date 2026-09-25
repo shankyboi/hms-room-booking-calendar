@@ -1,0 +1,49 @@
+@*
+	Landing page:  list of tenants. Click a tenant to go to Login with tenantid and show tenant logo.
+*@
+@model List<NalamVazha.Models.TenantLandingItem>
+@{
+	ViewData["Title"] = "Select organization";
+	Layout = "~/Views/Shared/_LoginLayout.cshtml";
+	var tenantList = Model ?? new List<NalamVazha.Models.TenantLandingItem>();
+}
+
+<div class="tenant-landing">
+	<div class="tenant-landing-title">
+		<h2>Select Your Organization</h2>
+		<p>Choose an organization to continue</p>
+	</div>
+
+	@if (tenantList.Any())
+	{
+		<div class="tenant-grid">
+			@foreach (var t in tenantList)
+			{
+				var name = t.businessname ?? "Organization";
+				var url = Url.Action("Login", "users", new { tenantid = t.tenantid });
+				<a href="@url" class="tenant-card" data-tenantid="@t.tenantid">
+					@if (!string.IsNullOrEmpty(t.logoUrl))
+					{
+						<img src="@t.logoUrl" alt="@name" class="tenant-logo-login" />
+					}
+					else
+					{
+						<div class="tenant-avatar">@(name.Length > 0 ? name.Substring(0, 1).ToUpper() : "?")</div>
+					}
+					<p class="tenant-card-name">@name</p>
+				</a>
+			}
+		</div>
+	}
+	else
+	{
+		<div class="tenant-empty">
+			<i class="fa fa-building" style="font-size:2rem; color:#cbd5e1; margin-bottom:0.5rem;"></i>
+			<p>No organizations available.<br/>Please contact your administrator.</p>
+		</div>
+	}
+
+	<div class="btn-back-login">
+		<a href="@Url.Action("Login", "users")">Continue To Login Without Selecting</a>
+	</div>
+</div>

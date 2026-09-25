@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+                          <ItemGroup>
+                            <ProjectReference Include="..\NalamVazha.Models\NalamVazha.Models.csproj" />
+                            <ProjectReference Include="..\NalamVazha.DAL\NalamVazha.DAL.csproj" />
+                          </ItemGroup>
+
+                          <ItemGroup>
+                            <PackageReference Include="dn.IdentityServer4.AccessTokenValidation" Version="8.0.0" />
+                            <PackageReference Include="Microsoft.AspNet.WebApi.Cors" Version="5.3.0" />
+                            <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.8" />
+                            <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.8" />
+                            <PackageReference Include="NLog" Version="6.0.3" />
+                            <PackageReference Include="NLog.Extensions.Logging" Version="6.0.3" />
+                            <PackageReference Include="NLog.MailKit" Version="6.0.3" />
+                            <PackageReference Include="NLog.Web.AspNetCore" Version="6.0.3" />
+                            <PackageReference Include="RestSharp" Version="112.0.0" />
+                            <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.3" />
+                            <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="9.0.3" />
+                            
+                          </ItemGroup>
+
+                          <PropertyGroup>
+                            <TargetFramework>net10.0</TargetFramework>
+                          </PropertyGroup>
+
+
+                        </Project>
+
+                        

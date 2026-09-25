@@ -1,0 +1,1018 @@
+<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 02/06/2026 11:23:02 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			 @using Admin;
+			@model NalamVazha.Models.RoomTypeModel
+@{
+	ViewData["Title"] = @Resource.roomtypelist;
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<style>
+	i.md.md-more-vert
+	{
+		color:#161515 !important;
+	}
+</style>
+
+<div class="mobileHeader">
+	<!--form_card_header-->
+	<div class="row">
+		<div class="col-sm-12 col-xs-12">
+			<h3 class="formHdr">@Resource.roomtypelist</h3>
+		</div>
+	</div>
+</div><!--form_card_header-->
+@if (TempData["message"] != null)
+{
+	<div class="row">
+		<div class="col-sm-12 col-xs-12">
+			<div class="alert alert-success alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+				</button>
+				Info :  @TempData["message"]
+			</div>
+		</div>
+	</div>
+}
+<div class="row">
+	<div class="col-sm-2 col-xs-12 p-2">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+				<select name="tenantid" id="tenantid" class="form-control">
+				</select>
+				<i class="form-group__bar"></i>
+			</div>
+
+			<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+
+
+
+	<div class="col-sm-2 col-xs-12 p-2 concessoneligibility_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="concessoneligibility">@Resource.roomtype_concessoneligibility</label>
+				<select name="concessoneligibility" id="concessoneligibility" class="form-control  "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.concessoneligibility)
+			<div id="concessoneligibility-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+	<div class="col-sm-2 col-xs-12 p-2 suitabilityforvip_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="suitabilityforvip">@Resource.roomtype_suitabilityforvip</label>
+				<select name="suitabilityforvip" id="suitabilityforvip" class="form-control  "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.suitabilityforvip)
+			<div id="suitabilityforvip-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+	<div class="col-sm-2 col-xs-12 p-2 gendersuitability_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="gendersuitability">@Resource.roomtype_gendersuitability</label>
+				<select name="gendersuitability" id="gendersuitability" multiple class="automaton_sumo_select "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.gendersuitability)
+			<div id="gendersuitability-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+	<div class="col-sm-2 p-2">
+
+		<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+
+	</div>
+</div>
+
+
+<div class="card tab-card">
+	<div class="card-head">
+		<ul class="nav nav-tabs" data-toggle="tabs">
+			<li class="active cma_fill_tab"><a href="#cma_card_tab"><i class="fa fa-address-card"></i></a></li>
+			<li class="cma_fill_tab"><a href="#cma_table_tab"><i class="fa fa-table"></i></a></li>
+		</ul>
+	</div>
+	<!--end .card-head -->
+	<div class="card-body tab-content pt-0">
+
+		<div class="tab-pane active" id="cma_card_tab">
+			<div class="dataTables_wrapper dicover-engae-wrap" style="min-height:0px">
+
+				<div class="dataTables__top" id="cma_card_tab_action_container">
+
+					<div class="dataTables_buttons actions" id="cma_card_tab_action_container_action_btn">
+					</div>
+				</div>
+			</div>
+			<div class="row automaton_card" id="RoomTypeContainer">
+			</div>
+		</div>
+		<!--end #cma_card_tab -->
+
+		<div class="tab-pane" id="cma_table_tab">
+
+			<div class="row automaton_table">
+				<div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+						<table id="tblRoomType" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+							<thead class="thead-default">
+								<tr>
+
+									<th>@Resource.roomtype_name</th>
+									<th>@Resource.roomtype_prebookingdaylimit</th>
+									<th>@Resource.roomtype_minbookingdays</th>
+									<th>@Resource.roomtype_maxbookingdays</th>
+									<th>@Resource.roomtype_concessoneligibility</th>
+									<th>@Resource.roomtype_suitabilityforvip</th>
+									<th>@Resource.roomtype_gendersuitability</th>
+									<th>@Resource.roomtype_costperday</th>
+									<th>@Resource.roomtype_bookingdeposit</th>
+									<th>@Resource.roomtype_advanceperday</th>
+
+									<th class="all">Action</th>
+
+								</tr>
+							</thead>
+							<tbody></tbody>
+
+						</table>
+					</div>
+				</div>
+			</div>
+			<!--end #cma_table_tab -->
+
+		</div>
+		<!--end .card-body -->
+	</div>
+	<!--end .tab-card -->
+
+
+	<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+	<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+
+	<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+
+
+	<script type="text/javascript">
+			// Resource labels for card (no icons)
+			var rtl_concessoneligibility = "@Html.Raw(Resource.roomtype_concessoneligibility?.Replace("\"", "\\\"") ?? "Concession eligibility")";
+			var rtl_suitabilityforvip = "@Html.Raw(Resource.roomtype_suitabilityforvip?.Replace("\"", "\\\"") ?? "Suitability for VIP")";
+			var rtl_gendersuitability = "@Html.Raw(Resource.roomtype_gendersuitability?.Replace("\"", "\\\"") ?? "Gender suitability")";
+			var rtl_costperday = "@Html.Raw(Resource.roomtype_costperday?.Replace("\"", "\\\"") ?? "Cost per day")";
+			var rtl_bookingdeposit = "@Html.Raw(Resource.roomtype_bookingdeposit?.Replace("\"", "\\\"") ?? "Booking deposit")";
+			var rtl_advanceperday = "@Html.Raw(Resource.roomtype_advanceperday?.Replace("\"", "\\\"") ?? "Advance per day")";
+			var rtl_prebookingdaylimit = "@Html.Raw(Resource.roomtype_prebookingdaylimit?.Replace("\"", "\\\"") ?? "Pre-booking day limit")";
+			var rtl_minbookingdays = "@Html.Raw(Resource.roomtype_minbookingdays?.Replace("\"", "\\\"") ?? "Min booking days")";
+			var rtl_maxbookingdays = "@Html.Raw(Resource.roomtype_maxbookingdays?.Replace("\"", "\\\"") ?? "Max booking days")";
+
+			var arr_selected_for_verification = [];
+		 function fill_RoomType()
+		 {
+			 var gendersuitability="";
+																		if($("#gendersuitability").val()){
+																				if($("#gendersuitability option").length == $("#gendersuitability").val().length)
+																				{
+																					gendersuitability=$("#gendersuitability").val().toString()+", "
+
+																				}else{
+																					gendersuitability=$("#gendersuitability").val().toString()
+																				}
+
+																		}
+
+			 var sendFilterData = {
+																	"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+																	"concessoneligibility":$("#concessoneligibility").val(),
+		"suitabilityforvip":$("#suitabilityforvip").val(),
+		"gendersuitability":gendersuitability,
+
+																}
+		var RoomTypedata;
+			 $.ajax({
+		type: "GET",
+		url: "@Url.Action("get_Room_Type_List", "RoomType")",
+			data: sendFilterData,
+			contentType: "application/json; charset=utf-8",
+			 dataType: "Json",
+			 async: false,
+			success: function(data) {
+			var resultSet = data;
+			RoomTypedata = data;
+		if (RoomTypedata.length > 0)
+		{
+		$("#RoomTypeContainer").empty()
+		}
+		else
+		{
+		$("#RoomTypeContainer").empty()
+		$("#RoomTypeContainer").append('<div class="col-md-4 col-sm-6 col-xs-12">No Data</div>'); return;
+		}
+			 $.each(resultSet, function(key, obj) {
+		$('body').on('click', 'a.img' + obj.roomtypeid + '', function(e) {
+		e.preventDefault();
+		$('.img' + obj.roomtypeid + '').colorbox({rel: '.img' + obj.roomtypeid, width: "90%", height: "80%" });
+		$.colorbox({open: true });
+		});
+				var RoomTypeContainer = '<div class="col-md-4 col-sm-6 col-xs-12 mb-2">' +
+		'<div class="card image-card image-top landscape compact-card ">';
+		 if ((obj.roomtypeicon ? obj.roomtypeicon:"") !="") {
+		var uploaded_roomtypeicon =obj.roomtypeicon.split('|');
+		var iterate = 0;
+		for (var i = 0; i < uploaded_roomtypeicon.length; i++) {
+		var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_roomtypeicon[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+		if (uploaded_roomtypeicon[i] != "") {
+		iterate = iterate + 1;
+		if (iterate == 1)
+			RoomTypeContainer = RoomTypeContainer + '<div class="card-head">' +
+				'<a href="' + (filepath  ? filepath  : vBaseurl+"/images/blank.jpg") + '" class="img' + obj.roomtypeid+ ' img-group-gallery cboxElement" >' +
+				'<img  src="' + (filepath ? filepath : vBaseurl+"/images/blank.jpg") + '"  class="img-responsive gallaryImage" alt="blank" />' +
+				'</a></div>';
+		else
+			RoomTypeContainer = RoomTypeContainer + '<div class="card-head" style="display:none">' +
+				'<a href="' + (filepath ? filepath : vBaseurl+"/images/blank.jpg") + '" class="img' + obj.roomtypeid+ ' img-group-gallery cboxElement" ></a></div>';
+		}
+		}
+		}else{
+		RoomTypeContainer = RoomTypeContainer + '<div class="card-head">' +
+			'<a href="'+ vBaseurl+ '/images/blank.jpg" class="img' + obj.roomtypeid+ ' img-group-gallery cboxElement" >' +
+			'<img  src="'+ vBaseurl+ '/images/blank.jpg"  class="img-responsive gallaryImage" alt="blank" />' +
+			'</a></div>';
+		}
+		RoomTypeContainer = RoomTypeContainer + '<div class="card-head">';
+		RoomTypeContainer = RoomTypeContainer + '<header id="header' + obj.roomtypeid + '">' + (obj.name? obj.name:"")+'</header>';
+		var Actions=getAuthoController("RoomType");
+		if(Actions != undefined) {
+		var hasValidActions = false;
+		var RoomTypeContainerTemp = '';
+		for (var index = 0; index < Actions.length; ++index) {
+		var entry = Actions[index];
+		if(entry.viewname !="bulkdelete" && entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="create" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+		hasValidActions = true;
+		var URL = "@Url.Action("entry.viewname", "RoomType")?RoomTypeid=" + obj.roomtypeid;
+		URL = URL.replace("entry.viewname", entry.actionmethodname);
+		if(entry.viewname=="delete") {
+		RoomTypeContainerTemp += '<li><a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a></li>';
+		} else if(entry.viewname=="detail") {
+		var DETAIL_URL = "@Url.Action("entry.actionmethodname", "RoomType")?RoomTypeid=" + obj.roomtypeid;
+		DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+		RoomTypeContainerTemp += '<li><a href="' + DETAIL_URL + '" class="dropdown-item">View</a></li>';
+		} else {
+		RoomTypeContainerTemp += '<li><a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a></li>';
+		}
+		}
+		}
+		if (hasValidActions) {
+		RoomTypeContainer += '<div class="tools cma_card_action_tools"><div class="btn-group">' +
+			'<a href="#" class="btn btn-icon-toggle dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="md md-more-vert"></i></a>' +
+			'<ul class="dropdown-menu animation-dock pull-right menu-card-styling" role="menu" style="text-align: left;">' + RoomTypeContainerTemp + '</ul></div></div>';
+		} else {
+		RoomTypeContainer += '-';
+		}
+		} else {
+		RoomTypeContainer += '-';
+		}
+		RoomTypeContainer = RoomTypeContainer + '</div>';
+		RoomTypeContainer = RoomTypeContainer + '<div class="card-body"><div class="roomtype-card-details">' +
+		'<div class="detail-row"><span class="detail-label">' + rtl_concessoneligibility + '</span><span class="detail-value">' + (obj.concessoneligibility? obj.concessoneligibility:"-") + '</span></div>' +
+		'<div class="detail-row"><span class="detail-label">' + rtl_suitabilityforvip + '</span><span class="detail-value">' + (obj.suitabilityforvip? obj.suitabilityforvip:"-") + '</span></div>' +
+		'<div class="detail-row"><span class="detail-label">' + rtl_gendersuitability + '</span><span class="detail-value">' + (obj.gendersuitability? obj.gendersuitability:"-") + '</span></div>' +
+		'<div class="detail-row"><span class="detail-label">' + rtl_costperday + '</span><span class="detail-value">' + (obj.costperday ? '&#8377; ' + obj.costperday : "-") + '</span></div>' +
+		'<div class="detail-row"><span class="detail-label">' + rtl_bookingdeposit + '</span><span class="detail-value">' + (obj.bookingdeposit ? '&#8377; ' + obj.bookingdeposit : "-") + '</span></div>' +
+		'<div class="detail-row"><span class="detail-label">' + rtl_advanceperday + '</span><span class="detail-value">' + (obj.advanceperday ? '&#8377; ' + obj.advanceperday : "-") + '</span></div>' +
+		'<div class="detail-row"><span class="detail-label">' + rtl_prebookingdaylimit + '</span><span class="detail-value">' + (obj.prebookingdaylimit != null && obj.prebookingdaylimit !== '' ? obj.prebookingdaylimit : "-") + '</span></div>' +
+		'<div class="detail-row"><span class="detail-label">' + rtl_minbookingdays + '</span><span class="detail-value">' + (obj.minbookingdays != null && obj.minbookingdays !== '' ? obj.minbookingdays : "-") + '</span></div>' +
+		'<div class="detail-row"><span class="detail-label">' + rtl_maxbookingdays + '</span><span class="detail-value">' + (obj.maxbookingdays != null && obj.maxbookingdays !== '' ? obj.maxbookingdays : "-") + '</span></div>' +
+		'</div></div></div></div></div>';
+		$("#RoomTypeContainer").append(RoomTypeContainer)
+		$("#header"+ obj.roomtypeid).html((obj.name? obj.name:"-"));
+
+			});
+			},
+			error: function () {
+		$("#RoomTypeContainer").empty()
+			$("#RoomTypeContainer").append('No Data');
+			}
+			});
+
+
+
+			var table=$("#tblRoomType").DataTable({
+		columnDefs: [{
+			 targets: -1,
+			 title: '<i class="fa fa-pencil fa-lg"></i>'
+		  }],
+				destroy:true,
+			"orderMulti": false,
+		"order": [],
+		"aaSorting": [],
+			autoWidth: !1,responsive:!0,
+			lengthMenu: [
+			[15, 30, 45, -1],
+			["15 Rows", "30 Rows", "45 Rows", "Everything"]
+			],
+			language: {
+			searchPlaceholder: "Search for records..."
+			},
+			 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+			dom: "Bfrtip",
+			   sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+			buttons: [{
+			extend: "excelHtml5",
+			title: "List Of RoomType Data"
+			}, {
+			extend: "csvHtml5",
+			title: "List Of RoomType Data"
+			}, {
+			extend: "print",
+			title: "List Of RoomType Data"
+			}],
+		 initComplete: function(a, b) {
+
+				 $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+
+				if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+			 $(this).closest(".dataTables_wrapper").find(".dataTables_length").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			  `);
+
+				 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+					$("#cma_card_tab_action_container").prepend(`
+						<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+					`);
+				}
+		 }
+
+		var Actions=getAutho("RoomType","create")
+				if(Actions != undefined){
+					var create_URL = "@Url.Action("entry.viewname", "RoomType")"
+					create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+
+		if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+					  $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+
+
+				<div class="dataTables_buttons actions">
+				<div class="input-group prefix">
+									<span class="input-group-addon">
+									<i class="material-icons">search</i>
+									</span>
+									<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+								</div>
+				  <div class="dropdown actions__item cma_top_icon">
+					<i data-toggle="dropdown" class="material-icons">share</i>
+					<ul class="dropdown-menu dropdown-menu-right">
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+					</ul>
+				  </div>
+				  <div class="dropdown actions__item cma_top_icon">
+											<i data-toggle="dropdown" class="material-icons">settings</i>
+											<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+											<li>
+																		<label> @Resource.roomtype_name
+		 <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_prebookingdaylimit
+		 <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_minbookingdays
+		 <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_maxbookingdays
+		 <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_concessoneligibility
+		 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_suitabilityforvip
+		 <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_gendersuitability
+		 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_costperday
+		 <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_bookingdeposit
+		 <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_advanceperday
+		 <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+																	  </li>
+
+											</ul>
+											</div>
+				 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+				</div>
+			  `.replace("create_URL", create_URL))
+		}
+
+				$("#cma_card_tab_action_container .card-lst").remove();
+				$("#cma_card_tab_action_container_action_btn").empty()
+				$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+
+
+
+					if ($(this).hasClass('make-active')) {
+				$('tbody', $(this)).children('tr').first().addClass('active-row');
+				setTimeout(() => {
+				  $('.active-row td:visible:last').addClass('last-active-td');
+				}, 200);
+			  }
+			  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+				table.search(this.value).draw();
+			  });
+				}else{
+		if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+					$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+
+				<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+									<span class="input-group-addon">
+									<i class="material-icons">search</i>
+									</span>
+									<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+								</div>
+				  <div class="dropdown actions__item cma_top_icon">
+					<i data-toggle="dropdown" class="material-icons">share</i>
+					<ul class="dropdown-menu dropdown-menu-right">
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+					</ul>
+				  </div>
+				 <div class="dropdown actions__item cma_top_icon">
+											<i data-toggle="dropdown" class="material-icons">settings</i>
+											<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+											<li>
+																		<label> @Resource.roomtype_name
+		 <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_prebookingdaylimit
+		 <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_minbookingdays
+		 <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_maxbookingdays
+		 <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_concessoneligibility
+		 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_suitabilityforvip
+		 <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_gendersuitability
+		 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_costperday
+		 <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_bookingdeposit
+		 <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.roomtype_advanceperday
+		 <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+																	  </li>
+
+											</ul>
+											</div>
+				</div>
+			  `)
+		}
+		if ($(this).hasClass('make-active')) {
+				$('tbody', $(this)).children('tr').first().addClass('active-row');
+				setTimeout(() => {
+				  $('.active-row td:visible:last').addClass('last-active-td');
+				}, 200);
+			  }
+			  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+				table.search(this.value).draw();
+			  });
+
+				}
+
+
+
+
+
+			}
+			  ,columns: [
+
+				{data: 'name'},
+		{data: 'prebookingdaylimit'},
+		{data: 'minbookingdays'},
+		{data: 'maxbookingdays'},
+		{data: 'concessoneligibility'},
+		{data: 'suitabilityforvip'},
+		{data: 'gendersuitability'},
+		{data: 'costperday',mRender: function (data, type, row) {
+		var numericValue = parseFloat((data == null ? '' : data.toString()).replace(/[^0-9.-]/g, ''));
+		if (type === 'sort' || type === 'type') return isNaN(numericValue) ? Number.NEGATIVE_INFINITY : numericValue;
+		return data == null || data === '' ? '-' : '&#8377;' + data;
+		}},
+		{data: 'bookingdeposit',mRender: function (data, type, row) {
+		var numericValue = parseFloat((data == null ? '' : data.toString()).replace(/[^0-9.-]/g, ''));
+		if (type === 'sort' || type === 'type') return isNaN(numericValue) ? Number.NEGATIVE_INFINITY : numericValue;
+		return data == null || data === '' ? '-' : '&#8377;' + data;
+		}},
+		{data: 'advanceperday',mRender: function (data, type, row) {
+		var numericValue = parseFloat((data == null ? '' : data.toString()).replace(/[^0-9.-]/g, ''));
+		if (type === 'sort' || type === 'type') return isNaN(numericValue) ? Number.NEGATIVE_INFINITY : numericValue;
+		return data == null || data === '' ? '-' : '&#8377;' + data;
+		}},
+
+				{
+							"sName": "roomtypeid",
+							"bSearchable": false,
+							"bSortable": false,
+							data: 'roomtypeid', "className": "dt-center",
+							mRender: function(data, type, row) {
+							var Actions=getAuthoController("RoomType")
+							var appendMessage='';
+							if(Actions !=undefined)
+							{
+							for (var index = 0; index < Actions.length; ++index) {
+							var entry = Actions[index];
+
+							if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+							var URL = "@Url.Action("entry.viewname", "RoomType")?RoomTypeid=" + row["roomtypeid"]
+							URL = URL.replace("entry.viewname", entry.actionmethodname);
+
+							if(entry.viewname=="delete")
+							{
+
+								appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>'
+
+
+							}
+
+							else if(entry.viewname=="detail")
+							{
+								var DETAIL_URL = "@Url.Action("entry.actionmethodname", "RoomType")?RoomTypeid=" + row["roomtypeid"]
+								DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+								appendMessage+='<a href="' + DETAIL_URL + '" class="dropdown-item">View</a>'
+		 }
+							else
+							{
+
+								appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>'
+							}
+
+							}
+
+							}
+
+							if(appendMessage =="")
+							{
+							return '-'
+
+							}
+							else
+							{
+							return '<div class="dropdown actions__item">' +
+							'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+							'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+
+
+							'</div>' +
+							'</div>'
+							}
+
+
+
+							}
+							else
+							{
+							return '-'
+
+							}
+
+
+							}
+							}
+
+			 ],
+			data:RoomTypedata
+			})
+
+		 $('body').on('click', '.ColVis_collection li', function(a) {
+			event.stopPropagation();
+		  });
+
+		 $('body').on('change', '.colvis_switch', function(a) {
+			var column = table.column($(this).attr('data-column'));
+			column.visible(!column.visible());
+		  });
+
+
+
+
+		  $(".dataTables_filter input[type=search]").focus(function() {
+			$(this).closest(".dataTables_filter").addClass("dataTables_filter--toggled")
+		  }), $(".dataTables_filter input[type=search]").blur(function() {
+			$(this).closest(".dataTables_filter").removeClass("dataTables_filter--toggled")
+		  })
+
+
+
+
+
+
+		}
+
+
+		$(document).ready(function () {
+
+
+
+				 $(".cma_fill_tab").click(function(){
+						fill_RoomType()
+				})
+				var Actions=getAutho("RoomType","list")
+				if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+		});
+		var activeAjaxConnections = 0;
+																$(document).ajaxStop(function() {
+																if(activeAjaxConnections==0)
+																{
+																activeAjaxConnections=1;
+																 fill_RoomType()
+
+
+
+																}
+																})
+		  $("body").on("click", "[data-table-action]", function(a) {
+			a.preventDefault();
+			var b = $(this).data("table-action");
+		   // console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+			if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+			  var c = $(this).closest(".card");
+			  c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+			}
+		  });
+	</script>
+	<script>
+		var strconcessoneligibility;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.concessoneligibility != null && Model.concessoneligibility.ToString() != "")
+		{
+			<script>
+				strconcessoneligibility = "@Model.concessoneligibility";
+			</script>
+		}
+	}
+	<script>
+		var strsuitabilityforvip;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.suitabilityforvip != null && Model.suitabilityforvip.ToString() != "")
+		{
+			<script>
+				strsuitabilityforvip = "@Model.suitabilityforvip";
+			</script>
+		}
+	}
+	<link href="~/components/sumoselect/sumoselect.css" rel="stylesheet" />
+	<script src="~/components/sumoselect/jquery.sumoselect.js"></script>
+	<script>
+		var strgendersuitability;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.gendersuitability != null && Model.gendersuitability.ToString() != "")
+		{
+			<script>
+				strgendersuitability = "@Model.gendersuitability";
+			</script>
+		}
+	}
+
+	<script>
+		$(document).ready(function () {
+		$.ajax({
+		url: '@Url.Action("get_lookups_by_entity", "lookups")',
+		dataType: 'json',
+		data:{id: 'RoomType' },
+		success: function(data) {
+
+
+
+				$.each(data, function(index, optionDataInner) {
+
+
+													if(optionDataInner.fieldname=="concessoneligibility"){
+														var ddltarget_concessoneligibility = "#concessoneligibility"
+														$(ddltarget_concessoneligibility).empty();
+														$(ddltarget_concessoneligibility).append("<option value=''>Choose</option>")
+														var options_concessoneligibility = optionDataInner.fielddesc.split(',');
+														options_concessoneligibility.sort(function (a, b) {
+																				return a.localeCompare(b);
+															});
+														options_concessoneligibility.forEach(function(option_concessoneligibility){
+															if(strconcessoneligibility== option_concessoneligibility){
+															$(ddltarget_concessoneligibility).append('<option selected value="' + option_concessoneligibility + '">' + option_concessoneligibility+ '</option>')
+
+															}
+															else
+															$(ddltarget_concessoneligibility).append('<option  value="' + option_concessoneligibility + '">' + option_concessoneligibility+ '</option>')
+
+														})
+
+													}
+
+													if(optionDataInner.fieldname=="suitabilityforvip"){
+														var ddltarget_suitabilityforvip = "#suitabilityforvip"
+														$(ddltarget_suitabilityforvip).empty();
+														$(ddltarget_suitabilityforvip).append("<option value=''>Choose</option>")
+														var options_suitabilityforvip = optionDataInner.fielddesc.split(',');
+														options_suitabilityforvip.sort(function (a, b) {
+																				return a.localeCompare(b);
+															});
+														options_suitabilityforvip.forEach(function(option_suitabilityforvip){
+															if(strsuitabilityforvip== option_suitabilityforvip){
+															$(ddltarget_suitabilityforvip).append('<option selected value="' + option_suitabilityforvip + '">' + option_suitabilityforvip+ '</option>')
+
+															}
+															else
+															$(ddltarget_suitabilityforvip).append('<option  value="' + option_suitabilityforvip + '">' + option_suitabilityforvip+ '</option>')
+
+														})
+
+													}
+
+
+									if(optionDataInner.fieldname=="gendersuitability"){
+										var ddltarget_gendersuitability = "#gendersuitability"
+										$(ddltarget_gendersuitability).empty();
+
+										var options_gendersuitability = optionDataInner.fielddesc.split(',');
+										options_gendersuitability.sort(function (a, b) {
+															return a.localeCompare(b);
+										});
+										options_gendersuitability.forEach(function(option_gendersuitability){
+											$(ddltarget_gendersuitability).append('<option value="' + option_gendersuitability + '">' + option_gendersuitability+ '</option>')
+											 $("#gendersuitability").trigger("change")
+										})
+										 if(strgendersuitability !=undefined)
+										 {
+											var strgendersuitability_array = strgendersuitability.split(',');
+											for (var i = 0; i < strgendersuitability_array.length; i++)
+											{
+												$('select[name="gendersuitability"] option[value="' + strgendersuitability_array[i] + '"]').attr("selected", "selected")
+
+											}
+
+										}
+
+										var dropdown = $("#gendersuitability");
+										var options = dropdown.find('option');
+										options.sort((a, b) => (a && b ? $(b).is(':selected') - $(a).is(':selected') : 0));
+										dropdown.html(options);
+										$("#gendersuitability").SumoSelect({selectAll:true});
+										$("#gendersuitability")[0].sumo.reload();
+
+									}
+
+
+
+
+
+				});
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+		})
+
+	</script>
+
+
+	<script>
+		$(document).ready(function () {
+
+			$("#tenantid").change(function(){
+
+				fill_RoomType();
+
+			})
+
+
+			$("#btnFilter").click(function(){
+
+				$("#RoomTypeContainer").empty()
+
+				fill_RoomType();
+			})
+
+				var Actions_=getAutho("RoomType","create")
+				if(Actions_ !=  undefined)
+				{
+					var create_URL = "@Url.Action("entry.viewname", "RoomType")"
+					create_URL = create_URL.replace("entry.viewname", Actions_.actionmethodname);
+					$(".btnCreate").attr('href',create_URL)
+					$(".btnCreate").show()
+				}
+
+
+		});
+	</script>
+
+	<script>
+
+
+		// Function to create the option elements
+		function createOptionElement(value, label, className) {
+			var option = document.createElement("option");
+			option.value = value;
+			option.textContent = label;
+			option.className = className;
+			return option;
+		}
+
+		// Function to populate the dropdown
+		function populateDropdown(data) {
+			var dropdown = document.getElementById("tenantid");
+			dropdown.innerHTML = '<option value=""> Choose </option>';
+
+			// Create a dictionary to store child options grouped by parentid
+			var groupedOptions = { };
+
+						// Filter out duplicate entries with the same businessname
+						var filteredData = [];
+						var uniqueNames = new Set();
+
+						data.forEach(function(item) {
+							if (!uniqueNames.has(item.businessname))
+							{
+								filteredData.push(item);
+								uniqueNames.add(item.businessname);
+							}
+						});
+
+						// Group child options under corresponding parent options
+						filteredData.forEach(function(item) {
+							if (!item.parentid)
+							{
+								dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+							}
+							else
+							{
+								if (!groupedOptions[item.parentid])
+								{
+									groupedOptions[item.parentid] = [];
+								}
+								groupedOptions[item.parentid].push(item);
+							}
+						});
+
+						// Add child options to their corresponding parent options
+						Object.keys(groupedOptions).forEach(function(parentid) {
+							var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+							groupedOptions[parentid].forEach(function(childOption) {
+								parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+							});
+						});
+
+						filteredData.forEach(function (item) {
+							if (!item.parentid && !groupedOptions[item.tenantid]) {
+								var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+								if(item.natureofbusiness?.indexOf("Lead") !== -1)
+								parentOption.classList.add("optionNoChildLead");
+								else
+								parentOption.classList.add("optionNoChild");
+							}
+						});
+
+						$("#tenantid").val(str_tenantid);
+						$("#tenantid").select2()
+						var space = '&nbsp;&nbsp;&nbsp;'
+						$("#tenantid").find('.optionChild').prepend(space);
+
+
+					}
+		$(document).ready(function () {
+		 if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+		 {
+		$.ajax({
+		url: '@Url.Action("get_project_tenant", "tenant")',
+		dataType: 'json',
+		data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+		success: function(data) {
+
+			populateDropdown(data);
+			fill_RoomType();
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+		}else
+		{
+
+			$(".tenant_display").hide();
+			fill_RoomType();
+		}
+		});
+	</script>
+
+
+

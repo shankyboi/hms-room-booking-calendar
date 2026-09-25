@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+:root {
+  --body-bg: #F8F8F8;
+  --white: #fff;
+  --sidemenu-width: 95px;
+  --primary-blue: #3499ff;
+  --primary-bg: #2892fd;
+  --menu-hover-text: #0d2d4d;
+  --page-header-box: #fff;
+  --page-header-box-text: #6b89b6;
+  --menu-dropdown-bg: #3499ff;
+  --tab-bg: #fa9660;
+  --tab-active-text: #fff;
+  --secondary-bg: #92afc3;
+  --body-text: #6c757d;
+  --add-btn-bg: #fa9660;
+  --font-family: 'IBM Plex Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+}
+
+.logo-item img {
+  height: 60px;
+}
+
+
+/* #menubar {
+  border-right: 10px solid #fff;
+  width: var(--sidemenu-width);
+} */
+
+.gui-controls>li,
+#menubar {
+  background: var(--primary-blue);
+}
+
+.gui-controls>li>a.active,
+.gui-controls li.active>a .title {
+  color: var(--primary-blue);
+}
+
+.gui-controls>li>a:hover:not(.logo-item),
+.gui-controls li>a:hover .title {
+  color: var(--menu-hover-text);
+}
+
+.gui-controls,
+.gui-controls>li>a.active::before {
+  background: var(--body-bg);
+}
+
+.page-header-box {
+  background: var(--page-header-box);
+}
+
+.page-header-box {
+  padding-left: 20px;
+  padding-right: 10px;
+  border-bottom: 1px solid rgb(0 0 0 / 10%);
+  box-shadow: 0 10px 33px -14px rgb(0 0 0 / 10%);
+}
+
+.page-header-box h1,
+.page-header-box .btn-group .btn-default,
+.page-header-menu-section .header-nav>li>a {
+  color: var(--page-header-box-text);
+}
+
+#dropdown_container .menu-dropdown {
+  background: var(--menu-dropdown-bg);
+}
+
+#dropdown_container .menu-dropdown ul li a:hover,
+#dropdown_container .menu-dropdown ul li a.submenu-open {
+  background: var(--white);
+  color: var(--menu-dropdown-bg);
+}
+
+.tab-card {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 26%);
+  padding-top: 20px;
+}
+
+.tab-card .nav-tabs>li.active>a,
+.tab-card .nav-tabs>li.active>a:focus,
+.tab-card .nav-tabs>li.active>a:hover,
+.tab-card .nav-tabs::after {
+  background: var(--tab-bg);
+  color: var(--tab-active-text);
+}
+
+.dataTable thead th {
+  background: var(--primary-blue);
+}
+
+.dataTables_wrapper .dataTables__top::after {
+  background: var(--secondary-bg);
+}
+
+.dataTables_wrapper .dataTables_length .actions__item,
+.actions:not(.actions--inverse) .actions__item {
+  color: var(--body-text);
+}
+
+.dataTables_wrapper .add-row-btn {
+  background: var(--add-btn-bg);
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current,
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+  background: var(--primary-blue);
+}
+
+.dataTable tbody {
+  text-transform: none;
+}

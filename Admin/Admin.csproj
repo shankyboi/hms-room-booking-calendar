@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+                          <ItemGroup>
+                            <ProjectReference Include="..\NalamVazha.Models\NalamVazha.Models.csproj" />
+                            <ProjectReference Include="..\NalamVazha.DAL\NalamVazha.DAL.csproj" />
+                            
+                            <ProjectReference Include="..\Storage.Azure\Storage.Azure.csproj" />
+                            <ProjectReference Include="..\Storage.Interface\Storage.Interface.csproj" />
+                          </ItemGroup>
+
+                          <ItemGroup>
+							  <PackageReference Include="DinkToPdf" Version="1.0.8" />
+                            <PackageReference Include="ClosedXML" Version="0.105.0" />
+							<PackageReference Include="dn.IdentityServer4.AccessTokenValidation" Version="8.0.0" />
+							<PackageReference Include="itext.pdfhtml" Version="6.3.1" />
+                            <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.8" />
+                            <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.8" />
+                            <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="10.0.8" />
+                            <PackageReference Include="NLog" Version="6.0.3" />
+                            <PackageReference Include="NLog.Extensions.Logging" Version="6.0.3" />
+                            <PackageReference Include="NLog.MailKit" Version="6.0.3" />
+                            <PackageReference Include="NLog.Web.AspNetCore" Version="6.0.3" />
+                            <PackageReference Include="Wdc.System.Net.Http.Formatting.NetStandard" Version="1.0.7" />
+                            
+                          </ItemGroup>
+
+                          <ItemGroup>
+                            <Reference Include="itext.html2pdf">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext.pdfhtml\6.3.1\lib\netstandard2.0\itext.html2pdf.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.barcodes">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.barcodes.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.bouncy-castle-connector">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.bouncy-castle-connector.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.commons">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext.commons\9.5.0\lib\netstandard2.0\itext.commons.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.forms">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.forms.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.io">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.io.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.kernel">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.kernel.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.layout">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.layout.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.pdfa">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.pdfa.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.pdfua">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.pdfua.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.sign">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.sign.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.styledxmlparser">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.styledxmlparser.dll</HintPath>
+                            </Reference>
+                            <Reference Include="itext.svg">
+                              <HintPath>$(UserProfile)\.nuget\packages\itext\9.5.0\lib\netstandard2.0\itext.svg.dll</HintPath>
+                            </Reference>
+                          </ItemGroup>
+
+                          <PropertyGroup>
+                            <TargetFramework>net10.0</TargetFramework>
+                              <Features>experimental-data-section-string-literals</Features>
+                          </PropertyGroup>
+
+                        </Project>
+                        

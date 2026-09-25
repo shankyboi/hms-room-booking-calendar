@@ -1,0 +1,134 @@
+
+<style>
+.augmented_chart {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 0;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.receiversection,
+.sendersection {
+    display: flex;
+    align-items: flex-start;
+}
+
+.receiversection {
+    flex-direction: row;
+}
+
+
+
+.profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 10px;
+}
+
+.sender_name {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.receiver,
+.sender {
+    font-size: 14px;
+    line-height: 1.4;
+    padding: 10px 15px;
+    border-radius: 16px;
+    max-width: 80%;
+    word-wrap: break-word;
+    color: #333;
+}
+
+.receiver {
+    background-color: #e1f5fe; /* system message */
+    border-top-left-radius: 0;
+}
+
+.sender {
+    background-color: #d0f0c0; /* user message */
+    border-top-right-radius: 0;
+}
+
+.sent_message {
+    border-top: 1px solid #ccc;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+}
+
+    .sent_message input[type="text"] {
+        flex: 1;
+        padding: 10px 12px;
+        border-radius: 20px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        outline: none;
+        margin-right: 10px;
+    }
+
+    .sent_message button {
+        background: #4caf50;
+        border: none;
+        border-radius: 77%;
+        padding: 7px;
+        cursor: pointer;
+    }
+
+        .sent_message button img {
+            width: 36px;
+            height: 30px;
+        }
+
+h4 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+
+</style>
+<div class="col-sm-4">
+    <div class="">
+
+
+        <div class="">
+            <div class="" id="">
+
+
+                <div class="Aichatbot" id="" role="" aria-labelledby="" style="">
+                    <h4 style="">
+                        <i class="fa fa-angle-left " aria-hidden="true"></i>
+                        Augmented
+                    </h4>
+                    <div class="chat_detail augmented_chart" id="chatBox">
+                        <div class="send_receive" id="chatMessages">
+                           
+                        </div>
+
+                        <div class="sent_message">
+                            <input type="text" id="UserPrompt" placeholder="Type here...">
+                            <button type="button" id="aibutton" onclick="generateAlertContent()"><img src="~/images/chat_chat.png"></button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+

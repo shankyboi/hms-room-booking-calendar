@@ -1,0 +1,166 @@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>NalamVazha</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="NalamVazha">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css' />
+    <link type="text/css" rel="stylesheet" href="~/css/bootstrap.css?1422823238" />
+    <link type="text/css" rel="stylesheet" href="~/css/materialadmin.css?1422823243" />
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="~/css/fontawesome/css/all.css">
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/all.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/material-design-iconic-font.min.css?1422823240" />
+    <link type="text/css" rel="stylesheet" href="~/css/custom.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/custom_changed.css" />
+    <link type="text/css" rel="stylesheet" href="~/variables.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/login.css" />
+    <link type="text/css" rel="stylesheet" href="~/themestyles.css" />
+    <link type="text/css" rel="stylesheet" href="~/appstyles.css" />
+    <link rel='shortcut icon' type='image/x-icon' href='~/images/Logo/White-fav.svg' />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="http://www.codecovers.eu/assets/js/modules/materialadmin/libs/utils/html5shiv.js?1422823601"></script>
+      <script src="http://www.codecovers.eu/assets/js/modules/materialadmin/libs/utils/respond.min.js?1422823601"></script>
+    <![endif]-->
+    <script src="~/components/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="~/libs/intl-tel-input-master/build/css/intlTelInput.css">
+    <script src="~/libs/intl-tel-input-master/build/js/intlTelInput.min.js"></script>
+    <script src="~/libs/intl-tel-input-master/build/js/utils.js"></script>
+    <script src="~/components/jquery/jquery.validate.js"></script>
+    <script src="~/components/jquery/additional-methods.min.js"></script>
+</head>
+
+<body class="menubar-hoverable header-fixed login-page-body">
+    <div class="login-page-wrapper">
+        <!-- LEFT PANEL - Full height slider -->
+        <div class="login-left-panel">
+            <!-- Logo overlay on slider -->
+            <div class="login-left-logo-bar">
+                <img src="@Url.Content("~/images/logo/Nalam-white-Logo.svg")" alt="LOGO" class="login-left-logo" />
+            </div>
+            <!-- Carousel -->
+            <div class="login-slider-overlay"></div>
+            <div id="loginCarousel" class="carousel slide login-carousel" data-ride="carousel" data-interval="5000">
+                <div class="carousel-inner h-100">
+                    <div class="carousel-item active h-100">
+                        <img src="~/images/Slider/login-slide-1.png" class="login-slider-img" alt="Slide 1">
+                        <div class="login-slide-content">
+                            <span class="slide-tag"><i class="fa fa-hospital mr-1"></i> Healthcare Management</span>
+                            <h2>Seamless Hospital Operations</h2>
+                            <p>Manage patient admissions, enquiries, billing and discharge — all from one unified platform.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item h-100">
+                        <img src="~/images/Slider/login-slide-2.png" class="login-slider-img" alt="Slide 2">
+                        <div class="login-slide-content">
+                            <span class="slide-tag"><i class="fa fa-user-md mr-1"></i> Patient Care</span>
+                            <h2>Complete Patient Lifecycle</h2>
+                            <p>From initial enquiry to IPD admission, treatment tracking and follow-up — every step is covered.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item h-100">
+                        <img src="~/images/Slider/login-slide-3.png" class="login-slider-img" alt="Slide 3">
+                        <div class="login-slide-content">
+                            <span class="slide-tag"><i class="fa fa-leaf mr-1"></i> Traditional Wellness</span>
+                            <h2>Rooted in Tradition, Powered by Technology</h2>
+                            <p>Blending Ayurvedic wisdom with modern healthcare management for holistic patient well-being.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Custom nav dots -->
+                <div class="login-slide-nav">
+                    <button class="slide-nav-btn active" data-slide-to="0"></button>
+                    <button class="slide-nav-btn" data-slide-to="1"></button>
+                    <button class="slide-nav-btn" data-slide-to="2"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL - Login form -->
+        <div class="login-right-panel">
+            <div class="login-right-inner">
+                <div class="login-form-card">
+                    @RenderBody()
+                    <p class="build-version">@Configuration.GetSection("settings")["versionnumber"]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var $carousel = $('#loginCarousel');
+            $carousel.carousel({ interval: 4000, ride: 'carousel', pause: 'hover' });
+
+            // Custom nav dots
+            $('.slide-nav-btn').on('click', function() {
+                $carousel.carousel(parseInt($(this).data('slide-to')));
+            });
+            $carousel.on('slide.bs.carousel', function(e) {
+                $('.slide-nav-btn').removeClass('active');
+                $('.slide-nav-btn[data-slide-to="' + e.to + '"]').addClass('active');
+            });
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+
+    <script>
+
+          function getUrlVars()
+                    {
+                        var vars = [], hash;
+                        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+                        for(var i = 0; i < hashes.length; i++)
+                        {
+                            hash = hashes[i].split('=');
+                            vars.push(hash[0]);
+                            vars[hash[0]] = hash[1];
+                        }
+                        return vars;
+                    }
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const theme = localStorage.getItem('theme') || 'variables';
+            addStylesheet(theme);
+            updateLogo(theme);
+        });
+
+        function addStylesheet(stylesheet) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = "@Configuration.GetSection("ApiSettings")["baseURL"]" + `/${stylesheet}.css`;
+            document.head.appendChild(link);
+        }
+
+        function changeTheme(themeValue) {
+            const existingStylesheet = document.querySelector('link[href*="' + localStorage.getItem('theme') + '"]');
+            if (existingStylesheet) existingStylesheet.remove();
+            localStorage.setItem('theme', themeValue);
+            addStylesheet(themeValue);
+            updateLogo(themeValue);
+        }
+
+        function updateLogo(theme) {
+            var baseURL = "@(Configuration.GetSection("ApiSettings")["baseURL"] ?? "")";
+            var logoPath = "/images/logo/Nalam-white-Logo.svg";
+            var logoUrl = (baseURL && baseURL.length) ? (baseURL.replace(/\/$/, '') + logoPath) : null;
+            var logoImages = document.querySelectorAll('img[alt="LOGO"]');
+            logoImages.forEach(function(img) {
+                if (logoUrl) img.src = logoUrl;
+            });
+        }
+    </script>
+    @* <script src="~/js/mobile-numeric-input.js"></script> *@
+</body>
+</html>

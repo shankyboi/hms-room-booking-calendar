@@ -1,0 +1,241 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:41:33 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.TherapiesModel
+					@{
+					ViewData["Title"] = "Therapies";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+						   
+							
+							<div class="row printablerow"  style="padding:20px"> 
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Therapies</b>
+							</h3>
+				
+							<br />
+							</div>
+							<div class="col-sm-3 col-xs-12 p-2 therapycategory_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapycategory">@Resource.therapies_therapycategory</label><br>
+										<span class="auto_cls_therapycategory"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapyname">@Resource.therapies_therapyname</label><br>
+										<span class="auto_cls_therapyname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapycost_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapycost">@Resource.therapies_therapycost</label><br>
+										<span class="auto_cls_therapycost"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 standarddurationinmins_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="standarddurationinmins">@Resource.therapies_standarddurationinmins</label><br>
+										<span class="auto_cls_standarddurationinmins"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyimage_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapyimage">@Resource.therapies_therapyimage</label><br>
+										<span class="auto_cls_therapyimage"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyvideourl_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapyvideourl">@Resource.therapies_therapyvideourl</label><br>
+										<span class="auto_cls_therapyvideourl"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyinstructions_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapyinstructions">@Resource.therapies_therapyinstructions</label><br>
+										<span class="auto_cls_therapyinstructions"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 isgrouptherapyallowed_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="isgrouptherapyallowed">@Resource.therapies_isgrouptherapyallowed</label><br>
+										<span class="auto_cls_isgrouptherapyallowed"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('Therapies.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_Therapies_view_data(){
+
+					   var  Therapiesid = getUrlVars()["Therapiesid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_Therapies")',
+												dataType: 'json',
+												data:{Therapiesid: Therapiesid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='therapyimage'){
+																			$('.auto_cls_therapyimage').empty()
+																			if(obj[key] !=null)  {            
+																		  
+																			var uploaded_therapyimage = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_therapyimage.length; i++) {
+
+
+																				if (uploaded_therapyimage[i] != "") {
+																						var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_therapyimage[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																					if (iterate == 1)
+																						$('.auto_cls_therapyimage').append('<a href=' + filepath + ' class="imgtherapyimage auto_clr_therapyimage"><img  src=' + filepath + ' width="100px" alt="img"/></a>')
+																					else
+
+																						$('.auto_cls_therapyimage').append('<div style="display:none"> <a href=' + filepath + ' class="imgtherapyimage auto_clr_therapyimage"><img  src=' + filepath + ' width="100px" alt="img"/></a></div>')
+		 
+																				}
+
+
+																			}
+
+																			$('body').on('click', 'a.imgtherapyimage', function (e) {
+																			e.preventDefault();
+																			$('.imgtherapyimage').colorbox({ rel: '.imgtherapyimage', width: "90%", height: "80%" });
+																			$.colorbox({ open: true });
+																			});
+
+
+
+
+																					}
+
+
+																	}
+
+
+															
+
+													}
+
+													
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_Therapies_view_data()
+
+
+					/*var Actions=getAutho("Therapies","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						
+						$(document).ready(function () {
+							
+						});
+					</script>
+					
+					
+					

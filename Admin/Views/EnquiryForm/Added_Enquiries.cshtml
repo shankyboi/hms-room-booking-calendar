@@ -1,0 +1,1680 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:43:46 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.EnquiryFormModel
+					@{
+					ViewData["Title"] = @Resource.addedenquiries;
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="card maker_checker_card" style="padding:20px;">
+					<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<h3 class="formHdr">@Resource.addedenquiries</h3>
+					</div>
+					</div>
+					</div><!--form_card_header-->
+					<div class="card-body" style="padding:1px;padding-top:0px;">
+
+					@if(TempData["errMessage"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["errMessage"]
+					</div>
+					</div>
+					</div>
+					}
+
+					@if(TempData["message"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["message"]
+					</div>
+					</div>
+					</div>
+					}
+
+					<input type="hidden" id="EnquiryFormid" name="EnquiryFormid"/>
+					<div class="row">
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+								<div class="form-group form-group--float-above my-3" > 
+								<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+								<select name="tenantid" id="tenantid" class="form-control">
+								</select>
+								<i class="form-group__bar"></i>
+								</div>
+
+								<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2 enquirynumber_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="enquirynumber">@Resource.enquiryform_enquirynumber</label>
+											@Html.TextBoxFor(m => m.enquirynumber, new {@maxlength="128",  @class = "form-control form-control-lg " })
+
+										</div>
+									</div>
+								</div>
+<div class="col-sm-2 col-xs-12 p-2 patientname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientname">@Resource.enquiryform_patientname</label>
+										<select name="patientname" id="patientname"  class="form-control select2 select2-list  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientname)
+									<div id="patientname-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2 phonenumber_craftmyapp_container craftmyapp_phone_container">
+						<div>
+							<div class="form-group" > 
+								<label for="phonenumber">@Resource.enquiryform_phonenumber</label>
+								<input type="tel" name="phonenumber_ip" id="phonenumber_ip" class="form-control  ">
+@Html.HiddenFor(m => m.phonenumber, new {@class = "invalidphone" })
+
+								 @Html.ValidationMessageFor(model => model.phonenumber)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-2 col-xs-12 p-2 emailaddress_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="emailaddress">@Resource.enquiryform_emailaddress</label>
+								@Html.TextBoxFor(m => m.emailaddress, new {@type="email",@maxlength="128", @class = "form-control form-control-lg " })
+
+								 @Html.ValidationMessageFor(model => model.emailaddress)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-2 col-xs-12 p-2 enquirystatus_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="enquirystatus">@Resource.enquiryform_enquirystatus</label>
+										<select name="enquirystatus" id="enquirystatus" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.enquirystatus)
+									<div id="enquirystatus-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2 verifiedstatus_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="verifiedstatus">@Resource.enquiryform_verifiedstatus</label>
+										<select name="verifiedstatus" id="verifiedstatus" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.verifiedstatus)
+									<div id="verifiedstatus-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 p-2">
+
+												<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+
+												</div>
+								</div>
+
+					<div class="row"><div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+					<table id="tblEnquiryForm" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+					<thead class="thead-default">
+					<tr>
+					
+					<th>@Resource.enquiryform_enquirynumber</th>
+<th>@Resource.enquiryform_enquirydate</th>
+<th>@Resource.enquiryform_enquirytype</th>
+<th>@Resource.enquiryform_isroombookingrelated</th>
+<th>@Resource.enquiryform_firstname</th>
+<th>@Resource.enquiryform_gender</th>
+<th>@Resource.enquiryform_age</th>
+<th>@Resource.enquiryform_phonenumber</th>
+<th>@Resource.enquiryform_emailaddress</th>
+<th>@Resource.enquiryform_enquiryreason</th>
+<th>@Resource.enquiryform_enquirystatus</th>
+<th>@Resource.enquiryform_verifiedstatus</th>
+<th>@Resource.tenantdisplayname</th>
+
+					<th class="all">Action</th>
+					
+
+					</tr>
+					</thead>
+					<tbody></tbody>
+					
+					</table>
+					</div>
+
+					</div>
+					
+					
+					</div>
+					
+					</div>
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					
+					 <script src="~/js/dtpager.js"></script>
+
+					<script type="text/javascript">
+
+					var arr_selected_for_verification = [];
+
+					function fill_EnquiryForm()
+					{
+
+						var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"enquirynumber":$("#enquirynumber").val(),
+"patientname":$("#patientname").val(),
+"phonenumber":$("#phonenumber").val(),
+"emailaddress":$("#emailaddress").val(),
+"enquirystatus":$("#enquirystatus").val(),
+"verifiedstatus":$("#verifiedstatus").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+						
+
+					
+
+					
+
+
+					
+		 dataTableId="#tblEnquiryForm";
+		 reachedEOF = false;
+		 totalRecordsCount = 0;
+		 currentPageNumber = 1;
+		 fetchingDataFromApi = false;
+	
+		var pagerControlsTemplate = "<div id='pager_container' class='dataTables_paginate'>"
+			+ "<button type='button' id='pager_btn_previous' onClick='pager_gotoPreviousPage(this);' class='paginate_button previous'>Previous</button>"
+			+ "<span>Page <input type='number' id='pager_txt_currentpage' min='1' max='^MAXPAGE^' maxlength='10' size='10' onFocus='this.oldValue=this.value;' onChange='pager_gotoPage(this);'/> of <span id='pager_lbl_pagecount'></span></span>"
+			+ "<select id='pager_ddl_pagesize' onChange='pager_pageSizeChanged(this);'>"
+			+ "<option value='50' selected>50 rows</option>"
+			+ "<option value='100'>100 rows</option>"
+			+ "<option value='200'>200 rows</option>"
+			+ "<option value='500'>500 rows</option>"
+			+ "<option value='^Everything^'>Everything</option>"
+			+ "</select>"
+			+ "<button type='button' id='pager_btn_next' onClick='pager_gotoNextPage(this);' class='paginate_button next'>Next</button>"
+			+ "</div>";
+
+	var table=$("#tblEnquiryForm").DataTable({
+	columnDefs: [{ 
+	 targets: -1,
+	 title: '<i class="fa fa-pencil fa-lg"></i>'
+  }],
+	paging:false,
+	destroy:true,
+	serverSide: true,
+	filter: true,
+	"orderMulti": false,
+	searchDelay: 2000,
+	autoWidth: false,
+	"order": [],"aaSorting": [],
+	autoWidth: !1,responsive:!0,
+	language: {
+	searchPlaceholder: "Search for records..."
+	},
+	 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+	dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+  
+	buttons: [{
+	extend: "excelHtml5",
+	title: "List Of EnquiryForm Data"
+	}, {
+	extend: "csvHtml5",
+	title: "List Of EnquiryForm Data"
+	}, {
+	extend: "print",
+	title: "List Of EnquiryForm Data"
+	}],
+ initComplete: function(a, b) {
+
+ if(table.page.info().recordsTotal > 0){
+																				 var d =  table.row(':eq(0)').data();
+																				table.$('tr:first').addClass('trbg');
+																				fill_EnquiryForm_view_data(d.enquiryformid)
+																				$("#EnquiryFormid").val(d.enquiryformid)
+																				}
+
+	  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+	  
+		if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+	 $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+		<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+	  `);
+		 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+			$("#cma_card_tab_action_container").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			`);
+		}
+ }
+count_of_EnquiryForm_enquirystatus(($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),sendFilterData)
+var Actions=getAutho("EnquiryForm","create")
+		if(Actions != undefined){
+			var create_URL = "@Url.Action("entry.viewname", "EnquiryForm")"
+			create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+			
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`   
+
+	   
+		<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.enquiryform_enquirynumber
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_enquirydate
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_enquirytype
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_isroombookingrelated
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_firstname
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_gender
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_age
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_phonenumber
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_emailaddress
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_enquiryreason
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_enquirystatus
+ <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_verifiedstatus
+ <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+
+		 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+		</div>
+	  `.replace("create_URL", create_URL))
+}
+	$("#cma_card_tab_action_container .card-lst").remove();
+	$("#cma_card_tab_action_container_action_btn").empty()
+	$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+	   
+
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+			else{
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(` 
+		
+		
+		<div class="dataTables_buttons actions">
+		 <div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.enquiryform_enquirynumber
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_enquirydate
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_enquirytype
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_isroombookingrelated
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_firstname
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_gender
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_age
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_phonenumber
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_emailaddress
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_enquiryreason
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_enquirystatus
+ <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.enquiryform_verifiedstatus
+ <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+		</div>
+	  `)
+}
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+if (!$(pagerContainerId).length) {
+		$(dataTableId + '_info').parent().append(
+					pagerControlsTemplate.replace('^Everything^', totalRecordsCount).replace('^MAXPAGE^', pager_getPageCount())
+				);
+}
+				//$(dataTableId + '_info').hide();
+				$(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+				pager_setCurrentPageNumber(1);
+				pager_onPageChanged();
+
+		//	fill_EnquiryForm_count(this,sendFilterData);
+
+	}
+	 ,columns: [
+		 
+		{data: 'enquirynumber'},
+{data: 'enquirydate'},
+{data: 'enquirytype_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('EnquiryType','detail')
+ if(row["enquirytype_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "EnquiryType")?EnquiryTypeid=" + row['enquirytype']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["enquirytype_master"]+ '</a>' 
+}else {
+ 
+return row['enquirytype_master'] 
+}
+}
+}},
+{data: 'isroombookingrelated'},
+{data: 'firstname'},
+{data: 'gender'},
+{data: 'age'},
+{data: 'phonenumber',mRender: function (data, type, row) {if(row["phonenumber"]==null) {
+ return '-' 
+}else {
+ return '<a  href="tel:' + row["phonenumber"]+ '">'+ row["phonenumber"]+ '</a>' 
+}
+}},
+{data: 'emailaddress',mRender: function (data, type, row) {if(row["emailaddress"]==null) {
+ return '-' 
+}else {
+ return '<a  href="mailto:' + row["emailaddress"]+ '">'+ row["emailaddress"]+ '</a>' 
+}
+}},
+{data: 'enquiryreason'},
+{data: 'enquirystatus'},
+{data: 'verifiedstatus', mRender: function(data, type, row) {
+	if (!data) return '-';
+	var colorMap = {
+		'Ready For Review': 'primary',
+		'Approved': 'success',
+		'Rejected': 'danger',
+		'Rework': 'warning'
+	};
+	var badgeClass = colorMap[data] || 'secondary';
+	return '<span class="badge badge-' + badgeClass + '" style="font-size:0.85em;padding:4px 8px;">' + data + '</span>';
+}},
+{data: '_tenantname'},
+
+			{
+				"sName": "enquiryformid",
+				"bSearchable": false,
+				"bSortable": false,
+				data: 'enquiryformid', "className": "dt-center",
+				mRender: function(data, type, row) {
+				var Actions=getAuthoController("EnquiryForm")
+				var appendMessage='';
+				if(Actions !=undefined)
+				{
+				for (var index = 0; index < Actions.length; ++index) {
+				var entry = Actions[index];
+			 
+				if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+				var URL = "@Url.Action("entry.viewname", "EnquiryForm")?EnquiryFormid=" + row["enquiryformid"]
+				URL = URL.replace("entry.viewname", entry.actionmethodname);
+				 if ((entry.viewname == "maker_detail") || (entry.viewname == "checker_detail")) {
+					appendMessage += '<a href="' + URL + '" class="dropdown-item">' + entry.actiondisplayname + '</a>'
+				}
+				else if(entry.viewname=="delete" && (row["verifiedstatus"]=="Ready For Review" || row["verifiedstatus"]=="Rework"))
+				{
+					 appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>' 	
+				   
+				
+				}
+				
+				else
+				{
+					 if(row["verifiedstatus"]=="Ready For Review" || row["verifiedstatus"]=="Rework")
+						appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>' 
+				}
+			 
+				}					 
+						 
+				}
+								
+				if(appendMessage =="")
+				{
+				return '-'
+
+				}
+				else
+				{
+				return '<div class="dropdown actions__item">' +
+				'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+				'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+		 
+
+				'</div>' +
+				'</div>'
+				}
+
+
+
+				}
+				else
+				{
+				return '-'
+
+				}
+
+
+				}
+				}
+	
+
+	 ],
+
+		ajax: function (data, callback, settings) {
+		fetchingDataFromApi = true;
+		sendFilterData.searchterm = data.search.value; 
+		sendFilterData.pagesize = pageSize;    
+		sendFilterData.pagenumber =  (currentPageNumber - 1);   
+		var sortParams = [];
+		for (var i = 0; i < data.order.length; i++) {
+			var colIndex = data.order[i].column;
+			var sortDirection = data.order[i].dir;
+			var columnName = data.columns[colIndex].data;
+
+			var sortParam = {};
+			sortParam["col"] = columnName;
+			sortParam["dir"] = sortDirection;
+
+			sortParams.push(sortParam);
+		}
+		sendFilterData.sortFieldsJson =  JSON.stringify(sortParams);
+		$.ajax({
+		url: "@Url.Action("get_Added_Enquiries", "EnquiryForm")",
+		type: 'GET',
+		dataType: 'json',
+		data: sendFilterData,
+
+		success: function(responsedata) {
+
+				 fetchingDataFromApi = false;
+				//to let grid say no data available and all other flows get through
+				if (responsedata.detail == null) {
+					responsedata.detail = [];
+				}
+				totalRecordsCount = responsedata.count;
+				if (responsedata.detail.length < pageSize) {
+					reachedEOF = true;
+				}
+		
+				setTimeout(function () {
+				callback({
+					data: responsedata.detail,
+					recordsTotal: responsedata.count
+				  });
+				}, 50);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			fetchingDataFromApi = false;
+
+			if (JSON.stringify(jqXHR.responseText) == "API Authorization failed") {
+					swal({
+					title: 'Failed!',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+					 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function() {
+					window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+			}
+			else
+			{
+					swal({
+					title: 'Contact Administrator !',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+			}
+		}
+		});
+		},
+		"infoCallback": function(settings, start, end, max, total, pre)
+		{
+				var startRowCount = (pageSize * currentPageNumber) - pageSize + 1;
+				var endRowCount = $(dataTableId).DataTable().rows().count() + startRowCount - 1;
+				var pagingInfo = 'Showing ' + startRowCount + ' to ' + endRowCount + ' of ' + totalRecordsCount + ' entries';
+
+				return pagingInfo;
+		}
+
+
+})
+	 
+	  
+ $('body').on('click', '.ColVis_collection li', function(a) {
+	event.stopPropagation();
+  });
+ 
+ $('body').on('change', '.colvis_switch', function(a) {
+	var column = table.column($(this).attr('data-column'));
+	column.visible(!column.visible());
+  });
+
+
+ 
+
+  
+	 
+
+
+	
+
+
+						
+											
+											$.ajax({
+												url: '@Url.Action("get_lookups_by_entity","lookups")',
+												dataType: 'json',
+												data:{id: 'EnquiryForm' },
+												success: function(data) {
+
+												$.each(data, function(index, optionDataInner) {
+												if(optionDataInner.fieldname=="verifiedstatus"){
+												var ddltarget_verifiedstatus = "#verifiedstatus_buttons"
+			
+												$(ddltarget_verifiedstatus).empty()
+			
+												if(optionDataInner.fieldname=="verifiedstatus"){
+												 
+												var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+												options_verifiedstatus.forEach(function(option_verifiedstatus){
+													if(option_verifiedstatus !='Ready For Review')
+													 $(ddltarget_verifiedstatus).append('<button class="btn btn-primary   auto_checker_action" style="display:none;" id='+option_verifiedstatus+'>'+option_verifiedstatus+'</button>')
+												
+												})  
+
+											}
+											
+											
+												}
+												})
+
+
+										}
+
+										})
+											$("#viewDetails_Auto").hide()
+											//$(".dataTables_length").hide()
+											$(".dataTables_filter").hide()
+											$(".dataTables_info").hide()
+											$(".dataTables_paginate").hide()
+										
+												
+												
+													$('#tblEnquiryForm').on('click','.odd,.even' , function(e){
+											
+
+											 
+											$('#tblEnquiryForm tr').removeClass("trbg");
+											$(this).addClass("trbg")
+
+												var $row = $(this).closest('tr');
+												var data = table.row($row).data();
+												var EnquiryFormid = data.enquiryformid;
+												$("#EnquiryFormid").val(EnquiryFormid)
+
+												fill_EnquiryForm_view_data(EnquiryFormid)
+ 
+
+
+												})	
+					}
+	  function fill_pagination(callback) {
+		if ((reachedEOF || fetchingDataFromApi) && currentPageNumber !=1) {
+			return;
+		}
+		fetchingDataFromApi = true;
+		 var order = $(dataTableId).DataTable().order();
+			var sortParams = [];
+
+			for (var i = 0; i < order.length; i++) {
+				var colIndex = order[i][0];
+				var sortDirection = order[i][1];
+				var columnName = $(dataTableId).DataTable().settings()[0].aoColumns[colIndex].data;
+
+				var sortParam = {
+					col: columnName,
+					dir: sortDirection
+				};
+
+				sortParams.push(sortParam);
+			}
+			var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"enquirynumber":$("#enquirynumber").val(),
+"patientname":$("#patientname").val(),
+"phonenumber":$("#phonenumber").val(),
+"emailaddress":$("#emailaddress").val(),
+"enquirystatus":$("#enquirystatus").val(),
+"verifiedstatus":$("#verifiedstatus").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+			sendFilterData.searchterm = $(".dt-global-search").val();
+		sendFilterData.sortFieldsJson= JSON.stringify(sortParams);
+		var currentPage = $(dataTableId).DataTable().page();
+  
+		$.ajax({
+			url: "@Url.Action("get_Added_Enquiries", "EnquiryForm")",
+			type: 'GET',
+			dataType: 'json',
+			data: sendFilterData,
+			success: function (responsedata) {
+				if (responsedata != null && responsedata.detail.length > 0) {
+					if (responsedata.detail.length < pageSize) {
+						reachedEOF = true;
+					}
+
+					api_response_data = responsedata.detail;
+					var table = $(dataTableId).DataTable();
+					table.rows().remove();
+					table.rows.add(responsedata.detail).draw();
+				}
+				else {
+					reachedEOF = true;
+				}
+				fetchingDataFromApi = false;
+				if (callback != undefined) {
+					callback();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				fetchingDataFromApi = false;
+				if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+					swal({
+						title: 'Failed!',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+												allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function () {
+						window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+				}
+				else {
+					swal({
+						title: 'Contact Administrator !',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+				}
+			}
+		});
+
+
+	}
+
+
+
+					function fill_EnquiryForm_view_data(EnquiryFormid){
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_EnquiryForm")',
+												dataType: 'json',
+												data:{EnquiryFormid: EnquiryFormid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+
+															
+
+															if(key=='verifiedstatus'){
+																	
+																 var headerElement = $("div.page-header-box h1");
+																 if(obj['reviewcomments'] != undefined && obj['reviewcomments'] != '')
+																	headerElement.html('Added Enquiries - <span class="' + obj[key].replace(/ /g, "_").toLowerCase() +'">' + obj[key] +'</span> <span class="hdrcomments-separator"> | </span><span class="hdrcomments-label">Reason: </span><span class="hdrcomments ' + obj[key].replace(/ /g, "_").toLowerCase() +'"> ' + obj['reviewcomments'] + ' </span>');
+																 else
+																	headerElement.html('Added Enquiries - <span class="' + obj[key].replace(/ /g, "_").toLowerCase() +'">' + obj[key] +'</span>');
+		
+	
+
+																if(obj[key]=='Ready For Review'){
+																	// $(".auto_checker_action").show()
+
+																	$("#reviewcomments").attr('readonly',false)
+																	//$("#reviewcomments").focus()
+
+																}else{
+
+																	$("#reviewcomments").attr('readonly','readonly')
+																
+																
+																}
+																var Actions=getAuthoController("EnquiryForm")	
+															  if( Actions.some(x => x.actionname === "MakerView"))
+															$("#reviewcomments").attr('readonly','readonly')
+
+
+															}	
+															  if (key == 'automaton_review_logs') {
+																$('#review_logsContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+																	$('#review_logsContainerBody').append(get_dependent_table(obj[key]))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logsContainerBody').append('No Data Available')
+																}
+
+															}
+															if (key == 'automaton_review_logs_history') {
+																$('#review_logs_historyContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+																		const jsonData = JSON.parse(obj[key])
+																		$.each(jsonData, function(index, item) {
+																		delete item.EnquiryFormid;
+																		});
+
+																		var jsonWithoutEnquiryFormid = JSON.stringify(jsonData, null, 2);
+																		$('#review_logs_historyContainerBody').append(get_dependent_table(jsonWithoutEnquiryFormid))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logs_historyContainerBody').append('No Data Available')
+																}
+
+															}
+															if(key=='automaton_EnquiryForm_medicalinfo'){
+																			$('#medicalinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + EnquiryFormid +'&section=automaton_EnquiryForm_medicalinfo_history'
+																					 $(".medicalinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("EnquiryForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicalinfoauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.medicalinfoContainerBodyParent').removeClass('hide')      
+																			   $('#medicalinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicalinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+													}
+												}
+
+												})
+
+												}
+
+													
+
+					$(document).ready(function () {
+					$('body').on('change', '.dt-global-search', function(event) {
+					  reachedEOF = false;
+
+					  pager_setCurrentPageNumber(1);
+					  fill_pagination(pager_onPageChanged);
+
+					  $(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+					});
+
+
+					fill_EnquiryForm()
+
+
+					var Actions=getAutho("EnquiryForm","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}
+
+
+
+
+					});
+					
+
+					$("body").on("click", "[data-table-action]", function(a) {
+					a.preventDefault();
+					var b = $(this).data("table-action");
+					console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+					if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+					var c = $(this).closest(".card");
+					c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+					}
+					});
+					</script>
+					<script>
+$(document).ready(function () {
+var phonenumber_input = document.querySelector("#phonenumber_ip");
+		var itiphonenumber_input = window.intlTelInput(phonenumber_input, {
+			nationalMode: true,
+			initialCountry: "in",
+			preferredCountries: ['us','in','sg']
+		});
+		itiphonenumber_input.setNumber($('#phonenumber').val());
+		var handleChange_phonenumber_input = function () {
+		var text = "";
+		if(itiphonenumber_input.getNumber())
+			  text = (itiphonenumber_input.isValidNumber()) ? itiphonenumber_input.getNumber() : "invalid";
+			 $('#phonenumber').val(text);
+		};
+
+		// listen to "keyup", but also "change" to update when the user selects a country
+		phonenumber_input.addEventListener('change', handleChange_phonenumber_input);
+		phonenumber_input.addEventListener('keyup', handleChange_phonenumber_input);
+
+		phonenumber_input.addEventListener("countrychange", function () {
+			$('#phonenumber_ip').val("");
+			$('#phonenumber').val("");
+		})
+})
+</script>
+<script>
+var strenquirystatus;
+</script>
+@if (Model != null)
+{
+if (Model.enquirystatus != null && Model.enquirystatus.ToString() != "")
+{
+<script>
+strenquirystatus = "@Model.enquirystatus";
+</script>
+}
+}
+<script>
+var strverifiedstatus;
+</script>
+@if (Model != null)
+{
+if (Model.verifiedstatus != null && Model.verifiedstatus.ToString() != "")
+{
+<script>
+strverifiedstatus = "@Model.verifiedstatus";
+</script>
+}
+}
+
+					<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'EnquiryForm' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="enquirystatus"){
+												var ddltarget_enquirystatus = "#enquirystatus"
+												$(ddltarget_enquirystatus).empty();
+												$(ddltarget_enquirystatus).append("<option value=''>Choose</option>")
+												var options_enquirystatus = optionDataInner.fielddesc.split(',');
+												options_enquirystatus.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_enquirystatus.forEach(function(option_enquirystatus){
+													if(strenquirystatus== option_enquirystatus){
+													$(ddltarget_enquirystatus).append('<option selected value="' + option_enquirystatus + '">' + option_enquirystatus+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_enquirystatus).append('<option  value="' + option_enquirystatus + '">' + option_enquirystatus+ '</option>')
+													  
+												})  
+ 
+											}
+
+											if(optionDataInner.fieldname=="verifiedstatus"){
+												var ddltarget_verifiedstatus = "#verifiedstatus"
+												$(ddltarget_verifiedstatus).empty();
+												$(ddltarget_verifiedstatus).append("<option value=''>Choose</option>")
+												var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+												options_verifiedstatus.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_verifiedstatus.forEach(function(option_verifiedstatus){
+													if(strverifiedstatus== option_verifiedstatus){
+													$(ddltarget_verifiedstatus).append('<option selected value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_verifiedstatus).append('<option  value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+													  
+												})  
+ 
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+					
+					
+								<script>
+								$(document).ready(function () {
+								$("#tenantid").change(function(){
+								fill_EnquiryForm();
+								})
+
+								$("#btnFilter").click(function(){
+								fill_EnquiryForm();
+								})
+								});
+								</script> 
+
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+
+
+					
+					
+					 
+					<script>
+					 
+$(document).ready(function () {
+						 
+					 
+$('body').on('click', '.list_status', function(a) {
+$("#verifiedstatus").val($(this).attr('id'))
+
+fill_EnquiryForm()
+});
+
+   
+});
+function fill_EnquiryForm_count(datato,sendFilterdata) {
+
+
+var countofstatus = ''
+
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data: {
+id: 'EnquiryForm'
+},
+success: function(data) {
+
+$.ajax({
+url: '@Url.Action("count_of_EnquiryForm")',
+dataType: 'json',
+data: sendFilterdata,
+success: function(rowData) {
+
+num=0;
+$.each(data, function(index, optionDataInner) {
+if (optionDataInner.fieldname == "verifiedstatus") {
+
+
+var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+options_verifiedstatus.forEach(function(option_verifiedstatus) {
+var found=0;
+$.each(rowData, function(index_count, optionDataInner_count) {
+	if (optionDataInner_count.verifiedstatus == option_verifiedstatus){
+		found=1
+					var verifiedclass = option_verifiedstatus.replace(/[\s-]/g, '').toLowerCase();
+					num+=Number(optionDataInner_count.count)
+		countofstatus += `<div class="col-sm-2">
+			<div class="list list_status ${verifiedclass}" id="${option_verifiedstatus}">
+				<span><p class="tlt-txt">${option_verifiedstatus}</p></span><div class="lst-num">
+							<label>${optionDataInner_count.count}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+				</div>
+			</div>
+		</div>`
+
+	}
+									
+
+});
+if(found==0){
+		var verifiedclass = option_verifiedstatus.replace(/[\s-]/g, '').toLowerCase();
+		countofstatus += `<div class="col-sm-2">
+			<div class="list list_status ${verifiedclass}" id="${option_verifiedstatus}">
+				<span><p class="tlt-txt">${option_verifiedstatus}</p></span><div class="lst-num">
+							<label>0</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+				</div>
+			</div>
+		</div>`
+
+}
+
+
+
+})
+
+						 
+
+$(datato).closest(".dataTables_wrapper").find(".dataTables__top").prepend(
+	`<div class="card-lst"><div class="col-sm-2">
+			<div class="list list_status all" id="">
+				<span><p class="tlt-txt">All</p></span><div class="lst-num">
+							<label>${num}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+				</div>
+			</div>
+		</div>` +
+							
+countofstatus + '</div>')
+
+
+
+
+}
+})
+				   
+
+}
+
+})
+
+		  
+
+
+}
+
+})
+}
+</script>
+					<script>
+					var strpatientname;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientname != null && Model.patientname.ToString() != "")
+							{
+							<script>
+								 strpatientname="@Model.patientname"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_EnquiryForm_patientname(tenantid) {
+
+					var ddltarget_patientname = $('#patientname');
+					ddltarget_patientname.empty();;
+					ddltarget_patientname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_EnquiryForm_patientname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientProfileid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname+ ' ' + data[i].mobilenumber;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_EnquiryForm_patientname,
+						 templateSelection: formatSelectSelected_lookup_EnquiryForm_patientname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_EnquiryForm_patientname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientProfileid == strpatientname) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname+ ' ' + data[i].mobilenumber,data[i].PatientProfileid, true, true);
+											ddltarget_patientname.append(option).trigger('update');
+
+											ddltarget_patientname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_EnquiryForm_patientname(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname+ ' ' + item.mobilenumber) {
+						var textValue = item.firstname+ ' ' + item.lastname+ ' ' + item.mobilenumber
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_EnquiryForm_patientname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname+ ' ' + item.mobilenumber;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_EnquiryForm_patientname(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_EnquiryForm_patientname($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script>
+
+<script>
+var strenquirystatus;
+</script>
+	@if (Model != null)
+	{
+		if(Model.enquirystatus != null && Model.enquirystatus.ToString() != "")
+		{
+		<script>
+			 strenquirystatus="@Model.enquirystatus"
+		</script>
+		}
+	}
+<script>
+
+function count_of_EnquiryForm_enquirystatus(tenantid,globalFilterData) {
+
+
+
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'EnquiryForm' },
+success: function(data) {
+
+			$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="enquirystatus"){
+
+
+				$.ajax({
+					url: '@Url.Action("count_of_EnquiryForm_enquirystatus")',
+					dataType: 'json',
+					data: globalFilterData,
+					success: function(rowData) {
+						 
+						var countofstatus = '';
+						var num = 0;
+
+						// Create status cards
+						var options_enquirystatus = optionDataInner.fielddesc.split(',');
+						$.each(options_enquirystatus, function(index, optionDataInner) {
+							var enquirystatus = optionDataInner;
+							var valueToCheck = optionDataInner;
+							
+							var found = 0;
+							var statecount = 0;
+
+							$.each(rowData, function(index_count, optionDataInner_count) {
+									if (optionDataInner_count.enquirystatus == valueToCheck) {
+									found = 1;
+									statecount = Number(optionDataInner_count.count);
+									num += statecount;
+								}
+							});
+
+							var enquirystatusclass = enquirystatus.replace(/[\s-]/g, '').toLowerCase();
+										var backgroundcolor=getFixedColor(index);
+							countofstatus += `<div class="col-sm-2">
+										<div class="list list_status ${enquirystatusclass}" style="background-color:${backgroundcolor}"  id="${valueToCheck}">
+									<span><p class="tlt-txt">${enquirystatus}</p></span>
+									<div class="lst-num">
+										<label>${statecount}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+									</div>
+								</div>
+							</div>`;
+						});
+
+						// Add 'All' total card + individual state counts to top bar
+						$(".dataTables__top .card-lst").remove();
+						$(".dataTables__top").prepend(
+							`<div class="card-lst">
+								<div class="col-sm-2">
+									<div class="list list_status all" id="">
+										<span><p class="tlt-txt">All</p></span>
+										<div class="lst-num">
+											<label>${num}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+										</div>
+									</div>
+								</div>
+								${countofstatus}
+							</div>`
+						);
+					}
+				});
+
+		}
+
+
+
+		});
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+
+
+<script>$(document).ready(function () {
+						 
+					 
+$('body').on('click', '.list_status', function(a) {
+	$("#enquirystatus").val($(this).attr('id'))
+
+	fill_EnquiryForm()
+});
+
+   
+});</script>

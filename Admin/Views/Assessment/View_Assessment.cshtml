@@ -1,0 +1,717 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/23/2026 16:41:49 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.AssessmentModel
+					@{
+					ViewData["Title"] = "Assessment";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+					<script>
+						function getAssessmentViewReturnUrl() {
+							try {
+								var requested = new URLSearchParams(window.location.search).get('returnurl');
+								if (requested && requested.charAt(0) === '/' && requested.indexOf('//') !== 0) return requested;
+							} catch (e) { }
+							return document.referrer || '/';
+						}
+					</script>
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+							<div class="assessment-view-card assessment-summary-card">
+								<div class="assessment-view-card-header">
+									<div class="assessment-view-card-icon"><i class="fa fa-file-text-o"></i></div>
+									<div>
+										<h4>Assessment Overview</h4>
+										<p>Patient, visit and assessment information</p>
+									</div>
+								</div>
+								<div class="row printablerow assessment-summary-grid">
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Assessment</b>
+							</h3>
+				
+							<br />
+							</div>
+							<div class="col-sm-3 col-xs-12 p-2 patientname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientname">@Resource.assessment_patientname</label><br>
+										<span class="auto_cls_patientname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 patientvisit_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientvisit">@Resource.assessment_patientvisit</label><br>
+										<span class="auto_cls_patientvisit"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 assessedby_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="assessedby">@Resource.assessment_assessedby</label><br>
+										<span class="auto_cls_assessedby"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 doctorname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="doctorname">@Resource.assessment_doctorname</label><br>
+										<span class="auto_cls_doctorname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 ipdform_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ipdform">@Resource.assessment_ipdform</label><br>
+										<span class="auto_cls_ipdform"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 opdform_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="opdform">@Resource.assessment_opdform</label><br>
+										<span class="auto_cls_opdform"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 assessmentdate_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="assessmentdate">@Resource.assessment_assessmentdate</label><br>
+										<span class="auto_cls_assessmentdate"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 questionnairetemplate_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="questionnairetemplate">@Resource.assessment_questionnairetemplate</label><br>
+										<span class="auto_cls_questionnairetemplate"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+			  
+			
+<div class="col-sm-3 col-xs-12 p-2 assessmentnotes_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="assessmentnotes">@Resource.assessment_assessmentnotes</label><br>
+										<span class="auto_cls_assessmentnotes"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+											 
+											 
+							</div>
+							</div>
+						 </div>
+						 <div id="comparisonContainer" class="assessment-answer-section">
+							<div class="row">
+								<div class="col-sm-12 col-xs-12 p-2">
+									<div class="assessment-answer-card">
+										<div class="assessment-section-heading">
+											<div class="assessment-view-card-icon"><i class="fa fa-list-alt"></i></div>
+											<div><h5>Current Assessment Answers</h5><small>Latest saved questionnaire responses</small></div>
+										</div>
+										<div id="assessmentAnswersContainer" class="assessment-answer-empty">Loading...</div>
+									</div>
+								</div>
+							</div>
+						 </div>
+						 <div class="row">
+							<div class="col-sm-12 col-xs-12 p-2">
+								<div class="view-history-card">
+									<div class="view-history-header">
+										<div class="assessment-section-heading">
+											<div class="assessment-view-card-icon"><i class="fa fa-history"></i></div>
+											<div>
+											<h5>Version History</h5>
+											<small>Previous saves and clinical reviews</small>
+											</div>
+										</div>
+										<span id="viewHistoryCount" class="view-history-count">0 versions</span>
+									</div>
+									<div id="viewHistoryLoading" class="view-history-message"><i class="fa fa-spinner fa-spin"></i> Loading history...</div>
+									<div id="viewHistoryEmpty" class="view-history-message" style="display:none;">No version history is available.</div>
+									<div id="viewHistoryRows" class="view-history-list"></div>
+								</div>
+							</div>
+						 </div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = getAssessmentViewReturnUrl()" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>
+
+								</div>
+							</div>					
+  
+					</div>
+
+					<div class="view-history-drawer" id="viewHistoryDrawer" aria-hidden="true">
+						<div class="view-history-backdrop" data-view-history-close></div>
+						<aside class="view-history-panel" role="dialog" aria-modal="true" aria-labelledby="viewHistoryDrawerTitle">
+							<div class="view-history-drawer-header">
+								<div>
+									<h4 id="viewHistoryDrawerTitle">Assessment Answers</h4>
+									<span id="viewHistoryDrawerSubtitle"></span>
+								</div>
+								<button type="button" class="view-history-close" data-view-history-close aria-label="Close">&times;</button>
+							</div>
+							<div class="view-history-drawer-body">
+								<div id="viewHistorySummary" class="view-history-summary"></div>
+								<div class="table-responsive view-history-answer-wrap">
+									<table class="table view-history-answer-table">
+										<thead><tr><th>S.No</th><th>Category</th><th>Question</th><th>Answer</th><th>Type</th></tr></thead>
+										<tbody id="viewHistoryAnswers"></tbody>
+									</table>
+									<div id="viewHistoryAnswersEmpty" class="view-history-message" style="display:none;">No answers were saved in this version.</div>
+								</div>
+							</div>
+						</aside>
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('Assessment.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function updateViewAssessmentHeader(obj) {
+						if (!obj) return;
+						var patientText = (obj.patientname || '').toString().trim();
+						if (!patientText || patientText === '-') return;
+						var backBtn = '<a href="javascript:void(0);" onclick="window.location.href = getAssessmentViewReturnUrl()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>';
+						$("div.page-header-box h1").html(backBtn + '<span class="opd-assessment-header-name">' + $('<div/>').text(patientText).html() + '</span>');
+					}
+
+					function fill_Assessment_view_data(){
+
+					   var  Assessmentid = getUrlVars()["Assessmentid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_Assessment")',
+												dataType: 'json',
+												data:{Assessmentid: Assessmentid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+												updateViewAssessmentHeader(obj);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='automaton_Assessment_assessmentquestions'){
+																			$('#assessmentquestionsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + Assessmentid +'&section=automaton_Assessment_assessmentquestions_history'
+																					 $(".assessmentquestionsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("Assessment","versionhistory")
+																				if(Actions == undefined){
+																				$("assessmentquestionsauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.assessmentquestionsContainerBodyParent').removeClass('hide')      
+																			   $('#assessmentquestionsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.assessmentquestionsContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													
+												}
+
+												})
+
+				   }
+
+				   function getAssessmentValue(source, keys) {
+					   if (!source) return '';
+					   for (var i = 0; i < keys.length; i++) {
+						   var key = keys[i];
+						   if (source[key] !== undefined && source[key] !== null && source[key] !== '') {
+							   return source[key];
+						   }
+					   }
+					   return '';
+				   }
+
+				   function normalizeAssessmentKey(value) {
+					   return (value || '').toString().trim().toLowerCase();
+				   }
+
+				   function addAssessmentQuestionMap(questionMap, key, question) {
+					   key = normalizeAssessmentKey(key);
+					   if (key && !questionMap[key]) questionMap[key] = question;
+				   }
+
+				   function isAssessmentGuid(value) {
+					   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test((value || '').toString().trim());
+				   }
+
+				   function isAssessmentPlaceholderQuestion(value) {
+					   return /^question\s*\d+$/i.test((value || '').toString().trim());
+				   }
+
+				   function escapeAssessmentText(value) {
+					   return $('<div/>').text(value || '').html();
+				   }
+
+				   function formatAssessmentAnswer(value, answerType) {
+					   var answer = (value || '').toString().trim();
+					   if (!answer) return '-';
+					   if ((answerType || '').toString().toLowerCase() === 'boolean') {
+						   if (answer.toLowerCase() === 'true') return 'Yes';
+						   if (answer.toLowerCase() === 'false') return 'No';
+					   }
+					   return answer.replace(/,/g, ', ');
+				   }
+
+				   function parseAssessmentResponse(response) {
+					   var data = response && response.length === 3 ? response[0] : response;
+					   if (!data) return [];
+					   if (typeof data === 'string') {
+						   try {
+							   data = JSON.parse(data);
+						   } catch (e) {
+							   return [];
+						   }
+					   }
+					   if (data && !Array.isArray(data)) {
+						   var wrappedRows = data.detail || data.data || data.rows || data.result || data.Table || data.table;
+						   if (typeof wrappedRows === 'string') {
+							   try {
+								   wrappedRows = JSON.parse(wrappedRows);
+							   } catch (e) {
+								   wrappedRows = [];
+							   }
+						   }
+						   if (Array.isArray(wrappedRows)) return wrappedRows;
+					   }
+					   return Array.isArray(data) ? data : [];
+				   }
+
+				   function getAssessmentQuestionLabel(answer, question, rowNumber) {
+					   var candidates = [
+						   getAssessmentValue(answer, ['questiontext', 'questionname', 'questionlabel', 'question']),
+						   getAssessmentValue(question, ['questiontext', 'questionname', 'questionlabel', 'question', 'questions_master', 'question_master'])
+					   ];
+
+					   for (var i = 0; i < candidates.length; i++) {
+						   var label = (candidates[i] || '').toString().trim();
+						   if (label && !isAssessmentGuid(label) && !isAssessmentPlaceholderQuestion(label)) return label;
+					   }
+					   return 'Question ' + rowNumber;
+				   }
+
+				   function renderAssessmentAnswers(questions, answers, allQuestions) {
+					   var questionMap = {};
+					   (allQuestions || []).forEach(function (question) {
+						   addAssessmentQuestionMap(questionMap, getAssessmentValue(question, ['AssessmentQuestionid', 'assessmentquestionid', 'AssessmentQuestionID', 'assessmentquestionID', 'questions', 'question']), question);
+					   });
+					   (questions || []).forEach(function (question, index) {
+						   addAssessmentQuestionMap(questionMap, getAssessmentValue(question, ['questions', 'questionsid', 'questionsref']), question);
+						   addAssessmentQuestionMap(questionMap, getAssessmentValue(question, ['question', 'questionid']), question);
+						   addAssessmentQuestionMap(questionMap, getAssessmentValue(question, ['questiontext', 'questionname', 'questionlabel', 'questions_master', 'question_master']), question);
+						   addAssessmentQuestionMap(questionMap, getAssessmentValue(question, ['record_order']) || (index + 1), question);
+						   addAssessmentQuestionMap(questionMap, index, question);
+					   });
+
+					   var rows = (answers && answers.length) ? answers : [];
+					   rows.sort(function (a, b) {
+						   return parseInt(a.record_order || 0) - parseInt(b.record_order || 0);
+					   });
+
+					   if (!rows.length && questions && questions.length) {
+						   rows = questions.map(function (question, index) {
+							   return {
+								   questionsref: getAssessmentValue(question, ['questions', 'questionsref', 'question']),
+								   question: getAssessmentValue(question, ['questiontext', 'questionname', 'questionlabel', 'question']),
+								   answertype: getAssessmentValue(question, ['answertype']),
+								   answervalue: '',
+								   record_order: index + 1
+							   };
+						   });
+					   }
+
+					   if (!rows.length) {
+						   $('#assessmentAnswersContainer').html('<div class="assessment-answer-empty">No assessment answers available.</div>');
+						   return;
+					   }
+
+					   var html = '<div class="table-responsive assessment-answer-table-wrap"><table class="table assessment-answer-table"><thead><tr><th class="assessment-answer-question-col"style="text-align:left;">Question</th><th class="assessment-answer-value-col"style="text-align:left;">Answer</th></tr></thead><tbody>';
+					   rows.forEach(function (answer, index) {
+						   var question = questionMap[normalizeAssessmentKey(getAssessmentValue(answer, ['questionsref', 'questions', 'question']))]
+							   || questionMap[normalizeAssessmentKey(getAssessmentValue(answer, ['record_order']) || (index + 1))]
+							   || {};
+						   var exactQuestion = questionMap[normalizeAssessmentKey(getAssessmentValue(question, ['question', 'questionid']))];
+						   if (exactQuestion && getAssessmentValue(exactQuestion, ['questiontext', 'questionname', 'questionlabel'])) {
+							   question = exactQuestion;
+						   }
+						   var label = getAssessmentQuestionLabel(answer, question, index + 1);
+						   var answerType = getAssessmentValue(answer, ['answertype']) || getAssessmentValue(question, ['answertype']);
+						   var answerValue = formatAssessmentAnswer(getAssessmentValue(answer, ['answervalue', 'answer']), answerType);
+
+						   html += '<tr><td class="assessment-answer-question-col">' + escapeAssessmentText(label) + '</td><td class="assessment-answer-value-col">' + escapeAssessmentText(answerValue) + '</td></tr>';
+					   });
+					   html += '</tbody></table></div>';
+					   $('#assessmentAnswersContainer').html(html);
+				   }
+
+				   function loadAssessmentAnswers() {
+					   var Assessmentid = getUrlVars()["Assessmentid"];
+					   var assessmentTenantId = '@(Model != null ? Model.tenantid.ToString() : "")';
+					   if (!assessmentTenantId && typeof str_tenantid !== 'undefined') assessmentTenantId = str_tenantid;
+					   if (!Assessmentid) {
+						   $('#assessmentAnswersContainer').html('<div class="assessment-answer-empty">No assessment answers available.</div>');
+						   return;
+					   }
+
+					   var allQuestionLookup = $.ajax({
+						   url: '@Url.Action("get_all_AssessmentQuestion")',
+						   dataType: 'json',
+						   data: { tenantid: assessmentTenantId }
+					   }).then(function (response) {
+						   return response;
+					   }, function () {
+						   return [];
+					   });
+					   $.ajax({
+						   url: '@Url.Action("get_all_QuestionCategory")',
+						   dataType: 'json',
+						   data: { tenantid: assessmentTenantId }
+					   }).done(function (response) {
+						   window.viewAssessmentCategoryLookup = parseAssessmentResponse(response);
+					   });
+
+					   $.when(
+						   $.ajax({
+							   url: '@Url.Action("getById_assessmentquestions")',
+							   dataType: 'json',
+							   data: { Assessmentid: Assessmentid }
+						   }),
+						   $.ajax({
+							   url: '@Url.Action("getById_patientanswers")',
+							   dataType: 'json',
+							   data: { Assessmentid: Assessmentid }
+						   }),
+						   allQuestionLookup
+					   ).done(function (questionResponse, answerResponse, allQuestionResponse) {
+						   var questions = parseAssessmentResponse(questionResponse);
+						   var answers = parseAssessmentResponse(answerResponse);
+						   var allQuestions = parseAssessmentResponse(allQuestionResponse);
+						   window.viewAssessmentQuestionLookup = allQuestions;
+						   renderAssessmentAnswers(questions, answers, allQuestions);
+					   }).fail(function () {
+						   $('#assessmentAnswersContainer').html('<div class="assessment-answer-empty">No assessment answers available.</div>');
+					   });
+				   }
+
+				   var viewAssessmentHistoryRows = [];
+				   function getHistoryValue(obj, name) {
+					   if (!obj || typeof obj !== 'object') return null;
+					   var wanted = String(name).toLowerCase();
+					   var keys = Object.keys(obj);
+					   for (var i = 0; i < keys.length; i++)
+						   if (String(keys[i]).toLowerCase() === wanted) return obj[keys[i]];
+					   return null;
+				   }
+				   function historyLabel(value) {
+					   return String(value || '-').replace(/_/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
+				   }
+				   function parseHistorySnapshot(row) {
+					   var snapshot = row ? row.assessment_snapshot : null;
+					   if (typeof snapshot === 'string') {
+						   try { snapshot = JSON.parse(snapshot); } catch (e) { snapshot = {}; }
+					   }
+					   return snapshot || {};
+				   }
+				   function parseViewHistoryAnswers(snapshot) {
+					   var answers = getHistoryValue(snapshot, 'patientanswers_json');
+					   if (Array.isArray(answers)) return answers;
+					   if (typeof answers === 'string' && answers.trim()) {
+						   try { return JSON.parse(answers); } catch (e) { }
+					   }
+					   return [];
+				   }
+				   function findHistoryLookup(items, idNames, textNames, id) {
+					   if (!id || !Array.isArray(items)) return '';
+					   var wanted = String(id).toLowerCase();
+					   for (var i = 0; i < items.length; i++) {
+						   for (var j = 0; j < idNames.length; j++) {
+							   if (String(getAssessmentValue(items[i], [idNames[j]]) || '').toLowerCase() === wanted)
+								   return getAssessmentValue(items[i], textNames);
+						   }
+					   }
+					   return '';
+				   }
+				   function historyQuestion(answer, snapshot, index) {
+					   var id = getHistoryValue(answer, 'question');
+					   var text = findHistoryLookup(window.viewAssessmentQuestionLookup || [], ['AssessmentQuestionid', 'assessmentquestionid'], ['questiontext', 'questionname'], id);
+					   if (text) return text;
+					   var savedQuestions = getHistoryValue(snapshot, 'assessmentquestions');
+					   var ref = getHistoryValue(answer, 'questionsref');
+					   if (Array.isArray(savedQuestions)) {
+						   for (var i = 0; i < savedQuestions.length; i++) {
+							   if (String(getHistoryValue(savedQuestions[i], 'questions') || '').toLowerCase() === String(ref || '').toLowerCase()) {
+								   text = findHistoryLookup(window.viewAssessmentQuestionLookup || [], ['AssessmentQuestionid', 'assessmentquestionid'], ['questiontext', 'questionname'], getHistoryValue(savedQuestions[i], 'question'));
+								   if (text) return text;
+							   }
+						   }
+					   }
+					   return 'Question ' + (index + 1);
+				   }
+				   function historyCategory(answer) {
+					   return findHistoryLookup(window.viewAssessmentCategoryLookup || [], ['QuestionCategoryid', 'questioncategoryid'], ['questioncategoryname', 'categoryname'], getHistoryValue(answer, 'questioncategory')) || 'General';
+				   }
+				   function loadViewAssessmentHistory() {
+					   var assessmentId = getUrlVars()["Assessmentid"];
+					   if (!assessmentId) return;
+					   $.ajax({
+						   url: '@Url.Action("GetAssessmentHistory", "Assessment")',
+						   dataType: 'json',
+						   data: { assessmentid: assessmentId },
+						   success: function (data) {
+							   viewAssessmentHistoryRows = Array.isArray(data) ? data : [];
+							   $('#viewHistoryLoading').hide();
+							   $('#viewHistoryCount').text(viewAssessmentHistoryRows.length + (viewAssessmentHistoryRows.length === 1 ? ' version' : ' versions'));
+							   if (!viewAssessmentHistoryRows.length) {
+								   $('#viewHistoryEmpty').show();
+								   return;
+							   }
+							   var html = '';
+							   viewAssessmentHistoryRows.forEach(function (row, index) {
+								   var savedOn = row.actiondate ? new Date(row.actiondate).toLocaleString() : '-';
+								   html += '<div class="view-history-row">'
+									   + '<span class="view-history-version">V' + escapeAssessmentText(row.versionnumber) + '</span>'
+									   + '<div class="view-history-stage"><small>Stage</small><strong>' + escapeAssessmentText(historyLabel(row.workflowstage)) + '</strong><span>' + escapeAssessmentText(historyLabel(row.actiontype)) + '</span></div>'
+									   + '<div><small>Saved by</small><strong>' + escapeAssessmentText(row.actionbyname || row.actionby || '-') + '</strong><em>' + escapeAssessmentText(row.actionbyrole || 'Role not available') + '</em></div>'
+									   + '<div><small>Saved on</small><strong>' + escapeAssessmentText(savedOn) + '</strong><em>' + escapeAssessmentText(row.reviewnotes || row.assessmentnotes || 'No notes') + '</em></div>'
+									   + '<button type="button" class="view-history-open" data-index="' + index + '"><i class="fa fa-eye"></i> View</button>'
+									   + '</div>';
+							   });
+							   $('#viewHistoryRows').html(html);
+						   },
+						   error: function () {
+							   $('#viewHistoryLoading').hide();
+							   $('#viewHistoryEmpty').text('Unable to load version history.').show();
+						   }
+					   });
+				   }
+				   function closeViewHistoryDrawer() {
+					   $('#viewHistoryDrawer').removeClass('is-visible').attr('aria-hidden', 'true');
+					   $('body').removeClass('view-history-open');
+					   window.setTimeout(function () { $('#viewHistoryDrawer').removeClass('is-open'); }, 220);
+				   }
+				   $(document).on('click', '[data-view-history-close]', closeViewHistoryDrawer);
+				   $(document).on('keydown', function (event) { if (event.key === 'Escape') closeViewHistoryDrawer(); });
+				   $(document).on('click', '.view-history-open', function () {
+					   var row = viewAssessmentHistoryRows[parseInt($(this).attr('data-index'), 10)];
+					   if (!row) return;
+					   var snapshot = parseHistorySnapshot(row);
+					   var answers = parseViewHistoryAnswers(snapshot);
+					   var savedOn = row.actiondate ? new Date(row.actiondate).toLocaleString() : '-';
+					   $('#viewHistoryDrawerSubtitle').text('Version ' + row.versionnumber + ' · ' + historyLabel(row.actiontype));
+					   $('#viewHistorySummary').html(
+						   '<div><span>Workflow stage</span><strong>' + escapeAssessmentText(historyLabel(row.workflowstage)) + '</strong></div>'
+						   + '<div><span>Saved by</span><strong>' + escapeAssessmentText(row.actionbyname || row.actionby || '-') + '</strong></div>'
+						   + '<div><span>Saved on</span><strong>' + escapeAssessmentText(savedOn) + '</strong></div>'
+					   );
+					   var html = '';
+					   answers.forEach(function (answer, index) {
+						   var type = getHistoryValue(answer, 'answertype');
+						   html += '<tr><td>' + (index + 1) + '</td><td>' + escapeAssessmentText(historyCategory(answer)) + '</td>'
+							   + '<td>' + escapeAssessmentText(historyQuestion(answer, snapshot, index)) + '</td>'
+							   + '<td><span class="view-history-answer">' + escapeAssessmentText(formatAssessmentAnswer(getHistoryValue(answer, 'answervalue'), type)) + '</span></td>'
+							   + '<td>' + escapeAssessmentText(historyLabel(type)) + '</td></tr>';
+					   });
+					   $('#viewHistoryAnswers').html(html).toggle(answers.length > 0);
+					   $('#viewHistoryAnswersEmpty').toggle(answers.length === 0);
+					   var $drawer = $('#viewHistoryDrawer');
+					   if (!$drawer.parent().is('body')) $drawer.appendTo(document.body);
+					   $drawer.addClass('is-open').attr('aria-hidden', 'false');
+					   $('body').addClass('view-history-open');
+					   window.setTimeout(function () { $drawer.addClass('is-visible'); }, 10);
+				   });
+				   
+
+					$(document).ready(function () {
+
+
+					fill_Assessment_view_data()
+					loadAssessmentAnswers()
+					loadViewAssessmentHistory()
+
+
+					/*var Actions=getAutho("Assessment","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+					<style>
+						.opd-assessment-header-name { font-weight: 700; font-size: 20px; text-transform: capitalize; letter-spacing: 0.5px; }
+						#cma_printableArea, #comparisonContainer, #comparisonContainer + .row, #comparisonContainer + .row + .row {
+							width:auto;
+							max-width:none;
+							margin-left:22px;
+							margin-right:22px;
+						}
+						.assessment-view-card, .assessment-answer-card { background:#fff; border:1px solid #dce6e1; border-radius:8px; box-shadow:0 2px 8px rgba(31,76,58,.04); overflow:hidden; }
+						.assessment-summary-card { margin-top:18px; margin-bottom:10px; }
+						.assessment-view-card-header, .assessment-section-heading { display:flex; align-items:center; gap:11px; }
+						.assessment-view-card-header { padding:16px 20px; border-bottom:1px solid #e3ebe7; background:#fff; }
+						.assessment-view-card-header h4, .assessment-section-heading h5 { margin:0; color:#254f3e; font-size:17px; font-weight:700; }
+						.assessment-view-card-header p, .assessment-section-heading small { margin:4px 0 0; color:#78877f; font-size:12px; }
+						.assessment-view-card-icon { width:38px; height:38px; flex:0 0 38px; display:grid; place-items:center; border-radius:8px; background:#e4f2eb; color:#1c7555; font-size:16px; }
+						.assessment-summary-grid { padding:10px 14px 16px !important; margin:0; min-height:0 !important; }
+						.assessment-summary-grid > [class*="col-"] { padding-left:7px; padding-right:7px; }
+						.assessment-summary-grid .form-group { margin:7px 0 !important; min-height:66px; padding:11px 13px; background:#fff; border-radius:6px; border:1px solid #e3ebe7; }
+						.assessment-summary-grid .form-group label { color:#75847d; font-size:12px; font-weight:600; margin-bottom:7px; }
+						.assessment-summary-grid .form-group span { color:#294b3e; font-size:15px; font-weight:700; }
+						.assessment-answer-section { margin-top:10px; }
+						.assessment-answer-card { padding:0; }
+						.assessment-section-heading { padding:15px 18px; }
+						.assessment-answer-table-wrap { border-top: 1px solid #e1e9e5; overflow: hidden; }
+						.assessment-answer-table { margin-bottom: 0; table-layout: fixed; width: 100%; }
+						.assessment-answer-table thead th {
+							background: #f0f6f3;
+							color: #285f49 !important;
+							border: none;
+							font-weight: 700;
+							text-align: left;
+							padding:13px 18px;
+							font-size:13px;
+						}
+						.assessment-answer-table tbody td {
+							vertical-align: top;
+							word-break: break-word;
+							white-space: normal;
+							padding:14px 18px;
+							font-size:14px;
+							border-top: 1px solid #eef3f0;
+							color: #344054;
+						}
+						.assessment-answer-table tbody tr:nth-child(even) td { background: #fbfdfc; }
+						.assessment-answer-question-col { width: 65%; }
+						.assessment-answer-value-col { width: 35%; }
+						.assessment-answer-empty { color: #7a8799; padding: 10px 0; }
+						.view-history-card { margin-top:10px; background:#fff; border:1px solid #dce6e1; border-radius:8px; box-shadow:0 2px 8px rgba(31,76,58,.04); overflow:hidden; }
+						.view-history-header { display:flex; align-items:center; justify-content:space-between; padding:15px 18px; border-bottom:1px solid #e3ebe7; }
+						.view-history-header h5 { margin:0; color:#245f48; font-weight:700; }
+						.view-history-header small, .view-history-row small { display:block; color:#7b8983; margin-top:4px; }
+						.view-history-count { padding:6px 11px; border-radius:14px; background:#e8f4ee; color:#26684f; font-size:11px; font-weight:700; }
+						.view-history-message { padding:18px; text-align:center; color:#75837d; }
+						.view-history-list { padding:0 18px 8px; }
+						.view-history-row { display:grid; grid-template-columns:56px 1.2fr 1fr 1.15fr 82px; gap:22px; align-items:center; padding:17px 8px; border-bottom:1px solid #e7eeea; color:#34483f; }
+						.view-history-row:last-child { border-bottom:0; }
+						.view-history-version { width:44px; height:44px; display:grid; place-items:center; border-radius:50%; background:#e8f4ee; color:#176a4c; font-size:15px; font-weight:700; }
+						.view-history-row small { margin:0 0 5px; text-transform:uppercase; letter-spacing:.5px; font-size:9px; font-weight:700; }
+						.view-history-row strong { display:block; color:#30483e; font-size:14px; }
+						.view-history-row em { display:block; margin-top:5px; color:#7a8983; font-size:12px; font-style:normal; }
+						.view-history-stage span { display:inline-block; margin-top:5px; padding:3px 7px; border-radius:10px; background:#e8f4ee; color:#1b6d51; font-size:9px; font-weight:700; }
+						.view-history-open { border:1px solid #a9cbbb; background:#fff; color:#176a4c; border-radius:6px; padding:9px 12px; font-size:13px; font-weight:600; }
+						.view-history-open:hover { background:#edf7f2; }
+						.view-history-drawer { display:none; position:fixed; inset:0; z-index:10050; }
+						.view-history-drawer.is-open { display:block; }
+						.view-history-backdrop { position:absolute; inset:0; background:rgba(21,35,29,.42); opacity:0; transition:opacity .22s; }
+						.view-history-panel { position:absolute; top:0; right:0; width:min(720px, 92vw); height:100%; background:#fff; box-shadow:-12px 0 32px rgba(25,44,36,.18); transform:translateX(100%); transition:transform .22s; display:flex; flex-direction:column; }
+						.view-history-drawer.is-visible .view-history-backdrop { opacity:1; }
+						.view-history-drawer.is-visible .view-history-panel { transform:translateX(0); }
+						.view-history-drawer-header { min-height:70px; display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1px solid #e5ece8; }
+						.view-history-drawer-header h4 { margin:0 0 4px; color:#243b32; font-weight:700; }
+						.view-history-drawer-header span { color:#687a72; font-size:12px; }
+						.view-history-close { width:34px; height:34px; border:0; border-radius:50%; background:#f0f4f2; color:#4d6259; font-size:24px; line-height:1; }
+						.view-history-drawer-body { padding:18px; overflow:auto; }
+						.view-history-summary { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid #dfe8e3; border-radius:7px; margin-bottom:16px; }
+						.view-history-summary > div { padding:12px 14px; border-right:1px solid #e5ece8; min-width:0; }
+						.view-history-summary > div:last-child { border-right:0; }
+						.view-history-summary span { display:block; color:#7a8882; font-size:10px; text-transform:uppercase; font-weight:700; margin-bottom:5px; }
+						.view-history-summary strong { color:#31483e; overflow-wrap:anywhere; }
+						.view-history-answer-wrap { border:1px solid #dfe8e3; border-radius:7px; overflow:hidden; }
+						.view-history-answer-table { margin:0; }
+						.view-history-answer-table th { background:#f1f6f3; color:#285e49; font-size:11px; text-transform:uppercase; padding:11px; }
+						.view-history-answer-table td { padding:11px; vertical-align:top; color:#455a51; border-top:1px solid #edf1ef; }
+						.view-history-answer { display:inline-block; background:#e9f5ef; color:#176a4c; border-radius:5px; padding:4px 8px; font-weight:700; }
+						body.view-history-open { overflow:hidden; }
+						@@media (max-width: 767px) {
+							#cma_printableArea, #comparisonContainer, #comparisonContainer + .row, #comparisonContainer + .row + .row { margin-left:8px; margin-right:8px; }
+							.view-history-row { grid-template-columns:42px 1fr 70px; }
+							.view-history-row > div:nth-of-type(2), .view-history-row > div:nth-of-type(3) { grid-column:2 / 4; }
+							.view-history-panel { width:100%; }
+							.view-history-summary { grid-template-columns:1fr; }
+							.view-history-summary > div { border-right:0; border-bottom:1px solid #e5ece8; }
+						}
+					</style>
+
+					
+					<script type="text/javascript">
+						
+						$(document).ready(function () {
+							
+						});
+					</script>
+					
+					
+					

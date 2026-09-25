@@ -1,0 +1,1095 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 04/20/2026 05:22:42 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.AssessmentTemplateModel
+					@{
+					ViewData["Title"] = @Resource.assessmenttemplatelist;
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="card " style="padding:20px;">
+					<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<h3 class="formHdr">@Resource.assessmenttemplatelist</h3>
+					</div>
+					</div>
+					</div><!--form_card_header-->
+					<div class="card-body" style="padding:1px;padding-top:0px;">
+
+					@if(TempData["errMessage"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["errMessage"]
+					</div>
+					</div>
+					</div>
+					}
+
+					@if(TempData["message"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["message"]
+					</div>
+					</div>
+					</div>
+					}
+
+					<input type="hidden" id="AssessmentTemplateid" name="AssessmentTemplateid"/>
+					<div class="modal fade" id="cloneAssessmentTemplateModal" tabindex="-1" role="dialog" aria-labelledby="cloneAssessmentTemplateTitle" aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="cloneAssessmentTemplateTitle">Clone Template</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<input type="hidden" id="cloneAssessmentTemplateId" />
+									<div class="form-group form-group--float-above my-3">
+										<label for="cloneTemplateName">Template Name <b class="iconRed">*</b></label>
+										<input type="text" id="cloneTemplateName" class="form-control" maxlength="128" />
+										<div id="cloneTemplateName-error" class="help-block" style="display:none" role="alert"></div>
+									</div>
+									<div class="form-group form-group--float-above my-3">
+										<label for="cloneTaskName">Task Name <b class="iconRed">*</b></label>
+										<select id="cloneTaskName" class="form-control"></select>
+										<div id="cloneTaskName-error" class="help-block" style="display:none" role="alert"></div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+									<button type="button" class="btn cma_primary_button" id="btnCloneAssessmentTemplate">Clone</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+								<div class="form-group form-group--float-above my-3" > 
+								<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+								<select name="tenantid" id="tenantid" class="form-control">
+								</select>
+								<i class="form-group__bar"></i>
+								</div>
+
+								<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2 taskname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="taskname">@Resource.assessmenttemplate_taskname</label>
+										<select name="taskname" id="taskname" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.taskname)
+									<div id="taskname-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 p-2">
+
+												<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+
+												</div>
+								</div>
+
+					<div class="row"><div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+					<table id="tblAssessmentTemplate" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+					<thead class="thead-default">
+					<tr>
+					
+					<th>@Resource.assessmenttemplate_templatename</th>
+<th>@Resource.assessmenttemplate_taskname</th>
+<th>@Resource.assessmenttemplate_isdefaulttemplate</th>
+<th>@Resource.tenantdisplayname</th>
+
+					<th class="all">Action</th>
+					
+
+					</tr>
+					</thead>
+					<tbody></tbody>
+					
+					</table>
+					</div>
+
+					</div>
+					
+					
+					</div>
+					
+					</div>
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					
+					<script type="text/javascript">
+
+				 var arr_selected_for_verification = [];
+
+					function fill_AssessmentTemplate()
+					{
+						
+
+					var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"taskname":$("#taskname").val(),
+ 
+								}
+
+					
+
+
+					
+
+var table=$("#tblAssessmentTemplate").DataTable({
+columnDefs: [{ 
+	 targets: -1,
+	 title: '<i class="fa fa-pencil fa-lg"></i>'
+  }],
+		
+		destroy:true,
+"orderMulti": false,
+	"order": [],"aaSorting": [],
+	autoWidth: !1,responsive:!0,
+	lengthMenu: [
+	[15, 30, 45, -1],
+	["15 Rows", "30 Rows", "45 Rows", "Everything"]
+	],
+	language: {
+	searchPlaceholder: "Search for records..."
+	},
+	 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+	dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+  
+	buttons: [{
+	extend: "excelHtml5",
+	title: "List Of AssessmentTemplate Data"
+	}, {
+	extend: "csvHtml5",
+	title: "List Of AssessmentTemplate Data"
+	}, {
+	extend: "print",
+	title: "List Of AssessmentTemplate Data"
+	}],
+ initComplete: function(a, b) {
+
+
+
+	  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+	  
+if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+$(this).closest(".dataTables_wrapper").find(".dataTables_length").prepend(`
+		<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+	  `);
+
+		 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+			$("#cma_card_tab_action_container").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			`);
+		}
+ }
+
+var Actions=getAutho("AssessmentTemplate","create")
+		if(Actions != undefined){
+			var create_URL = "@Url.Action("entry.viewname", "AssessmentTemplate")"
+			create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+			
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+		   
+		   
+		<div class="dataTables_buttons actions">
+			<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.assessmenttemplate_templatename
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.assessmenttemplate_taskname
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.assessmenttemplate_isdefaulttemplate
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+
+		 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+		</div>
+	  `.replace("create_URL", create_URL))
+}
+
+		$("#cma_card_tab_action_container .card-lst").remove();
+		$("#cma_card_tab_action_container_action_btn").empty()
+		$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+	   
+
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+			else{
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(` 
+		
+		
+		<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.assessmenttemplate_templatename
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.assessmenttemplate_taskname
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.assessmenttemplate_isdefaulttemplate
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+		</div>
+	  `)
+}
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+		
+	}
+	 ,columns: [
+		    
+		{data: 'templatename'},
+						{data: 'taskname'},
+ 
+{data: 'isdefaulttemplate'},
+{data: '_tenantname'},
+
+		{
+					"sName": "assessmenttemplateid",
+					"bSearchable": false,
+					"bSortable": false,
+					data: 'assessmenttemplateid', "className": "dt-center",
+					mRender: function(data, type, row) {
+					var Actions=getAuthoController("AssessmentTemplate")
+					var appendMessage='';
+					if(Actions !=undefined)
+					{
+					for (var index = 0; index < Actions.length; ++index) {
+					var entry = Actions[index];
+			 
+					if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+					var URL = "@Url.Action("entry.viewname", "AssessmentTemplate")?AssessmentTemplateid=" + row["assessmenttemplateid"]
+					URL = URL.replace("entry.viewname", entry.actionmethodname);
+			 
+					if(entry.viewname=="delete")
+					{
+						
+						appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>' 	
+				   
+				
+					}
+					
+					else if(entry.viewname=="detail")
+					{
+						var DETAIL_URL = "@Url.Action("entry.actionmethodname", "AssessmentTemplate")?AssessmentTemplateid=" + row["assessmenttemplateid"]
+						DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+						appendMessage+='<a href="' + DETAIL_URL + '" class="dropdown-item">View</a>' 			
+ }
+					else
+					{
+					 
+						appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>' 
+					}
+			 
+					}					 
+						 
+					}
+					appendMessage+='<a href="javascript:void(0)" class="dropdown-item cloneAssessmentTemplateAction" data-id="' + row["assessmenttemplateid"] + '" data-name="' + cloneTemplateEsc(row["templatename"]) + '">Clone Template</a>' 
+								
+					if(appendMessage =="")
+					{
+					return '-'
+
+					}
+					else
+					{
+					return '<div class="dropdown actions__item">' +
+					'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+					'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+		 
+
+					'</div>' +
+					'</div>'
+					}
+
+
+
+					}
+					else
+					{
+					return '-'
+
+					}
+
+
+					}
+					}
+	
+
+	 ],
+	ajax: {
+	url: "@Url.Action("get_Assessment_Template_List", "AssessmentTemplate")",
+	type: 'GET',
+	dataType: 'json',
+	dataSrc: '',
+	data: sendFilterData,
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+							allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+		}) 
+	}
+	}
+	}
+	})
+	 
+	  
+ $('body').on('click', '.ColVis_collection li', function(a) {
+	event.stopPropagation();
+  });
+ 
+ $('body').on('change', '.colvis_switch', function(a) {
+	var column = table.column($(this).attr('data-column'));
+	column.visible(!column.visible());
+  });
+
+
+ 
+
+   
+	 
+
+
+	
+
+
+							
+					}
+						
+
+					$(document).ready(function () {
+
+
+					fill_AssessmentTemplate()
+
+
+					var Actions=getAutho("AssessmentTemplate","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}
+
+
+
+
+					});
+					
+					function cloneTemplateEsc(value) {
+						return $('<div/>').text(value || '').html();
+					}
+
+					function loadCloneTaskNames(selectedValue) {
+						var tenantid = ($("#tenantid").val() ? $("#tenantid").val() : str_tenantid);
+						var $cloneTaskName = $("#cloneTaskName");
+						$cloneTaskName.empty().append("<option value=''>Choose</option>");
+
+						$.ajax({
+							url: '@Url.Action("lookup_AssessmentTemplate_taskname", "AssessmentTemplate")',
+							dataType: 'json',
+							data: { tenantid: tenantid },
+							success: function(data) {
+								if (data && data.length > 0) {
+									data = data.filter(function(item) { return item.taskname !== null && item.taskname !== undefined; });
+									data.sort(function(a, b) {
+										return String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase());
+									});
+								}
+
+								$.each(data || [], function(index, item) {
+									var taskName = item.taskname || '';
+									var selected = selectedValue && selectedValue === taskName ? ' selected' : '';
+									$cloneTaskName.append('<option value="' + cloneTemplateEsc(taskName) + '"' + selected + '>' + cloneTemplateEsc(taskName) + '</option>');
+								});
+
+								if ($.fn.select2) {
+									$cloneTaskName.select2({ dropdownParent: $('#cloneAssessmentTemplateModal') });
+								}
+							},
+							error: function(jqXHR) {
+								swal({
+									title: 'Contact Administrator !',
+									text: jqXHR.responseText,
+									type: 'error',
+									buttonsStyling: false,
+									confirmButtonClass: 'btn btn-primary',
+									allowOutsideClick: false,
+									allowEscapeKey: false,
+									allowEnterKey: false
+								});
+							}
+						});
+					}
+
+					$('body').on('click', '.cloneAssessmentTemplateAction', function(e) {
+						e.preventDefault();
+						$("#cloneAssessmentTemplateId").val($(this).data('id'));
+						$("#cloneTemplateName").val($(this).data('name') || '');
+						$("#cloneTemplateName-error").hide().text('');
+						$("#cloneTaskName-error").hide().text('');
+						loadCloneTaskNames();
+						$("#cloneAssessmentTemplateModal").modal('show');
+					});
+
+					$("#btnCloneAssessmentTemplate").on("click", function() {
+						var assessmentTemplateId = $("#cloneAssessmentTemplateId").val();
+						var templateName = $.trim($("#cloneTemplateName").val() || '');
+						var taskName = $("#cloneTaskName").val();
+						var tenantid = ($("#tenantid").val() ? $("#tenantid").val() : str_tenantid);
+
+						if (!templateName) {
+							$("#cloneTemplateName-error").text("Please enter Template Name.").show();
+							return;
+						}
+
+						if (!taskName) {
+							$("#cloneTaskName-error").text("Please choose Task Name.").show();
+							return;
+						}
+
+						if (!tenantid) {
+							swal({
+								title: 'Error',
+								text: 'Tenant is required',
+								type: 'error',
+								buttonsStyling: false,
+								confirmButtonClass: 'btn btn-primary'
+							});
+							return;
+						}
+
+						$("#cloneTemplateName-error").hide().text('');
+						$("#cloneTaskName-error").hide().text('');
+						var $btn = $(this);
+						$btn.prop("disabled", true).text("Cloning...");
+
+						$.ajax({
+							url: '@Url.Action("Clone_Assessment_Template", "AssessmentTemplate")',
+							type: 'POST',
+							data: { AssessmentTemplateid: assessmentTemplateId, templatename: templateName, taskname: taskName, tenantid: tenantid },
+							success: function(data) {
+								$btn.prop("disabled", false).text("Clone");
+								if ((data || '').toString() === "Success") {
+									$("#cloneAssessmentTemplateModal").modal('hide');
+									swal({
+										title: 'Success',
+										text: 'Template cloned successfully.',
+										type: 'success',
+										buttonsStyling: false,
+										confirmButtonClass: 'btn btn-primary'
+									});
+									fill_AssessmentTemplate();
+								} else if ((data || '').toString() === "Session Expired") {
+									swal({
+										title: 'Error',
+										text: data,
+										type: 'error',
+										buttonsStyling: false,
+										confirmButtonClass: 'btn btn-primary',
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+									}).then(function() {
+										window.location = "@Url.Action("Logout", "users")";
+									});
+								} else {
+									swal({
+										title: 'Contact Administrator !',
+										text: data,
+										type: 'error',
+										buttonsStyling: false,
+										confirmButtonClass: 'btn btn-primary'
+									});
+								}
+							},
+							error: function(jqXHR) {
+								$btn.prop("disabled", false).text("Clone");
+								swal({
+									title: 'Contact Administrator !',
+									text: jqXHR.responseText,
+									type: 'error',
+									buttonsStyling: false,
+									confirmButtonClass: 'btn btn-primary'
+								});
+							}
+						});
+					});
+
+
+					$("body").on("click", "[data-table-action]", function(a) {
+					a.preventDefault();
+					var b = $(this).data("table-action");
+					console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+					if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+					var c = $(this).closest(".card");
+					c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+					}
+					});
+					</script>
+					
+					
+					
+					
+								<script>
+								$(document).ready(function () {
+								$("#tenantid").change(function(){
+								fill_AssessmentTemplate();
+								})
+
+								$("#btnFilter").click(function(){
+								fill_AssessmentTemplate();
+								})
+								});
+								</script> 
+
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+
+
+					
+					
+					
+					
+					
+
+<script>
+var strtaskname;
+</script>
+	@if (Model != null)
+	{
+		if(Model.taskname != null && Model.taskname.ToString() != "")
+		{
+		<script>
+			 strtaskname="@Model.taskname"
+		</script>
+		}
+	}
+<script>
+function lookup_AssessmentTemplate_taskname(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_AssessmentTemplate_taskname")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.taskname !== null);
+			data.sort((a, b) =>
+				String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_taskname="#taskname"
+		$(ddltarget_taskname).empty();
+		
+		$(ddltarget_taskname).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strtaskname== optionDataInner.Taskid){
+						$(ddltarget_taskname).append('<option selected value="' + optionDataInner.taskname + '">' + optionDataInner.taskname+ '</option>')
+					 
+                   }
+					else
+						$(ddltarget_taskname).append('<option  value="' + optionDataInner.taskname+ '">' + optionDataInner.taskname+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_AssessmentTemplate_taskname(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_AssessmentTemplate_taskname($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script><script>
+function lookup_AssessmentTemplate_templatequestions_questionsub(tenantid,questioncategory,currentRowID) {
+
+var sendFilterData = {
+	"tenantid":tenantid,
+"questioncategory":questioncategory
+}
+
+$.ajax({
+url: '@Url.Action("lookup_AssessmentTemplate_templatequestions_questionsub")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.questionsubcategoryname !== null);
+			data.sort((a, b) =>
+				String(a.questionsubcategoryname).toLowerCase().localeCompare(String(b.questionsubcategoryname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_questionsub="#questionsub"+currentRowID
+		$(ddltarget_questionsub).empty();
+		
+		$(ddltarget_questionsub).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					
+					$(ddltarget_questionsub).append('<option  value="' + optionDataInner.QuestionSubCategoryid+ '">' + optionDataInner.questionsubcategoryname+ '</option>')
+						
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							 
+							
+									 $('body').on('change', '.questioncategory', function (e) {
+			
+										var currentRowID =($(this).attr('id')).replace('questioncategory','')
+										lookup_AssessmentTemplate_templatequestions_questionsub($("#tenantid").val(),$("#questioncategory"+currentRowID).val(),currentRowID)
+
+									})
+
+
+
+						})
+						
+						</script>
+<script>
+function lookup_AssessmentTemplate_templatequestions_question(tenantid,questioncategory,questionsub,currentRowID) {
+
+var sendFilterData = {
+	"tenantid":tenantid,
+"questioncategory":questioncategory,
+"questionsub":questionsub
+}
+
+$.ajax({
+url: '@Url.Action("lookup_AssessmentTemplate_templatequestions_question")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.questiontext !== null);
+			data.sort((a, b) =>
+				String(a.questiontext).toLowerCase().localeCompare(String(b.questiontext).toLowerCase()) 
+			);
+		}
+	   var ddltarget_question="#question"+currentRowID
+		$(ddltarget_question).empty();
+		
+		$(ddltarget_question).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					
+					$(ddltarget_question).append('<option  value="' + optionDataInner.AssessmentQuestionid+ '">' + optionDataInner.questiontext+ '</option>')
+						
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							 
+							
+									 $('body').on('change', '.questioncategory', function (e) {
+			
+										var currentRowID =($(this).attr('id')).replace('questioncategory','')
+										lookup_AssessmentTemplate_templatequestions_question($("#tenantid").val(),$("#questioncategory"+currentRowID).val(),currentRowID)
+
+									})
+
+									 $('body').on('change', '.questionsub', function (e) {
+			
+										var currentRowID =($(this).attr('id')).replace('questionsub','')
+										lookup_AssessmentTemplate_templatequestions_question($("#tenantid").val(),$("#questioncategory"+currentRowID).val(),$("#questionsub"+currentRowID).val(),currentRowID)
+
+									})
+
+
+
+						})
+						
+						</script>
+

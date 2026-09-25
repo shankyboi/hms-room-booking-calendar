@@ -1,0 +1,99 @@
+@*
+	Reusable Room Allotment partial. Use from ApprovedDetail_IPD_Application_Form (in slider) or any page that needs room selection and allotment.
+	ViewData optional: ShowFilters (default true). When embedding in multiple places on same page, consider rendering in separate containers.
+*@
+@{
+	var showFilters = ViewData["ShowFilters"] != null && ViewData["ShowFilters"] as bool? == false ? false : true;
+}
+<div class="room-allotment-partial">
+	<div class="card card-blue card-section cma_section_band list_card_section">
+		<div class="card-head" style="display:flex;align-items:center;justify-content:space-between;">
+			<header><i class="fa fa-bed"></i> Room Allotment</header>
+			<span id="roomAllotmentBadge" class="badge" style="display:none;"></span>
+		</div>
+		<div class="card-body card-container-Padding-NoShadow">
+
+			<!-- Already allotted message -->
+			<div id="roomAlreadyAllotted" style="display:none;" class="text-center p-3">
+				<i class="fa fa-check-circle" style="font-size:2.5rem;color:var(--btnprimary,#2d5f44);"></i>
+				<p class="mt-2" style="font-weight:600;color:#1e293b;">Room has been allotted for this booking.</p>
+				<div id="allottedRoomDetails"></div>
+			</div>
+
+			<!-- Room selection area -->
+			<div id="roomSelectionArea">
+				<p class="room-allotment-intro">Select rooms for the patient and attendant. Only available rooms are shown below.</p>
+
+				@if (showFilters)
+				{
+					<div class="room-allotment-filters">
+						<div class="room-allotment-filters__title"><i class="fa fa-filter"></i> Filters</div>
+						<div class="room-allotment-filters__grid">
+							<div class="room-allotment-filters__item">
+								<label class="room-allotment-filters__label" for="filterRoomType">Room Type</label>
+								<select id="filterRoomType" class="form-control room-allotment-filters__input">
+									<option value="">All types</option>
+								</select>
+							</div>
+							<div class="room-allotment-filters__item">
+								<label class="room-allotment-filters__label" for="filterOccupancy">Availability</label>
+								<select id="filterOccupancy" class="form-control room-allotment-filters__input">
+									<option value="">All</option>
+									<option value="Empty" selected>Available only</option>
+									<option value="Occupied">Occupied</option>
+								</select>
+							</div>
+							<div class="room-allotment-filters__item">
+								<label class="room-allotment-filters__label" for="filterDateFrom">From Date</label>
+								<input type="date" id="filterDateFrom" class="form-control room-allotment-filters__input" />
+							</div>
+							<div class="room-allotment-filters__item">
+								<label class="room-allotment-filters__label" for="filterDateTo">To Date</label>
+								<input type="date" id="filterDateTo" class="form-control room-allotment-filters__input" />
+							</div>
+							<div class="room-allotment-filters__actions">
+								<button type="button" id="btnApplyRoomFilter" class="btn btn-primary cma_primary_button room-allotment-filters__apply">
+									<i class="fa fa-filter"></i> Apply
+								</button>
+								<button type="button" id="btnClearRoomFilter" class="btn btn-outline-secondary room-allotment-filters__clear">
+									<i class="fa fa-eraser"></i> Clear
+								</button>
+							</div>
+						</div>
+					</div>
+				}
+
+				<!-- Patient Room -->
+				<div class="room-allotment-section">
+					<label class="room-allotment-section__label"><i class="fa fa-user"></i> Patient Room</label>
+					<div id="patientRoomGrid" class="room-allot-grid">
+						<div class="room-allot-grid__loading"><i class="fa fa-spinner fa-spin"></i> Loading rooms...</div>
+					</div>
+				</div>
+
+				<!-- Attendant Room -->
+				<div class="room-allotment-section" id="attendantRoomSection">
+					<label class="room-allotment-section__label"><i class="fa fa-user-friends"></i> Attendant Room <small class="text-muted">(optional)</small></label>
+					<div id="attendantRoomGrid" class="room-allot-grid">
+						<div class="room-allot-grid__loading"><i class="fa fa-spinner fa-spin"></i> Loading rooms...</div>
+					</div>
+				</div>
+
+				<!-- Summary & Submit -->
+				<div id="allotmentSummary" class="room-allotment-summary" style="display:none;">
+					<div class="room-allotment-summary__row">
+						<div class="room-allotment-summary__cell"><strong>Patient Room:</strong> <span id="summaryPatientRoom">—</span></div>
+						<div class="room-allotment-summary__cell"><strong>Attendant Room:</strong> <span id="summaryAttendantRoom">—</span></div>
+					</div>
+				</div>
+
+				@* <div class="room-allotment-actions">
+					<button type="button" id="btnAllotRoom" class="btn btn-primary cma_primary_button room-allotment-actions__btn" disabled>
+						<i class="fa fa-check-circle"></i> Allot Room
+					</button>
+				</div> *@
+			</div>
+
+		</div>
+	</div>
+</div>

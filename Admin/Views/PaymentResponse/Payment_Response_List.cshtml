@@ -1,0 +1,1247 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:43:56 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.PaymentResponseModel
+					@{
+					ViewData["Title"] = @Resource.paymentresponselist;
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="card " style="padding:20px;">
+					<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<h3 class="formHdr">@Resource.paymentresponselist</h3>
+					</div>
+					</div>
+					</div><!--form_card_header-->
+					<div class="card-body" style="padding:1px;padding-top:0px;">
+
+					@if(TempData["errMessage"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["errMessage"]
+					</div>
+					</div>
+					</div>
+					}
+
+					@if(TempData["message"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["message"]
+					</div>
+					</div>
+					</div>
+					}
+
+					<input type="hidden" id="PaymentResponseid" name="PaymentResponseid"/>
+					<div class="row">
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+								<div class="form-group form-group--float-above my-3" > 
+								<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+								<select name="tenantid" id="tenantid" class="form-control">
+								</select>
+								<i class="form-group__bar"></i>
+								</div>
+
+								<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2 paymentrequest_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paymentrequest">@Resource.paymentresponse_paymentrequest</label>
+										<select name="paymentrequest" id="paymentrequest"  class="form-control select2 select2-list  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.paymentrequest)
+									<div id="paymentrequest-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2 paymenttype_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paymenttype">@Resource.paymentresponse_paymenttype</label>
+										<select name="paymenttype" id="paymenttype" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.paymenttype)
+									<div id="paymenttype-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2 status_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="status">@Resource.paymentresponse_status</label>
+										<select name="status" id="status" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.status)
+									<div id="status-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2 paymentmethod_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paymentmethod">@Resource.paymentresponse_paymentmethod</label>
+										<select name="paymentmethod" id="paymentmethod" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.paymentmethod)
+									<div id="paymentmethod-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 p-2">
+
+												<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+
+												</div>
+								</div>
+
+					<div class="row"><div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+					<table id="tblPaymentResponse" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+					<thead class="thead-default">
+					<tr>
+					
+					<th>Patient Name</th>
+<th>@Resource.paymentresponse_transactiontime</th>
+<th>@Resource.paymentresponse_paymenttype</th>
+<th>@Resource.paymentresponse_paymentmethod</th>
+<th>@Resource.paymentresponse_amount</th>
+<th>@Resource.paymentresponse_status</th>
+<th>@Resource.paymentresponse_orderid</th>
+<th>@Resource.paymentresponse_paymentid</th>
+<th>@Resource.paymentresponse_banktransactionid</th>
+<th>@Resource.paymentresponse_gatewayresponsecode</th>
+<th>@Resource.paymentresponse_gatewayresponsemessage</th>
+<th>@Resource.paymentresponse_responsesignature</th>
+<th>@Resource.tenantdisplayname</th>
+
+					<th class="all">Action</th>
+					
+
+					</tr>
+					</thead>
+					<tbody></tbody>
+					
+					</table>
+					</div>
+
+					</div>
+					
+					
+					</div>
+					
+					</div>
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					
+					 <script src="~/js/dtpager.js"></script>
+
+					<script type="text/javascript">
+
+					var arr_selected_for_verification = [];
+
+					function getPaymentRequestFilterValue() {
+						return $("#paymentrequest").val() || "";
+					}
+
+					function fill_PaymentResponse()
+					{
+
+						var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"paymentrequest":getPaymentRequestFilterValue(),
+"paymenttype":$("#paymenttype").val(),
+"status":$("#status").val(),
+"paymentmethod":$("#paymentmethod").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+						
+
+					
+
+					
+
+
+					
+		 dataTableId="#tblPaymentResponse";
+		 reachedEOF = false;
+		 totalRecordsCount = 0;
+		 currentPageNumber = 1;
+		 fetchingDataFromApi = false;
+	
+		var pagerControlsTemplate = "<div id='pager_container' class='dataTables_paginate'>"
+			+ "<button type='button' id='pager_btn_previous' onClick='pager_gotoPreviousPage(this);' class='paginate_button previous'>Previous</button>"
+			+ "<span>Page <input type='number' id='pager_txt_currentpage' min='1' max='^MAXPAGE^' maxlength='10' size='10' onFocus='this.oldValue=this.value;' onChange='pager_gotoPage(this);'/> of <span id='pager_lbl_pagecount'></span></span>"
+			+ "<select id='pager_ddl_pagesize' onChange='pager_pageSizeChanged(this);'>"
+			+ "<option value='50' selected>50 rows</option>"
+			+ "<option value='100'>100 rows</option>"
+			+ "<option value='200'>200 rows</option>"
+			+ "<option value='500'>500 rows</option>"
+			+ "<option value='^Everything^'>Everything</option>"
+			+ "</select>"
+			+ "<button type='button' id='pager_btn_next' onClick='pager_gotoNextPage(this);' class='paginate_button next'>Next</button>"
+			+ "</div>";
+
+	var table=$("#tblPaymentResponse").DataTable({
+	columnDefs: [{ 
+	 targets: -1,
+	 title: '<i class="fa fa-pencil fa-lg"></i>'
+  }],
+	paging:false,
+	destroy:true,
+	serverSide: true,
+	filter: true,
+	"orderMulti": false,
+	searchDelay: 2000,
+	autoWidth: false,
+	"order": [],"aaSorting": [],
+	autoWidth: !1,responsive:!0,
+	language: {
+	searchPlaceholder: "Search for records..."
+	},
+	 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+	dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+  
+	buttons: [{
+	extend: "excelHtml5",
+	title: "List Of PaymentResponse Data"
+	}, {
+	extend: "csvHtml5",
+	title: "List Of PaymentResponse Data"
+	}, {
+	extend: "print",
+	title: "List Of PaymentResponse Data"
+	}],
+ initComplete: function(a, b) {
+
+
+
+	  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+	  
+		if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+	 $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+		<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+	  `);
+		 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+			$("#cma_card_tab_action_container").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			`);
+		}
+ }
+
+var Actions=undefined
+		if(Actions != undefined){
+			var create_URL = "@Url.Action("entry.viewname", "PaymentResponse")"
+			create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+			
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`   
+
+	   
+		<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> Patient Name
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_transactiontime
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_paymenttype
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_paymentmethod
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_amount
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_status
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_orderid
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_paymentid
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_banktransactionid
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_gatewayresponsecode
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_gatewayresponsemessage
+ <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_responsesignature
+ <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+
+		 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+		</div>
+	  `.replace("create_URL", create_URL))
+}
+	$("#cma_card_tab_action_container .card-lst").remove();
+	$("#cma_card_tab_action_container_action_btn").empty()
+	$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+	   
+
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+			else{
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(` 
+		
+		
+		<div class="dataTables_buttons actions">
+		 <div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> Patient Name
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_transactiontime
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_paymenttype
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_paymentmethod
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_amount
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_status
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_orderid
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_paymentid
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_banktransactionid
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_gatewayresponsecode
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_gatewayresponsemessage
+ <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.paymentresponse_responsesignature
+ <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+		</div>
+	  `)
+}
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+if (!$(pagerContainerId).length) {
+		$(dataTableId + '_info').parent().append(
+					pagerControlsTemplate.replace('^Everything^', totalRecordsCount).replace('^MAXPAGE^', pager_getPageCount())
+				);
+}
+				//$(dataTableId + '_info').hide();
+				$(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+				pager_setCurrentPageNumber(1);
+				pager_onPageChanged();
+
+			
+
+	}
+	 ,columns: [
+		 
+		{data: 'patientname', defaultContent: '-'},
+{data: 'transactiontime'},
+{data: 'paymenttype'},
+{data: 'paymentmethod'},
+{data: 'amount',mRender: function (data, type, row) {if(row["amount"]==null) {
+ return '-' 
+}else {
+ return '&#8377;'+ row["amount"] 
+}
+}},
+{data: 'status'},
+{data: 'orderid'},
+{data: 'paymentid'},
+{data: 'banktransactionid'},
+{data: 'gatewayresponsecode'},
+{data: 'gatewayresponsemessage'},
+{data: 'responsesignature'},
+{data: '_tenantname'},
+
+		{
+					"sName": "paymentresponseid",
+					"bSearchable": false,
+					"bSortable": false,
+					data: 'paymentresponseid', "className": "dt-center",
+					mRender: function(data, type, row) {
+					var Actions=getAuthoController("PaymentResponse")
+					var appendMessage='';
+					if(Actions !=undefined)
+					{
+					for (var index = 0; index < Actions.length; ++index) {
+					var entry = Actions[index];
+					var actionMethodName = (entry.actionmethodname || "").toLowerCase();
+					var viewName = (entry.viewname || "").toLowerCase();
+					if(viewName == "update" || viewName == "edit" || viewName == "delete" || viewName == "remove" || actionMethodName == "update_payment_response" || actionMethodName == "remove_payment_response"){
+						continue;
+					}
+
+					if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+					var URL = "@Url.Action("entry.viewname", "PaymentResponse")?PaymentResponseid=" + row["paymentresponseid"]
+					URL = URL.replace("entry.viewname", entry.actionmethodname);
+			 
+					if(entry.viewname=="delete")
+					{
+						
+						appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>' 	
+				   
+				
+					}
+					
+					else if(entry.viewname=="detail")
+					{
+						var DETAIL_URL = "@Url.Action("entry.actionmethodname", "PaymentResponse")?PaymentResponseid=" + row["paymentresponseid"]
+						DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+						appendMessage+='<a href="' + DETAIL_URL + '" class="dropdown-item">View</a>' 			
+ }
+					else
+					{
+					 
+						appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>' 
+					}
+			 
+					}
+
+					}
+
+					var paymentMarker = row["paymentrequest_reference"] || "";
+					var ipdMatch = paymentMarker.match(/^IPD:([0-9a-fA-F-]{36})(?::|$)/i);
+					if(ipdMatch)
+					{
+						var VIEW_IPD_URL = "@Url.Action("View_IPD_Application_Form", "IPDApplicationForm")?IPDApplicationFormid=" + encodeURIComponent(ipdMatch[1]);
+						appendMessage+='<a href="' + VIEW_IPD_URL + '" class="dropdown-item">View IPD</a>';
+					}
+
+					if(appendMessage =="")
+					{
+					return '-'
+
+					}
+					else
+					{
+					return '<div class="dropdown actions__item">' +
+					'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+					'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+		 
+
+					'</div>' +
+					'</div>'
+					}
+
+
+
+					}
+					else
+					{
+					return '-'
+
+					}
+
+
+					}
+					}
+	
+
+	 ],
+
+		ajax: function (data, callback, settings) {
+		fetchingDataFromApi = true;
+		sendFilterData.searchterm = data.search.value; 
+		sendFilterData.pagesize = pageSize;    
+		sendFilterData.pagenumber =  (currentPageNumber - 1);   
+		var sortParams = [];
+		for (var i = 0; i < data.order.length; i++) {
+			var colIndex = data.order[i].column;
+			var sortDirection = data.order[i].dir;
+			var columnName = data.columns[colIndex].data;
+
+			var sortParam = {};
+			sortParam["col"] = columnName;
+			sortParam["dir"] = sortDirection;
+
+			sortParams.push(sortParam);
+		}
+		sendFilterData.sortFieldsJson =  JSON.stringify(sortParams);
+		$.ajax({
+		url: "@Url.Action("get_Payment_Response_List", "PaymentResponse")",
+		type: 'GET',
+		dataType: 'json',
+		data: sendFilterData,
+
+		success: function(responsedata) {
+
+				 fetchingDataFromApi = false;
+				//to let grid say no data available and all other flows get through
+				if (responsedata.detail == null) {
+					responsedata.detail = [];
+				}
+				totalRecordsCount = responsedata.count;
+				if (responsedata.detail.length < pageSize) {
+					reachedEOF = true;
+				}
+		
+				setTimeout(function () {
+				callback({
+					data: responsedata.detail,
+					recordsTotal: responsedata.count
+				  });
+				}, 50);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			fetchingDataFromApi = false;
+
+			if (JSON.stringify(jqXHR.responseText) == "API Authorization failed") {
+					swal({
+					title: 'Failed!',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+					 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function() {
+					window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+			}
+			else
+			{
+					swal({
+					title: 'Contact Administrator !',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+			}
+		}
+		});
+		},
+		"infoCallback": function(settings, start, end, max, total, pre)
+		{
+				var startRowCount = (pageSize * currentPageNumber) - pageSize + 1;
+				var endRowCount = $(dataTableId).DataTable().rows().count() + startRowCount - 1;
+				var pagingInfo = 'Showing ' + startRowCount + ' to ' + endRowCount + ' of ' + totalRecordsCount + ' entries';
+
+				return pagingInfo;
+		}
+
+
+})
+	 
+	  
+ $('body').on('click', '.ColVis_collection li', function(a) {
+	event.stopPropagation();
+  });
+ 
+ $('body').on('change', '.colvis_switch', function(a) {
+	var column = table.column($(this).attr('data-column'));
+	column.visible(!column.visible());
+  });
+
+
+ 
+
+  
+	 
+
+
+	
+
+
+							
+					}
+	  function fill_pagination(callback) {
+		if ((reachedEOF || fetchingDataFromApi) && currentPageNumber !=1) {
+			return;
+		}
+		fetchingDataFromApi = true;
+		 var order = $(dataTableId).DataTable().order();
+			var sortParams = [];
+
+			for (var i = 0; i < order.length; i++) {
+				var colIndex = order[i][0];
+				var sortDirection = order[i][1];
+				var columnName = $(dataTableId).DataTable().settings()[0].aoColumns[colIndex].data;
+
+				var sortParam = {
+					col: columnName,
+					dir: sortDirection
+				};
+
+				sortParams.push(sortParam);
+			}
+			var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"paymentrequest":getPaymentRequestFilterValue(),
+"paymenttype":$("#paymenttype").val(),
+"status":$("#status").val(),
+"paymentmethod":$("#paymentmethod").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+			sendFilterData.searchterm = $(".dt-global-search").val();
+		sendFilterData.sortFieldsJson= JSON.stringify(sortParams);
+		var currentPage = $(dataTableId).DataTable().page();
+  
+		$.ajax({
+			url: "@Url.Action("get_Payment_Response_List", "PaymentResponse")",
+			type: 'GET',
+			dataType: 'json',
+			data: sendFilterData,
+			success: function (responsedata) {
+				if (responsedata != null && responsedata.detail.length > 0) {
+					if (responsedata.detail.length < pageSize) {
+						reachedEOF = true;
+					}
+
+					api_response_data = responsedata.detail;
+					var table = $(dataTableId).DataTable();
+					table.rows().remove();
+					table.rows.add(responsedata.detail).draw();
+				}
+				else {
+					reachedEOF = true;
+				}
+				fetchingDataFromApi = false;
+				if (callback != undefined) {
+					callback();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				fetchingDataFromApi = false;
+				if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+					swal({
+						title: 'Failed!',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+												allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function () {
+						window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+				}
+				else {
+					swal({
+						title: 'Contact Administrator !',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+				}
+			}
+		});
+
+
+	}
+
+
+
+						
+
+					$(document).ready(function () {
+					$('body').on('change', '.dt-global-search', function(event) {
+					  reachedEOF = false;
+
+					  pager_setCurrentPageNumber(1);
+					  fill_pagination(pager_onPageChanged);
+
+					  $(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+					});
+
+
+					fill_PaymentResponse()
+
+
+					var Actions=getAutho("PaymentResponse","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}
+
+
+
+
+					});
+					
+
+					$("body").on("click", "[data-table-action]", function(a) {
+					a.preventDefault();
+					var b = $(this).data("table-action");
+					console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+					if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+					var c = $(this).closest(".card");
+					c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+					}
+					});
+					</script>
+					<script>
+var strpaymenttype;
+</script>
+@if (Model != null)
+{
+if (Model.paymenttype != null && Model.paymenttype.ToString() != "")
+{
+<script>
+strpaymenttype = "@Model.paymenttype";
+</script>
+}
+}
+<script>
+var strstatus;
+</script>
+@if (Model != null)
+{
+if (Model.status != null && Model.status.ToString() != "")
+{
+<script>
+strstatus = "@Model.status";
+</script>
+}
+}
+<script>
+var strpaymentmethod;
+</script>
+@if (Model != null)
+{
+if (Model.paymentmethod != null && Model.paymentmethod.ToString() != "")
+{
+<script>
+strpaymentmethod = "@Model.paymentmethod";
+</script>
+}
+}
+
+					<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'PaymentResponse' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="paymenttype"){
+												var ddltarget_paymenttype = "#paymenttype"
+												$(ddltarget_paymenttype).empty();
+												$(ddltarget_paymenttype).append("<option value=''>Choose</option>")
+												var options_paymenttype = optionDataInner.fielddesc.split(',');
+												options_paymenttype.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_paymenttype.forEach(function(option_paymenttype){
+													if(strpaymenttype== option_paymenttype){
+													$(ddltarget_paymenttype).append('<option selected value="' + option_paymenttype + '">' + option_paymenttype+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_paymenttype).append('<option  value="' + option_paymenttype + '">' + option_paymenttype+ '</option>')
+													  
+												})  
+ 
+											}
+
+											if(optionDataInner.fieldname=="status"){
+												var ddltarget_status = "#status"
+												$(ddltarget_status).empty();
+												$(ddltarget_status).append("<option value=''>Choose</option>")
+												var options_status = optionDataInner.fielddesc.split(',');
+												options_status.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_status.forEach(function(option_status){
+													if(strstatus== option_status){
+													$(ddltarget_status).append('<option selected value="' + option_status + '">' + option_status+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_status).append('<option  value="' + option_status + '">' + option_status+ '</option>')
+													  
+												})  
+ 
+											}
+
+											if(optionDataInner.fieldname=="paymentmethod"){
+												var ddltarget_paymentmethod = "#paymentmethod"
+												$(ddltarget_paymentmethod).empty();
+												$(ddltarget_paymentmethod).append("<option value=''>Choose</option>")
+												var options_paymentmethod = optionDataInner.fielddesc.split(',');
+												options_paymentmethod.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_paymentmethod.forEach(function(option_paymentmethod){
+													if(strpaymentmethod== option_paymentmethod){
+													$(ddltarget_paymentmethod).append('<option selected value="' + option_paymentmethod + '">' + option_paymentmethod+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_paymentmethod).append('<option  value="' + option_paymentmethod + '">' + option_paymentmethod+ '</option>')
+													  
+												})  
+ 
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+					
+					
+								<script>
+								$(document).ready(function () {
+								$("#tenantid").change(function(){
+								fill_PaymentResponse();
+								})
+
+								$("#btnFilter").click(function(){
+								fill_PaymentResponse();
+								})
+								});
+								</script> 
+
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+
+
+					
+					
+					 
+					
+					<script>
+					var strpaymentrequest;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.paymentrequest != null && Model.paymentrequest.ToString() != "")
+							{
+							<script>
+								 strpaymentrequest="@Model.paymentrequest"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_PaymentResponse_paymentrequest(tenantid) {
+
+					var ddltarget_paymentrequest = $('#paymentrequest');
+					ddltarget_paymentrequest.empty();;
+					ddltarget_paymentrequest.append("<option value=''>Choose</option>");
+					ddltarget_paymentrequest.select2({
+						ajax: {
+							url: '@Url.Action("lookup_PaymentResponse_paymentrequest")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.merchantid !== null);
+									data.sort((a, b) =>
+										String(a.merchantid).toLowerCase().localeCompare(String(b.merchantid).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PaymentRequestid;
+									data[i].name = data[i].merchantid+ ' ' + data[i].orderid+ ' ' + data[i].customername;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						allowClear: true,
+						minimumResultsForSearch: 0,
+						templateResult: formatSelectOption_lookup_PaymentResponse_paymentrequest,
+						 templateSelection: formatSelectSelected_lookup_PaymentResponse_paymentrequest
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpaymentrequest || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_PaymentResponse_paymentrequest")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PaymentRequestid == strpaymentrequest) {
+											var option = new Option(data[i].merchantid+ ' ' + data[i].orderid+ ' ' + data[i].customername,data[i].PaymentRequestid, true, true);
+											ddltarget_paymentrequest.append(option).trigger('update');
+
+											ddltarget_paymentrequest.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_PaymentResponse_paymentrequest(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.merchantid+ ' ' + item.orderid+ ' ' + item.customername) {
+						var textValue = item.merchantid+ ' ' + item.orderid+ ' ' + item.customername
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_PaymentResponse_paymentrequest(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.merchantid+ ' ' + item.orderid+ ' ' + item.customername;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_PaymentResponse_paymentrequest(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_PaymentResponse_paymentrequest($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script>

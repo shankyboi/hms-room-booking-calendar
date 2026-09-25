@@ -1,0 +1,380 @@
+@model NalamVazha.Models.userloginModel
+@{
+	ViewData["Title"] = "LoginPlatform";
+	Layout = "~/Views/Shared/_LoginLayout.cshtml";
+}
+
+<div class="login">
+	@using (Html.BeginForm("LoginPlatform", "users", FormMethod.Post, new { enctype = "multipart/form-data", @id = "formId" }))
+	{
+		@Html.HiddenFor(m => m.clientipaddress)
+		@Html.HiddenFor(m => m.devicename)
+		@Html.HiddenFor(m => m.latlan)
+		@Html.HiddenFor(m => m.browsername)
+		@Html.HiddenFor(m => m.tenantid)
+		<input type="hidden" name="loginType" id="loginType" value="Standard" />
+
+		@if (ViewData["message"] != null)
+		{
+			<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">x</span></button>
+						Info : @ViewData["message"]
+					</div>
+				</div>
+			</div>
+		}
+		@if (TempData["message"] != null)
+		{
+			<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">x</span></button>
+						Info : @TempData["message"]
+					</div>
+				</div>
+			</div>
+		}
+		@if (TempData["successmessage"] != null)
+		{
+			<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">x</span></button>
+						Info : @TempData["successmessage"]
+					</div>
+				</div>
+			</div>
+		}
+
+	 
+ 
+
+<div id="loginMode" role="tabpanel" aria-labelledby="loginMethodPassword">
+
+		<div class="login-header-section">
+			<h2>Sign in</h2>
+			<p>Use your username and password</p>
+		</div>
+
+			@if (ViewBag.TenantName == null)
+			{
+				<div class="col-sm-12 col-xs-12 text-center mb-3">
+					<a href="@Url.Action("Index", "users")" class="btn cma_secounday_button btn-sm">Select organization</a>
+				</div>
+			}
+
+			<div class="login-field-group">
+				<label for="username">Username</label>
+				<div class="input-group login-input-group">
+					@Html.TextBoxFor(m => m.username, new { @type = "search", @autocomplete = "off", @maxlength = "128", @class = "form-control required", @placeholder = "Enter your username" })
+					<span class="input-group-addon"><i class="md md-person"></i></span>
+				</div>
+			</div>
+
+			<div class="login-field-group">
+				<div class="d-flex justify-content-between align-items-center">
+					<label for="userpassword">Password</label>
+					<a href="@Url.Action("forgotpassword", "users")" class="forgot-link" tabindex="-1">Forgot Password?</a>
+				</div>
+				<div class="input-group login-input-group">
+					@Html.TextBoxFor(m => m.userpassword, new { @type = "password", @autocomplete = "off", @maxlength = "50", @id = "passwordInput", @class = "form-control required", @placeholder = "Enter your password" })
+					<span class="input-group-addon" id="togglePassword" style="cursor:pointer;">
+						<i class="fa fa-eye" id="showIcon" aria-hidden="true"></i>
+						<i class="fa fa-eye-slash" style="display:none;" id="hideIcon" aria-hidden="true"></i>
+					</span>
+				</div>
+			</div>
+
+			<div class="login-submit-wrap col-sm-12 col-xs-12 p-0 mt-3">
+				<button class="btn cma_primary_button w-100 login-submit-btn" type="submit">
+					<i class="fa fa-sign-in-alt mr-2"></i> Login
+				</button>
+			</div>
+		</div>
+		<div id="otpMode" role="tabpanel" aria-labelledby="loginMethodOtp" style="display: none;">
+			<div class="login-header-section">
+				<h2>Sign in with email</h2>
+				<p>We’ll email you a one-time code to sign in—no password needed</p>
+			</div>
+
+			<!-- Email Field -->
+			<div class="login-field-group">
+				<label for="otpEmail">Email Address</label>
+				<div class="input-group login-input-group">
+					<input type="email" name="otpEmail" id="otpEmail" class="form-control" maxlength="128" autocomplete="off" placeholder="Enter your email address" />
+					<span class="input-group-addon">
+						<i class="md md-mail"></i>
+					</span>
+				</div>
+			</div>
+
+			<!-- OTP Input Field (Hidden initially) -->
+			<div class="login-field-group" id="otpInputSection" style="display: none;">
+				<label for="otp_input">Code from your email</label>
+				<div class="input-group login-input-group">
+					<input type="text" name="otp_input" id="otp_input" class="form-control" maxlength="6" autocomplete="off" placeholder="OTP" inputmode="numeric" pattern="[0-9]*" />
+					<span class="input-group-addon"><i class="fa fa-key"></i></span>
+				</div>
+			</div>
+
+			<!-- Send OTP Button (Shown initially) -->
+			<div class="login-submit-wrap col-sm-12 col-xs-12 p-0 mt-3" id="sendOtpSection">
+				<button class="btn cma_primary_button w-100 login-submit-btn" type="button" onclick="sendOTP()">
+					<i class="fa fa-paper-plane mr-2"></i> Send code to email
+				</button>
+				<div class="text-center mt-2">
+					<a href="javascript:void(0);" onclick="backToLogin()" class="btn btn-link login-otp-back-link">Use password instead</a>
+				</div>
+			</div>
+
+			<div class="login-submit-wrap col-sm-12 col-xs-12 p-0 mt-3" id="verifyOtpSection" style="display: none;">
+				<button class="btn cma_primary_button w-100 login-submit-btn" type="submit" onclick="$('#loginType').val('VerifyOTP')">
+					<i class="fa fa-check mr-2"></i> Verify &amp; sign in
+				</button>
+				<div class="text-center mt-2">
+					<a href="javascript:void(0);" onclick="resendOTP()" class="btn btn-link">Resend code</a>
+					<span class="login-otp-link-sep" aria-hidden="true">·</span>
+					<a href="javascript:void(0);" onclick="backToLogin()" class="btn btn-link login-otp-back-link">Use password instead</a>
+				</div>
+			</div>
+		</div>
+
+	}
+</div>
+
+ 
+ 
+ 
+<script src="~/components/jquery/jquery.validate.js"></script>
+<script src="~/components/jquery/additional-methods.min.js"></script>
+<script>
+	$(document).on('input', '#otp_input', function () {
+		var digitsOnly = ($(this).val() || '').replace(/\D/g, '').slice(0, 6);
+		if (digitsOnly !== $(this).val()) $(this).val(digitsOnly);
+	});
+
+	// The Password and Email OTP panels share one <form>, so pressing Enter would
+	// otherwise fall through to the form's default (password) submit button.
+	// Route Enter explicitly to the right action for whichever OTP field is focused.
+	$(document).on('keydown', '#otpEmail', function (e) {
+		if (e.key === 'Enter' || e.keyCode === 13) {
+			e.preventDefault();
+			sendOTP();
+		}
+	});
+	$(document).on('keydown', '#otp_input', function (e) {
+		if (e.key === 'Enter' || e.keyCode === 13) {
+			e.preventDefault();
+			$('#verifyOtpSection button[type="submit"]').trigger('click');
+		}
+	});
+
+	function goToOTPMode() {
+		$('#loginMode').hide();
+		$('#otpMode').show();
+		$('#loginMethodPassword').removeClass('active').attr('aria-selected', 'false');
+		$('#loginMethodOtp').addClass('active').attr('aria-selected', 'true');
+		$('#otpEmail').focus();
+	}
+
+	
+	function backToLogin() {
+		$('#otpMode').hide();
+		$('#loginMode').show();
+		$('#loginMethodOtp').removeClass('active').attr('aria-selected', 'false');
+		$('#loginMethodPassword').addClass('active').attr('aria-selected', 'true');
+		$('#otpInputSection').hide();
+		$('#sendOtpSection').show();
+		$('#verifyOtpSection').hide();
+		$('#otpEmail').val('').prop('readonly', false);
+		$('#otp_input').val('');
+		$('#username').focus();
+	}
+
+function resendOTP() {
+    $('#otpEmail').prop('readonly', false);
+    $('#otpInputSection').hide();
+    $('#verifyOtpSection').hide();
+    $('#sendOtpSection').show();
+    $('#otp_input').val('');
+}
+
+	function sendOTP() {
+    var email = $('#otpEmail').val().trim();
+    if (email === '') { alert('Please enter your email address'); return; }
+
+    var btn = $('#sendOtpSection button');
+    btn.prop('disabled', true).text('Sending...');
+
+
+			
+
+    $.ajax({
+        url: '@Url.Action("Login", "users")',
+        type: 'POST',
+        data: {
+            username: email,
+            loginType: 'SendOTP',
+            tenantid: $('[name="tenantid"]').val(),
+            clientipaddress: $('#clientipaddress').val(),
+            devicename: $('#devicename').val(),
+            latlan: $('#latlan').val(),
+            browsername: $('#browsername').val()
+        },
+        success: function (response) {
+    if (response.indexOf('OTP has been sent') > -1) {
+        $('#sendOtpSection').hide();
+        $('#otpInputSection').show();
+        $('#verifyOtpSection').show();
+        $('#otpEmail').prop('readonly', true);
+        $('#username').val(email);
+        btn.prop('disabled', false).text('Send OTP');
+    } else {
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(response, 'text/html');
+        var msg = $(doc).find('.alert-danger').text().replace('Info :', '').trim();
+        alert(msg || 'Failed to send OTP.');
+        btn.prop('disabled', false).text('Send OTP');
+    }
+},
+        error: function () {
+            alert('Something went wrong. Please try again.');
+            btn.prop('disabled', false).text('Send OTP');
+        }
+    });
+}
+
+	$(document).ready(function () {
+
+		$('#loginMethodPassword').on('click', function () { backToLogin(); });
+		$('#loginMethodOtp').on('click', function () { goToOTPMode(); });
+
+		var  tenantid = getUrlVars()["tenantid"];
+
+					$("#tenantid").val(tenantid)
+
+					 
+            $("#qa-register").attr("href", '@Url.Action("Quick_Add_Patient_Profile", "PatientProfile")' + '?tenantid=' + tenantid)
+                $("#qa-enquiry").attr("href", '@Url.Action("Enquiry", "PublicEnquiry")' + '?tenantid=' + tenantid)
+
+
+		$('#formId').validate({
+ignore: function (index, element) {
+    if ($('#otpMode').is(':visible')) {
+        return $(element).is('#passwordInput');
+    }
+    if ($('#loginMode').is(':visible')) {
+        return $(element).is('#otpEmail') || 
+               $(element).is('#otp_input');
+    }
+    return false;
+},
+			highlight: function(element) {
+				$(element).closest('.login-field-group').addClass('has-error');
+				$(element).addClass('form-control-error');
+			},
+			unhighlight: function(element) {
+				$(element).closest('.login-field-group').removeClass('has-error');
+				$(element).addClass('form-control-success');
+			},
+			errorElement: 'span',
+			errorClass: 'help-block',
+			errorPlacement: function(error, element) {
+				error.insertAfter(element.closest('.input-group'));
+			}
+		});
+
+			$("#btnSubmit").click(function(){
+				if ($("#formId").valid()){
+					$(".page-loader").show();
+					$("#formId").submit();
+				} else {
+					validator.focusInvalid();
+					swal({
+						title: 'Validation Failed!',
+						text: "Please check your entry",
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					});
+				}
+			});
+		});
+</script>
+<script>
+	$(document).ready(function () {
+		localStorage.removeItem("activeMenuClass");
+		$(document).on('click', '.localClear', function () {
+			localStorage.removeItem("activeMenuClass");
+		});
+	});
+</script>
+<script>
+	$('form:first *:input[type!=hidden]:first').focus();
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(showPosition);
+	}
+	$("#devicename").val(navigator.platform);
+	function showPosition(position) {
+		$("#latlan").val("Latitude: " + position.coords.latitude + ";Longitude: " + position.coords.longitude);
+	}
+	$.getJSON("https://api.ipify.org?format=json", function (data) {
+		$("#clientipaddress").val(data.ip);
+	});
+</script>
+<script>
+	$('#togglePassword').on('click', function () {
+		const passwordInput = $('#passwordInput');
+		const showIcon = $('#showIcon');
+		const hideIcon = $('#hideIcon');
+		if (passwordInput.attr('type') === 'password') {
+			passwordInput.attr('type', 'text');
+			showIcon.hide();
+			hideIcon.show();
+		} else {
+			passwordInput.attr('type', 'password');
+			hideIcon.hide();
+			showIcon.show();
+		}
+	});
+</script>
+<script>
+	$(document).ready(function() {
+		$('.cma_secondary_signup').on('click', function() {
+			$.ajax({
+				url: '@Url.Action("ClearSession", "Tenant")',
+				type: 'POST',
+				success: function () {}
+			});
+		});
+	});
+</script>
+
+
+
+@if (ViewData["ShowOTPField"] != null && (bool)ViewData["ShowOTPField"])
+{
+    <script>
+        $(document).ready(function () {
+            goToOTPMode();
+
+            @if (ViewData["ShowOTPInput"] != null && (bool)ViewData["ShowOTPInput"])
+            {
+                // Show OTP input, hide send button, show verify button
+                <text>
+                $('#otpInputSection').show();
+                $('#sendOtpSection').hide();
+                $('#verifyOtpSection').show();
+                // Pre-fill the email so user sees it
+                $('#otpEmail').val('@Html.Raw(Model.username)');
+                </text>
+            }
+        });
+    </script>
+}
+

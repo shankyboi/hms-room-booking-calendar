@@ -1,0 +1,2933 @@
+<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:58 -->
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@model NalamVazha.Models.OPDFormModel
+@{
+	ViewData["Title"] = "OPD Form";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+	function getOPDReviewReturnUrl() {
+		try {
+			var requested = new URLSearchParams(window.location.search).get('returnurl');
+			if (requested && requested.charAt(0) === '/' && requested.indexOf('//') !== 0) return requested;
+		} catch (e) { }
+		return document.referrer || '';
+	}
+</script>
+
+<div class="">
+
+	<div class="">
+
+		<div class="row" id="reworksection" style="display:none">
+			<div class="col-sm-12">
+				<div class="review-common-title rework">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+						<path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+						<path d="M12 8V12" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+						<path d="M12 16H12.01" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg>
+					<label>Reason for Re-work : </label><span class="auto_cls_reviewcomments"> </span>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" id="rejectedsection" style="display:none">
+			<div class="col-sm-12">
+				<div class="review-common-title rejected">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+						<path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+						<path d="M12 8V12" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+						<path d="M12 16H12.01" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg>
+					<label>Reason for Rejection : </label><span class="auto_cls_reviewcomments"> </span>
+				</div>
+			</div>
+		</div>
+		<div id="cma_printableArea" style="padding:20px">
+
+			<div class="row printablerow">
+				<div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+					<h3>
+						<img src="~/images/logo.png" style="height:60px;width:60px;">
+						<b>OPD Form</b>
+					</h3>
+
+					<br />
+				</div>
+				<div class="col-sm-12 revisions" style="display:none;">
+					<div class="card-head">
+						<header><span class="auto_cls_quotenumber"></span></header>
+
+						<ul class="nav nav-tabs tabs-vessels pull-right">
+							<li class="dropdown">
+								<a href="javascript:void(0);" class="cma_highlight" data-toggle="dropdown">
+									<i class="md md-more-vert"></i><sup class="badge style-danger number_of_records"></sup>
+								</a>
+								<ul class="dropdown-menu dropleft animation-expand allrecords">
+								</ul><!--end .dropdown-menu -->
+							</li><!--end .dropdown -->
+
+
+						</ul>
+					</div>
+				</div>
+
+				<div class="col-sm-12 rv-review-tabs-shell">
+					<ul class="nav nav-tabs rv-review-tabs" role="tablist">
+						<li role="presentation" class="active">
+							<a href="#rvReviewInfoTab" aria-controls="rvReviewInfoTab" role="tab" data-toggle="tab">
+								<i class="fa fa-file-text-o"></i> Basic &amp; Medical Info
+							</a>
+						</li>
+						<li role="presentation">
+							<a href="#rvReviewScheduleTab" aria-controls="rvReviewScheduleTab" role="tab" data-toggle="tab">
+								<i class="fa fa-calendar-check-o"></i> Schedule Appointment
+							</a>
+						</li>
+					</ul>
+					<div class="tab-content rv-review-tab-content">
+						<div role="tabpanel" class="tab-pane fade in active" id="rvReviewInfoTab">
+							<div class="row">
+
+				<div class="col-sm-12 col-xs-12 mt-3 BasicInfo_craftmyapp_container">
+					<!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+						<div class="card-head">
+							<header>@Resource.basicinfo</header>
+						</div>
+						<div class="card-body card-container-Padding-NoShadow">
+							<div class="row">
+								<div class="col-sm-3 col-xs-12 p-2 bookingreferencenumber_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="bookingreferencenumber">@Resource.opdform_bookingreferencenumber</label><br>
+											<span class="auto_cls_bookingreferencenumber"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-12 p-2 patientname_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="patientname">@Resource.opdform_patientname</label><br>
+											<span class="auto_cls_patientname"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+
+
+								<div class="col-sm-3 col-xs-12 p-2 appointmentmode_craftmyapp_viewcontainer">
+									<div>
+										<div class="form-group form-group--float-above my-3">
+											<label for="appointmentmode">@Resource.opdform_appointmentmode</label><br>
+											<span class="auto_cls_appointmentmode"></span>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div><!--form_group_div_block-->
+
+
+				<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent appointmentpreferencesContainerBodyParent hide" style="display:none;">
+					<!--Dependent Appointment Preferences Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								@Resource.appointmentpreferences
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+							<div class="col-12">
+								<div class="table-responsive-lg">
+									<table id="appointmentpreferencesContainer" class="table table-bordered mb-0 appointmentpreferencesContainer">
+										<thead id="appointmentpreferencesContainerHead">
+										<th>Preferred Date</th>
+										<th>Slot Preference</th>
+
+
+										</thead>
+
+										<tbody id="appointmentpreferencesContainerBody">
+										</tbody>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--Dependent Appointment Preferences Containder Block-->
+
+
+				<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicalinfoContainerBodyParent hide">
+					<!--Dependent Medical Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								@Resource.medicalinfo
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+							<div class="col-12">
+								<div class="table-responsive-lg">
+									<table id="medicalinfoContainer" class="table table-bordered mb-0 medicalinfoContainer">
+										<thead id="medicalinfoContainerHead">
+										<th>Medical Condition Name</th>
+										<th>Duration</th>
+										<th>Unit</th>
+										<th>Severity Level</th>
+
+
+										</thead>
+
+										<tbody id="medicalinfoContainerBody">
+										</tbody>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--Dependent Medical Info Containder Block-->
+
+
+
+				<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicationinfoContainerBodyParent hide">
+					<!--Dependent Medication Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								@Resource.medicationinfo
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+							<div class="col-12">
+								<div class="table-responsive-lg">
+									<table id="medicationinfoContainer" class="table table-bordered mb-0 medicationinfoContainer">
+										<thead id="medicationinfoContainerHead">
+										<th>Medicine Name</th>
+										<th>Frequency in a day</th>
+										<th>Medication Duration</th>
+
+
+										</thead>
+
+										<tbody id="medicationinfoContainerBody">
+										</tbody>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--Dependent Medication Info Containder Block-->
+
+
+
+				<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicalrecordsContainerBodyParent hide">
+					<!--Dependent Medical Records Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								@Resource.medicalrecords
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+							<div class="col-12">
+								<div class="table-responsive-lg">
+									<table id="medicalrecordsContainer" class="table table-bordered mb-0 medicalrecordsContainer">
+										<thead id="medicalrecordsContainerHead">
+										<th>Medical Record Name</th>
+										<th>Medical Record File</th>
+
+
+										</thead>
+
+										<tbody id="medicalrecordsContainerBody">
+										</tbody>
+
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!--Dependent Medical Records Containder Block-->
+							</div>
+						</div>
+						<div role="tabpanel" class="tab-pane fade" id="rvReviewScheduleTab">
+							<div class="row">
+				<!-- ===== Patient Existing Appointment Slots Panel ===== -->
+				<div class="col-sm-12 col-xs-12 mt-3" id="rv_patient_slot_section" style="display:none;">
+					<div class="card card-blue card-section">
+						<div class="card-head">
+							<header><i class="fa fa-calendar-check-o mr-1"></i> Patient Appointment Slots</header>
+						</div>
+						<div class="card-body">
+							<div id="rv_patient_slot_body">
+								<p class="text-muted">Loading&hellip;</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- ===== End Patient Existing Appointment Slots Panel ===== -->
+				<!-- ===== Preferred Doctor + Slot Booking Panel ===== -->
+				<div class="col-sm-12 col-xs-12 p-2 preferreddoctor_craftmyapp_viewcontainer">
+
+					<div class="fd-doctor-slot-card">
+
+						<div class="fd-slot-card-header">
+							<div class="fd-slot-card-title">
+								<i class="fa fa-calendar-check-o"></i>
+								<span>Schedule Appointment</span>
+							</div>
+							<div id="rvAppointmentTypeBadge" class="fd-preference-status fd-appointment-type-badge" style="display:none;">
+								<i class="fa fa-info-circle"></i>
+								<span>Appointment Type: <strong id="rvAppointmentTypeText">-</strong></span>
+							</div>
+						</div>
+
+						<!-- Doctor Select2 dropdown (pre-selected with OPD preferred doctor) -->
+
+						<div class="fd-slot-controls">
+						<div class="fd-slot-controls-title"><i class="fa fa-filter"></i> Booking Details</div>
+						<div class="fd-field task_craftmyapp_viewcontainer rv-booking-for-panel">
+							<label for="rv_task" class="fd-doctor-label"><i class="fa fa-list-alt mr-1"></i> @Resource.opdform_task</label>
+							<!-- Shown when verifiedstatus is Ready For Review or Ready For OPD Review -->
+							<select id="rv_task" class="form-control" style="display:none;"></select>
+							<!-- Shown for all other statuses (read-only saved value) -->
+							<span id="rv_task_readonly" for="rv_task" class="auto_cls_taskname fd-readonly-value"></span>
+						</div>
+
+						<div id="fdDoctorDropdownRow" style="display:none;" class="fd-field">
+
+							<label class="fd-doctor-label"><i class="fa fa-user-md mr-1"></i> @Resource.opdform_preferreddoctor <span class="text-danger">*</span></label>
+
+							<select id="fdDoctorSelect" class="form-control select2 select2-list" style="width:100%;"></select>
+							<div id="fdDoctorSelect-error" class="help-block text-danger" style="display:none;" role="alert">Please choose a preferred doctor.</div>
+
+						</div>
+
+
+						<!-- Resolved preferred date, set by selected preference -->
+
+						<div id="fdDateRow" style="display:none;" class="fd-field">
+
+							<label class="fd-doctor-label"><i class="fa fa-calendar-o mr-1"></i> Resolved Date</label>
+
+							<span id="fdResolvedDateText" class="fd-readonly-value">Pending preference check</span>
+							<input type="hidden" id="fdDateInput" autocomplete="off" />
+
+						</div>
+
+
+						<!-- Pre-booked slot notice (from health seeker Requested appointment) -->
+
+						<div id="fdPreBookedSlotNotice" style="display:none;" class="fd-pre-booked-notice">
+
+							<i class="fa fa-clock-o"></i>
+
+							<span>Patient booked slot: <strong id="fdPreBookedSlotTime">&#8212;</strong></span>
+
+						</div>
+
+
+						<!-- Slot toolbar -->
+
+						<div id="fdSlotToolbar" style="display:none;" class="fd-slot-toolbar fd-field fd-slot-action">
+							<button type="button" id="btnFDFetchSlots" class="fd-btn-check" title="Check available slots">
+								<i class="fa fa-refresh mr-1"></i> Check Preferences
+							</button>
+						</div>
+						</div>
+
+						<div id="fdPreferenceTabsWrap" class="fd-preference-tabs-wrap" style="display:none;">
+							<div class="fd-preference-tabs-head">
+								<span><i class="fa fa-list-ol"></i> Preferred Dates</span>
+								<small>Checked in preference order</small>
+							</div>
+							<div id="fdPreferenceTabs" class="fd-preference-tabs"></div>
+							<div id="fdResolvedPreferenceAudit" class="fd-resolved-preference-audit" style="display:none;"></div>
+						</div>
+
+						<div id="fdPreferenceStatus" class="fd-preference-status" style="display:none;"></div>
+
+						<!-- States -->
+						<div id="fdSlotsLoading" style="display:none;" class="fd-state-msg">
+							<i class="fa fa-spinner fa-spin"></i> Loading slots&hellip;
+						</div>
+						<div id="fdSlotsEmpty" style="display:none;" class="fd-state-msg fd-state-empty">
+							<i class="fa fa-calendar-times-o"></i>
+							<span id="fdSlotsEmptyMsg">No slots available for this date.</span>
+						</div>
+
+						<!-- Slot grid -->
+						<div id="fdSlotsGrid" style="display:none;">
+							<div class="fd-slots-legend">
+								<span>
+									<span class="fd-leg-dot" style="background:#e8f5e9;border-color:#a5d6a7;"></span> Available
+								</span>
+								<span>
+									<span class="fd-leg-dot" style="background:#fce4ec;border-color:#ef9a9a;"></span> Booked
+								</span>
+								<span>
+									<span class="fd-leg-dot" style="background:#226847;border-color:#185239;"></span> Selected
+								</span>
+								<small id="fdSlotsSummary" class="fd-slots-summary"></small>
+							</div>
+							<div id="fdSlotsContainer" class="fd-slots-grid"></div>
+							<!-- Slot selected indicator -->
+						</div>
+
+						<!-- Notice shown when status = Ready For Review but appointment not yet saved -->
+						<div id="fdApptRequiredNotice" style="display:none;" class="fd-appt-notice">
+							<i class="fa fa-clock-o" id="fdNoticeIcon"></i>
+							<span id="fdNoticeText">Please <strong>select a time slot</strong> and open the appointment form to book before approving.</span>
+						</div>
+					</div>
+					<!-- ===== End Slot Booking Panel ===== -->
+				</div>
+				<div class="col-sm-12 col-xs-12 p-2 verifiedstatus_craftmyapp_viewcontainer">
+					<div>
+						<div class="form-group form-group--float-above my-3">
+							<label for="verifiedstatus">@Resource.opdform_verifiedstatus</label><br>
+							<span class="auto_cls_verifiedstatus"></span>
+							<i class="form-group__bar"></i>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="col-sm-12 col-xs-12 mt-3 review_logs_parent hide">
+					<!--Dependent review_logs Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+						<div class="card-head">
+							<header>
+								Review Log
+							</header>
+
+						</div>
+						<div class="card-body fluent-card-body commonContainer">
+
+							<div class="col-12">
+								<div class="col-12">
+									<ul class="nav nav-tabs tab-nav-right" role="tablist">
+										<li role="presentation" class="active"><a href="#home" data-toggle="tab"><i class="fa fa-calendar"></i></a></li>
+										<li role="presentation"><a href="#profile" data-toggle="tab"><i class="fa fa-history"></i></a></li>
+
+									</ul>
+
+									<div class="tab-content">
+										<div role="tabpanel" class="tab-pane fade in active" id="home">
+											<div class="table-responsive-lg">
+												<table id="review_logsContainer" class="table table-bordered mb-0 review_logsContainer">
+													<thead id="review_logsContainerHead">
+													<th>Reviewed On</th>
+													<th>Reviewed By</th>
+													<th>Status</th>
+													<th>Comments</th>
+
+													</thead>
+
+													<tbody id="review_logsContainerBody">
+													</tbody>
+
+												</table>
+											</div>
+
+										</div>
+										<div role="tabpanel" class="tab-pane fade" id="profile">
+											<div class="table-responsive-lg">
+												<table id="review_logs_historyContainer" class="table table-bordered mb-0 review_logsContainer">
+													<thead id="review_logsContainerHead">
+													<th>Booking Reference Number</th>
+													<th>Reviewed On</th>
+													<th>Reviewed By</th>
+													<th>Status</th>
+													<th>Comments</th>
+
+													</thead>
+
+													<tbody id="review_logs_historyContainerBody">
+													</tbody>
+
+												</table>
+											</div>
+										</div>
+
+									</div>
+
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12 p-2 auto_review_comments">
+					<div>
+						<div class="form-group form-group--float-above my-3">
+							<label>Review Comments</label><br>
+							<textarea id="reviewcomments" readonly class="form-control auto_cls_reviewcomments" name="reviewcomments"></textarea>
+							<i class="form-group__bar"></i>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12 col-xs-12 ">
+					<div class="btn-group pull-right" id="verifiedstatus_buttons">
+					</div>
+				</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="comparisonContainer"></div>
+		<div class="row">
+			<div class="col-sm-12 col-xs-12">
+
+				<button type="button" onclick="window.location.href = getOPDReviewReturnUrl() || document.referrer" class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+
+			</div>
+		</div>
+
+	</div>
+
+	<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+	<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+	<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+	<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+	<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+	<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+	<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+	<style>
+		.page-header-box h1 {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-wrap: wrap;
+			line-height: 1.2;
+		}
+
+		.page-header-box h1 .review_title {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			min-height: 24px;
+			padding: 4px 10px;
+			border-radius: 999px;
+			font-size: 12px;
+			font-weight: 700;
+			line-height: 1;
+			letter-spacing: 0;
+			text-transform: uppercase;
+			vertical-align: middle;
+			white-space: nowrap;
+			box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+		}
+
+		.page-header-box h1 .opd-review-header-patient {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			color: inherit;
+			font-size: 1em;
+			font-weight: 600;
+		}
+
+		.page-header-box h1 .opd-review-header-patient-separator {
+			color: #94a3b8;
+			font-weight: 400;
+		}
+
+		.page-header-box h1 .opd-review-header-opd-number {
+			color: #64748b;
+			font-size: 0.72em;
+			font-weight: 600;
+		}
+
+		.page-header-box h1 .review_title svg {
+			width: 14px;
+			height: 14px;
+			flex: 0 0 auto;
+		}
+
+		.page-header-box h1 .review_title--rejected {
+			background: #c62828;
+			color: #fff;
+		}
+
+		.page-header-box h1 .review_title--rework {
+			background: #b7791f;
+			color: #fff;
+		}
+
+		@@media (max-width: 767px) {
+			.page-header-box h1 .review_title {
+				font-size: 11px;
+				padding: 4px 8px;
+			}
+		}
+
+		.opd-patient-badges { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+		.opd-patient-badge { display:inline-flex; align-items:center; gap:3px; border-radius:999px; font-size:10.5px; font-weight:700; padding:2px 8px; white-space:nowrap; }
+		.opd-patient-badge--danger { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+		.opd-patient-badge--category { background:#ede9fe; color:#5b21b6; border:1px solid #ddd6fe; }
+		.opd-patient-badge--none { background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0; }
+
+		.rv-review-tabs-shell {
+			margin-top: 12px;
+		}
+
+		.rv-review-tabs {
+			display: flex;
+			gap: 8px;
+			border-bottom: 1px solid #d7e8df;
+			margin-bottom: 0;
+			padding-left: 0;
+		}
+
+		.rv-review-tabs > li {
+			margin-bottom: -1px;
+		}
+
+		.rv-review-tabs > li > a {
+			border: 1px solid #d7e8df !important;
+			border-bottom-color: transparent !important;
+			border-radius: 8px 8px 0 0 !important;
+			background: #f8fbf9;
+			color: #2f5f49;
+			font-size: 13px;
+			font-weight: 700;
+			padding: 10px 14px;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+
+		.rv-review-tabs > li > a:hover,
+		.rv-review-tabs > li > a:focus {
+			background: #eef8f2;
+			color: #1f5d46;
+		}
+
+		.rv-review-tabs > li.active > a,
+		.rv-review-tabs > li.active > a:hover,
+		.rv-review-tabs > li.active > a:focus {
+			background: #fff !important;
+			color: #1e293b !important;
+			border-color: #d7e8df !important;
+			border-bottom-color: #fff !important;
+			box-shadow: 0 -2px 0 var(--btnprimary, #2d5f44) inset;
+		}
+
+		.rv-review-tab-content {
+			background: #fff;
+			border: 1px solid #d7e8df;
+			border-top: 0;
+			border-radius: 0 8px 8px 8px;
+			padding: 12px;
+			box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+		}
+
+		.rv-review-tab-content .BasicInfo_craftmyapp_container,
+		.rv-review-tab-content .dependentContainerBodyParent,
+		.rv-review-tab-content .preferreddoctor_craftmyapp_viewcontainer,
+		.rv-review-tab-content #rv_patient_slot_section {
+			margin-top: 0 !important;
+		}
+
+		/* ================================================================
+														   FD Doctor + Slot Booking Panel
+														================================================================ */
+		.fd-doctor-slot-card {
+			background: var(--body-background, #fff);
+			border: 1px solid #e2e8f0;
+			border-radius: 8px;
+			padding: 0;
+			box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+			overflow: hidden;
+		}
+
+		.rv-booking-for-panel .form-group {
+			background: var(--body-background, #fff);
+			border: 1px solid #d7e8df;
+			border-radius: 8px;
+			padding: 12px;
+			box-shadow: 0 4px 14px rgba(24, 82, 57, 0.06);
+			min-height: 100%;
+		}
+
+		.rv-booking-for-panel label,
+		.fd-doctor-label {
+			font-size: 12px;
+			font-weight: 700;
+			color: #51635b;
+			margin-bottom: 6px;
+			display: block;
+		}
+
+		#rv_task,
+		#fdDateInput,
+		.fd-doctor-slot-card .select2-container--default .select2-selection--single {
+			border: 1px solid #c8ddd3 !important;
+			border-radius: 6px !important;
+			min-height: 36px;
+		}
+
+		.fd-slot-card-header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			padding: 13px 16px;
+			margin-bottom: 0;
+			border-bottom: 1px solid #e8ecf1;
+			background: #f8fafc;
+		}
+
+		.fd-slot-card-title {
+			color: #1e293b;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 16px;
+			font-weight: 700;
+		}
+
+		.fd-slot-card-title i {
+			color: var(--btnprimary, #2d5f44);
+		}
+
+		.fd-slot-controls {
+			display: grid;
+			grid-template-columns: minmax(190px, 0.85fr) minmax(280px, 1.25fr) minmax(220px, 0.85fr) auto;
+			gap: 12px;
+			align-items: end;
+			margin: 14px 16px 14px;
+			background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+			border: 1px solid #e2e8f0;
+			border-radius: 10px;
+			padding: 12px 14px;
+		}
+
+		.fd-slot-controls-title {
+			grid-column: 1 / -1;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			color: #475569;
+			font-size: 12px;
+			font-weight: 700;
+			text-transform: uppercase;
+			margin-bottom: 2px;
+		}
+
+		.fd-slot-controls-title i {
+			color: var(--btnprimary, #2d5f44);
+		}
+
+		.fd-field {
+			min-width: 0;
+		}
+
+		.fd-slot-action {
+			justify-content: flex-end;
+			margin-bottom: 0 !important;
+			order: 3;
+		}
+
+		.fd-appointment-type-badge {
+			margin-bottom: 0 !important;
+			white-space: nowrap;
+			background: #eef8f2;
+		}
+
+		.fd-readonly-value {
+			display: block;
+			min-height: 36px;
+			padding: 8px 10px;
+			border: 1px solid #c8ddd3;
+			border-radius: 6px;
+			background: #f8fbf9;
+			color: #1f2937;
+			font-weight: 600;
+		}
+
+		.fd-preference-tabs-wrap {
+			margin: 0 16px 14px;
+			border: 1px solid #e2e8f0;
+			border-radius: 10px;
+			background: #fff;
+			padding: 12px;
+		}
+
+		.fd-preference-tabs-head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 10px;
+			margin-bottom: 10px;
+			color: #1e293b;
+			font-size: 13px;
+			font-weight: 700;
+		}
+
+		.fd-preference-tabs-head i {
+			color: var(--btnprimary, #2d5f44);
+			margin-right: 5px;
+		}
+
+		.fd-preference-tabs-head small {
+			color: #64748b;
+			font-size: 11px;
+			font-weight: 600;
+		}
+
+		.fd-preference-tabs {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.fd-preference-tab {
+			min-width: 220px;
+			flex: 1 1 220px;
+			border: 1px solid #d7e8df;
+			border-radius: 8px;
+			background: #f8fbf9;
+			padding: 9px 10px;
+			position: relative;
+			transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+		}
+
+		.fd-preference-tab__top {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 8px;
+			margin-bottom: 5px;
+		}
+
+		.fd-preference-tab__name {
+			color: #1f5d46;
+			font-size: 12px;
+			font-weight: 800;
+		}
+
+		.fd-preference-tab__state {
+			border-radius: 999px;
+			background: #e2e8f0;
+			color: #475569;
+			font-size: 10px;
+			font-weight: 700;
+			padding: 2px 7px;
+			white-space: nowrap;
+		}
+
+		.fd-preference-tab__date {
+			color: #1e293b;
+			font-size: 13px;
+			font-weight: 700;
+			margin-bottom: 4px;
+		}
+
+		.fd-preference-tab__slots {
+			color: #64748b;
+			font-size: 11px;
+			font-weight: 600;
+			line-height: 1.35;
+		}
+
+		.fd-preference-tab.is-checking {
+			background: #f0fdf4;
+			border-color: #86efac;
+			box-shadow: 0 0 0 2px rgba(47, 107, 79, 0.08);
+		}
+
+		.fd-preference-tab.is-checking .fd-preference-tab__state {
+			background: #dcfce7;
+			color: #166534;
+		}
+
+		.fd-preference-tab.is-unavailable {
+			background: #fff7ed;
+			border-color: #fdba74;
+			opacity: 0.9;
+		}
+
+		.fd-preference-tab.is-unavailable .fd-preference-tab__state {
+			background: #fed7aa;
+			color: #9a3412;
+		}
+
+		.fd-preference-tab.is-selected {
+			background: #eef8f2;
+			border-color: var(--btnprimary, #2d5f44);
+			box-shadow: 0 0 0 3px rgba(47, 107, 79, 0.17);
+		}
+
+		.fd-preference-tab.is-selected .fd-preference-tab__state {
+			background: var(--btnprimary, #2d5f44);
+			color: #fff;
+		}
+
+		.fd-resolved-preference-audit {
+			margin-top: 10px;
+			border: 1px solid #bbf7d0;
+			border-radius: 8px;
+			background: #f0fdf4;
+			color: #166534;
+			padding: 8px 10px;
+			font-size: 12px;
+			font-weight: 700;
+		}
+
+		/* Summary strip: Doctor | Date | Slot */
+		.fd-summary-strip {
+			display: flex;
+			align-items: center;
+			gap: 0;
+			flex-wrap: wrap;
+			padding-bottom: 12px;
+			margin-bottom: 12px;
+			border-bottom: 1px solid var(--input-border, #e8ecf1);
+		}
+
+		.fd-summary-item {
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+			padding: 4px 12px;
+		}
+
+			.fd-summary-item:first-child {
+				padding-left: 0;
+			}
+
+		.fd-summary-label {
+			font-size: 10px;
+			font-weight: 500;
+			color: var(--labelcolor, #64748b);
+			text-transform: uppercase;
+			letter-spacing: 0.3px;
+		}
+
+		.fd-summary-value {
+			font-size: 13px;
+			font-weight: 600;
+			color: var(--body-text, #1e293b);
+		}
+
+		.fd-summary-sep {
+			width: 1px;
+			height: 36px;
+			background: var(--input-border, #e2e8f0);
+			flex-shrink: 0;
+		}
+
+		.fd-chosen-slot-badge {
+			background: #04927B;
+			color: #fff !important;
+			border-radius: 5px;
+			padding: 2px 8px;
+			font-size: 12px;
+		}
+
+		/* Doctor header row */
+		.fd-doctor-row {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 14px;
+			padding-bottom: 12px;
+			border-bottom: 1px solid var(--input-border, #e8ecf1);
+		}
+
+		.fd-doctor-avatar {
+			width: 44px;
+			height: 44px;
+			border-radius: 50%;
+			background: var(--btnprimary, #1976d2);
+			color: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 20px;
+			flex-shrink: 0;
+			overflow: hidden;
+		}
+
+			.fd-doctor-avatar img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				border-radius: 50%;
+			}
+
+		.fd-doctor-name {
+			font-size: 14px;
+			color: var(--body-text, #1e293b);
+			font-weight: 600;
+		}
+
+		/* Toolbar */
+		.fd-slot-toolbar {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.fd-date-input {
+			max-width: 160px;
+			border-radius: 6px !important;
+			font-size: 13px !important;
+			border: 1.5px solid #90caf9 !important;
+		}
+
+		.fd-btn-check {
+			background: var(--btnprimary, #226847);
+			color: var(--btncolor, #fff);
+			border: 1px solid var(--btnprimary, #226847);
+			border-radius: 6px;
+			font-size: 12px;
+			padding: 0 14px;
+			min-height: 36px;
+			cursor: pointer;
+			white-space: nowrap;
+			font-weight: 500;
+			transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+		}
+
+			.fd-btn-check:hover {
+				background: #185239;
+				border-color: #185239;
+				box-shadow: 0 3px 8px rgba(24, 82, 57, 0.18);
+			}
+
+		/* State messages */
+		.fd-state-msg {
+			font-size: 12px;
+			color: #888;
+			padding: 8px 16px;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.fd-state-empty {
+			color: #999;
+		}
+
+		/* Legend */
+		.fd-slots-legend {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			font-size: 11px;
+			color: #666;
+			flex-wrap: wrap;
+			margin: 0 0 12px;
+			padding: 0;
+		}
+
+		.fd-leg-dot {
+			display: inline-block;
+			width: 10px;
+			height: 10px;
+			border-radius: 3px;
+			border: 1px solid transparent;
+			vertical-align: middle;
+			margin-right: 3px;
+		}
+
+		.fd-slots-summary {
+			color: #1f5d46;
+			font-weight: 600;
+			margin-left: auto;
+			background: #e8f5ee;
+			border: 1px solid #c8ddd3;
+			border-radius: 999px;
+			padding: 3px 9px;
+		}
+
+		/* Slot grid */
+		#fdSlotsGrid {
+			margin: 0 16px 14px;
+		}
+
+		.fd-slots-grid {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px 12px;
+			align-items: stretch;
+			max-height: 260px;
+			overflow-y: auto;
+			margin: 0;
+			padding-right: 4px;
+		}
+
+			.fd-slots-grid::-webkit-scrollbar {
+				width: 4px;
+			}
+
+			.fd-slots-grid::-webkit-scrollbar-thumb {
+				background: #93c7aa;
+				border-radius: 4px;
+			}
+
+		/* Slot chips */
+		.fd-slot-chip {
+			width: 126px;
+			border-radius: 10px;
+			padding: 9px 10px;
+			min-height: 58px;
+			text-align: center;
+			font-size: 11px;
+			font-weight: 500;
+			border: 2px solid transparent;
+			line-height: 1.3;
+			cursor: default;
+			transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.15s, border-color 0.15s;
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+
+			.fd-slot-chip.fd-available {
+				background: #fff;
+				color: #1e293b;
+				border-color: #d7e8df;
+				cursor: pointer;
+			}
+
+				.fd-slot-chip.fd-available:hover {
+					background: #f8fbf9;
+					border-color: var(--btnprimary, #2d5f44);
+					transform: translateY(-2px);
+					box-shadow: 0 4px 16px rgba(47, 107, 79, 0.12);
+				}
+
+			.fd-slot-chip.fd-booked {
+				background: #fce4ec;
+				color: #b71c1c;
+				border-color: #ef9a9a;
+				opacity: 0.7;
+			}
+
+			.fd-slot-chip.fd-selected {
+				background: #eef8f2 !important;
+				color: #1e293b !important;
+				border-color: var(--btnprimary, #2d5f44) !important;
+				box-shadow: 0 0 0 3px rgba(47, 107, 79, 0.2);
+				transform: translateY(-1px);
+			}
+
+			.fd-slot-chip.fd-selected::after {
+				content: "\f00c";
+				font-family: FontAwesome;
+				position: absolute;
+				top: 6px;
+				right: 6px;
+				width: 22px;
+				height: 22px;
+				border-radius: 50%;
+				background: var(--btnprimary, #2d5f44);
+				color: #fff !important;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 11px;
+			}
+
+		.fd-slot-chip-icon {
+			color: var(--btnprimary, #2d5f44);
+			font-size: 11px;
+			margin-bottom: 2px;
+		}
+
+		.fd-slot-chip-time {
+			font-size: 13px;
+			font-weight: 700;
+			color: #1e293b;
+		}
+
+		.fd-slot-chip-end {
+			font-size: 10.5px;
+			color: #64748b;
+		}
+
+		@@media (max-width: 991px) {
+			.fd-slot-controls {
+				grid-template-columns: 1fr;
+			}
+
+			.fd-slot-action {
+				justify-content: flex-start;
+			}
+		}
+
+		/* Iframe hint bar */
+		.fd-iframe-hint {
+			background: #f0f7ff;
+			border: 1px solid #90caf9;
+			border-radius: 7px;
+			padding: 8px 12px;
+			font-size: 12px;
+			color: #1e293b;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-wrap: wrap;
+			margin-top: 4px;
+		}
+
+			/* FIX: Confirmed appointment state — green tint */
+			.fd-iframe-hint.fd-confirmed {
+				background: #f0fdf4;
+				border-color: #86efac;
+			}
+
+		/* Appointment required notice */
+		.fd-appt-notice {
+			background: #fffbeb;
+			border: 1px solid #fcd34d;
+			border-radius: 7px;
+			padding: 9px 13px;
+			font-size: 12px;
+			color: #92400e;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			flex-wrap: wrap;
+			margin-top: 8px;
+		}
+
+			/* Confirmed state — green */
+			.fd-appt-notice.fd-notice-confirmed {
+				background: #f0fdf4;
+				border-color: #86efac;
+				color: #166534;
+			}
+
+			.fd-appt-notice .fa {
+				font-size: 14px;
+				flex-shrink: 0;
+			}
+
+		.fd-btn-open-form {
+			margin-left: auto;
+			background: var(--btnprimary, #1976d2);
+			color: var(--btncolor, #fff) !important;
+			border-radius: 6px;
+			padding: 5px 12px;
+			font-size: 12px;
+			font-weight: 600;
+			text-decoration: none !important;
+			display: inline-flex;
+			align-items: center;
+			gap: 5px;
+			transition: opacity 0.15s;
+		}
+
+			.fd-btn-open-form:hover {
+				opacity: 0.88;
+			}
+
+		.fd-pre-booked-notice {
+			background: #e8f5e9;
+			border: 1px solid #a5d6a7;
+			border-radius: 7px;
+			padding: 8px 12px;
+			font-size: 12px;
+			color: #2e7d32;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 10px;
+			grid-column: 1 / -1;
+			order: 4;
+		}
+
+		#fdPreferenceStatus,
+		#fdApptRequiredNotice,
+		#fdIframeHint {
+			margin-left: 16px;
+			margin-right: 16px;
+		}
+
+		#fdApptRequiredNotice {
+			margin-bottom: 14px;
+		}
+
+		.fd-preference-status {
+			background: #f3faf7;
+			border: 1px solid #b9d9cb;
+			border-radius: 7px;
+			color: #25664f;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 12px;
+			font-weight: 600;
+			padding: 8px 12px;
+			margin-bottom: 10px;
+		}
+
+		.fd-preference-status-error {
+			background: #fff7ed;
+			border-color: #fdba74;
+			color: #9a3412;
+		}
+
+		/* Approve glow when slot is selected */
+		#Approved.slot-ready {
+			animation: approveGlow 1.4s ease-in-out infinite alternate;
+		}
+
+		@@keyframes approveGlow {
+			from {
+				box-shadow: 0 0 0 0 rgba(25,118,210,0.4);
+			}
+
+			to {
+				box-shadow: 0 0 0 6px rgba(25,118,210,0);
+			}
+		}
+	</style>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+	<script type="text/javascript">
+			function buildOPDPatientBadges(obj) {
+				var badges = '';
+				var blacklisted = ((obj && obj.blacklisted) || 'No').toString().toLowerCase();
+				var category = ((obj && obj.patientcategoryname) || 'Not Categorized').toString().trim();
+				if (blacklisted === 'yes') {
+					badges += '<span class="opd-patient-badge opd-patient-badge--danger"><i class="fa fa-ban" style="font-size:9px;"></i> Blacklisted</span>';
+				}
+				if (category && category !== 'Not Categorized') {
+					badges += '<span class="opd-patient-badge opd-patient-badge--category"><i class="fa fa-tag" style="font-size:9px;"></i> ' + $('<span>').text(category).html() + '</span>';
+				} else {
+					badges += '<span class="opd-patient-badge opd-patient-badge--none"><i class="fa fa-tag" style="font-size:9px;"></i> Uncat.</span>';
+				}
+				return badges ? '<div class="opd-patient-badges">' + badges + '</div>' : '';
+			}
+			var _fd_doctorId     = null;
+			var _fd_patientId    = null;
+			var _rvEligibleTaskType = '';
+			var _rvEligibilityPending = false;
+			var _rvEligibilityFailed = false;
+			var _fd_opdFormId    = null;
+			var _fd_tenantId     = null;
+			var _rv_taskId       = null;
+			var _fd_preferredDate = null;  // set from OPD record's preferreddate field
+			var _fd_selectedSlot = null;   // { slotfrom, slotto } — set on chip click
+			var _fd_apptBooked   = false;  // true after colorbox iframe closes
+			var _fd_preBookedSlot = null;  // pre-booked slot from health seeker (status=Requested)
+			var _fd_originalPreBookedSlot = null; // never cleared — used to restore notice on doctor switch back
+			var _fd_preBookedDoctorId = null;     // doctor UUID from the Requested appointment
+			var _fd_doctorName   = null;          // preferred doctor display name (for Select2 pre-selection search)
+			var _fd_patientName  = '';
+			var _fd_opdNumber    = '';
+			var _rv_appointmentMode = null;
+			var _rv_preferenceRows = [];
+			var _rv_selectedPreferenceRow = null;
+			var _fd_addApptUrl   = '@Url.Action("Add_Clinical_Appointment", "ClinicalAppointment")';
+			function updateOPDReviewHeader(patientName, opdNumber) {
+				patientName = (patientName || '').toString().trim();
+				opdNumber = (opdNumber || '').toString().trim();
+				if (!patientName || patientName === '-') return;
+
+				var $header = $('div.page-header-box h1');
+				if (!$header.length) return;
+				$header.contents().filter(function () {
+					return this.nodeType === 3 && $.trim(this.nodeValue).length > 0;
+				}).remove();
+				var $patient = $header.find('.opd-review-header-patient');
+				if (!$patient.length) {
+					$patient = $('<span class="opd-review-header-patient"><span class="opd-review-header-patient-name"></span><span class="opd-review-header-patient-separator">/</span><span class="opd-review-header-opd-number"></span></span>');
+					/* Preserve the layout's back link as the first header item. */
+					var $backLink = $header.children('a').first();
+					if ($backLink.length) {
+						$patient.insertAfter($backLink);
+					} else {
+						$header.prepend($patient);
+					}
+				}
+				$patient.find('.opd-review-header-patient-name').text(patientName);
+				$patient.find('.opd-review-header-opd-number').text(opdNumber);
+				$patient.find('.opd-review-header-patient-separator, .opd-review-header-opd-number').toggle(!!opdNumber);
+			}
+			function download() {
+				const element = document.getElementById('cma_printableArea');
+
+				const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+										// Hide the elements
+										elementsToHide.forEach(function (el) {
+										el.style.display = '';
+										});
+
+				html2pdf()
+					.from(element)
+					.save('OPDForm.pdf')
+					.then(function () {
+										// Show the hidden elements after generating PDF
+										elementsToHide.forEach(function (el) {
+										el.style.display = 'none';
+					});
+										});
+			}
+								function fill_OPDForm_view_data(id){
+									var  OPDFormid = id?id: getUrlVars()["OPDFormid"];
+
+														$("#viewDetails_Auto").show()
+														$(".auto_checker_action").hide()
+				$.ajax({
+					url: '@Url.Action("getById_allinfo_OPDForm")',
+					dataType: 'json',
+															data:{OPDFormid: OPDFormid },
+															success: function(data) {
+
+													var obj=eval(data[0]);
+						_fd_patientName = (obj.patientname || '').toString().trim();
+						_fd_opdNumber = (obj.bookingreferencenumber || '').toString().trim();
+						updateOPDReviewHeader(_fd_patientName, _fd_opdNumber);
+						$(".auto_cls_patientname").html((obj.patientname || '-') + buildOPDPatientBadges(obj));
+						for (var key in obj) {
+
+																		$(".auto_cls_"+key).html(obj[key]|| '-');
+																		if(key=='patientname'){
+																			$(".auto_cls_patientname").html((obj.patientname || '-') + buildOPDPatientBadges(obj));
+																		}
+																		if (key === 'appointmentmode') {
+																			_rv_appointmentMode = obj[key] || '';
+																			$('#rvAppointmentTypeText').text(_rv_appointmentMode || '-');
+																			$('#rvAppointmentTypeBadge').show();
+																			if (_fd_tenantId) {
+																				lookup_OPDForm_task_review(_fd_tenantId || str_tenantid);
+																			}
+																		}
+
+							if (obj[''] !== undefined) { $('#').val(obj['']); }
+
+							/* ── Capture IDs for slot booking ── */
+							if (key === 'preferreddoctorid') {
+								if (obj[key] && obj[key] !== '00000000-0000-0000-0000-000000000000') {
+									_fd_doctorId = obj[key];
+								}
+							}
+							/* Also capture from plain FK field preferreddoctor (this is the display name string) */
+							if (key === 'preferreddoctor') {
+								if (obj[key] && obj[key] !== '00000000-0000-0000-0000-000000000000') {
+									_fd_doctorName = obj[key]; // e.g. "John Smith" — used for Select2 pre-selection search
+								}
+							}
+							if (key === 'preferreddate') {
+								_fd_preferredDate = obj[key] || null;
+								/* Set editable date input in dd/mm/yyyy HH:mm format for datetimepicker */
+								if (_fd_preferredDate) {
+									var _dp = _fd_preferredDate.toString().replace('T',' ').trim();
+									var _dpart = _dp.substring(0,10);
+									var _tpart = _dp.length > 10 ? _dp.substring(11,16) : '00:00';
+									var _ddmmyyyy;
+									if (_dpart.indexOf('/') > -1) {
+										/* Already dd/mm/yyyy */
+										_ddmmyyyy = _dpart;
+									} else {
+										/* yyyy-mm-dd → dd/mm/yyyy */
+										var _ds = _dpart.split('-');
+										_ddmmyyyy = _ds[2]+'/'+_ds[1]+'/'+_ds[0];
+									}
+									$('#fdDateInput').val(_ddmmyyyy + ' ' + _tpart);
+									/* Also store as yyyy-mm-dd HH:mm for getSqlDateTime */
+									var _ds2 = _ddmmyyyy.split('/');
+									_fd_preferredDate = _ds2[2]+'-'+_ds2[1]+'-'+_ds2[0] + ' ' + _tpart;
+								}
+							}
+																		if (key === 'patientid') {
+																			_fd_patientId = obj[key];
+																		}
+																		if (key === 'OPDFormid') {
+																			_fd_opdFormId = obj[key];
+																		}
+																		if (key === 'tenantid') {
+																			_fd_tenantId = obj[key];
+																			/* defer until for-loop finishes so _rv_taskId is already set */
+																			setTimeout(function () { lookup_OPDForm_task_review(_fd_tenantId || str_tenantid); }, 1);
+																		}
+																		if (key === 'taskid') {
+																			_rv_taskId = obj[key];
+																			if (typeof window._rvRefreshHolidayBlockedDates === 'function') window._rvRefreshHolidayBlockedDates();
+																		}
+
+
+																		if(key=='automaton_OPDForm_appointmentpreferences'){
+																						$('#appointmentpreferencesContainerBody').empty()
+																						if(obj[key]!=null && obj[key] !=""){
+																								var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_appointmentpreferences_history'
+																								 $(".appointmentpreferencesauditheaderlink").attr('href',audit)
+
+																							var Actions=getAutho("OPDForm","versionhistory")
+																							if(Actions == undefined){
+																							$("appointmentpreferencesauditheaderlink").parent().hide()
+								}
+
+																						   $('.appointmentpreferencesContainerBodyParent').removeClass('hide')
+																						   _rv_preferenceRows = rvParseAppointmentPreferences(obj[key]);
+																						   $('#appointmentpreferencesContainerBody').append(rvRenderAppointmentPreferences(_rv_preferenceRows))
+																						   fdRenderPreferenceTabs(_rv_preferenceRows);
+																						   if (_fd_doctorId && $('#fdSlotToolbar').is(':visible')) {
+																							   fdResolvePreferredSlots();
+																						   }
+																						}else{
+																						   _rv_preferenceRows = [];
+																						   fdRenderPreferenceTabs([]);
+																						   $('.appointmentpreferencesContainerBodyParent').addClass('hide')
+							}
+																				}
+																		if(key=='automaton_OPDForm_medicalinfo'){
+																						$('#medicalinfoContainerBody').empty()
+																						if(obj[key]!=null && obj[key] !=""){
+																								var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_medicalinfo_history'
+																								 $(".medicalinfoauditheaderlink").attr('href',audit)
+
+																							var Actions=getAutho("OPDForm","versionhistory")
+																							if(Actions == undefined){
+																							$("medicalinfoauditheaderlink").parent().hide()
+								}
+
+																						   $('.medicalinfoContainerBodyParent').removeClass('hide')
+																						   $('#medicalinfoContainerBody').append(get_dependent_table(obj[key]))
+																						}else{
+																						   $('.medicalinfoContainerBodyParent').addClass('hide')
+							}
+																				}
+			if(key=='automaton_OPDForm_medicationinfo'){
+																						$('#medicationinfoContainerBody').empty()
+																						if(obj[key]!=null && obj[key] !=""){
+																								var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_medicationinfo_history'
+																								 $(".medicationinfoauditheaderlink").attr('href',audit)
+
+																							var Actions=getAutho("OPDForm","versionhistory")
+																							if(Actions == undefined){
+																							$("medicationinfoauditheaderlink").parent().hide()
+								}
+
+																						   $('.medicationinfoContainerBodyParent').removeClass('hide')
+																						   $('#medicationinfoContainerBody').append(get_dependent_table(obj[key]))
+																						}else{
+																						   $('.medicationinfoContainerBodyParent').addClass('hide')
+							}
+																				}
+			if(key=='automaton_OPDForm_medicalrecords'){
+																						$('#medicalrecordsContainerBody').empty()
+																						if(obj[key]!=null && obj[key] !=""){
+																								var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_medicalrecords_history'
+																								 $(".medicalrecordsauditheaderlink").attr('href',audit)
+
+																							var Actions=getAutho("OPDForm","versionhistory")
+																							if(Actions == undefined){
+																							$("medicalrecordsauditheaderlink").parent().hide()
+								}
+
+																						   $('.medicalrecordsContainerBodyParent').removeClass('hide')
+																						   $('#medicalrecordsContainerBody').append(get_dependent_table(obj[key]))
+																						}else{
+																						   $('.medicalrecordsContainerBodyParent').addClass('hide')
+							}
+																				}
+			if(key=='medicalrecordfile'){
+																						$('.auto_cls_medicalrecordfile').empty()
+																						if(obj[key] !=null)  {
+
+									var uploaded_medicalrecordfile = obj[key].split('|');
+									var iterate = 0;
+									for (var i = 0; i < uploaded_medicalrecordfile.length; i++) {
+
+
+										if (uploaded_medicalrecordfile[i] != "") {
+											var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_medicalrecordfile[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+											iterate = iterate + 1;
+																									 $('.auto_cls_medicalrecordfile').append('<a href=' + filepath + ' class="medicalrecordfile filedisplay"><i class="fa fa-file"></i></a>')
+
+										}
+
+
+									}
+
+
+								}
+
+
+							}
+
+
+																		if(key=='verifiedstatus'){
+								var headerElement = $("div.page-header-box h1");
+								headerElement.find(".review_title").remove();
+								if(obj[key] == 'Approved') {
+									/* Hide slot booking panel — appointment already done */
+									$('.preferreddoctor_craftmyapp_viewcontainer').hide();
+								}
+								if (obj[key] == 'Rejected') {
+									$("#rejectedsection").show()
+									headerElement.append(`
+										<span class="review_title review_title--rejected" id="rejecticon_header" aria-label="Rejected status">
+												<svg width="18" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+													<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+													<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+													<g id="SVGRepo_iconCarrier">
+														<circle cx="12" cy="12" r="9" stroke="#FFFFFF"></circle>
+														<path d="M18 18L6 6" stroke="#FFFFFF"></path>
+													</g>
+												</svg>
+												Rejected
+										</span>
+									`);
+					}
+										else if (obj[key] == 'Rework'){
+											$("#reworksection").show()
+									headerElement.append(`<span class="review_title review_title--rework" id="reworkicon_header" aria-label="Rework status">
+
+											<svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 18 16" fill="none" id="reworkicon_header_icon">
+												<path d="M1 1.77637V6.44426H5.36364" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+												<path d="M16.9999 14.2236V9.55566H12.6362" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+												<path d="M15.1745 5.66605C14.8057 4.55104 14.1788 3.55414 13.3524 2.76839C12.526 1.98264 11.5269 1.43365 10.4485 1.17263C9.3701 0.91161 8.24745 0.947078 7.18532 1.27572C6.12318 1.60437 5.15618 2.21548 4.37455 3.05203L1 6.44404M17 9.55596L13.6255 12.948C12.8438 13.7845 11.8768 14.3956 10.8147 14.7243C9.75255 15.0529 8.6299 15.0884 7.55148 14.8274C6.47307 14.5664 5.47404 14.0174 4.64761 13.2316C3.82119 12.4459 3.1943 11.449 2.82545 10.3339" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+			  </svg> Rework
+
+									</span>`);
+								}
+																			if(obj[key]=='Ready For Review' || obj[key] == 'Ready For OPD Review'){
+									/* Task field: show dropdown, hide read-only text */
+									$('#rv_task').show();
+									$('#rv_task_readonly').hide();
+									var Actions = getAutho("OPDForm", "list_verify");
+									if (Actions != undefined) {
+										/* Show review action buttons including Approve */
+										$('.auto_checker_action').show();
+										$('#Approved').show();
+										$('#reviewcomments').attr('readonly', false);
+										$('#').attr('readonly', false);
+										/* Show pending notice below slot panel */
+										$('#fdApptRequiredNotice').show();
+
+										/* ── Show doctor dropdown for reassignment ── */
+										$('#fdDoctorDropdownRow').show();
+										$('#fdDateRow').show();
+										$('#fdSlotToolbar').show();
+												if ($('#fdDoctorSelect').find('option').length === 0) {
+			setTimeout(function () {
+				lookup_OPDForm_preferreddoctor_review(_fd_tenantId);
+			}, 1);
+		}
+
+										/* Auto-check preferred dates in preference order. */
+										if (_fd_doctorId) {
+											fdResolvePreferredSlots();
+										}
+										/* Check for health seeker pre-booked slot (status=Requested)
+										   Use OPDFormid from closure \u2014 _fd_opdFormId may not be set yet
+										   when this key is processed in the for-in loop */
+										var _apptFetchId = OPDFormid || _fd_opdFormId;
+										if (_apptFetchId) {
+											$.ajax({
+												url: '@Url.Action("Get_Appointment_By_OPDForm", "OPDForm")',
+												type: 'GET',
+												dataType: 'json',
+												data: { OPDFormid: _apptFetchId },
+												success: function(apptData) {
+													if (!apptData) return;
+													var rows = typeof apptData === 'string' ? JSON.parse(apptData) : apptData;
+													if (Array.isArray(rows) && rows.length > 0) {
+														var row = rows[0];
+														_fd_preBookedSlot = { slotfrom: row.durationfrom, slotto: row.durationto };
+														_fd_originalPreBookedSlot = _fd_preBookedSlot;
+														_fd_preBookedDoctorId = row.practitioner;
+														/* Show pre-booked slot notice */
+														$('#fdPreBookedSlotTime').text(row.durationfrom + ' \u2013 ' + row.durationto);
+														$('#fdPreBookedSlotNotice').show();
+														fdAutoSelectPreBookedSlot();
+													}
+												}
+											});
+										}
+									} else {
+										$('.auto_checker_action').hide();
+										$('#fdApptRequiredNotice').hide();
+										$('#reviewcomments').attr('readonly', true);
+										$('#').attr('readonly', true);
+									}
+
+
+
+
+
+							} else {
+								/* Not Ready For Review: hide dropdown, show saved task name as text */
+								$('#rv_task').hide();
+								$('#rv_task_readonly').show();
+							}
+							} /* end if(key=='verifiedstatus') */
+							if (key == 'automaton_review_logs') {
+																			$('#review_logsContainerBody').empty()
+																			if (obj[key] != null && obj[key] != ""){
+																			   $('#review_logsContainerBody').append(get_dependent_table(obj[key]))
+																					$('.review_logs_parent').removeClass('hide')
+								}
+																			else{
+																				$('.review_logs_parent').addClass('hide')
+																				$('#review_logsContainerBody').append('No Data Available')
+																	}
+
+																}
+
+								/* A resubmitted form starts a new review cycle. Keep the previous
+								   comment in review history, but do not prefill the active input. */
+								var currentReviewStatus = (obj.verifiedstatus || '').toString().trim();
+								if (currentReviewStatus === 'Ready For Review' || currentReviewStatus === 'Ready For OPD Review') {
+									$('#reviewcomments').val('').text('');
+								}
+							if (key == 'automaton_review_logs_history') {
+																			$('#review_logs_historyContainerBody').empty()
+																			if (obj[key] != null && obj[key] != ""){
+
+
+
+
+
+																					const jsonData = JSON.parse(obj[key])
+									const distinctQuotes = {};
+																						 let  IdsSet = new Set();
+									jsonData.forEach(item => {
+										const quoteNumber = item["Booking Reference Number"];
+																						const OPDFormid = item["OPDFormid"];
+										distinctQuotes[OPDFormid] = quoteNumber;
+										IdsSet.add(OPDFormid);
+									});
+																					$(".allrecords").empty()
+
+									const IdsSetString = [...IdsSet].join(',');
+
+									localStorage.setItem('OPDForm_Compare', IdsSetString);
+
+
+																					var cnt=0;
+									for (const OPDFormid in distinctQuotes) {
+										if (distinctQuotes.hasOwnProperty(OPDFormid)) {
+
+											var requestcard = '<li id="' + OPDFormid + '">' +
+												'<a href="#" class="vessel-id-text">' +
+											'<span class="_cma_pda">' + distinctQuotes[OPDFormid] + '</span>'+
+
+
+											'<span class="material-icons create_pda_and_download_from_cloud" id="' + OPDFormid + '">'+
+
+												'</span>' +
+
+
+												'</a>' +
+
+												'</div>' +
+											'</li>'
+
+											cnt=cnt+1;
+
+
+											$(".allrecords").append(requestcard)
+
+											$("#" + OPDFormid).click(function () {
+											$('.page-loader').show()
+											fill_OPDForm_view_data($(this).attr('id'))
+
+											$('.page-loader').hide()
+
+
+
+											})
+										// 	if(cnt >0){
+										// 	$(".revisions").show()
+										// }
+
+											$(".number_of_records").html(cnt)
+
+									}
+			}
+
+
+
+																					$.each(jsonData, function(index, item) {
+																					delete item.OPDFormid;
+																					});
+
+									var jsonWithoutOPDFormid = JSON.stringify(jsonData, null, 2);
+																					$('#review_logs_historyContainerBody').append(get_dependent_table(jsonWithoutOPDFormid))
+																					$('.review_logs_parent').removeClass('hide')
+								}
+																			else{
+																				$('.review_logs_parent').addClass('hide')
+																				$('#review_logs_historyContainerBody').append('No Data Available')
+							}
+
+			}
+
+																}
+
+															}
+
+
+
+
+															})
+
+							   /* ── Auto-select doctor + show patient slots for all statuses ── */
+							   if (_fd_doctorId) {
+								   lookup_OPDForm_preferreddoctor_review(_fd_tenantId || str_tenantid);
+							   }
+							   if (_fd_opdFormId) {
+								   Get_Appointment_By_OPDForm_display(_fd_opdFormId);
+							   }
+							   }
+
+			function redirectToSamePage() {
+									// Get the current URL
+				const currentUrl = window.location.href;
+
+									// Check if the URL already contains query parameters
+				if (currentUrl.indexOf('?') > -1) {
+										// If there are already query parameters, append '&iscompare=Y'
+					window.location.href = currentUrl + '&iscompare=Y';
+				} else {
+										// If there are no query parameters, append '?iscompare=Y'
+					window.location.href = currentUrl + '?iscompare=Y';
+				}
+			}
+
+			/* ================================================================
+			   SLOT STATE MANAGER
+			================================================================ */
+			function rvNormalizeSlotPreferences(value) {
+				var raw = (value || '').toString();
+				var parts = raw.split(',').map(function (v) { return $.trim(v); }).filter(Boolean);
+				if (parts.length === 0) return [];
+				var hasAny = parts.some(function (v) { return v.toLowerCase() === 'any slot'; });
+				return hasAny ? ['Any Slot'] : parts;
+			}
+
+			function rvDisplaySlotPreferences(value) {
+				var seen = {};
+				var parts = (value || '').toString().split(',').map(function (v) { return $.trim(v); }).filter(Boolean);
+				return parts.filter(function (item) {
+					var key = item.toLowerCase();
+					if (seen[key]) return false;
+					seen[key] = true;
+					return true;
+				});
+			}
+
+			function rvDisplayDateToSql(dateText) {
+				var raw = (dateText || '').toString().trim();
+				if (!raw) return '';
+				var datePart = raw.split(' ')[0];
+				if (datePart.indexOf('/') > -1) {
+					var d = datePart.split('/');
+					if (d.length === 3) return d[2] + '-' + d[1] + '-' + d[0];
+				}
+				if (datePart.indexOf('-') > -1) return datePart;
+				return raw;
+			}
+
+			function rvSqlDateToDisplay(sqlDate) {
+				var raw = (sqlDate || '').toString().split(' ')[0].split('T')[0];
+				if (raw.indexOf('-') > -1) {
+					var d = raw.split('-');
+					if (d.length === 3) return d[2] + '/' + d[1] + '/' + d[0];
+				}
+				return raw;
+			}
+
+			function rvParseAppointmentPreferences(jsonText) {
+				var rows = [];
+				try {
+					var parsed = typeof jsonText === 'string' ? JSON.parse(jsonText) : jsonText;
+					$.each(parsed || [], function (index, row) {
+						var preferredDate = row['Preferred Date'] || row.preferreddate || '';
+						var sqlDate = rvDisplayDateToSql(preferredDate);
+						var rawSlotPreference = row['Slot Preference'] || row.slotpreference || '';
+						var slotPreferences = rvNormalizeSlotPreferences(rawSlotPreference);
+						var displaySlotPreferences = rvDisplaySlotPreferences(rawSlotPreference);
+						if (sqlDate) {
+							rows.push({
+								order: index + 1,
+								preferredDate: preferredDate,
+								sqlDate: sqlDate,
+								slotPreferences: slotPreferences,
+								displaySlotPreferences: displaySlotPreferences
+							});
+						}
+					});
+				} catch (e) { rows = []; }
+				rows.sort(function (a, b) {
+					if (a.order !== b.order) return a.order - b.order;
+					return a.sqlDate.localeCompare(b.sqlDate);
+				});
+				return rows;
+			}
+
+			function rvRenderAppointmentPreferences(rows) {
+				var html = '';
+				$.each(rows || [], function (_, row) {
+					html += '<tr>' +
+						'<td class="automaton_table_label">' + rvSqlDateToDisplay(row.sqlDate) + '</td>' +
+						'<td class="automaton_table_label">' + (row.displaySlotPreferences || row.slotPreferences || []).join(',') + '</td>' +
+					'</tr>';
+				});
+				return html;
+			}
+
+			function rvReadPreferenceRowsFromTable() {
+				var rows = [];
+				$('#appointmentpreferencesContainerBody tr').each(function (index) {
+					var $cells = $(this).find('td');
+					var preferredDate = $.trim($cells.eq(0).text());
+					var rawSlotPreference = $.trim($cells.eq(1).text());
+					var sqlDate = rvDisplayDateToSql(preferredDate);
+					if (sqlDate) {
+						rows.push({
+							order: index + 1,
+							preferredDate: preferredDate,
+							sqlDate: sqlDate,
+							slotPreferences: rvNormalizeSlotPreferences(rawSlotPreference),
+							displaySlotPreferences: rvDisplaySlotPreferences(rawSlotPreference)
+						});
+					}
+				});
+				return rows;
+			}
+
+			function rvEscapeHtml(value) {
+				return $('<div>').text(value || '').html();
+			}
+
+			function fdRenderPreferenceTabs(rows) {
+				var $wrap = $('#fdPreferenceTabsWrap');
+				var $tabs = $('#fdPreferenceTabs').empty();
+				$('#fdResolvedPreferenceAudit').hide().empty();
+				if (!rows || rows.length === 0) {
+					$wrap.hide();
+					return;
+				}
+				$.each(rows, function (_, row) {
+					var displaySlots = (row.displaySlotPreferences || row.slotPreferences || []).join(', ');
+					var $tab = $('<div>')
+						.addClass('fd-preference-tab')
+						.attr('data-preference-order', row.order)
+						.html(
+							'<div class="fd-preference-tab__top">' +
+								'<span class="fd-preference-tab__name">Preference ' + row.order + '</span>' +
+								'<span class="fd-preference-tab__state">Pending</span>' +
+							'</div>' +
+							'<div class="fd-preference-tab__date">' + rvEscapeHtml(rvSqlDateToDisplay(row.sqlDate)) + '</div>' +
+							'<div class="fd-preference-tab__slots">' + rvEscapeHtml(displaySlots) + '</div>'
+						);
+					$tabs.append($tab);
+				});
+				$wrap.show();
+			}
+
+			function fdSetPreferenceTabState(row, state, label) {
+				if (!row) return;
+				var $tab = $('#fdPreferenceTabs .fd-preference-tab[data-preference-order="' + row.order + '"]');
+				if (!$tab.length) return;
+				$tab.removeClass('is-checking is-unavailable is-selected');
+				if (state) $tab.addClass('is-' + state);
+				$tab.find('.fd-preference-tab__state').text(label || 'Pending');
+			}
+
+			function fdResetPreferenceTabs(rows) {
+				$.each(rows || [], function (_, row) {
+					fdSetPreferenceTabState(row, '', 'Pending');
+				});
+				$('#fdResolvedDateText').text('Pending preference check');
+				$('#fdDateInput').val('');
+				$('#fdResolvedPreferenceAudit').hide().empty();
+			}
+
+			function fdSetResolvedPreferenceAudit(row, slotFrom, slotTo) {
+				if (!row) return;
+				var displaySlots = (row.displaySlotPreferences || row.slotPreferences || []).join(', ');
+				var slotText = slotFrom && slotTo ? ' - Slot ' + slotFrom + ' - ' + slotTo : '';
+				$('#fdResolvedPreferenceAudit')
+					.html(
+						'<i class="fa fa-check-circle"></i> Using Preference ' + row.order +
+						' - ' + rvEscapeHtml(rvSqlDateToDisplay(row.sqlDate)) +
+						' - ' + rvEscapeHtml(displaySlots) +
+						rvEscapeHtml(slotText)
+					)
+					.show();
+			}
+
+			function fdSyncLiveBookingSelections() {
+				var selectedTask = $('#rv_task').val();
+				if (selectedTask) _rv_taskId = selectedTask;
+
+				var selectedDoctor = $('#fdDoctorSelect').val();
+				if (selectedDoctor) _fd_doctorId = selectedDoctor;
+			}
+
+			function fdSetPreferenceStatus(message, kind) {
+				var $status = $('#fdPreferenceStatus');
+				if (!message) { $status.hide().empty(); return; }
+				var icon = kind === 'error' ? 'fa-calendar-times-o' : 'fa-info-circle';
+				$status
+					.attr('class', 'fd-preference-status ' + (kind === 'error' ? 'fd-preference-status-error' : ''))
+					.html('<i class="fa ' + icon + '"></i><span>' + message + '</span>')
+					.show();
+			}
+
+			function fdSetResolvedDate(sqlDate) {
+				if (!sqlDate) return;
+				var display = rvSqlDateToDisplay(sqlDate) + ' 00:00';
+				_fd_preferredDate = sqlDate + ' 00:00';
+				$('#fdDateInput').val(display);
+				$('#fdResolvedDateText').text(rvSqlDateToDisplay(sqlDate));
+			}
+
+			function fdShowSlotState(state, msg) {
+				$('#fdSlotsLoading, #fdSlotsEmpty, #fdSlotsGrid').hide();
+				if (state === 'loading') { $('#fdSlotsLoading').show(); }
+				if (state === 'empty')   { $('#fdSlotsEmptyMsg').text(msg || 'No slots available.'); $('#fdSlotsEmpty').show(); }
+				if (state === 'grid')    { $('#fdSlotsGrid').show(); }
+			}
+
+			function fdClearSelectedSlotState(message, showNotice) {
+				_fd_selectedSlot = null;
+				$('.fd-slot-chip.fd-available').removeClass('fd-selected');
+				$('#fdIframeHint').hide().removeClass('fd-confirmed');
+				$('#fdIframeHintLabel').text('Slot');
+				$('#fdIframeHintTime').text('');
+				$('#fdIframeHintSuffix').text('selected. Ready to Approve.');
+				$('#Approved').removeClass('slot-ready');
+				$('#fdNoticeIcon').attr('class', 'fa fa-clock-o');
+				$('#fdNoticeText').html(message || 'Please <strong>select a time slot</strong> and open the appointment form to book before approving.');
+				$('#fdApptRequiredNotice').removeClass('fd-notice-confirmed');
+				if (showNotice) {
+					$('#fdApptRequiredNotice').show();
+				} else {
+					$('#fdApptRequiredNotice').hide();
+				}
+			}
+
+			/* ================================================================
+			   AUTO-SELECT PRE-BOOKED SLOT
+			================================================================ */
+			function fdAutoSelectPreBookedSlot() {
+				if (!_fd_preBookedSlot) return;
+				var from = _fd_preBookedSlot.slotfrom;
+				var $chip = $('.fd-slot-chip.fd-available').filter(function() { return $(this).attr('data-from') === from; });
+				if ($chip.length) {
+					$chip.trigger('click');
+					return;
+				}
+
+				_fd_selectedSlot = {
+					slotfrom: _fd_preBookedSlot.slotfrom,
+					slotto: _fd_preBookedSlot.slotto
+				};
+				$('.fd-slot-chip.fd-booked').filter(function() {
+					return $(this).attr('data-from') === _fd_preBookedSlot.slotfrom;
+				}).addClass('fd-selected');
+				$('#fdIframeHint').removeClass('fd-confirmed');
+				$('#fdIframeHintLabel').text('Patient booked slot');
+				$('#fdIframeHintTime').text(_fd_preBookedSlot.slotfrom + ' \u2013 ' + _fd_preBookedSlot.slotto);
+				$('#fdIframeHintSuffix').text('ready to approve.');
+				$('#fdIframeHint').addClass('fd-confirmed').show();
+				$('#Approved').addClass('slot-ready').show();
+				$('#fdNoticeIcon').attr('class', 'fa fa-check-circle');
+				$('#fdNoticeText').html(
+					'Patient booked slot <strong>' + _fd_preBookedSlot.slotfrom + ' \u2013 ' + _fd_preBookedSlot.slotto + '</strong>. ' +
+					'Click <strong>Approve</strong> to confirm.'
+				);
+				$('#fdApptRequiredNotice')
+					.addClass('fd-notice-confirmed')
+					.show();
+			}
+
+			/* ================================================================
+			   FETCH SLOTS — uses _fd_preferredDate set from OPD record
+			================================================================ */
+			function fdFetchSlots(preferenceRow, autoSelectFirst) {
+				fdSyncLiveBookingSelections();
+				if (!_fd_doctorId) return;
+				/* Use date input value (editable by reviewer); fall back to OPD record value */
+				var dt = preferenceRow && preferenceRow.sqlDate ? (preferenceRow.sqlDate + ' 00:00') : ($('#fdDateInput').val() || _fd_preferredDate);
+				if (!dt) { fdShowSlotState('empty', 'No preferred date — please select a date first.'); return; }
+				_fd_preferredDate = dt;
+
+				/* Only reset slot state on a MANUAL check, not post-iframe refresh */
+				if (!_fd_apptBooked) {
+					fdClearSelectedSlotState();
+				}
+
+				fdShowSlotState('loading');
+				$.ajax({
+					url: preferenceRow ? '@Url.Action("Get_Doctor_Available_Slots_By_Preferences", "OPDForm")' : '@Url.Action("Get_Doctor_Available_Slots", "OPDForm")',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						Peopleid: _fd_doctorId,
+							appointmentdate: getSqlDateTime(dt),
+						slotpreferences: preferenceRow ? (preferenceRow.slotPreferences || []).join(',') : '',
+		taskid:          $('#rv_task').val() || _rv_taskId || null,
+		taskname:        $('#rv_task option:selected').text() || ''
+					},
+					success: function (slots) {
+						if (!slots) { fdShowSlotState('empty', 'No slots available.'); return; }
+						if (typeof slots === 'string') { try { slots = JSON.parse(slots); } catch(e) { fdShowSlotState('empty', 'Invalid data.'); return; } }
+						if (!Array.isArray(slots) || slots.length === 0) {
+							fdShowSlotState('empty', 'No slots available — doctor may be absent or has no schedule.');
+							return;
+						}
+						fdRenderSlots(slots);
+						if (autoSelectFirst) fdSelectFirstAvailableSlot();
+					},
+					error: function () { fdShowSlotState('empty', 'Could not fetch slots. Try again.'); }
+				});
+			}
+
+			function fdHasAvailableSlot(slots, preferenceRow) {
+				var available = false;
+				$.each(slots || [], function (_, slot) {
+					var isBooked = fdIsSlotBooked(slot);
+					var from = slot ? (slot.slotfrom || slot.SlotFrom || '') : '';
+					if (!isBooked && !fdIsPastSlotForCurrentDate(from, preferenceRow)) {
+						available = true;
+						return false;
+					}
+				});
+				return available;
+			}
+
+			function fdIsSlotBooked(slot) {
+				var value = slot ? (slot.isbooked !== undefined ? slot.isbooked : slot.IsBooked) : false;
+				if (typeof value === 'boolean') return value;
+				if (typeof value === 'number') return value !== 0;
+				if (typeof value === 'string') {
+					var normalized = value.toLowerCase().trim();
+					return normalized === 'true' || normalized === '1' || normalized === 'yes';
+				}
+				return false;
+			}
+
+			function fdSlotTimeMinutes(value) {
+				var raw = (value || '').toString().trim();
+				if (!raw) return null;
+				var match = raw.match(/(\d{1,2}):(\d{2})/);
+				if (!match) return null;
+				return (parseInt(match[1], 10) * 60) + parseInt(match[2], 10);
+			}
+
+			function fdCurrentSlotDateMoment(preferenceRow) {
+				var raw = (preferenceRow && preferenceRow.sqlDate)
+					|| (_rv_selectedPreferenceRow && _rv_selectedPreferenceRow.sqlDate)
+					|| ($('#fdDateInput').val() || _fd_preferredDate || '').toString().split(' ')[0];
+				var parsed = moment(raw, ['YYYY-MM-DD', 'D/M/YYYY', 'DD/MM/YYYY'], true);
+				return parsed.isValid() ? parsed : null;
+			}
+
+			function fdIsPastSlotForCurrentDate(slotFrom, preferenceRow) {
+				var date = fdCurrentSlotDateMoment(preferenceRow);
+				if (!date || !date.isSame(moment(), 'day')) return false;
+				var startMinutes = fdSlotTimeMinutes(slotFrom);
+				if (startMinutes === null) return false;
+				var nowMinutes = (moment().hours() * 60) + moment().minutes();
+				return startMinutes <= nowMinutes;
+			}
+
+			function fdFilterSlotsByPreference(slots, row) {
+				var prefs = (row && row.slotPreferences ? row.slotPreferences : []).map(function (p) {
+					return (p || '').toString().toLowerCase().trim();
+				});
+				if (prefs.length === 0 || prefs.indexOf('any slot') >= 0) return slots || [];
+
+				var mapped = (slots || []).map(function (slot) {
+					var from = slot.slotfrom || slot.SlotFrom || '';
+					return { slot: slot, minutes: fdSlotTimeMinutes(from) };
+				}).filter(function (item) {
+					return item.minutes !== null;
+				});
+				if (mapped.length === 0) return [];
+
+				var lastSlot = Math.max.apply(null, mapped.map(function (item) { return item.minutes; }));
+				return mapped.filter(function (item) {
+					return (prefs.indexOf('early morning') >= 0 && item.minutes < 600)
+						|| (prefs.indexOf('closer to lunch') >= 0 && Math.abs(item.minutes - 720) <= 120)
+						|| (prefs.indexOf('closer to day') >= 0 && item.minutes >= (lastSlot - 120));
+				}).map(function (item) {
+					return item.slot;
+				});
+			}
+
+			function fdSelectFirstAvailableSlot() {
+				var $first = $('.fd-slot-chip.fd-available:first');
+				if ($first.length) $first.trigger('click');
+			}
+
+			function fetchBaseAndFilterPreference(row, callback) {
+				$.ajax({
+					url: '@Url.Action("Get_Doctor_Available_Slots", "OPDForm")',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						Peopleid: _fd_doctorId,
+						appointmentdate: row.sqlDate,
+						taskid: $('#rv_task').val() || _rv_taskId || null,
+						taskname: $('#rv_task option:selected').text() || ''
+					},
+					success: function (slots) {
+						if (typeof slots === 'string') { try { slots = JSON.parse(slots); } catch(e) { slots = []; } }
+						callback(fdFilterSlotsByPreference(Array.isArray(slots) ? slots : [], row));
+					},
+					error: function () {
+						callback([]);
+					}
+				});
+			}
+
+			function fdResolvePreferredSlots() {
+				fdSyncLiveBookingSelections();
+				if (!_fd_doctorId) {
+					fdClearSelectedSlotState();
+					fdShowSlotState('empty', 'Please select a doctor first.');
+					return;
+				}
+				if (!$('#rv_task').val() && !_rv_taskId) {
+					fdClearSelectedSlotState();
+					fdShowSlotState('empty', 'Please select Booking For first.');
+					return;
+				}
+				var rows = (_rv_preferenceRows || []).filter(function (row) {
+					return row.sqlDate && row.slotPreferences && row.slotPreferences.length > 0;
+				});
+				if (rows.length === 0) {
+					_rv_preferenceRows = rvReadPreferenceRowsFromTable();
+					rows = (_rv_preferenceRows || []).filter(function (row) {
+						return row.sqlDate && row.slotPreferences && row.slotPreferences.length > 0;
+					});
+					fdRenderPreferenceTabs(rows);
+				}
+				if (rows.length === 0) {
+					fdSetPreferenceStatus('No appointment preferences available', 'error');
+					fdClearSelectedSlotState();
+					fdShowSlotState('empty', 'No appointment preferences available.');
+					return;
+				}
+
+				fdClearSelectedSlotState();
+				_rv_selectedPreferenceRow = null;
+				fdResetPreferenceTabs(rows);
+				fdShowSlotState('loading');
+
+				var index = 0;
+				function tryNextPreference() {
+					if (index >= rows.length) {
+						fdSetPreferenceStatus('No preferred slots available', 'error');
+						fdClearSelectedSlotState();
+						fdShowSlotState('empty', 'No preferred slots available.');
+						return;
+					}
+					var row = rows[index];
+					fdSetPreferenceTabState(row, 'checking', 'Checking');
+					$.ajax({
+						url: '@Url.Action("Get_Doctor_Available_Slots_By_Preferences", "OPDForm")',
+						type: 'GET',
+						dataType: 'json',
+						data: {
+							Peopleid: _fd_doctorId,
+							appointmentdate: row.sqlDate,
+							slotpreferences: (row.slotPreferences || []).join(','),
+							taskid: $('#rv_task').val() || _rv_taskId || null,
+							taskname: $('#rv_task option:selected').text() || ''
+						},
+						success: function (slots) {
+							if (typeof slots === 'string') { try { slots = JSON.parse(slots); } catch(e) { slots = []; } }
+							if (Array.isArray(slots) && fdHasAvailableSlot(slots, row)) {
+								applyResolvedPreference(slots);
+								return;
+							}
+							fetchBaseAndFilterPreference(row, function (fallbackSlots) {
+								if (Array.isArray(fallbackSlots) && fdHasAvailableSlot(fallbackSlots, row)) {
+									applyResolvedPreference(fallbackSlots);
+									return;
+								}
+								fdSetPreferenceTabState(row, 'unavailable', 'Unavailable');
+								index++;
+								tryNextPreference();
+							});
+						},
+						error: function () {
+							fetchBaseAndFilterPreference(row, function (fallbackSlots) {
+								if (Array.isArray(fallbackSlots) && fdHasAvailableSlot(fallbackSlots, row)) {
+									applyResolvedPreference(fallbackSlots);
+									return;
+								}
+								fdSetPreferenceTabState(row, 'unavailable', 'Unavailable');
+								index++;
+								tryNextPreference();
+							});
+						}
+					});
+
+					function applyResolvedPreference(resolvedSlots) {
+						_rv_selectedPreferenceRow = row;
+						fdSetResolvedDate(row.sqlDate);
+						fdSetPreferenceTabState(row, 'selected', 'Selected');
+						fdSetResolvedPreferenceAudit(row);
+						if (index > 0) {
+							fdSetPreferenceStatus('Preference ' + index + ' unavailable, showing Preference ' + (index + 1));
+						} else {
+							fdSetPreferenceStatus('');
+						}
+						fdRenderSlots(resolvedSlots);
+						fdSelectFirstAvailableSlot();
+					}
+				}
+				tryNextPreference();
+			}
+
+			/* ================================================================
+			   RENDER SLOT CHIPS
+			================================================================ */
+			function fdRenderSlots(slots) {
+				var $c = $('#fdSlotsContainer').empty();
+				var avail = 0, booked = 0;
+				$.each(slots, function (i, slot) {
+					var isBooked = fdIsSlotBooked(slot);
+					var from     = slot.slotfrom || slot.SlotFrom || '';
+					var to       = slot.slotto   || slot.SlotTo   || '';
+					var isPastSlot = fdIsPastSlotForCurrentDate(from);
+					if (isBooked || isPastSlot) booked++; else avail++;
+					var $chip = $('<div>')
+						.addClass('fd-slot-chip ' + ((isBooked || isPastSlot) ? 'fd-booked' : 'fd-available'))
+						.attr('data-from', from).attr('data-to', to)
+						.html('<i class="fa ' + ((isBooked || isPastSlot) ? 'fa-times-circle' : 'fa-check-circle') +
+							  ' fd-slot-chip-icon"></i>' +
+							  '<span class="fd-slot-chip-time">' + from + '</span>' +
+							  '<small class="fd-slot-chip-end">to ' + to + '</small>');
+					if (isPastSlot) {
+						$chip.attr('title', 'This slot time has already passed.');
+					}
+					if (!isBooked && !isPastSlot) {
+						$chip.on('click', function () {
+							$('.fd-slot-chip.fd-available').removeClass('fd-selected');
+							$(this).addClass('fd-selected');
+							_fd_selectedSlot = { slotfrom: from, slotto: to };
+							fdSetResolvedPreferenceAudit(_rv_selectedPreferenceRow, from, to);
+
+							/* Show slot-selected indicator bar */
+							$('#fdIframeHint').removeClass('fd-confirmed');
+							$('#fdIframeHintLabel').text('Slot');
+							$('#fdIframeHintTime').text(from + ' \u2013 ' + to);
+							$('#fdIframeHintSuffix').text('selected. Ready to Approve.');
+							$('#fdIframeHint').addClass('fd-confirmed').show();
+							$('#Approved').show();
+
+							/* Update the notice */
+							$('#fdNoticeIcon').attr('class', 'fa fa-check-circle');
+							$('#fdNoticeText').html(
+								'Slot <strong>' + from + ' \u2013 ' + to + '</strong> selected. ' +
+								'Click <strong>Approve</strong> to confirm.'
+							);
+							$('#fdApptRequiredNotice')
+								.addClass('fd-notice-confirmed')
+								.show();
+						});
+					}
+					$c.append($chip);
+				});
+				$('#fdSlotsSummary').text(avail + ' available, ' + booked + ' booked');
+				fdShowSlotState('grid');
+				fdAutoSelectPreBookedSlot();
+			}
+
+			/* ================================================================
+			   FD SLOTS — document ready
+			================================================================ */
+			$(document).ready(function () {
+				var _rvHolidayBlockedDates = {};
+				var _rvHolidayBlockedUrl = '@Url.Action("Get_Holiday_Blocked_Dates", "HolidayCalendar")';
+				function _rvFmtIsoDate(d) {
+					return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+				}
+				function _rvHolidayBeforeShowDay(date) {
+					var key = _rvFmtIsoDate(date);
+					return _rvHolidayBlockedDates[key] ? [false, 'xdsoft_disabled', _rvHolidayBlockedDates[key]] : [true, '', ''];
+				}
+				function _rvRefreshHolidayBlockedDates() {
+					if (!_rv_taskId) { _rvHolidayBlockedDates = {}; return; }
+					var start = new Date();
+					var end = new Date();
+					end.setFullYear(end.getFullYear() + 1);
+					$.ajax({
+						url: _rvHolidayBlockedUrl,
+						type: 'GET',
+						dataType: 'json',
+						data: { tenantid: _fd_tenantId || str_tenantid || '', taskid: _rv_taskId, datefrom: _rvFmtIsoDate(start), dateto: _rvFmtIsoDate(end) },
+						success: function (rows) {
+							if (typeof rows === 'string') { try { rows = JSON.parse(rows); } catch(e) { rows = []; } }
+							_rvHolidayBlockedDates = {};
+							$.each(rows || [], function (_, row) {
+								var raw = row.holidaydate || row.HolidayDate || '';
+								var key = raw ? raw.toString().split('T')[0].split(' ')[0] : '';
+								if (key) _rvHolidayBlockedDates[key] = row.holidayname || row.HolidayName || 'Holiday';
+							});
+						}
+					});
+				}
+				window._rvRefreshHolidayBlockedDates = _rvRefreshHolidayBlockedDates;
+
+				/* ── Init datetimepicker for preferred date (same as Add OPD Form) ── */
+		_rvRefreshHolidayBlockedDates();
+
+		/* ── Manual Check Slots button (uses _fd_preferredDate from OPD record) ── */
+				$('#btnFDFetchSlots').on('click', function () {
+					_fd_apptBooked = false;
+					fdResolvePreferredSlots();
+				});
+
+				$(document).on('change', '#rv_task', function () {
+					_rv_taskId = $(this).val() || null;
+					_fd_apptBooked = false;
+					fdClearSelectedSlotState();
+					if (typeof window._rvRefreshHolidayBlockedDates === 'function') window._rvRefreshHolidayBlockedDates();
+					if (_fd_doctorId) fdResolvePreferredSlots();
+				});
+
+				$('a[href="#rvReviewScheduleTab"]').on('shown.bs.tab', function () {
+					updateOPDReviewHeader(_fd_patientName, _fd_opdNumber);
+					if (_fd_doctorId && ($('#rv_task').val() || _rv_taskId)) {
+						fdResolvePreferredSlots();
+					}
+				});
+
+				/* ── Doctor dropdown change → update _fd_doctorId + reset slots ── */
+				/* Peopleid is the id field set by lookup_OPDForm_preferreddoctor_review */
+				$(document).on('select2:select', '#fdDoctorSelect', function (e) {
+					_fd_doctorId = e.params.data.Peopleid || e.params.data.id;
+					_fd_apptBooked = false;
+					$('#fdDoctorSelect-error').hide();
+					fdClearSelectedSlotState();
+
+					/* Restore pre-booked slot notice if reviewer switches back to original doctor */
+					if (_fd_originalPreBookedSlot && _fd_preBookedDoctorId &&
+						_fd_doctorId && _fd_doctorId.toString() === _fd_preBookedDoctorId.toString()) {
+						_fd_preBookedSlot = _fd_originalPreBookedSlot;
+						$('#fdPreBookedSlotTime').text(
+							_fd_preBookedSlot.slotfrom + ' \u2013 ' + _fd_preBookedSlot.slotto
+						);
+						$('#fdPreBookedSlotNotice').show();
+					} else {
+						_fd_preBookedSlot = null;
+						$('#fdPreBookedSlotNotice').hide();
+					}
+
+					fdResolvePreferredSlots();
+				});
+				$(document).on('select2:clear select2:unselect', '#fdDoctorSelect', function () {
+					_fd_doctorId = null;
+					_fd_preBookedSlot = null;
+					_fd_apptBooked = false;
+					fdClearSelectedSlotState();
+					$('#fdDoctorSelect-error').show();
+					$('#fdPreBookedSlotNotice').hide();
+					fdShowSlotState('empty', 'Please select a doctor first.');
+				});
+
+				function fdGetSelectedDoctorId() {
+					return (_fd_doctorId || $('#fdDoctorSelect').val() || '').toString().trim();
+				}
+
+				function fdValidatePreferredDoctor() {
+					var selectedDoctorId = fdGetSelectedDoctorId();
+					if (selectedDoctorId) {
+						_fd_doctorId = selectedDoctorId;
+						$('#fdDoctorSelect-error').hide();
+						return true;
+					}
+					$('#fdDoctorSelect-error').show();
+					swal({
+						title: 'Validation !',
+						text: 'Please choose a preferred doctor.',
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false
+					}).then(function () {
+						$('#fdDoctorSelect').select2('open');
+					});
+					return false;
+				}
+
+				/* ================================================================
+			   APPROVE BUTTON — single AJAX to verify_OPDForm
+			   SQL function handles ClinicalAppointment INSERT internally
+			   when verifiedstatus is 'Approved' or 'OPD Approved'
+				================================================================ */
+				$("body").on("click", '.auto_checker_action', function () {
+
+					var actionStatus = $(this).attr('data-status') || this.id;
+
+					/* Validate comments for Rejected / Rework */
+					if ((actionStatus === 'Rejected' || actionStatus === 'OPD Rejected' ||
+						 actionStatus === 'Rework' || actionStatus === 'OPD Rework') &&
+						$("#reviewcomments").val() == '') {
+						swal({
+							title: 'Validation !',
+							text: "Please enter Review Comments",
+							type: 'error',
+							buttonsStyling: false,
+							confirmButtonClass: 'btn btn-primary',
+							allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false
+						});
+						$("#reviewcomments").focus();
+						return;
+					}
+
+				/* ── Approve: two sub-paths ──
+				   A) Slot selected → confirm → single AJAX (SQL does INSERT+UPDATE)
+				   B) No slot selected → prompt to either pick a slot or approve without booking
+				── */
+					if (actionStatus === 'Approved' || actionStatus === 'OPD Approved') {
+						if (!fdValidatePreferredDoctor()) {
+							return;
+						}
+
+						if (!_fd_selectedSlot) {
+							swal({
+								title: 'Time Slot Required',
+								text: 'Please select an available time slot before approving this OPD.',
+								type: 'error',
+								buttonsStyling: false,
+								confirmButtonClass: 'btn btn-primary',
+								allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false
+							});
+							return;
+						}
+						fdSubmitVerify(actionStatus);
+						return;
+					}
+
+					/* ── Non-approve (Rejected, Rework, etc.) ── */
+					setTimeout(function () { fdSubmitVerify(actionStatus); }, 1);
+				});
+
+				/* ================================================================
+			   fdSubmitVerify — single AJAX call to verify_OPDForm
+			   When Approved with slot → carries all ClinicalAppointment fields;
+			   SQL does INSERT + UPDATE + review log in one transaction.
+				================================================================ */
+				function fdSubmitVerify(actionId) {
+					$(".page-loader").show();
+					var OPDFormid = getUrlVars()["OPDFormid"];
+					var postData = {
+						OPDFormid:      OPDFormid,
+						verifiedstatus: actionId,
+						reviewcomments: $("#reviewcomments").val(),
+						task:           $('#rv_task').val() || null,
+						appointmentmode: _rv_appointmentMode || $('.auto_cls_appointmentmode').text() || ''
+					};
+				/* Appointment fields — only when approving with a selected slot */
+					if ((actionId === 'Approved' || actionId === 'OPD Approved') && _fd_selectedSlot) {
+						postData.patient         = _fd_patientId;
+						postData.practitioner    = _fd_doctorId;
+						postData.appointmentdate = _fd_preferredDate || $('#fdDateInput').val();
+						postData.durationfrom    = _fd_selectedSlot.slotfrom;
+						postData.durationto      = _fd_selectedSlot.slotto;
+						postData.taskid = $('#rv_task').val() || null;
+						if (_rv_selectedPreferenceRow) {
+							postData.selectedpreferenceorder = _rv_selectedPreferenceRow.order;
+							postData.selectedpreferencedate = _rv_selectedPreferenceRow.sqlDate;
+							postData.selectedslotpreferences = (_rv_selectedPreferenceRow.displaySlotPreferences || _rv_selectedPreferenceRow.slotPreferences || []).join(',');
+						}
+						postData.status          = 'Scheduled';
+						postData.tenantid        = _fd_tenantId || null;
+					}
+					$.ajax({
+						url: '@Url.Action("verify_OPDForm")',
+						method: 'POST',
+						contentType: 'application/json',
+						dataType: 'json',
+						data: JSON.stringify(postData),
+						success: function (data) {
+							$(".page-loader").hide();
+							if (data == "201.1") {
+								var successMsg = ((actionId === 'Approved' || actionId === 'OPD Approved') && _fd_selectedSlot)
+									? "Appointment booked and OPD approved successfully!"
+									: "Your review has been updated!";
+								swal({
+									title: 'Success', text: successMsg, type: 'success',
+									buttonsStyling: false, confirmButtonClass: 'btn btn-primary',
+									allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false
+								}).then(function () {
+									var reviewReturnUrl = getOPDReviewReturnUrl();
+									if (reviewReturnUrl && reviewReturnUrl !== window.location.href) {
+										window.location = reviewReturnUrl;
+									} else if (window.history.length > 1) {
+										window.history.back();
+									} else {
+										window.location.reload();
+									}
+								});
+								fill_OPDForm_view_data();
+							} else {
+								swal({
+									title: 'Error', text: data || "An error occurred", type: 'error',
+									buttonsStyling: false, confirmButtonClass: 'btn btn-danger'
+								});
+							}
+						},
+						error: function () {
+							$(".page-loader").hide();
+							swal({
+								title: 'Error', text: "An error occurred. Please try again.", type: 'error',
+								buttonsStyling: false, confirmButtonClass: 'btn btn-danger'
+							});
+						}
+					});
+				}
+
+				$.ajax({
+					url: '@Url.Action("get_lookups_by_entity", "lookups")',
+					dataType: 'json',
+				data:{id: 'OPDForm' },
+				success: function(data) {
+
+				$.each(data, function(index, optionDataInner) {
+				if(optionDataInner.fieldname=="verifiedstatus"){
+						var ddltarget_verifiedstatus = "#verifiedstatus_buttons"
+
+						$(ddltarget_verifiedstatus).empty()
+
+						if(optionDataInner.fieldname=="verifiedstatus"){
+
+									var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+									options_verifiedstatus.sort(function (leftStatus, rightStatus) {
+										function reviewActionOrder(status) {
+											var normalized = (status || '').trim().toLowerCase();
+											if (normalized === 'rejected' || normalized === 'opd rejected') return 0;
+											if (normalized === 'rework' || normalized === 'opd rework') return 1;
+											if (normalized === 'approved' || normalized === 'opd approved') return 3;
+											return 2;
+										}
+										return reviewActionOrder(leftStatus) - reviewActionOrder(rightStatus);
+									});
+								options_verifiedstatus.forEach(function(option_verifiedstatus){
+									var normalizedStatus = option_verifiedstatus.trim().toLowerCase();
+									if(option_verifiedstatus !='Ready For Review' && option_verifiedstatus !='Revised' && option_verifiedstatus !='Ready For OPD Review' && normalizedStatus !== 'completed' && normalizedStatus !== 'opd completed' && normalizedStatus !== 'complete opd' && !normalizedStatus.startsWith('assessment')){
+											var displayText = option_verifiedstatus;
+									if (option_verifiedstatus === "Approved" || option_verifiedstatus === "OPD Approved") {
+										displayText = "Approve";
+									}
+									else if(option_verifiedstatus === "Rejected" || option_verifiedstatus === "OPD Rejected") {
+										displayText = "Reject";
+									}
+									else if(option_verifiedstatus === "Rework" || option_verifiedstatus === "OPD Rework") {
+										displayText = "Rework";
+									}
+									$('<button>', {
+										type: 'button',
+										style: 'display:none',
+										class: 'btn btn-primary auto_checker_action',
+										'data-status': option_verifiedstatus,
+										text: displayText
+									}).appendTo(ddltarget_verifiedstatus);
+
+										}
+								})
+								fill_OPDForm_view_data()
+								}
+
+
+							}
+				})
+
+
+					}
+
+			})
+
+
+
+
+
+
+
+
+
+								});
+
+
+		/* ================================================================
+		   Get_Appointment_By_OPDForm_display
+		   Fetches existing appointments for this OPD form and renders
+		   a patient slot table (visible for ALL statuses, never hidden).
+		================================================================ */
+		function Get_Appointment_By_OPDForm_display(OPDFormid) {
+			var $body = $('#rv_patient_slot_body');
+			if (!$body.length) return;
+			$body.html('<p class="text-muted"><i class="fa fa-spinner fa-spin"></i> Loading patient slots&hellip;</p>');
+			$('#rv_patient_slot_section').show();
+			$.ajax({
+				url: '@Url.Action("Get_Appointment_By_OPDForm", "OPDForm")',
+				type: 'GET',
+				dataType: 'json',
+				data: { OPDFormid: OPDFormid },
+				success: function (data) {
+					$body.empty();
+					if (!data || data.length === 0) {
+						$body.html('<p class="text-muted">No appointment slots found for this OPD form.</p>');
+						return;
+					}
+					var html = '<div class="table-responsive">'
+						+ '<table class="table table-bordered table-hover" id="tbl_rv_patient_slots">'
+						+ '<thead class="thead-default"><tr>'
+						+ '<th>Slot Date</th><th>Slot Time (From)</th><th>Slot Time (To)</th>'
+						+ '<th>Doctor</th><th>Status</th><th>Booking Ref</th>'
+						+ '</tr></thead><tbody>';
+					$.each(data, function (i, slot) {
+						var statusBadge = slot.status === 'Scheduled' ? 'success'
+							: slot.status === 'Requested' ? 'info' : 'warning';
+						html += '<tr>'
+							+ '<td>' + (slot.appointmentdate || slot.slotdate || '-') + '</td>'
+							+ '<td>' + (slot.durationfrom   || slot.slotfrom  || '-') + '</td>'
+							+ '<td>' + (slot.durationto     || slot.slotto    || '-') + '</td>'
+							+ '<td>' + (slot.doctorname || slot.preferreddoctor_master || slot.practitioner_master || '-') + '</td>'
+							+ '<td><span class="badge badge-' + statusBadge + '">' + (slot.status || slot.appointmentstatus || '-') + '</span></td>'
+							+ '<td>' + (slot.bookingreferencenumber || slot.appointmentid || '-') + '</td>'
+							+ '</tr>';
+					});
+					html += '</tbody></table></div>';
+					$body.html(html);
+				},
+				error: function () {
+					$body.html('<p class="text-danger">Failed to load appointment slots. Please try again.</p>');
+				}
+			});
+		}
+
+		/* ================================================================
+		   DOCTOR LOOKUP — identical to Add OPD Form's lookup_OPDForm_preferreddoctor
+		   Targets #fdDoctorSelect in the Review page.
+		================================================================ */
+		function rvNormalizeText(value) {
+			return (value || '').toString().toLowerCase().replace(/\s+/g, ' ').trim();
+		}
+
+				function lookup_OPDForm_preferreddoctor_review(tenantid) {
+			var ddltarget = $('#fdDoctorSelect');
+			ddltarget.empty();
+			ddltarget.select2({
+				ajax: {
+					url: '@Url.Action("lookup_OPDForm_preferreddoctor")',
+					dataType: 'json',
+					data: function (params) {
+						return {
+							'tenantid': tenantid,
+							'searchterm': params.term || '',
+							'pagesize': typeaheadpagesize,
+							'pagenumber': params.page || 1
+						};
+					},
+					delay: 500,
+					processResults: function (data, params) {
+						if (data.length > 0) {
+							data = data.filter(function (item) { return item.firstname !== null; });
+							data.sort(function (a, b) {
+								return String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase());
+							});
+						}
+						for (var i = 0; i < data.length; i++) {
+							data[i].id   = data[i].Peopleid;
+							data[i].name = data[i].firstname + ' ' + data[i].lastname;
+						}
+						return {
+							results: data,
+							pagination: { more: data != null && data.length == typeaheadpagesize }
+						};
+					}
+				},
+				placeholder: 'Choose',
+				minimumResultsForSearch: typeaheadpagesize,
+				templateResult:    formatSelectOption_lookup_OPDForm_preferreddoctor_review,
+				templateSelection: formatSelectSelected_lookup_OPDForm_preferreddoctor_review
+			});
+
+			/* Pre-select the current doctor loaded from the OPD record */
+			if (_fd_doctorId || _fd_doctorName) {
+				// Search by name to get the matching record from the lookup API
+				var searchTerm = _fd_doctorName || '';
+				$.ajax({
+					url: '@Url.Action("lookup_OPDForm_preferreddoctor")',
+					dataType: 'json',
+					data: {
+						'tenantid'  : tenantid,
+						'searchterm': searchTerm,
+						'pagesize'  : typeaheadpagesize,
+						'pagenumber': 1
+					},
+					success: function (data) {
+						var matched = null;
+						var expectedName = rvNormalizeText(_fd_doctorName);
+
+						// 1st pass — match by Peopleid (exact)
+						for (var i = 0; i < data.length; i++) {
+							var rowName = rvNormalizeText((data[i].firstname || '') + ' ' + (data[i].lastname || ''));
+							if ((_fd_doctorId && data[i].Peopleid == _fd_doctorId)
+								|| (!_fd_doctorId && expectedName && (rowName === expectedName || expectedName.indexOf(rowName) >= 0 || rowName.indexOf(expectedName) >= 0))) {
+								matched = data[i];
+								break;
+							}
+						}
+
+						// 2nd pass — if ID search missed, try empty-term fetch and match by ID
+						if (!matched) {
+							$.ajax({
+								url: '@Url.Action("lookup_OPDForm_preferreddoctor")',
+								dataType: 'json',
+								data: { 'tenantid': tenantid, 'searchterm': '', 'pagesize': 100, 'pagenumber': 1 },
+								success: function (allData) {
+									for (var j = 0; j < allData.length; j++) {
+										var allRowName = rvNormalizeText((allData[j].firstname || '') + ' ' + (allData[j].lastname || ''));
+										if ((_fd_doctorId && allData[j].Peopleid == _fd_doctorId)
+											|| (!_fd_doctorId && expectedName && (allRowName === expectedName || expectedName.indexOf(allRowName) >= 0 || allRowName.indexOf(expectedName) >= 0))) {
+											matched = allData[j];
+											break;
+										}
+									}
+									if (matched) applySelection(matched);
+								}
+							});
+							return;
+						}
+
+						applySelection(matched);
+					}
+				});
+			}
+
+			function applySelection(doctor) {
+				var displayName = (doctor.firstname || '') + ' ' + (doctor.lastname || '');
+				_fd_doctorId = doctor.Peopleid || _fd_doctorId;
+				var option = new Option(displayName, doctor.Peopleid, true, true);
+				ddltarget.append(option).trigger('change');
+				ddltarget.trigger({
+					type: 'select2:select',
+					params: { data: doctor }
+				});
+			}
+		}
+
+		/* ================================================================
+		   TASK DROPDOWN — populates #rv_task and pre-selects current value
+		================================================================ */
+		function rvTaskMatchesAppointmentMode(taskName) {
+			var mode = rvNormalizeText(_rv_appointmentMode || $('.auto_cls_appointmentmode').text());
+			var name = rvNormalizeText(taskName);
+			if (!mode) return true;
+			if (mode === 'online') return name.indexOf('online') >= 0;
+			if (mode === 'offline') return name.indexOf('online') < 0;
+			return true;
+		}
+
+		function rvTaskMatchesEligibility(taskName) {
+			if (!_rvEligibleTaskType) return true;
+			var name = rvNormalizeText(taskName);
+			var needsFollowUp = rvNormalizeText(_rvEligibleTaskType).indexOf('follow') >= 0;
+			return needsFollowUp ? name.indexOf('op') >= 0 && name.indexOf('follow') >= 0
+				: name.indexOf('op new') >= 0;
+		}
+
+		function lookup_OPDForm_task_review(tenantid) {
+			if (_fd_patientId && !_rvEligibleTaskType && !_rvEligibilityPending && !_rvEligibilityFailed) {
+				_rvEligibilityPending = true;
+				$('#rv_task').empty().append('<option value="">Choose</option>').prop('disabled', true);
+				$.getJSON('@Url.Action("Get_OPD_Task_Eligibility", "OPDForm")', {
+					patientname: _fd_patientId,
+					excludeopdformid: _fd_opdFormId || getUrlVars()["OPDFormid"] || ''
+				})
+					.done(function (result) {
+						_rvEligibilityPending = false;
+						_rvEligibleTaskType = (result && (result.tasktype || result.TaskType)) || 'OP New';
+						lookup_OPDForm_task_review(tenantid);
+					})
+					.fail(function () {
+						_rvEligibilityPending = false;
+						_rvEligibilityFailed = true;
+						$('#rv_task').empty().append('<option value="">Choose</option>').prop('disabled', true);
+					});
+				return;
+			}
+			if (_rvEligibilityPending || _rvEligibilityFailed) return;
+			$.ajax({
+				url: '@Url.Action("lookup_OPDForm_task")',
+				dataType: 'json',
+				data: { tenantid: tenantid },
+				success: function (data) {
+					if (data.length > 0) {
+						data = data.filter(function (item) { return item.taskname !== null; });
+						data = data.filter(function (item) { return rvTaskMatchesAppointmentMode(item.taskname); });
+						data = data.filter(function (item) { return rvTaskMatchesEligibility(item.taskname); });
+						data.sort(function (a, b) {
+							return String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase());
+						});
+					}
+					var $ddl = $('#rv_task');
+					$ddl.empty().append('<option value="">Choose</option>');
+					var hasSelectedTask = false;
+					$.each(data, function (index, item) {
+						var isSelected = (_rv_taskId && _rv_taskId.toString().toLowerCase() === item.Taskid.toString().toLowerCase());
+						if (isSelected) hasSelectedTask = true;
+						$ddl.append('<option value="' + item.Taskid + '"' + (isSelected ? ' selected' : '') + '>' + item.taskname + '</option>');
+					});
+					if (!hasSelectedTask) {
+						_rv_taskId = null;
+						var firstAllowed = $ddl.find('option[value!=""]:first').val() || '';
+						$ddl.val(firstAllowed);
+						_rv_taskId = firstAllowed || null;
+					}
+					$ddl.prop('disabled', false);
+				}
+			});
+		}
+
+		function formatSelectSelected_lookup_OPDForm_preferreddoctor_review(item) {
+			if (!item) { return 'Choose'; }
+			if (item.text && item.text !== '') {
+				return item.text;
+			}
+			return (item.firstname || '') + ' ' + (item.lastname || '');
+		}
+
+		function formatSelectOption_lookup_OPDForm_preferreddoctor_review(item) {
+			if (item.loading) { return item.text; }
+			return (item.firstname || '') + ' ' + (item.lastname || '');
+		}
+
+	</script>
+

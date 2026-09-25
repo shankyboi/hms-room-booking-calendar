@@ -1,0 +1,3529 @@
+<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 02/07/2026 12:08:22-->
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    var calendarDirectIpdEmbeddedLayout =
+        ViewData["CalendarDirectIPDEmbedded"] is bool calendarDirectIpdEmbeddedFlag
+        && calendarDirectIpdEmbeddedFlag;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>@ViewBag.Title</title>
+    <!-- BEGIN META -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="your,keywords">
+    <meta name="description" content="@ViewBag.Title">
+    <!-- END META -->
+    @if (calendarDirectIpdEmbeddedLayout)
+    {
+        <style>
+            body.calendar-direct-ipd-embedded { background: #f3f7f5 !important; overflow: auto !important; }
+            body.calendar-direct-ipd-embedded #header,
+            body.calendar-direct-ipd-embedded #menubar,
+            body.calendar-direct-ipd-embedded .page_footer { display: none !important; }
+            body.calendar-direct-ipd-embedded #base,
+            body.calendar-direct-ipd-embedded #content,
+            body.calendar-direct-ipd-embedded .main-content {
+                min-height: 100vh !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                left: 0 !important;
+            }
+        </style>
+    }
+    <!-- BEGIN STYLESHEETS -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css' />
+    <!-- Readable, accessible font for hospital app (including older users) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link type="text/css" rel="stylesheet" href="~/css/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/materialadmin.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="~/css/fontawesome/css/all.css">
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/fontawesome.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/all.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/material-design-iconic-font.min.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="~/assets/css/theme-default/libs/multi-select/multi-select.css" />
+
+    <link type="text/css" rel="stylesheet" href="~/assets/css/theme-default/libs/DataTables/jquery.dataTables.css?1423553989" />
+    <link type="text/css" rel="stylesheet" href="~/assets/css/theme-default/libs/DataTables/extensions/dataTables.colVis.css?1423553990" />
+    <link type="text/css" rel="stylesheet" href="~/assets/css/theme-default/libs/DataTables/extensions/dataTables.tableTools.css?1423553990" />
+    <link type="text/css" rel="stylesheet" href="~/css/responsive.dataTables.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/dataTables.alphabetSearch.css" />
+
+    @* <link type="text/css" rel="stylesheet" href="~/variables.css" />  *@
+    <link type="text/css" rel="stylesheet" href="~/Monochrome.css" />
+    @*  <link type="text/css" rel="stylesheet" href="~/Dark-Green.css" />  *@
+    <!-- SUPPORTING CONTROL FILES-->
+    <link rel="stylesheet" href="~/components/sweetalert2/sweetalert2.min.css">
+    <!-- END SUPPORTING CONTROL FILES-->
+    <!-- END STYLESHEETS -->
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="https://www.codecovers.eu/assets/js/modules/materialadmin/libs/utils/html5shiv.js"></script>
+    <script type="text/javascript" src="https://www.codecovers.eu/assets/js/modules/materialadmin/libs/utils/respond.min.js"></script>
+    <![endif]-->
+    <script src="~/js/jquery-1.11.2.min.js"></script>
+    <script src="~/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/css/summernote.css" />
+    <script src="~/libs/summernote/summernote.min.js"></script>
+    <script>
+        $(function () {
+            $('.wysiwyg-editor').each(function () {
+                var $editor = $(this);
+                if ($editor.next('.note-editor').length) return;
+
+                $editor.summernote({
+                    height: 180,
+                    minHeight: 120,
+                    onChange: function (contents) {
+                        $editor.val(contents);
+                    },
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['height', ['height']],
+                        ['insert', ['link', 'picture', 'hr']],
+                        ['view', ['fullscreen', 'codeview']],
+                        ['history', ['undo', 'redo']]
+                    ]
+                });
+            });
+
+            window.syncSummernoteEditors = function () {
+                $('.wysiwyg-editor').each(function () {
+                    var $editor = $(this);
+                    if ($editor.next('.note-editor').length) {
+                        $editor.val($editor.code());
+                    }
+                });
+            };
+
+            document.addEventListener('click', window.syncSummernoteEditors, true);
+        });
+    </script>
+    <script src="~/js/App.js"></script>
+    <script src="~/js/jquery.nanoscroller.min.js"></script>
+    <script src="~/js/AppNavigation.js"></script>
+    <link rel="stylesheet" href="~/libs/intl-tel-input-master/build/css/intlTelInput.css">
+    <script src="~/libs/intl-tel-input-master/build/js/intlTelInput.min.js"></script>
+    <script src="~/libs/intl-tel-input-master/build/js/utils.js"></script>
+    <link type="text/css" rel="stylesheet" href="~/css/custom.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/custom_changed.css" />
+    <link type="text/css" rel="stylesheet" href="~/themestyles.css" />
+    <link type="text/css" rel="stylesheet" href="~/appstyles.css" />
+    <link rel='shortcut icon' type='image/x-icon' href='~/images/Logo/White-fav.svg' />
+
+ 
+    <style>
+   
+    #main-menu li.has-dropdown > a > i.fa-circle,
+    #main-menu li.has-dropdown > a > i.fas.fa-circle,
+    #main-menu li.has-dropdown > a > i.far.fa-circle {
+        font-size: 10px !important;
+        width: 22px !important;
+        display: inline-block !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+
+    /* ── Parent li: let it grow naturally ── */
+    #main-menu li[data-ft-dt]      { overflow:visible !important; height:auto !important; }
+    #main-menu li[data-ft-dt] > a  { position:relative !important; }
+
+    /* ── Chevron icon on the Daily Task row ── */
+    #main-menu li[data-ft-dt] .ft-dt-arrow {
+        position:absolute; right:10px; top:50%;
+        transform:translateY(-50%);
+        font-size:9px; opacity:.5; pointer-events:none;
+        transition:transform .22s ease, opacity .15s;
+    }
+    #main-menu li[data-ft-dt].ft-dt-expanded .ft-dt-arrow {
+        transform:translateY(-50%) rotate(180deg); opacity:.85;
+    }
+
+    /* ── Submenu wrapper ── */
+    .ft-dt-inline-submenu {
+        list-style:none !important; margin:0 !important; padding:0 !important;
+        background:transparent !important;
+        display:none; overflow:visible !important;
+    }
+    #main-menu li[data-ft-dt].ft-dt-expanded .ft-dt-inline-submenu { display:block !important; }
+
+    
+    .ft-dt-inline-submenu li                { list-style:none !important; position:relative; }
+    .ft-dt-inline-submenu li a,
+    .ft-dt-inline-submenu li a:visited      {
+        display:flex !important; align-items:center !important;
+        padding:7px 10px 7px 12px !important;
+        font-family: var(--font-family) !important;
+        font-style: normal;
+        font-weight: 400 !important;
+        font-size: 14px !important;
+        line-height: 20px !important;
+        color: var(--colorwhite) !important;
+        text-decoration:none !important;
+        position: relative;
+        /* Keep each item on a single line — no wrapping */
+        width:auto !important; max-width:100% !important;
+        white-space:nowrap !important;
+        overflow:hidden !important;
+        text-overflow:ellipsis !important;
+        background:transparent !important;
+        transition:background .13s, color .13s;
+    }
+    /* No bullet/line — a small icon per item instead */
+    .ft-dt-inline-submenu li a::before,
+    .ft-dt-inline-submenu li a::after      { content:none !important; display:none !important; }
+
+    .ft-dt-inline-submenu li a .ft-dt-icon {
+        font-size:12px !important;
+        width:14px !important;
+        margin-right:10px !important;
+        flex-shrink:0 !important;
+        text-align:center !important;
+        color:rgba(255,255,255,.65) !important;
+    }
+    .ft-dt-inline-submenu li a.ft-nav-active .ft-dt-icon {
+        color:#fff !important;
+    }
+
+    .ft-dt-inline-submenu li a:hover       {
+        color:#fff !important;
+        background:transparent !important;
+    }
+    .ft-dt-inline-submenu li a.ft-nav-active {
+        color:#fff !important; font-weight:600 !important;
+    }
+
+    /* ── Old JS-built dot span (no longer created) — kept hidden for safety ── */
+    .ft-dt-inline-submenu li a .ft-dt-dot  { display:none !important; }
+    </style>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+        const theme = localStorage.getItem('theme') || 'variables';
+        addStylesheet(theme);
+        updateLogo(theme);
+        });
+
+        function addStylesheet(stylesheet) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = "@Configuration.GetSection("ApiSettings")["baseURL"]"+`/${stylesheet}.css`;
+        document.head.appendChild(link);
+        }
+
+        function changeTheme(themeValue) {
+        const existingStylesheet = document.querySelector('link[href*="'+localStorage.getItem('theme')+'"]');
+        if (existingStylesheet) {
+        existingStylesheet.remove();
+        }
+
+
+        localStorage.setItem('theme', themeValue);
+
+
+
+        addStylesheet(themeValue);
+        updateLogo(themeValue);
+        }
+        function updateLogo(theme) {
+        const baseURL =  "@Configuration.GetSection("ApiSettings")["baseURL"]";
+
+        const logos = {
+        'variables': baseURL + "/images/logo/logo-2.jpg",
+        'Dark-Green': baseURL + "/images/logo/logo-1.jpg",
+        'Monochrome': baseURL + "/images/logo/logo-3.jpg",
+        };
+
+        const logoImages = document.querySelectorAll('img[alt="LOGO"]');
+
+        logoImages.forEach(img => {
+        const newSrc = logos[theme] || logos['variables'];
+        if (document.body.classList.contains('left-panel-hidden')) {
+        img.setAttribute('data-full-src', newSrc);
+        } else {
+        img.src = newSrc;
+        }
+        });
+        }
+
+        /* ═══ Font Size Preference ═══ */
+        (function() {
+        var FS_KEY = 'nalam_fontsize';
+        var FS_CLASSES = ['fs-default', 'fs-medium', 'fs-large'];
+        function applyFontSize(fs) {
+        FS_CLASSES.forEach(function(c) { document.documentElement.classList.remove(c); });
+        if (fs && fs !== 'fs-default') document.documentElement.classList.add(fs);
+        localStorage.setItem(FS_KEY, fs || 'fs-default');
+        /* Highlight active option in dropdown */
+        document.querySelectorAll('.fs-option').forEach(function(el) {
+        el.classList.toggle('fs-option--active', el.getAttribute('data-fs') === (fs || 'fs-default'));
+        });
+        }
+        /* Apply saved preference on load (before paint) */
+        var saved = localStorage.getItem(FS_KEY) || 'fs-default';
+        if (saved && saved !== 'fs-default') document.documentElement.classList.add(saved);
+        /* Bind clicks once DOM ready */
+        document.addEventListener('DOMContentLoaded', function() {
+        applyFontSize(localStorage.getItem(FS_KEY) || 'fs-default');
+        document.querySelectorAll('.fs-option').forEach(function(el) {
+        el.addEventListener('click', function(e) {
+        e.preventDefault();
+        applyFontSize(this.getAttribute('data-fs'));
+        });
+        });
+        });
+        })();
+
+        function getIconClass(fileName) {
+        const fileExtensionIcons = {
+        ".pdf": "/images/FileImages/upload_pdf.png",
+        ".docx": "/images/FileImages/word_doc.png",
+        ".xlsx": "/mnt/data/excel.png",  // Using the provided image for Excel
+        ".doc": "/images/FileImages/word_doc.png",
+        ".xls": "/mnt/data/excel.png",  // Using the provided image for Excel
+        ".jpg": "/images/FileImages/image_upload.png",
+        ".jpeg": "/images/FileImages/image_upload.png",
+        ".png": "/images/FileImages/image_upload.png",
+        ".gif": "/images/FileImages/image_upload.png",
+        ".bmp": "/images/FileImages/image_upload.png",
+        ".txt": "/images/FileImages/text_file.png",
+        ".rtf": "/images/FileImages/text_file.png",
+        ".html": "/images/FileImages/html_file.png",
+        ".htm": "/images/FileImages/html_file.png",
+        ".csv": "/images/FileImages/csv_file.png",
+        ".ppt": "/images/FileImages/ppt_file.png",
+        ".pptx": "/images/FileImages/ppt_file.png",
+        ".zip": "/images/FileImages/zip_file.png",
+        ".rar": "/images/FileImages/zip_file.png",
+        ".7z": "/images/FileImages/zip_file.png",
+        ".mp3": "/images/FileImages/audio_file.png",
+        ".wav": "/images/FileImages/audio_file.png",
+        ".mp4": "/images/FileImages/video_file.png",
+        ".avi": "/images/FileImages/video_file.png",
+        ".mkv": "/images/FileImages/video_file.png",
+        ".mov": "/images/FileImages/video_file.png",
+        ".flv": "/images/FileImages/video_file.png",
+        ".exe": "/images/FileImages/exe_file.png",
+        ".dll": "/images/FileImages/dll_file.png",
+        ".psd": "/images/FileImages/photoshop_file.png",
+        ".ai": "/images/FileImages/illustrator_file.png",
+        ".indd": "/images/FileImages/indesign_file.png",
+        ".svg": "/images/FileImages/vector_file.png",
+        ".xml": "/images/FileImages/xml_file.png",
+        ".json": "/images/FileImages/json_file.png",
+        ".js": "/images/FileImages/js_file.png",
+        ".css": "/images/FileImages/css_file.png",
+        ".php": "/images/FileImages/php_file.png",
+        ".java": "/images/FileImages/java_file.png",
+        ".py": "/images/FileImages/python_file.png",
+        ".rb": "/images/FileImages/ruby_file.png",
+        ".go": "/images/FileImages/go_file.png",
+        ".ts": "/images/FileImages/typescript_file.png"
+        };
+
+        var fileExtension = fileName.substr(fileName.lastIndexOf("."));
+        var fileIconClass = fileExtensionIcons[fileExtension.toLowerCase()];
+        return fileIconClass ? fileIconClass : "/images/FileImages/default_file.png";  // Return a default icon if extension is not found
+        }
+
+        var view_ico = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><g id="vuesax/linear/eye"><g id="eye"><path id="Vector" d="M12.9833 9.99993C12.9833 11.6499 11.6499 12.9833 9.99993 12.9833C8.34993 12.9833 7.0166 11.6499 7.0166 9.99993C7.0166 8.34993 8.34993 7.0166 9.99993 7.0166C11.6499 7.0166 12.9833 8.34993 12.9833 9.99993Z" stroke="#003370" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path id="Vector_2" d="M10.0001 16.8918C12.9418 16.8918 15.6834 15.1584 17.5918 12.1584C18.3418 10.9834 18.3418 9.00843 17.5918 7.83343C15.6834 4.83343 12.9418 3.1001 10.0001 3.1001C7.05845 3.1001 4.31678 4.83343 2.40845 7.83343C1.65845 9.00843 1.65845 10.9834 2.40845 12.1584C4.31678 15.1584 7.05845 16.8918 10.0001 16.8918Z" stroke="#003370" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg>';
+
+        var edit_ico = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M11.05 3.00002L4.20829 10.2417C3.94996 10.5167 3.69996 11.0584 3.64996 11.4334L3.34162 14.1334C3.23329 15.1084 3.93329 15.775 4.89996 15.6084L7.58329 15.15C7.95829 15.0834 8.48329 14.8084 8.74162 14.525L15.5833 7.28335C16.7666 6.03335 17.3 4.60835 15.4583 2.86668C13.625 1.14168 12.2333 1.75002 11.05 3.00002Z" stroke="#DD8400" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.90845 4.20825C10.2668 6.50825 12.1334 8.26659 14.4501 8.49992" stroke="#DD8400" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 18.3333H17.5" stroke="#DD8400" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+        var del_ico = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none"><g id="vuesax/linear/trash"><g id="trash"><path id="Vector" d="M17.5 4.98332C14.725 4.70832 11.9333 4.56665 9.15 4.56665C7.5 4.56665 5.85 4.64998 4.2 4.81665L2.5 4.98332" stroke="#8B0000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path id="Vector_2" d="M7.08325 4.14175L7.26659 3.05008C7.39992 2.25841 7.49992 1.66675 8.90825 1.66675H11.0916C12.4999 1.66675 12.6083 2.29175 12.7333 3.05841L12.9166 4.14175" stroke="#8B0000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path id="Vector_3" d="M15.7084 7.6167L15.1667 16.0084C15.0751 17.3167 15.0001 18.3334 12.6751 18.3334H7.32508C5.00008 18.3334 4.92508 17.3167 4.83341 16.0084L4.29175 7.6167" stroke="#8B0000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path id="Vector_4" d="M8.6084 13.75H11.3834" stroke="#8B0000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path id="Vector_5" d="M7.91675 10.4167H12.0834" stroke="#8B0000" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></g></g></svg>';
+
+        var revise_ico = '<svg height="20" width="20" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512.00 512.00" xml:space="preserve" fill="#000000" stroke="#000000" stroke-width="0.00512" transform="matrix(1, 0, 0, 1, 0, 0)rotate(45)"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path style="fill:#ebc53d;" d="M415.566,74.014c-9.09,9.09-9.09,23.828,0,32.92c66.535,66.535,66.535,174.797,0,241.334 c-32.233,32.231-75.086,49.982-120.667,49.982s-88.434-17.751-120.667-49.982c-54.706-54.707-64.422-137.619-29.165-202.356 l16.626,83.596c2.204,11.077,11.927,18.741,22.805,18.741c1.505,0,3.032-0.147,4.564-0.452c12.61-2.508,20.797-14.762,18.29-27.371 L180.63,86.071c-0.006-0.033-0.012-0.064-0.02-0.096l-0.008-0.042c-0.017-0.084-0.043-0.161-0.062-0.245 c-0.14-0.669-0.301-1.333-0.5-1.989c-0.07-0.223-0.158-0.436-0.23-0.656c-0.169-0.503-0.34-1.004-0.543-1.496 c-0.124-0.298-0.27-0.582-0.405-0.872c-0.183-0.396-0.36-0.793-0.568-1.179c-0.188-0.352-0.4-0.686-0.605-1.026 c-0.186-0.307-0.36-0.621-0.562-0.922c-0.273-0.408-0.571-0.793-0.869-1.181c-0.164-0.217-0.317-0.441-0.49-0.652 c-0.402-0.489-0.832-0.951-1.269-1.404c-0.093-0.096-0.171-0.2-0.267-0.295c-0.008-0.008-0.017-0.014-0.023-0.022 c-0.548-0.543-1.117-1.061-1.713-1.547c-0.41-0.334-0.836-0.632-1.262-0.934c-0.185-0.13-0.36-0.276-0.548-0.402 c-0.481-0.321-0.978-0.605-1.476-0.886c-0.155-0.088-0.303-0.188-0.461-0.273c-0.464-0.248-0.939-0.461-1.415-0.677 c-0.216-0.098-0.424-0.208-0.642-0.298c-0.408-0.169-0.824-0.307-1.241-0.453c-0.306-0.107-0.608-0.227-0.919-0.321 c-0.332-0.101-0.67-0.174-1.004-0.259c-0.407-0.104-0.809-0.216-1.22-0.298c-0.258-0.051-0.517-0.079-0.776-0.121 c-0.489-0.081-0.981-0.164-1.477-0.214c-0.216-0.02-0.43-0.02-0.644-0.036c-0.535-0.037-1.068-0.076-1.608-0.076 c-0.334,0-0.667,0.031-1.001,0.045c-0.416,0.019-0.83,0.019-1.249,0.061c-0.77,0.073-1.538,0.188-2.3,0.338 c-0.008,0.002-0.016,0.002-0.022,0.003L18.741,94.393c-12.61,2.508-20.797,14.762-18.29,27.371s14.759,20.794,27.371,18.29 l75.62-15.04c-43.984,82.191-31.37,186.931,37.872,256.172c41.025,41.025,95.568,63.618,153.585,63.618 s112.56-22.593,153.585-63.618c84.687-84.687,84.687-222.484,0-307.171C439.394,64.923,424.655,64.923,415.566,74.014z"></path> </g></svg>'
+
+        var  str_tenantid =""
+        $(document).ready(function () {
+        if ("@Context.Session.GetString("NalamVazhashowtenant")"=="N"){
+        $("#tenantid").parent().parent().parent().addClass("tenantSection")
+        $("#tenantid").parent().parent().empty()
+        var tenantid = "@Context.Session.GetString("NalamVazhachoosedtenantid")"
+        str_tenantid = "@Context.Session.GetString("NalamVazhachoosedtenantid")"
+        $(".tenantSection").append("<input type='text' id='tenantid' name='tenantid' value=" + "@Context.Session.GetString("NalamVazhachoosedtenantid")" + " />")
+        $(".tenantSection").hide()
+
+        }
+
+        if ("@Context.Session.GetString("module")" == "client" && "@Context.Session.GetString("NalamVazhashowtenant")"=="N") {
+        $(".tenantSection").empty()
+        var tenantid="@Context.Session.GetString("NalamVazhachoosedtenantid")"
+        str_tenantid = "@Context.Session.GetString("NalamVazhachoosedtenantid")"
+        $(".tenantSection").append("<input type='text' id='tenantid' name='tenantid' value="+"@Context.Session.GetString("NalamVazhachoosedtenantid")"+" />")
+
+
+        }
+
+        if ("@Context.Session.GetString("NalamVazhashowtenant")"=="Y" && "@Context.Session.GetString("module")" == "client" && "@Context.Session.GetString("natureofbusiness")".replace(" Lead","") !=$(".tenant_display").html()) {
+        $("#tenantid").parent().parent().parent().addClass("tenantSection")
+        $("#tenantid").parent().parent().empty()
+        var tenantid = "@Context.Session.GetString("NalamVazhachoosedtenantid")"
+        str_tenantid = "@Context.Session.GetString("NalamVazhachoosedtenantid")"
+        $(".tenantSection").append(" < input type = 'text' id = 'tenantid' name = 'tenantid' value = " + "@Context.Session.GetString("NalamVazhachoosedtenantid")" + " /> ")
+        $(".tenantSection").hide()
+        }
+        })
+
+        var typeaheadpagesize = @Configuration.GetSection("settings")["typeaheadpagesize"];
+        var vBaseurl = "@Configuration.GetSection("ApiSettings")["baseURL"]"
+        function getUrlVars()
+        {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+        }
+        return vars;
+        }
+        if("@ViewContext.RouteData.Values["controller"].ToString().ToUpper()" != "TENANT" && "@ViewContext.RouteData.Values["action"].ToString().ToUpper()" != "QUICK_ADD_PATIENT_PROFILE" && !("@ViewContext.RouteData.Values["controller"].ToString().ToUpper()" == "IPDAPPLICATIONFORM" && "@ViewContext.RouteData.Values["action"].ToString().ToUpper()" == "INITIATE_PAYMENT")){
+        if("@Context.Session.GetString("NalamVazhausername")" == null || "@Context.Session.GetString("NalamVazhausername")"=="") {
+        window.location="@Url.Action("Index", "users")"
+        }
+        }
+
+        if("@ViewContext.RouteData.Values["controller"].ToString().ToUpper()" == "TENANT"){
+        if("@Context.Session.GetString("NalamVazhausername")" == null || "@Context.Session.GetString("NalamVazhausername")"=="") {
+        $(".page-header-menu-section").hide();
+        $(".menubar").hide();
+        $("#base").css('padding-left','0px');
+        $("#header").css("left","0")
+        }
+        }
+    </script>
+</head>
+
+<body class="menubar-hoverable header-fixed bg-white@(calendarDirectIpdEmbeddedLayout ? " calendar-direct-ipd-embedded" : "")">
+    <div class="page-loader">
+
+        <div class="page-loader__spinner">
+
+
+            <img height="50px" width="50px" src="~/images/loading.gif" alt="loader">
+
+
+        </div>
+    </div>
+
+    <header id="header">
+
+        <div class="page-header-box">
+            <a class="btn btn-icon-toggle menubar-toggle" data-toggle="menubar" href="javascript:void(0);">
+                <i class="fa fa-bars"></i>
+            </a>
+            <a class="btn btn-icon-toggle left-panel-toggle" id="leftPanelToggle" href="javascript:void(0);" title="Hide left panel">
+                <i class="fa fa-angle-double-left"></i>
+            </a>
+
+            @{
+                var __role = Context.Session.GetString("NalamVazhauserrole") ?? "";
+                var __isHS = __role.Equals("Health Seeker", StringComparison.OrdinalIgnoreCase);
+                var __isFD = __role.Equals("Frontdesk Admin", StringComparison.OrdinalIgnoreCase);
+            }
+            @if (__isHS)
+            {
+                <a href="@Url.Action("Index","PatientDashboard")" class="hs-header-logo" title="My Health Dashboard">
+                    <img src="~/images/logo/logo-1.jpg" alt="NalamVazha" />
+                </a>
+            }
+
+            <h1><a href="javascript:void(0);" onclick="window.location.href = document.referrer"><i class="fa fa-angle-left" aria-hidden="true"></i></a>@ViewBag.Title</h1>
+            <!-- Wizard steps slot (pages inject steps here via JS) -->
+            <div id="pageHeaderWizardSlot" class="page-header-wizard-slot"></div>
+           
+
+
+            <div class="page-header-menu-section">
+
+                @if (__isHS)
+                {
+                    <div class="hs-hdr-actions">
+                        <a class="hs-frontdesk-phone" id="hsFrontdeskPhone" href="#" style="display:none;">
+                            <i class="fa fa-phone"></i>
+                            <span>Front Desk:</span>
+                            <strong id="hsFrontdeskPhoneValue"></strong>
+                        </a>
+                        <div class="hs-hdr-split" id="hsHdrSplit">
+                            <button  class="hs-hdr-btn hs-hdr-btn--main">
+                                <i class="fa fa-plus-circle"></i> New Booking
+                            </button>
+                            <button type="button" class="hs-hdr-btn hs-hdr-btn--caret" id="hsHdrCaret" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                            <div class="hs-hdr-split__menu" id="hsHdrMenu">
+                                <a href="@Url.Action("Add_IPD_Application_Form","IPDApplicationForm")" class="hs-hdr-split__item">
+                                    <i class="fa fa-bed"></i>
+                                    <span><strong>IPD Booking</strong><small>Inpatient admission &amp; stay</small></span>
+                                </a>
+                                <a href="@Url.Action("Add_OPD_Form","OPDForm")" class="hs-hdr-split__item">
+                                    <i class="fa fa-stethoscope"></i>
+                                    <span><strong>OPD Consultation</strong><small>Outpatient appointment</small></span>
+                                </a>
+                                      @if (__isHS)
+                {
+                              <a href="@Url.Action("Add_Group_Booking", "GroupBooking", new { isDashboard = true })" class="hs-hdr-split__item">
+    <i class="fa fa-users"></i>
+    <span>
+        <strong>Group Booking</strong>
+        <small>Multiple patient admission & stay</small>
+    </span>
+</a>
+                }
+                            </div>
+                        </div>
+                        <a href="@Url.Action("Room_Type_List", "RoomType")" class="hs-hdr-rooms" title="View available rooms" style="display:none;">
+                            <i class="fa fa-bed" aria-hidden="true"></i>
+                            <span>Rooms</span>
+                        </a>
+                        @*  <a href="@Url.Action("Update_Patient_Profile","PatientProfile")?PatientProfileid=@Context.Session.GetString("NalamVazhaloginUserID")" class="hs-hdr-btn hs-hdr-btn--outline">
+                        <i class="fa fa-user-circle"></i> My Profile
+                    </a> *@
+                    </div>
+                }
+
+                @if (__isFD)
+                {
+                  
+
+                    <div class="hs-hdr-actions">
+
+                        <div class="hs-hdr-split" id="fdHdrSplit">
+
+
+                            <button class="hs-hdr-btn hs-hdr-btn--main">
+                                <i class="fa fa-th-large"></i> Quick Actions
+                            </button>
+                            <button type="button" class="hs-hdr-btn hs-hdr-btn--caret" id="fdHdrCaret" aria-haspopup="true" aria-expanded="false">
+                                <i class="fa fa-caret-down"></i>
+                            </button>
+                            <div class="hs-hdr-split__menu" id="fdHdrMenu">
+                                <a href="@Url.Action(
+                                                                       "Booking_Calendar",
+                                                                       "RoomOccupancyStatus",
+                                                                       new { isDashboardView = "Y" })" class="hs-hdr-split__item">
+                                    <i class="fa fa-calendar-alt"></i>
+                                    <span><strong>Booking Calendar</strong><small>Room allotment &amp; scheduling</small></span>
+                                </a>
+                                <a href="@Url.Action("Clinical_Slot", "ClinicalAppointment")" class="hs-hdr-split__item">
+                                    <i class="fa-solid fa-user-doctor"></i>
+                                    <span><strong>Doctor Slot</strong><small>Manage doctor availability</small></span>
+                                </a>
+                                <a href="@Url.Action("Direct_IPD_Admission","IPDApplicationForm")" class="hs-hdr-split__item">
+                                    <i class="fa fa-bed"></i>
+                                    <span><strong>Direct IPD Admission</strong><small>Existing patient room allotment</small></span>
+                                </a>
+                                <a href="@Url.Action("Add_OPD_Form","OPDForm")" class="hs-hdr-split__item">
+                                    <i class="fa fa-stethoscope"></i>
+                                    <span><strong>OPD Consultation</strong><small>Outpatient visit</small></span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <ul class="header-nav header-nav-profile">
+
+                    <!-- ═══ Patient Search (common) ═══ -->
+                    <li>
+                        <a href="javascript:void(0);" id="btnOpenPatientSearch" class="ink-reaction" title="Patient Search">
+                            <i class="fa fa-user-injured"></i>
+                        </a>
+                    </li>
+
+                    <!-- ═══ Booking Calendar / Room Availability Check (common) ═══
+                         Everywhere except the Booking Calendar page itself this icon navigates to
+                         that page. On the Booking Calendar it falls back to opening the Room
+                         Availability side panel, so that panel stays reachable. -->
+                    @{
+                        var _onBookingCalendar = ViewContext.RouteData.Values["controller"]?.ToString() == "RoomOccupancyStatus"
+                                                 && ViewContext.RouteData.Values["action"]?.ToString() == "Booking_Calendar";
+                    }
+                    <li>
+                        @if (_onBookingCalendar)
+                        {
+                            <a href="javascript:void(0);" id="btnOpenRoomAvailability" class="ink-reaction" title="Room Availability">
+                                <i class="fa fa-calendar-check"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Booking_Calendar", "RoomOccupancyStatus", new { isDashboardView = "Y" })" id="btnOpenBookingCalendar" class="ink-reaction" title="Booking Calendar">
+                                <i class="fa fa-calendar-check"></i>
+                            </a>
+                        }
+                    </li>
+
+                    <!-- ═══ Room Search (common) ═══ -->
+                    @* <li>
+                        <a href="javascript:void(0);" id="btnOpenRoomSearch" class="ink-reaction" title="Room Search">
+                            <i class="fa fa-door-open"></i>
+                        </a>
+                    </li> *@
+
+                    @if (bool.Parse(Configuration["IssueTrackerSettings:ShowReportToDeveloper"] ?? "false"))
+                    {
+                        <li>
+                            <a href="javascript:void(0);" onclick="openReportIssueModal()" class="ink-reaction" title="Open Issues" style="position:relative;padding-right:6px;">
+                                <i class="fa fa-bug" style="color:#e53935;font-size:16px;"></i>
+                                <span id="it-nav-bug-count" style="
+                                display:none;
+                                position:absolute;top:2px;right:0px;
+                                min-width:17px;height:17px;
+                                border-radius:9px;
+                                background:#e53935;color:#fff;
+                                font-size:10px;font-weight:700;line-height:17px;
+                                text-align:center;padding:0 4px;
+                                box-shadow:0 1px 4px rgba(0,0,0,.35);
+                                ">0</span>
+                            </a>
+                        </li>
+                    }
+
+                    <li class="dropdown">
+                        <a href="javascript:void(0);" class="dropdown-toggle ink-reaction" data-toggle="dropdown" aria-expanded="false">
+                            <img src="@(string.IsNullOrWhiteSpace(Context.Session.GetString("NalamVazhaprofilepicture")) ? Url.Content("~/Icon_set/User.png") : Context.Session.GetString("NalamVazhaprofilepicture"))" alt="profile" onerror="this.onerror=null;this.src='@Url.Content("~/Icon_set/User.png")';">
+                            <span class="profile-info">
+                               @*  @Context.Session.GetString("NalamVazhausername") *@
+                                @Context.Session.GetString("firstname")
+                                <small>@Context.Session.GetString("NalamVazhauserrole")</small>
+                            </span>
+                        </a>
+
+                        <ul class="dropdown-menu animation-dock hdr-profile-menu">
+                            <li class="hdr-pref-block">
+                                <div class="hdr-pref-title hdr-pref-title--plain">Theme</div>
+                                <div class="hdr-theme-swatches">
+                                    <div class="color-palette active" style="background-color: #2f6b4f" onclick="changeTheme('variables')" role="button"></div>
+                                    <div class="color-palette" style="background-color: #6FBF8E" onclick="changeTheme('Dark-Green')" role="button"></div>
+                                    <div class="color-palette" style="background-color: #148191" onclick="changeTheme('Monochrome')" role="button"></div>
+                                </div>
+                            </li>
+
+                            <li class="divider"></li>
+
+                            <li class="hdr-pref-block">
+                                <div class="hdr-pref-title hdr-pref-title--plain">Text Size</div>
+                                <div class="hdr-fs-scale">
+                                    <a href="javascript:void(0);" class="fs-option hdr-fs-letter" data-fs="fs-default" title="Default" style="font-size:14px;">A</a>
+                                    <a href="javascript:void(0);" class="fs-option hdr-fs-letter" data-fs="fs-medium" title="Medium" style="font-size:18px;">A</a>
+                                    <a href="javascript:void(0);" class="fs-option hdr-fs-letter" data-fs="fs-large" title="Large" style="font-size:22px;">A</a>
+                                </div>
+                            </li>
+
+                            <li class="divider"></li>
+
+                            <li class="hdr-pref-block">
+                                <div class="hdr-pref-row-inline">
+                                    <div class="hdr-pref-title hdr-pref-title--plain"><i class="fa fa-globe"></i> Language</div>
+                                    <div class="hdr-lang-pills">
+                                        <a href="@Url.Action("ChangeCurrentCulture", "users")?culture=en-GB" class="hdr-lang-pill active" title="English">EN</a>
+                                        <a href="@Url.Action("ChangeCurrentCulture", "users")?culture=gu-IN" class="hdr-lang-pill" title="Gujarati">GU</a>
+                                        <a href="@Url.Action("ChangeCurrentCulture", "users")?culture=hi-IN" class="hdr-lang-pill" title="Hindi">HI</a>
+                                        <a href="@Url.Action("ChangeCurrentCulture", "users")?culture=ta-IN" class="hdr-lang-pill" title="Tamil">TA</a>
+                                    </div>
+                                </div>
+                            </li>
+                            <input type="checkbox" checked id="transliterateCheck" style="display:none;" />
+
+                            <li class="divider"></li>
+                            @if (__isHS)
+                            {
+                                <li><a class="hdr-menu-item" href="@Url.Action("Update_Patient_Profile","PatientProfile")?PatientProfileid=@Context.Session.GetString("NalamVazhaloginUserID")"><span class="hdr-menu-icon"><i class="material-icons">account_circle</i></span><span class="hdr-menu-label">My Profile</span><i class="fa fa-chevron-right hdr-menu-chevron"></i></a></li>
+                            }else
+                            {
+                                <li><a class="hdr-menu-item" href="@Url.Action("UpdateProfile", "users")?usersid=@Context.Session.GetString("NalamVazhaloginUserID")"><span class="hdr-menu-icon"><i class="material-icons">account_circle</i></span><span class="hdr-menu-label">My Profile</span><i class="fa fa-chevron-right hdr-menu-chevron"></i></a></li>
+                            }
+
+                            <li><a class="hdr-menu-item" href="@Url.Action("ChangePassword", "users")?usersid=@Context.Session.GetString("NalamVazhaloginUserID")"><span class="hdr-menu-icon"><i class="material-icons">vpn_key</i></span><span class="hdr-menu-label">Change Password</span><i class="fa fa-chevron-right hdr-menu-chevron"></i></a></li>
+
+                            <li class="divider"></li>
+                            <li><a class="hdr-menu-item hdr-menu-item--danger craftmyApp_logout_btn" href="@Url.Action("Logout","users", new { tenantid = Context.Session.GetString("NalamVazhachoosedtenantid") })"><span class="hdr-menu-icon hdr-menu-icon--danger"><i class="material-icons">power_settings_new</i></span><span class="hdr-menu-label">Logout</span></a></li>
+                        </ul>
+
+                        <!--end .dropdown-menu -->
+                    </li>
+                    <!--end .dropdown -->
+                </ul>
+            </div>
+
+        </div>
+
+    </header>
+    <div id="base">
+
+        <div id="content">
+
+            <section class="main-content@(ViewContext.RouteData.Values["controller"]?.ToString() == "RoomOccupancyStatus" && ViewContext.RouteData.Values["action"]?.ToString() == "Booking_Calendar" ? " np-booking-calendar" : "")">
+
+
+                @RenderBody()
+
+            </section>
+
+        </div>
+
+        <div id="menubar" class="menubar">
+            <div class="menubar-fixed-panel">
+                <div>
+                    <a class="btn btn-icon-toggle btn-default menubar-toggle" data-toggle="menubar" href="javascript:void(0);">
+                        <i class="fa fa-bars"></i>
+                    </a>
+                </div>
+
+            </div>
+            <div class="menubar-scroll-panel">
+
+                <ul id="main-menu" class="gui-controls mainSideMenu">
+                    <li>
+                        <a href="#" class="logo-item navigatestartupurl">
+                            <img src="~/images/logo/logo-3.jpg" alt="LOGO" />
+                            @* <img src="/images/logo/White-logo1.svg" alt="LOGO" /> *@
+                            @* <img src="/images/logo/White-logo1.svg" alt="LOGO" />  *@
+                        </a>
+                    </li>
+
+                    @* <img src="/images/logo/White-logo.svg" /> *@
+                </ul>
+
+
+            </div>
+
+
+        </div>
+
+
+
+    </div>
+    <footer class="page_footer">
+        <figure class="footer-side-logo">
+            <img src="~/images/leftlogo.png" alt="Left Logo" />
+        </figure>
+
+        
+
+        <figure class="footer-side-logo footer-thajos">
+            <img src="~/images/rightlogo.png" alt="Designed by Thajos" />
+            <span>@ViewBag.version</span>
+        </figure>
+    </footer>
+    <script>
+        (function syncFooter() {
+            function applyFooterPosition() {
+                var menubar = document.getElementById('menubar');
+                var header = document.getElementById('header');
+               
+                var hiddenMenu = !menubar || $('.menubar').is(':hidden') || window.innerWidth <= 768;
+                var leftPad = 0;
+
+                if (!hiddenMenu) {
+                    var headerLeft = header ? Math.round(header.getBoundingClientRect().left) : 0;
+                    var menuWidth = menubar ? Math.round(menubar.getBoundingClientRect().width) : 0;
+                    leftPad = Math.max(headerLeft, menuWidth, 0);
+                }
+
+                document.documentElement.style.setProperty('--app-footer-left', leftPad + 'px');
+                var footer = document.querySelector('.page_footer');
+                if (footer) {
+                    footer.style.setProperty('left', leftPad + 'px', 'important');
+                    footer.style.setProperty('width', 'calc(100vw - ' + leftPad + 'px)', 'important');
+                    footer.style.setProperty('height', 'var(--app-footer-height)', 'important');
+                    footer.style.setProperty('padding', '0 28px', 'important');
+                }
+            }
+            $(document).ready(function () {
+                applyFooterPosition();
+                setTimeout(applyFooterPosition, 250);
+                setTimeout(applyFooterPosition, 750);
+                $('[data-toggle="menubar"]').on('click', function () {
+                    setTimeout(applyFooterPosition, 350);
+                });
+                $(window).on('resize', applyFooterPosition);
+                if (window.MutationObserver) {
+                    var base = document.getElementById('base');
+                    if (base) {
+                        new MutationObserver(function () { applyFooterPosition(); })
+                            .observe(base, { attributes: true, attributeFilter: ['style'] });
+                    }
+                    var menubar = document.getElementById('menubar');
+                    if (menubar) {
+                        new MutationObserver(function () { applyFooterPosition(); })
+                            .observe(menubar, { attributes: true, attributeFilter: ['style', 'class'] });
+                    }
+                    /* The sidebar collapse toggle (#leftPanelToggle) adds/removes
+                       left-panel-hidden on <body>, not on #menubar itself, so it needs its
+                       own observer to trigger a footer reposition when the rail narrows. */
+                    new MutationObserver(function () { setTimeout(applyFooterPosition, 350); })
+                        .observe(document.body, { attributes: true, attributeFilter: ['class'] });
+                }
+            });
+        })();
+    </script>
+
+    <script>
+
+           if("@ViewContext.RouteData.Values["controller"].ToString().ToUpper()" != "TENANT" && "@ViewContext.RouteData.Values["action"].ToString().ToUpper()" != "QUICK_ADD_PATIENT_PROFILE" && !("@ViewContext.RouteData.Values["controller"].ToString().ToUpper()" == "IPDAPPLICATIONFORM" && "@ViewContext.RouteData.Values["action"].ToString().ToUpper()" == "INITIATE_PAYMENT")){
+           if("@Context.Session.GetString("NalamVazhausername")" == null || "@Context.Session.GetString("NalamVazhausername")"=="") {
+           window.location="@Url.Action("Index", "users")"
+           }
+           }
+
+
+
+        if("@ViewContext.RouteData.Values["controller"].ToString().ToUpper()" == "TENANT"){
+                if("@Context.Session.GetString("NalamVazhausername")" == null || "@Context.Session.GetString("NalamVazhausername")"=="") {
+                   $(".page-header-menu-section").hide();
+                   $(".menubar").hide();
+                   $("#base").css('padding-left','0px');
+                   $("#header").css("left","0")
+               }
+           }
+    </script>
+    <script src="~/js/spin.min.js"></script>
+    <script src="~/js/jquery.autosize.min.js"></script>
+    <script src="~/js/moment.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="~/js/AppOffcanvas.js"></script>
+    <script src="~/js/AppCard.js"></script>
+    <script src="~/js/AppForm.js"></script>
+    <script src="~/js/AppNavSearch.js"></script>
+    <script src="~/js/AppVendor.js"></script>
+    <!-- OLD COMPONENTS -->
+    <script src="~/components/sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/libs/DataTables/jquery.dataTables.min.js"></script>
+
+    <script src="~/libs/DataTables/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+    <script src="~/libs/DataTables/buttons.flash.min.js"></script>
+    <script src="~/libs/DataTables/jszip.min.js"></script>
+    <script src="~/libs/DataTables/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.print.min.js"></script>
+    <script src="~/libs/DataTables/extensions/ColVis/js/dataTables.colVis.min.js "></script>
+    <script src="~/libs/DataTables/extensions/TableTools/js/dataTables.tableTools.min.js "></script>
+    <script src="~/js/dataTables.alphabetSearch.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.13.1/sorting/datetime-moment.js"></script>
+    <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <!-- END OLD COMPONENTS -->
+    <!-- END JAVASCRIPT -->
+
+    <script src="~/components/jquery/jquery.validate.js"></script>
+    <script src="~/components/jquery/additional-methods.min.js"></script>
+    <script src="~/js/id-proof-validation.js"></script>
+    <script src="~/components/autonumeric/autoNumeric.js"></script>
+
+    <link rel="stylesheet" href="~/components/Color-Picker-Plugin-jQuery-MiniColors/jquery.minicolors.css">
+    <script src="~/components/Color-Picker-Plugin-jQuery-MiniColors/jquery.minicolors.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <script>
+        (function () {
+            var LEFT_PANEL_STATE_KEY = 'nalam_left_panel_state';
+
+            var LEFT_PANEL_ICON_LOGO = "@Configuration.GetSection("ApiSettings")["baseURL"]" + "/images/logo/White-fav.svg";
+
+            function applyLeftPanelState(state) {
+                var body = $('body');
+                var toggleButton = $('#leftPanelToggle');
+                var toggleIcon = toggleButton.find('i');
+                var logoImg = document.querySelector('.logo-item img[alt="LOGO"]');
+
+                if (state === 'hidden') {
+                    body.addClass('left-panel-hidden');
+                    toggleButton.attr('title', 'Show left panel');
+                    toggleIcon.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
+                    if (logoImg) {
+                        if (!logoImg.getAttribute('data-full-src')) {
+                            logoImg.setAttribute('data-full-src', logoImg.getAttribute('src'));
+                        }
+                        logoImg.src = LEFT_PANEL_ICON_LOGO;
+                    }
+                } else {
+                    body.removeClass('left-panel-hidden');
+                    toggleButton.attr('title', 'Hide left panel');
+                    toggleIcon.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
+                    if (logoImg && logoImg.getAttribute('data-full-src')) {
+                        logoImg.src = logoImg.getAttribute('data-full-src');
+                    }
+                }
+            }
+
+            $(document).ready(function () {
+                @{
+                    var _layoutRole = Context.Session.GetString("NalamVazhauserrole") ?? "";
+                    var _isHealthSeeker = _layoutRole.Equals("Health Seeker", StringComparison.OrdinalIgnoreCase);
+                }
+                @if (_isHealthSeeker)
+                {
+                    /* Health Seeker – always hide left panel, hide toggle */
+                    <text>
+                    $('body').addClass('left-panel-hidden');
+                    $('#leftPanelToggle').hide();
+                    $('.menubar-toggle').hide();
+
+                    /* Header booking dropdown toggle */
+                    $('#hsHdrCaret').on('click', function(e) {
+                        e.stopPropagation();
+                        var open = $('#hsHdrMenu').toggleClass('open').hasClass('open');
+                        $(this).attr('aria-expanded', open ? 'true' : 'false');
+                    });
+                    var hsTenantId = '@Context.Session.GetString("NalamVazhachoosedtenantid")';
+                    if (hsTenantId) {
+                        $.ajax({
+                            url: '@Url.Action("get_project_tenant", "tenant")',
+                            dataType: 'json',
+                            data: { tenantid: hsTenantId },
+                            success: function (data) {
+                                var row = $.isArray(data) && data.length ? data[0] : null;
+                                var phone = row && row.businessphone ? row.businessphone.toString().trim() : '';
+                                if (phone) {
+                                    $('#hsFrontdeskPhoneValue').text(phone);
+                                    var dialPhone = phone.replace(/[^+\d]/g, '');
+                                    $('#hsFrontdeskPhone').attr('href', 'tel:' + dialPhone).css('display', 'inline-flex');
+                                }
+                            }
+                        });
+                    }
+                    $(document).on('click', function() {
+                        $('#hsHdrMenu').removeClass('open');
+                        $('#hsHdrCaret').attr('aria-expanded', 'false');
+                    });
+                    </text>
+                }
+                else
+                {
+                    <text>
+                    @{
+                        var _isRegPage = ViewContext.RouteData.Values["controller"]?.ToString()?.ToUpper() == "PATIENTPROFILE"
+                                      && ViewContext.RouteData.Values["action"]?.ToString()?.ToUpper() == "QUICK_ADD_PATIENT_PROFILE";
+                    }
+                    @if (_isRegPage)
+                    {
+                    <text>
+                    applyLeftPanelState('hidden');
+                    </text>
+                    }
+                    else
+                    {
+                    <text>
+                    var savedState = localStorage.getItem(LEFT_PANEL_STATE_KEY) || 'shown';
+                    applyLeftPanelState(savedState);
+                    </text>
+                    }
+
+                    /* FrontDesk – Quick Add header dropdown toggle */
+                    $('#fdHdrCaret').on('click', function(e) {
+                        e.stopPropagation();
+                        var open = $('#fdHdrMenu').toggleClass('open').hasClass('open');
+                        $(this).attr('aria-expanded', open ? 'true' : 'false');
+                    });
+                    $(document).on('click', function() {
+                        $('#fdHdrMenu').removeClass('open');
+                        $('#fdHdrCaret').attr('aria-expanded', 'false');
+                    });
+
+                    $('#leftPanelToggle').on('click', function (e) {
+                        e.preventDefault();
+                        var isHidden = $('body').hasClass('left-panel-hidden');
+                        var newState = isHidden ? 'shown' : 'hidden';
+                        localStorage.setItem(LEFT_PANEL_STATE_KEY, newState);
+                        applyLeftPanelState(newState);
+                    });
+                    </text>
+                }
+            });
+        })();
+    </script>
+    <script>
+                                            function Automaton_Set_RadionButtonSelectedValue(name, SelectedValue) {
+                                                $('input[name="' + name + '"][value="' + SelectedValue + '"]').attr('checked',true);
+                                                $('input[name="' + name + '"][value="' + SelectedValue + '"]').parent('label').addClass('active');
+
+                                            }
+
+                                           function ISOtoSelectedFormat(isoDate) {
+                                                if (!isoDate) return ""; // Handle null or undefined
+
+                                                // Check if the input is in the format YYYY-MM-DD
+                                                if (/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) {
+                                                    // Split the string into components
+                                                    const [year, month, day] = isoDate.split('-').map(Number);
+
+                                                    // Construct the Date object in local time
+                                                    const date = new Date(year, month - 1, day); // Month is zero-based in JS
+
+                                                    // Format the date
+                                                    const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+
+                                                    return formattedDate;
+                                                }
+
+                                                // For other cases, handle it like a regular date/time string
+                                                const date = new Date(isoDate);
+
+                                                if (isNaN(date)) return ""; // Invalid date check
+
+                                                const day = String(date.getDate()).padStart(2, '0');
+                                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                                const year = date.getFullYear();
+                                                const hours = date.getHours();
+                                                const minutes = date.getMinutes();
+
+                                                // Return with or without time depending on its presence
+                                                return hours || minutes
+                                                    ? `${day}/${month}/${year} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+                                                    : `${day}/${month}/${year}`;
+                                            }
+
+                                             function  getSqlDate(dateString) {
+
+                                                if (dateString != "") {
+                                                    var str = dateString;
+                                                    var res = str.split("/");
+
+
+
+                                                    return res[2] + '-' + res[1] + '-' + res[0];
+                                                }
+                                                else {
+                                                    return "";
+
+                                                }
+
+                                            }
+                                            function  getSqlDateTime(dateString) {
+
+                                                if (dateString != "") {
+                                                    var str = dateString.substring(0, 10);
+                                                    var res = str.split("/");
+
+                                                    var time = dateString.substring(10, 16);
+
+                                                    return res[2] + '-' + res[1] + '-' + res[0] +time;
+                                                }
+                                                else {
+                                                    return "";
+
+                                                }
+
+                                            }
+                                             $(document).ready(function() {
+                                              $(window).keydown(function(event){
+                                                if(event.keyCode == 13) {
+                                                  var el = event.target;
+                                                  if (!el) return;
+                                                  if (el.tagName === 'TEXTAREA') return;
+                                                  if (el.isContentEditable === true) return;
+                                                  if ($(el).closest('.trumbowyg-editor, .trumbowyg-box, .note-editor, .cke_editable').length) return;
+                                                  event.preventDefault();
+                                                  return false;
+                                                }
+                                              });
+                                            });
+                                            $(document).ready(function () {
+
+                                            //$(".btn-secondary").html('Back');
+                                                $('.alert-success').delay(3000).fadeOut(300);
+                                               // $(".select2").select2()
+
+                                                $(".mobileHeader").hide()
+
+                                                                             //$("#btnFilter").html('Apply');
+
+                                                $('#btnFilter').parent().parent().hide();
+                                                $('#btnFilter').parent().prepend('<button id="btnCloseFilter" class="btn btn-secondary btn--icon-text mt-5">Cancel</button>');
+
+                                                $("#btnCloseFilter").click(function(){
+                                                    $('#btnFilter').parent().parent().toggle("slow");
+
+                                                })
+
+                                                $("body").click(function(e){
+
+                                                    var container = $(".div_filter");
+                                                     var btncontainer=$(".automatonShowFilter")
+                                                     var select2container = $(".select2-container, .select2-dropdown")
+                                                             if (!container.is(e.target) && container.has(e.target).length === 0)
+                                                            {
+                                                                if (!btncontainer.is(e.target) && btncontainer.has(e.target).length === 0)
+                                                                {
+                                                                    if (!select2container.is(e.target) && select2container.has(e.target).length === 0)
+                                                                    {
+
+                                                                    container.hide();
+                                                                    }
+                                                                }
+                                                            }
+
+                                                })
+
+                                                  $('#btnFilter').parent().parent().addClass("div_filter");
+
+                                                  $('.div_filter').find('.col-sm-2').addClass('col-sm-6 col-xs-12').removeClass('col-sm-2')
+                                                  $('#btnFilter').parent().addClass('col-sm-12').removeClass('col-sm-6 col-xs-12')
+
+
+                                                    $('body').on('click', '.automatonShowFilter', function(a) {
+                                                $('#btnFilter').parent().parent().toggle("slow");
+                                                });
+
+
+                                               if( "@ViewContext.RouteData.Values["action"].ToString().ToUpper()" != "QUICK_ADD_PATIENT_PROFILE"){
+                                                    get_app_menu()
+                                               }
+                                                    $('#formId').validate({
+                                                        highlight: function(element) {
+                                                            $(element).closest('.form-group').addClass('has-danger');
+                                                            $(element).closest('.form-group').removeClass('has-success');
+                                                            $(element).addClass('form-control-danger');
+                                                            $(element).removeClass('form-control-success');
+                                                        },
+                                                        unhighlight: function(element) {
+                                                            $(element).closest('.form-group').removeClass('has-danger');
+                                                            $(element).closest('.form-group').addClass('has-success');
+                                                            $(element).addClass('form-control-success');
+                                                            $(element).removeClass('form-control-danger');
+                                                        },
+                                                        errorElement: 'label',
+                                                        errorClass: 'help-block'
+                                                    });
+
+
+                                                var validator = $("#formId").validate({ /* settings */ });
+                                                    $("#btnSubmit1").click(function(){
+                                                        if ($("#formId").valid()){
+                                                                $(".page-loader").show()
+                                                                $("#formId").submit();
+                                                        }else{
+                                                            validator.focusInvalid();
+                                                            swal({
+                                                                title: 'Validation !',
+                                                                text: "Please fill Empty Fields",
+                                                                type: 'error',
+                                                                buttonsStyling: false,
+                                                                confirmButtonClass: 'btn btn-primary'
+                                                            })
+                                                        }
+                                                    })
+
+
+                                                })
+                                                $('form:first *:input[type!=hidden]:first').focus();
+
+                                                $('body').on('click', '.deleteRecordFromTable', function (e) {
+                                                    var deleteURL = window.location.origin+($(this).attr("href"))
+
+                                                e.preventDefault(); // <--- prevent form from submitting
+
+                                                swal({
+                                                    title: "Are you sure to delete?",
+                                                    text: "",
+                                                   icon: "question",
+                                                    type: "question",
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#DD6B55',
+                                                    confirmButtonText: 'Yes, I am sure!',
+                                                    cancelButtonText: "No, cancel it!",
+                                                    closeOnConfirm: false,
+                                                    closeOnCancel: false,
+                                                    dangerMode: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false
+                                                    }).then(function(isConfirm) {
+                                                    if (isConfirm) {
+
+                                                        window.location=deleteURL
+
+                                                    }
+                                                    })
+                                                });
+         $('body').on('click', '.craftmyApp_logout_btn', function (e) {
+                                                    var deleteURL = window.location.origin+($(this).attr("href"))
+
+                                                e.preventDefault(); // <--- prevent form from submitting
+
+                                                swal({
+                                                    title: "Are you sure to logout?",
+                                                    text: "",
+                                                    icon: "question",
+                                                    type: "question",
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#DD6B55',
+                                                    confirmButtonText: 'Yes, I am sure!',
+                                                    cancelButtonText: "No, cancel it!",
+                                                    closeOnConfirm: false,
+                                                    closeOnCancel: false,
+                                                    dangerMode: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        allowEnterKey: false
+                                                    }).then(function(isConfirm) {
+                                                    if (isConfirm) {
+
+                                                        window.location=deleteURL
+
+                                                    }
+                                                    })
+                                                });
+          var brandIcons = [];
+         var brandIconsLoaded = false;
+
+         (function loadBrandIcons() {
+             $.ajax({
+                url: '@Url.Content("~/css/fontawesome/css/brands.min.css")',
+                 dataType: 'text',
+                 async: false,
+                 success: function(css) {
+                     var matches = css.match(/\.fa-[\w-]+/g);
+                     if (matches) {
+                         var uniqueIcons = {};
+                         matches.forEach(function(match) {
+                             // Remove the .fa- prefix to get just the icon name
+                             var iconName = match.replace('.fa-', '');
+                             // Skip common non-icon classes
+                             if (iconName !== 'brands' && iconName !== 'fab' && !uniqueIcons[iconName]) {
+                                 uniqueIcons[iconName] = true;
+                                 brandIcons.push(iconName);
+                             }
+                         });
+                         brandIconsLoaded = true;
+                         console.log('FontAwesome: Loaded ' + brandIcons.length + ' brand icons');
+                     }
+                 },
+                 error: function() {
+                     console.warn('FontAwesome: Could not load brands.min.css, brand icons may not display correctly');
+                     // brandIcons remains empty - all icons will use fas (solid) prefix
+                 }
+             });
+         })();
+
+         var menuIconFallbacks = {
+            'Dashboard': 'fas fa-tachometer-alt',
+            'Patient Visit': 'fas fa-hand-holding-medical',
+            'Room': 'fas fa-door-open',
+            'People': 'fas fa-user',
+            'Clinical Setup': 'fas fa-clinic-medical',
+            'Therapy': 'fas fa-hands-helping',
+            'Shift': 'fas fa-clock',
+            'Payment Collection': 'fas fa-credit-card',
+            'Consultation': 'fas fa-stethoscope',
+            'Reports': 'fas fa-file-alt',
+            'Support': 'fas fa-headset'
+        };
+
+        function fixIconClass(iconClass, menuName) {
+             if (!iconClass) return (menuIconFallbacks[menuName] || 'fas fa-circle');
+
+             // Extract the icon name from the class (handles messy classes like "fa fa-git-alt fa-solid fa-git-alt")
+             var iconNameMatch = iconClass.match(/fa-([\w-]+)/);
+             if (!iconNameMatch) return iconClass;
+
+             var iconName = iconNameMatch[1];
+
+             // Skip common prefixes that aren't icon names
+             if (iconName === 'solid' || iconName === 'regular' || iconName === 'brands' ||
+                 iconName === 'light' || iconName === 'duotone' || iconName === 'thin') {
+                 // Try to find the actual icon name
+                 var allMatches = iconClass.match(/fa-([\w-]+)/g);
+                 if (allMatches) {
+                     for (var i = 0; i < allMatches.length; i++) {
+                         var name = allMatches[i].replace('fa-', '');
+                         if (name !== 'solid' && name !== 'regular' && name !== 'brands' &&
+                             name !== 'light' && name !== 'duotone' && name !== 'thin') {
+                             iconName = name;
+                             break;
+                         }
+                     }
+                 }
+             }
+
+             // Check if it's a brand icon
+             if (brandIcons.indexOf(iconName) !== -1) {
+                 return 'fab fa-' + iconName;
+             }
+
+             return 'fas fa-' + iconName;
+         }
+
+         function get_app_menu(){
+
+
+
+
+
+                    var a =  eval("@Context.Session.GetString("NalamVazhamenu_JSON")".replace(/&quot;/g, '"'))
+                     if (typeof a === 'undefined') {
+                        return "";
+                    }
+                    var lookup = {};
+                    var items = eval("@Context.Session.GetString("NalamVazhamenu_JSON")".replace(/&quot;/g, '"'));
+                    var result = [];
+                    var result_icon = [];
+                    var subsystem="";
+                    var usersName="";
+                    for (var item, i = 0; item = items[i++];) {
+                      var name = item.parentnode;
+                        var icon_of_it= item.parentdisplayicon;
+                        subsystem=item.subsystem;
+
+                      // if(item.SubSystem=="{SubSystem}")
+                        //{
+
+                                if (!(name in lookup) && name!=null) {
+                                    lookup[name] = 1;
+                                    result.push(name);
+                                    result_icon.push(icon_of_it);
+                                }
+                        //}
+                    }
+
+                    //console.log(result)
+
+                     var submenu =[];
+                     var lookupSubmenu = {};
+
+
+                        var selectedGroupID="";
+                        var subsystem="";
+                        for (var menu = 0; menu < result.length; menu++) {
+
+                                if(result[menu] == "User" && "@Context.Session.GetString("NalamVazhauserrole")" == "Frontdesk Admin"){
+                                    continue;
+                                }
+
+                             var groupID = result[menu].replace(/[^A-Z0-9]/ig, "_");
+
+                                var groupOfMenu='<li class="liGroupTop dropdown '+groupID+'">'+
+                                 '<a class="dropdowns" href="" data-toggle="dropdown"><i  class="'+fixIconClass(result_icon[menu], result[menu])+'"></i> '+ result[menu] +'</a>'+
+                                    '<div class="dropdown-menu">';
+
+                                  var groupOfMenu_side='<li  class="has-dropdown '+groupID+'_">'+
+                                    '<a  data-toggle="tooltip" data-placement="right" title="'+result[menu]+'" href="#" class="'+groupID+'_"><i  class="'+fixIconClass(result_icon[menu], result[menu])+'"></i><span class="title">'+result[menu]+'</span></a>'+
+
+                                    '<div class="menu-dropdown"><ul>';
+
+
+                                    '<div class="menu-dropdown"><ul>';
+
+
+
+
+                             //console.log(result[menu]);
+
+                                        for (var item, i = 0; item = items[i++];) {
+                                        var businessprocess = item.parentnode;
+                                        var name = item.projectelementname;
+                                        if(name == "ConcessionForm"){
+                                            name = "Concession Form";
+                                        }
+                                        subsystem=item.subsystem;
+
+                                        if(result[menu]==item.parentnode)
+                                          {
+                                                  if (!(businessprocess in lookupSubmenu)) {
+                                                        lookupSubmenu[businessprocess] = [];
+                                                  }
+                                                  if(name == "Manage Users" && "@Context.Session.GetString("module")"=="client"){
+                                                    continue;
+                                                  }
+                                                  if (!lookupSubmenu[businessprocess].includes(name)) {
+                                                     lookupSubmenu[businessprocess].push(name);
+
+
+
+
+
+                                                     var URL = "@Url.Action("Index", "item.controllername")"
+                                                     URL = URL.replace("Index", item.actionmethodname);
+                                                     URL = URL.replace("item.controllername", item.controllername);
+
+
+
+                                                        var controllernameClass = item.controllername.toUpperCase();
+                                                         var controllerActionName ="";
+
+
+
+
+
+                   var profileMenu;
+                //profileMenu=profileMenu.replace(/[^A-Z0-9]/ig,"_");
+
+                                                        if(name=="Update Profile")
+                                                        {
+                                                           URL = "@Url.Action("UpdateProfile", "users")?usersid=@Context.Session.GetString("NalamVazhaloginUserID")"
+                                                           controllerActionName="UPDATEPROFILE"
+                                                        }
+
+
+                                                        if(name=="ChangePassword")
+                                                        {
+                                                           URL = "@Url.Action("ChangePassword", "users")?usersid=@Context.Session.GetString("NalamVazhaloginUserID")"
+                                                           controllerActionName="CHANGEPASSWORD"
+                                                        }
+
+                                                        if(name=="Manage Users"  && "@Context.Session.GetString("module")"=="admin"){
+                                                             URL = "@Url.Action("IndexPlatform", "users")"
+                                                             controllerActionName="INDEXPLATFORM"
+
+                                                         }
+
+
+
+
+                                                                     if("@ViewContext.RouteData.Values["controller"].ToString().ToUpper()"==controllernameClass && (controllernameClass!="TENANT" && controllernameClass!="USERS"))
+                                                                     {
+
+                                                                       if(groupID !=profileMenu)
+                                                                       {
+                                                                        groupOfMenu+='<a href="' + URL + '" class="dropdown-item active">'+name+'</a>'
+                                                                        groupOfMenu_side+='<li><a data-toggle="tooltip" data-placement="right" title="'+name+'" href="' + URL + '" class="active">'+name+'</a></li>'
+
+                                                                        selectedGroupID=groupID
+
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            groupOfMenu+='<a href="' + URL + '" class="dropdown-item">'+name+'</a>'
+                                                                            groupOfMenu_side+='<li><a data-toggle="tooltip" data-placement="right" title="'+name+'" href="' + URL + '" class="">'+name+'</a></li>'
+
+
+                                                                        }
+
+
+
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        groupOfMenu+='<a href="' + URL + '" class="dropdown-item">'+name+'</a>'
+                                                                        groupOfMenu_side+='<li><a data-toggle="tooltip" data-placement="right" title="'+name+'" href="' + URL + '">'+name+'</a></li>'
+                                                                    }
+
+
+                                                                    if("@ViewContext.RouteData.Values["controller"].ToString().ToUpper()"=="LOOKUPS")
+                                                                    {
+                                                                        selectedGroupID='liSettingsTop'
+
+                                                                    }
+
+
+
+
+
+
+
+                                                      submenu.push(name);
+                                                  }
+
+                                        }
+                                    }
+
+                                    groupOfMenu+='</div>'+
+                                            '</li>'
+
+                                   groupOfMenu_side+='</ul></div>'+
+                                                      '</li>'
+
+                                            if (lookupSubmenu[result[menu]] && lookupSubmenu[result[menu]].length > 0) {
+                                    $('.mainTopMenu').append(groupOfMenu)
+                                    $('.mainSideMenu').append(groupOfMenu_side)
+                                    }
+
+
+
+                         }
+
+                        // Inject Dashboard group for Frontdesk Admin
+                        if("@Context.Session.GetString("NalamVazhauserrole")" == "Frontdesk Admin"){
+                            var fdDashUrl = "@Url.Action("Dashboard", "FrontDesk")?isDashboardView=Y";
+                            var fdTabs = [
+                                { key: "ipd",       icon: "fa-bed",            label: "IPD",         tooltip: "IPD" },
+                                { key: "outpatient",icon: "fa-stethoscope",    label: "OPD",         tooltip: "OPD" },
+                                { key: "frontdesk", icon: "fa-phone",          label: "Enquiries",   tooltip: "Enquiries" },
+                                { key: "clinical",  icon: "fa-calendar-check", label: "Appointment", tooltip: "Appointment" },
+                                { key: "finance",   icon: "fa-rupee-sign",     label: "Finance",     tooltip: "Finance" },
+                                { key: "rooms",     icon: "fa-calendar",       label: "Occupancy",   tooltip: "Occupancy" }
+                            ];
+                            var fdSideGroup = '<li class="has-dropdown Dashboard_"><a data-toggle="tooltip" data-placement="right" title="Dashboard" href="#" class="Dashboard_"><i class="fas fa-tachometer-alt"></i><span class="title">Dashboard</span></a><div class="menu-dropdown"><ul>';
+                            fdTabs.forEach(function(t){
+                                fdSideGroup += '<li><a href="' + fdDashUrl + '&activeTab=' + t.key + '" data-toggle="tooltip" data-placement="right" title="' + t.tooltip + '">' + t.label + '</a></li>';
+                            });
+                            fdSideGroup += '</ul></div></li>';
+                            $('.logo-item').closest('li').after(fdSideGroup);
+                        }
+
+                           if(selectedGroupID !="")
+                            {
+                               if (usersName == "UPDATEPROFILE") {
+                                   selectedGroupID = "User"
+                               }
+
+                               $("."+selectedGroupID).addClass("active")
+
+                               $("."+selectedGroupID+"_").addClass("active")
+
+
+                                $("."+selectedGroupID+"_").addClass("cma_active")
+
+
+                                    $('.mainSideMenu li').each(function() {
+                                    if($(this).attr("class") !=undefined){
+                                        if($(this).attr("class").includes('cma_active')){
+                                            $(this).prev().addClass("next-menu-active");
+
+                                            $(this).next().addClass("prev-menu-active");
+                                             if($(this).next().attr("class")==undefined){
+                                                $(".mainSideMenu").append("<li class='has-dropdown prev-menu-active'><a href='#'></a></li>");
+                                             }
+
+                                        }
+                                    }
+                                    })
+
+
+                            }
+                           //$('.mainTopMenu').append('<li><a class="craftmyApp_logout_btn" href="@Url.Action("Logout", "users")"><i class="fas fa-sign-out-alt"></i></a></li>')
+                           //$('.mainSideMenu').append('<li class="craftmyApplogoutbtn"><a class="craftmyApp_logout_btn" href="@Url.Action("Logout", "users")"><i class="fas fa-sign-out-alt"></i></li>')
+                        $("body").tooltip({
+                            selector: '[data-toggle=tooltip]',
+                            container: 'body',
+                            template: '<div class="tooltip sidebar-tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
+                        });
+
+                        // When user clicks/toggles side menu, hide any hover tooltips.
+                        // This prevents tooltips from sticking on top of the UI.
+                        function hideSidebarHoverTooltips() {
+                            try { $('body').tooltip('hide'); } catch (e) { }
+                            $('.tooltip.sidebar-tooltip').hide();
+                            $('.tooltip').hide();
+                            // Remove tooltip DOM to guarantee it disappears even if bootstrap keeps a stale instance
+                            $('.tooltip').remove();
+                            $('.popover').hide();
+                            $('.popover').remove();
+                        }
+                        $(document).on('click', '#main-menu a, .mainSideMenu a, .menubar-toggle', function () {
+                            hideSidebarHoverTooltips();
+                        });
+
+                                     $('.dropdown-menu li a.has-submenu').on('click', function(event) {
+              event.stopPropagation();
+              $(this).closest('.dropdown').addClass('open');
+            });
+
+            $('[data-toggle="submenu"]').on('click', function(event) {
+              let loc_sef = $(this),
+                loc_submenu = loc_sef.next('.main-submenu');
+              loc_submenu.slideToggle();
+            })
+
+            let clickedMenu;
+            $('.has-dropdown', '#main-menu').click(function() {
+
+              clickedMenu = $(this);
+              var loc_self = $(this),
+                loc_dropdown_menu = $('.menu-dropdown', loc_self),
+                loc_dropdown = loc_dropdown_menu.clone(),
+                loc_pos = loc_dropdown_menu.offset();
+              $('#dropdown_container').remove();
+
+              /* ── Build scrollable submenu popup ────────────────────────── */
+              var $dc = $(
+                '<div id="dropdown_container">' +
+                  '<div class="submenu-scroll-arrow submenu-scroll-up"><i class="fa fa-chevron-up"></i></div>' +
+                  '<div class="dropdown-scroll-inner"></div>' +
+                  '<div class="submenu-scroll-arrow submenu-scroll-down"><i class="fa fa-chevron-down"></i></div>' +
+                '</div>'
+              );
+              $dc.find('.dropdown-scroll-inner').append(loc_dropdown);
+              $('#menubar').append($dc);
+
+              /* ── Clamp position so panel stays inside the viewport ──────── */
+              var vpH       = $(window).height();
+              var panelH    = $dc.outerHeight(true) || 300;
+              var wantedTop = loc_pos.top - 30;
+              var safeTop   = Math.max(10, Math.min(wantedTop, vpH - panelH - 10));
+              $dc.css({ position: 'fixed', top: safeTop, left: loc_pos.left });
+
+              /* ── Scroll-arrow visibility ─────────────────────────────────── */
+              function updateSubArrows() {
+                var inner = $dc.find('.dropdown-scroll-inner')[0];
+                if (!inner) return;
+                $dc.find('.submenu-scroll-up').toggle(inner.scrollTop > 2);
+                $dc.find('.submenu-scroll-down').toggle(
+                  inner.scrollTop + inner.clientHeight < inner.scrollHeight - 2
+                );
+              }
+              $dc.find('.dropdown-scroll-inner').on('scroll', updateSubArrows);
+              updateSubArrows();
+
+              $dc.on('click', '.submenu-scroll-up', function(e) {
+                e.stopPropagation();
+                $dc.find('.dropdown-scroll-inner').animate({ scrollTop: '-=120' }, 180);
+                setTimeout(updateSubArrows, 200);
+              });
+              $dc.on('click', '.submenu-scroll-down', function(e) {
+                e.stopPropagation();
+                $dc.find('.dropdown-scroll-inner').animate({ scrollTop: '+=120' }, 180);
+                setTimeout(updateSubArrows, 200);
+              });
+            });
+
+            $('body').click(function(e) {
+              if (!$(e.target).closest('#dropdown_container').length) {
+                $('#dropdown_container').remove();
+              }
+
+              if ($(e.target).attr('data-toggle') === 'submenu') {
+                const loc_self = $(e.target);
+                loc_self.toggleClass('submenu-open')
+                loc_self.next('.main-submenu').slideToggle();
+              }
+
+            });
+
+            // First calculate the footer height
+            var footerHeight = $('#menubar .menubar-foot-panel').outerHeight();
+            footerHeight = Math.max(footerHeight, 1)+200;
+
+            $('.menubar-scroll-panel').css({ 'margin-bottom': footerHeight });
+
+
+            // Check if there is a menu
+            var menu = $('#menubar');
+            if (menu.length === 0)
+              return;
+
+            // Get scrollbar elements
+            var menuScroller = $('.menubar-scroll-panel');
+            var parent = menuScroller.parent();
+
+            // Add the scroller wrapper
+            if (parent.hasClass('nano-content') === false) {
+              menuScroller.wrap('<div class="nano"><div class="nano-content"></div></div>');
+            }
+
+            // Set the correct height
+            var height = $(window).height() - menu.position().top - menu.find('.nano').position().top;
+            var scroller = menuScroller.closest('.nano');
+            scroller.css({ height: height+500 });
+
+            // Add the nanoscroller
+            scroller.nanoScroller({ preventPageScrolling: true, iOSNativeScrolling: true });
+            var activeMenuClass = localStorage.getItem("activeMenuClass");
+        if (activeMenuClass) {
+                   $('.has-dropdown').removeClass("active");
+                   $('.' + activeMenuClass.replace(/ /g, '.')).addClass("active");
+                          // localStorage.removeItem("activeMenuClass");
+               }
+               $('.has-dropdown .menu-dropdown ul li a').on('click', function () {
+                           var parentClasses = $(this).closest('.has-dropdown').attr("class");
+                   var classesArray = parentClasses.split(" ").filter(function(c) {
+                       return c !== "has-dropdown" && c !== "active" && c !== "open";
+                   });
+                   var customClass = classesArray[0];
+
+                   localStorage.setItem("activeMenuClass", customClass);
+               });
+
+                  $('.header-nav-profile').on('click', function () {
+                      localStorage.removeItem("activeMenuClass");
+                  });
+
+                (function () {
+                    var _dtListUrl  = '@Url.Action("Daily_Task__List",          "DailyTask")';
+                    var _dtTypesUrl = '@Url.Action("lookup_DailyTask_tasktype",  "DailyTask")';
+                    var _dtTenantId = '@Context.Session.GetString("NalamVazhachoosedtenantid")';
+
+                   
+                    var _urlP      = new URLSearchParams(window.location.search);
+                    var _activeCat = _urlP.get('tasktype') || '';
+
+               
+                    function _dtFindLi() {
+                 
+                        var anchor = document.querySelector(
+                            '#main-menu a[href*="/DailyTask/Daily_Task"]');
+                        if (!anchor) {
+                           
+                            anchor = document.querySelector(
+                                '#main-menu a[title="Daily Task"]');
+                        }
+                        if (!anchor) {
+                          
+                            anchor = document.querySelector(
+                                '#main-menu a[data-original-title="Daily Task"]');
+                        }
+                        if (!anchor) {
+                           
+                            var links = document.querySelectorAll('#main-menu a');
+                            for (var i = 0; i < links.length; i++) {
+                                if (links[i].textContent.trim() === 'Daily Task') {
+                                    anchor = links[i]; break;
+                                }
+                            }
+                        }
+                        return anchor ? anchor.parentElement : null;
+                    }
+
+                   
+                    var _navRoot = document.getElementById('main-menu') || document.body;
+                    _navRoot.addEventListener('click', function (e) {
+                  
+                        var dtLi = e.target.closest ? e.target.closest('[data-ft-dt]') : null;
+                        if (!dtLi) return;
+                        if (e.target.closest('.ft-dt-inline-submenu')) return;
+                        e.stopImmediatePropagation();
+                        e.preventDefault();
+                        dtLi.classList.toggle('ft-dt-expanded');
+                    }, true /* capture */);
+
+                    function _dtBuildSubmenu(taskTypes) {
+                        var navItem = _dtFindLi();
+                        if (!navItem) return false;
+
+                        navItem.setAttribute('data-ft-dt', 'true');
+
+                       
+                        var parentDropdown = navItem.closest('.menu-dropdown');
+                        if (parentDropdown) {
+                            parentDropdown.style.setProperty('overflow', 'visible', 'important');
+                            parentDropdown.style.setProperty('height',   'auto',    'important');
+                            parentDropdown.style.setProperty('max-height','none',   'important');
+                        }
+                        /* Also unlock the li itself */
+                        navItem.style.setProperty('overflow', 'visible', 'important');
+                        navItem.style.setProperty('height',   'auto',    'important');
+
+                      
+                        var existingUl = navItem.querySelector('.ft-dt-inline-submenu');
+                        if (existingUl) {
+                            if (!taskTypes || taskTypes.length === 0) return true;
+                            existingUl.parentNode.removeChild(existingUl);
+                        }
+
+                    
+                        var parentA = navItem.querySelector(':scope > a');
+                        if (!parentA) parentA = navItem.querySelector('a');
+                        if (parentA && !parentA.querySelector('.ft-dt-arrow')) {
+                            var arrowEl = document.createElement('i');
+                            arrowEl.className = 'fa fa-chevron-down ft-dt-arrow';
+                            parentA.appendChild(arrowEl);
+                        }
+
+                     
+                        var ul = document.createElement('ul');
+                        ul.className = 'ft-dt-inline-submenu';
+
+                        var dtIconMap = {
+                            'All Tasks': 'fa-list-check',
+                            'Appointment': 'fa-calendar-check',
+                            'IPD Application': 'fa-file-medical',
+                            'IPD Arrival': 'fa-right-to-bracket',
+                            'IPD Cancellation': 'fa-ban',
+                            'IPD Discharge': 'fa-right-from-bracket',
+                            'IPD Stay': 'fa-bed',
+                            'OPD': 'fa-stethoscope',
+                            'Payment': 'fa-money-bill',
+                            'Room': 'fa-door-closed'
+                        };
+
+                        function _makeItem(href, label, isActive) {
+                            var li = document.createElement('li');
+                            var a  = document.createElement('a');
+                            a.href = href;
+                            if (isActive) a.className = 'ft-nav-active';
+                            var icon = document.createElement('i');
+                            icon.className = 'fas ' + (dtIconMap[label] || 'fa-circle-dot') + ' ft-dt-icon';
+                            a.appendChild(icon);
+                            a.appendChild(document.createTextNode(label));
+
+                            a.addEventListener('click', function (e) { e.stopPropagation(); });
+                            li.appendChild(a);
+                            return li;
+                        }
+
+                        ul.appendChild(_makeItem(_dtListUrl, 'All Tasks', _activeCat === ''));
+                        (taskTypes || []).forEach(function (x) {
+                            var href = _dtListUrl + '?tasktype=' + x.TypeofTaskid +
+                                       '&catname=' + encodeURIComponent(x.tasktype);
+                            ul.appendChild(_makeItem(href, x.tasktype,
+                                                     _activeCat === x.TypeofTaskid));
+                        });
+
+                        navItem.appendChild(ul);
+
+                    
+                        var _onDtPage   = window.location.pathname.toLowerCase()
+                                              .indexOf('/dailytask/') >= 0;
+                        var parentGroup = navItem.closest('li.has-dropdown');
+
+                        if (_onDtPage) {
+                            navItem.classList.add('ft-dt-expanded');
+                           
+                            if (parentGroup && !parentGroup.classList.contains('open')) {
+                                parentGroup.classList.add('open');
+                            }
+                        } else if (parentGroup && parentGroup.classList.contains('open')) {
+                            navItem.classList.add('ft-dt-expanded');
+                        }
+                        return true;
+                    }
+
+               
+                    function _dtAttachGroupObserver() {
+                        var topGroups = document.querySelectorAll(
+                            '#main-menu > li.has-dropdown, ' +
+                            '#main-menu > ul > li.has-dropdown');
+                        if (!topGroups.length) return;
+
+                        var obs = new MutationObserver(function (mutations) {
+                            var dtLi     = document.querySelector('[data-ft-dt]');
+                            if (!dtLi) return;
+                            var onDtPage = window.location.pathname.toLowerCase()
+                                               .indexOf('/dailytask/') >= 0;
+
+                     
+                            var parentLi            = dtLi.closest('li.has-dropdown');
+                            var parentLostOpen      = false;
+                            var parentGainedOpen    = false;
+                            var otherGroupGainedOpen = false;
+
+                            mutations.forEach(function (m) {
+                                if (m.type !== 'attributes' || m.attributeName !== 'class') return;
+                                var li       = m.target;
+                                var isParent = parentLi && (li === parentLi || li.contains(dtLi));
+                                if (isParent) {
+                                    if (li.classList.contains('open')) parentGainedOpen = true;
+                                    else                                parentLostOpen   = true;
+                                } else {
+                                    if (li.classList.contains('open')) otherGroupGainedOpen = true;
+                                }
+                            });
+
+                            /* ── Act on what we found ── */
+                            if (parentGainedOpen) {
+                                dtLi.classList.add('ft-dt-expanded');
+
+                            } else if (parentLostOpen) {
+                                if (otherGroupGainedOpen) {
+                                   
+                                    dtLi.classList.remove('ft-dt-expanded');
+
+                                } else if (onDtPage && parentLi && !parentLi._ftKeepOpen) {
+                                   
+                                    parentLi._ftKeepOpen = true;
+                                    parentLi.classList.add('open');
+                                    requestAnimationFrame(function () {
+                                        parentLi._ftKeepOpen = false;
+                                    });
+
+                                } else if (!onDtPage) {
+                                 
+                                    dtLi.classList.remove('ft-dt-expanded');
+                                }
+
+                            } else if (otherGroupGainedOpen && !onDtPage) {
+
+                                dtLi.classList.remove('ft-dt-expanded');
+                            }
+                        });
+
+                        topGroups.forEach(function (li) {
+                            obs.observe(li, { attributes: true, attributeFilter: ['class'] });
+                        });
+                    }
+
+                
+                    if (!_dtTenantId) return; 
+                    $.ajax({
+                        url: _dtTypesUrl,
+                        type: 'GET',
+                        data: { tenantid: _dtTenantId, searchterm: '', pagesize: 200, pagenumber: 1 },
+                        success: function (data) {
+                            if (typeof data === 'string') {
+                                try { data = JSON.parse(data); } catch(e) { data = []; }
+                            }
+                            var types = (data || []).filter(function (x) { return x.tasktype; });
+                            if (_dtBuildSubmenu(types)) {
+                                _dtAttachGroupObserver();   
+                            }
+                        },
+                        error: function () {
+                            if (_dtBuildSubmenu([])) { _dtAttachGroupObserver(); }
+                        }
+                    });
+                }());
+               
+
+        }
+
+
+
+            function getRatingString(rating)
+                {
+
+                       var ratingDiv="<div class='starrr'>";
+
+                        for (var i = 1; i <= rating; i++)
+                        {
+                            ratingDiv+="<i class='fa-star fa'></i>"
+                        }
+                        for (var i = rating; i < 5; i++)
+                        {
+                            ratingDiv+="<i class='fa-star fa starempty'></i>"
+                        }
+
+                        ratingDiv+="</div>"
+                        return ratingDiv;
+                    }
+                $("body").on("change", ".mahat_transliterate", function(a) {
+                         if ($('#transliterateCheck').prop('checked')) {
+                          var currentid=$(this).attr("id");
+                          $.ajax({
+                                url: '@Url.Action("get_Transcript", "users")',
+                                type: 'GET',
+                                data: {
+                                    input: $(this).val()
+                                },
+                                success: function (response) {
+                            $("#" + currentid).val(response);
+                                },
+                                error: function () {
+                                    console.log('Error occurred during translation.');
+                                }
+                            });
+                            }
+                        })
+
+                   $("body").on("click", ".download_from_cloud", function(a) {
+                        $(".page-loader").show()
+                        a.preventDefault();
+                        $.ajax({
+                            url: '@Url.Action("download", "users")',
+                            data: { filename: $(this).attr("id") },
+                            success: function(data) {
+                                $(".page-loader").hide()
+                                var url = data;
+                                if (data != "error")
+                                    if (data.indexOf("Error") != -1) {
+                                        swal({
+                                            title: '',
+                                            text: data,
+                                            type: 'error',
+                                            buttonsStyling: false,
+                                            confirmButtonClass: 'btn btn-primary'
+                                        })
+                                    }
+                                    else {
+                                        window.open(url, '_blank');
+                                    }
+
+                            }, error: function(jqXHR, textStatus, errorThrown) {
+                                $(".page-loader").hide()
+                            }
+                        });
+                    });
+                                                    function getAutho(controllername,viewname){
+
+
+
+                                                        var a =  eval("@Context.Session.GetString("NalamVazharole_JSON")".replace(/&quot;/g, '"'))
+
+                                                        var index = 0;
+                                                        var found;
+                                                        var entry;
+                                                        for (index = 0; index < a.length; ++index) {
+                                                            entry = a[index];
+                                                            if (entry.controllername == controllername && entry.viewname== viewname) {
+                                                                found = entry;
+
+                                                                break;
+                                                            }
+                                                        }
+                                                        return found;
+
+                                                    }
+
+
+                                                    function getAuthoController(controllername){
+
+
+
+                                                        var a =  eval("@Context.Session.GetString("NalamVazharole_JSON")".replace(/&quot;/g, '"'))
+
+                                                        var index = 0;
+                                                        var found=[];
+                                                        var seenAuthoKeys={};
+                                                        var entry;
+                                                        for (index = 0; index < a.length; ++index) {
+                                                            entry = a[index];
+
+                                                            if (entry.controllername == controllername) {
+
+                                                                if(entry.actiondisplayname && controllername == "tenant")
+                                                                {
+                                                                    entry.actiondisplayname = entry.actiondisplayname.split(' ')[0];
+                                                                }
+                                                                // De-dupe: the same permission row (e.g. Update/Remove/View) can be present
+                                                                // more than once in NalamVazharole_JSON (overlapping role assignments), which
+                                                                // was rendering duplicate entries in "..." action dropdowns. Only keep the
+                                                                // first occurrence of each distinct view/action for this controller.
+                                                                var authoKey = (entry.viewname || '') + '|' + (entry.actionmethodname || '');
+                                                                if (seenAuthoKeys[authoKey]) {
+                                                                    continue;
+                                                                }
+                                                                seenAuthoKeys[authoKey] = true;
+                                                                found.push(entry);
+
+                                                                //break;
+                                                            }
+                                                        }
+                                                        return found;
+
+                                                    }
+                                                        function getRandomColor() {
+                                                        var letters = '0123456789ABCDEF';
+                                                        var color = '#';
+                                                        for (var i = 0; i < 6; i++) {
+                                                        color += letters[Math.floor(Math.random() * 16)];
+                                                        }
+                                                        return color;
+                                                    }
+                                                    function getFixedColor(arrayVal){
+
+                                                        var listofColors=['#A5D7FD','#63EEBF','#FF7C8F','#A4E063','#FEC85E','#66A4FE','#B2BECE','#F1948A','#EC7063','#B03A2E','#BB8FCE','#5B2C6F','#F1C40F','#E5E7E9','#717D7E']
+                                                        if(arrayVal >=listofColors.length){
+                                                           return getRandomColor()
+                                                         }
+                                                        return listofColors[arrayVal];
+                                                    }
+        function get_dependent_li_l(data) {
+                                                    var htmlRetStr = "";
+
+                                                    if ((data).length > 1) {
+                                                        htmlRetStr = "<ul class='recurseObj' >"
+                                                        $.each((data), function (key, jdata) {
+                                                            htmlRetStr += "<li class='keyObj'>";
+                                                            $.each(eval(jdata), function (index, jdata) {
+
+                                                                if ((jdata ? jdata : '').toString().includes('http')) {
+                                                                    if ((jdata ? jdata : '') != '') {
+
+                                                                        var splitted_urls = (jdata ? jdata : '').split('|');
+                                                                        var uploadedfiles = "";
+                                                                        for (var i = 0; i < splitted_urls.length; i++) {
+
+
+                                                                            if (splitted_urls[i] != null && splitted_urls[i] != "") {
+                                                                                uploadedfiles += '<a  href=' + splitted_urls[i] + ' class="table_files"><i class="fa fa-paperclip"></i></a>'
+
+
+                                                                            }
+
+
+                                                                        }
+                                                                        htmlRetStr += "<strong>" + index + ":</strong>" + uploadedfiles + "</br>";
+
+                                                                    }
+                                                                } else {
+                                                                    htmlRetStr += "<strong>" + index + ":</strong>" + (jdata ? jdata : '') + "</br>";
+                                                                }
+
+
+                                                            })
+                                                            htmlRetStr += '</li>';
+                                                        })
+
+                                                        htmlRetStr += '</ul>';
+                                                    } else {
+
+
+                                                        $.each((data), function (key, jdata) {
+
+                                                            $.each(eval(jdata), function (index, jdata) {
+
+                                                                if ((jdata ? jdata : '').toString().includes('http')) {
+                                                                    if ((jdata ? jdata : '') != '') {
+
+                                                                        var splitted_urls = (jdata ? jdata : '').split('|');
+                                                                        var uploadedfiles = "";
+                                                                        for (var i = 0; i < splitted_urls.length; i++) {
+
+
+                                                                            if (splitted_urls[i] != null && splitted_urls[i] != "") {
+                                                                                uploadedfiles += '<a  href=' + splitted_urls[i] + ' class="table_files"><i class="fa fa-paperclip"></i></a>'
+
+
+                                                                            }
+
+
+                                                                        }
+                                                                        htmlRetStr += "<strong>" + index + ":</strong>" + uploadedfiles + "</br>";
+
+                                                                    }
+                                                                } else {
+                                                                    htmlRetStr += "<strong>" + index + ":</strong>" + (jdata ? jdata : '') + "</br>";
+                                                                }
+
+
+                                                            })
+
+                                                        })
+
+                                                    }
+
+                                                    return (htmlRetStr);
+                                                }
+
+
+                                                    function get_dependent_li(data) {
+                                                    var htmlRetStr = "";
+
+                                                    if (JSON.parse(data).length > 1) {
+                                                        htmlRetStr = "<ul class='recurseObj' >"
+                                                        $.each(JSON.parse(data), function (key, jdata) {
+                                                            htmlRetStr += "<li class='keyObj'>";
+                                                            $.each(eval(jdata), function (index, jdata) {
+
+                                                                if ((jdata ? jdata : '').toString().includes('http')) {
+                                                                    if ((jdata ? jdata : '') != '') {
+
+                                                                        var splitted_urls = (jdata ? jdata : '').split('|');
+                                                                        var uploadedfiles = "";
+                                                                        for (var i = 0; i < splitted_urls.length; i++) {
+
+
+                                                                            if (splitted_urls[i] != null && splitted_urls[i] != "") {
+                                                                                uploadedfiles += '<a  href=' + splitted_urls[i] + ' class="table_files"><i class="fa fa-paperclip"></i></a>'
+
+
+                                                                            }
+
+
+                                                                        }
+                                                                        htmlRetStr += "<strong>" + index + ":</strong>" + uploadedfiles + "</br>";
+
+                                                                    }
+                                                                } else {
+                                                                    htmlRetStr += "<strong>" + index + ":</strong>" + (jdata ? jdata : '') + "</br>";
+                                                                }
+
+
+                                                            })
+                                                            htmlRetStr += '</li>';
+                                                        })
+
+                                                        htmlRetStr += '</ul>';
+                                                    } else {
+
+
+                                                        $.each(JSON.parse(data), function (key, jdata) {
+
+                                                            $.each(eval(jdata), function (index, jdata) {
+
+                                                                if ((jdata ? jdata : '').toString().includes('http')) {
+                                                                    if ((jdata ? jdata : '') != '') {
+
+                                                                        var splitted_urls = (jdata ? jdata : '').split('|');
+                                                                        var uploadedfiles = "";
+                                                                        for (var i = 0; i < splitted_urls.length; i++) {
+
+
+                                                                            if (splitted_urls[i] != null && splitted_urls[i] != "") {
+                                                                                uploadedfiles += '<a  href=' + splitted_urls[i] + ' class="table_files"><i class="fa fa-paperclip"></i></a>'
+
+
+                                                                            }
+
+
+                                                                        }
+                                                                        htmlRetStr += "<strong>" + index + ":</strong>" + uploadedfiles + "</br>";
+
+                                                                    }
+                                                                } else {
+                                                                    htmlRetStr += "<strong>" + index + ":</strong>" + (jdata ? jdata : '') + "</br>";
+                                                                }
+
+
+                                                            })
+
+                                                        })
+
+                                                    }
+
+                                                    return (htmlRetStr);
+                                                }
+                                            $("body").on("click", ".expand-collapse-btn", function () {
+                                                    var nextContainer = $(this).closest("div").next(".expand-rows-container");
+
+                                                    if (nextContainer.is(":visible")) {
+                                                        nextContainer.slideUp();
+                                                        $(this).find(".icon-down").show();
+                                                        $(this).find(".icon-up").hide();
+                                                    } else {
+                                                        nextContainer.slideDown();
+                                                        $(this).find(".icon-down").hide();
+                                                        $(this).find(".icon-up").show();
+                                                    }
+                                                });
+                                             function get_dependent_table(data) {
+                                            var htmlRetStr = "";
+
+                                            function processRow(jdata) {
+                                                var rowStr = "<tr>";
+
+                                                $.each(jdata, function (index, value) {
+                                                    rowStr += "<td class='automaton_table_label'>";
+
+                                                    if (Array.isArray(value) && value.length > 0 && typeof value[0] === "object") {
+                                                        // Handle dynamic object keys
+                                                        var objKeys = Object.keys(value[0]);
+                                                        var formattedData = value.map(item => {
+                                                            return objKeys.map(key => `${key}: ${item[key] ?? "null"}`).join(", ");
+                                                        }).join(" | ");
+
+                                                        rowStr += formattedData;
+                                                    }
+                                                    else if (typeof value === "object" && value !== null) {
+                                                        // Handle nested objects
+                                                        rowStr += "<table border='1'>";
+                                                        $.each(value, function (subKey, subValue) {
+                                                            rowStr += `<tr><td><strong>${subKey}</strong></td><td>${subValue}</td></tr>`;
+                                                        });
+                                                        rowStr += "</table>";
+                                                    }
+                                                    else if ((value ? value : '').toString().includes('|')|| (value ? value : '').toString().includes('http')) {
+                                                        // Handle URLs properly
+                                                        var splitted_urls = (value ? value : '').split('|');
+                                                        var uploadedfiles = splitted_urls.map(url => {
+                                                                if (url) {
+                                                                    var file = url.split('/').pop();
+                                                                    var filepath = "@Context.Session.GetString("NalamVazhacloudpath")"+ "/" + file + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+                                                                    return `<a href="${filepath}" class="table_files"><i class="fa fa-paperclip"></i></a>`;
+                                                                }
+                                                                return '';
+                                                            }).join(" ");
+                                                        rowStr += uploadedfiles;
+                                                    }
+                                                    else {
+                                                        rowStr += (value ? value : '');
+                                                    }
+
+                                                    rowStr += '</td>';
+                                                });
+
+                                                rowStr += '</tr>';
+                                                return rowStr;
+                                            }
+
+                                            var jsonData = JSON.parse(data);
+                                            $.each(jsonData, function (key, jdata) {
+                                                htmlRetStr += processRow(jdata);
+                                            });
+
+                                            return htmlRetStr;
+                                        }
+
+                                                function collect_formated_data(data)
+                                                    {
+                                                            var htmlRetStr="";
+                                                             if ((data ? data : '').toString().includes('http')) {
+
+
+                                                                        var splitted_urls = (data ? data : '').split('|');
+                                                                        var uploadedfiles = "";
+                                                                        for (var i = 0; i < splitted_urls.length; i++) {
+
+
+                                                                            if (splitted_urls[i] != null && splitted_urls[i] != "") {
+                                                                                uploadedfiles += '<a  href=' + splitted_urls[i] + ' class="table_files"><i class="fa fa-paperclip"></i></a>'
+
+
+                                                                            }
+
+
+                                                                        }
+                                                                        htmlRetStr += uploadedfiles ;
+
+
+
+                                                                } else {
+                                                                      htmlRetStr += (data ? data : '') ;
+
+                                                                }
+                                                            return htmlRetStr;
+                                                    }
+
+
+
+
+    </script>
+
+
+    <script src="~/js/Demo.js"></script>
+    <script>
+        $('.main-content').click(function(){
+
+                $('body').removeClass('menubar-open')
+
+            })
+        $(window).load(function () {
+                    // select element and fade it out
+                    setTimeout(function() {
+            $('.page-loader').fadeOut();
+        }, 2000);
+
+                });
+         $('.navigatestartupurl').click(function(event) {
+                event.preventDefault(); // Prevent default behavior of the anchor tag
+                let userRole = "@Context.Session.GetString("NalamVazhauserrole")";
+
+                                                    switch (userRole) {
+
+                                                        case "Clinical Director":
+                                                        window.location.href = "@Url.Action("Clinical_Appointment_List", "ClinicalAppointment", new { isDashboardView = 'Y' })";
+                                                        break;
+
+                                                        case "Platform Admin":
+                                                        window.location.href = "@Url.Action("View_List_of_Healthcare_Provider", "tenant", new { isDashboardView = 'Y' })";
+                                                        break;
+
+                                                        case "Doctor":
+                                                        case "Intern Doctor":
+                                                        window.location.href = "@Url.Action("Index", "DoctorDashboard", new { isDashboardView = 'Y' })";
+                                                        break;
+
+                                                        case "Frontdesk Admin":
+                                                        window.location.href = "@Url.Action("Dashboard", "FrontDesk", new { isDashboardView = 'Y' })";
+                                                        break;
+
+                                                        case "Health Seeker":
+                                                        window.location.href = "@Url.Action("Added_IPD_Application_Form", "IPDApplicationForm", new { isDashboardView = 'Y' })";
+                                                        break;
+
+                                                        case "HR Associate":
+                                                        window.location.href = "@Url.Action("Staff_Attendance_List", "StaffAttendance", new { isDashboardView = 'Y' })";
+                                                        break;
+
+                                                        case "Healthcare Provider Admin":
+                                                        window.location.href = "@Url.Action("Dashboard", "HealthcareProviderAdmin", new { isDashboardView = 'Y' })";
+                                                        break;
+
+                    default:
+                        get_Dashboard_url().then(function (url) {
+                        window.location.href = (url !== '') ? url : window.location.href;
+                    })
+                    }
+
+            });
+            function get_Dashboard_url() {
+                return new Promise(function (resolve, reject) {
+                    $.ajax({
+                        url: '@Url.Action("get_Dashboard_Items", "users")',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data && data.length > 0) {
+                                let url = '@Url.Action("__action__", "__controller__")'
+                                    .replace("__action__", data[0].actionmethodname)
+                                    .replace("__controller__", data[0].controllername);
+
+                                url += "?isDashboardView=Y";
+                                resolve(url); // Resolve the promise with the URL
+                            } else {
+                                resolve('');
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            resolve('');
+                        }
+                    });
+                });
+            }
+    </script>
+    <script>
+        $(document).ready(function() {
+
+             let userRole = "@Context.Session.GetString("NalamVazhauserrole")";
+
+                if(userRole ==null || userRole=="Health Seeker" ){
+
+                    $("#btnOpenPatientSearch").hide()
+                     $("#btnOpenRoomAvailability, #btnOpenBookingCalendar").hide()
+                      $("#btnOpenRoomSearch").hide()
+
+                }
+
+
+            var currentPath = window.location.pathname.toLowerCase();
+            if (currentPath.includes('/users/')) {
+
+                $('#profilepicture').on('change', function () {
+                    $("#btnSubmit").prop('disabled', true)
+                    var file = this.files[0];
+                    if (!file) return;
+
+                    var formData = new FormData();
+                    formData.append("image", file);
+                    var formData = new FormData();
+                    var fileInput = document.getElementById('profilepicture');
+
+                    if (fileInput.files.length === 0) {
+                        alert("Please select an image first.");
+                        return;
+                    }
+
+                    formData.append("imageFile", fileInput.files[0]);
+
+                    $.ajax({
+                        url :'@Url.Action("AnalyzeLocalImageForHuman", "OpenAI")' ,
+                        type: 'POST',
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        success: function (result) {
+                            if (result === "true") {
+                                $("#btnSubmit").prop('disabled', false)
+                            } else {
+                                swal({
+                                    title: "No human detected",
+                                    text: "Please upload an image with a visible human.",
+                                    type: "warning",
+                                    allowOutsideClick: false,
+                                    buttons: {
+                                        confirm: {
+                                            text: "OK",
+                                            value: true,
+                                            visible: true,
+                                            className: "",
+                                            closeModal: true
+                                        }
+                                    }
+                                }).then(function () {
+                                    $("#btnSubmit").prop('disabled', true)
+                                    profilepictureselectedFiles = [];
+                                    profilepictureexistingFiles = [];
+                                    $("#profilepicture").val("");
+                                    $("#profilepicture_existing").val("");
+                                    $("#profilepicturefilesTab").empty();
+                                    $(".profilepicturefilebtn").html("");
+                                    renderFileListofprofilepicture();
+                                    renderExistingFileListOfprofilepicture();
+                                    updateFileCountofprofilepicture();
+                                    $("#btnSubmit").prop('disabled', false)
+                                });
+                            }
+                        },
+                        error: function () {
+                            swal("Error", "Failed to analyze the image. Please try again.", "error");
+                        }
+                    });
+                });
+            }
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $.fn.dataTable.ext.type.detect.unshift(function (data) {
+                if (typeof data !== 'string') return null;
+                data = data.trim();
+
+                if (/^\d{1,4}\/\d{1,2}\/\d{1,4}( \d{1,2}:\d{2})?$/.test(data))
+                    return 'flex-date';
+
+                return null;
+            });
+
+            // Sorting converter
+            $.fn.dataTable.ext.type.order['flex-date-pre'] = function (data) {
+                if (!data) return 0;
+
+                data = data.trim();
+                let [datePart, timePart] = data.split(" ");
+                let [p1, p2, p3] = datePart.split("/").map(Number);
+
+                let year, month, day;
+
+                if (p1 >= 1000) {
+                    year = p1; month = p2; day = p3;
+                }
+                else {
+                    year = p3;
+                    if (p1 > 12) { day = p1; month = p2; }
+                    else if (p2 > 12) { month = p1; day = p2; }
+                    else { day = p1; month = p2; }
+                }
+
+                // TIME (HH:mm)
+                let hour = 0, minute = 0;
+
+                if (timePart) {
+                    [hour, minute] = timePart.split(":").map(Number);
+                }
+
+                return (
+                    year.toString().padStart(4, '0') +
+                    month.toString().padStart(2, '0') +
+                    day.toString().padStart(2, '0') +
+                    hour.toString().padStart(2, '0') +
+                    minute.toString().padStart(2, '0')
+                ) * 1;
+            };
+
+        });
+    </script>
+
+    @await Html.PartialAsync("_PatientSearchPane")
+    @await Html.PartialAsync("_RoomAvailabilityCheck")
+    @await Html.PartialAsync("_RoomSearchPane")
+    @RenderSection("Scripts", required: false)
+
+@{
+    var _showIssueBtn = bool.Parse(Configuration["IssueTrackerSettings:ShowReportToDeveloper"] ?? "false");
+}
+@if (_showIssueBtn)
+{
+<style>
+/* ── App-wide z-index scale ───────────────────────────────────────────
+   Documented tiers so overlays/drawers/menus/toasts stack predictably
+   across views. Higher tiers must always render above lower ones. */
+:root {
+    --z-sticky-header: 1000;
+    --z-overlay: 1040;       /* modal/drawer backdrop */
+    --z-panel: 1050;         /* modal/drawer panel (matches Bootstrap .modal) */
+    --z-menu-above-modal: 1060; /* dropdowns/action menus that can open from within a modal/drawer */
+    --z-toast: 1070;
+    --z-loader: 1080;
+    --z-tooltip: 1090;
+}
+
+/* ── Health Seeker header logo ────────────────────────────────────── */
+.hs-header-logo {
+    display: inline-flex; align-items: center;
+    margin-right: 10px; flex-shrink: 0; text-decoration: none;
+}
+.hs-header-logo img {
+    height: 34px; width: auto; border-radius: 6px;
+    object-fit: contain; transition: opacity .18s, transform .18s;
+}
+.hs-header-logo:hover img { opacity: .85; transform: scale(1.04); }
+
+/* ── Health Seeker header action buttons ─────────────────────────── */
+.hs-hdr-actions {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-right: 12px; flex-shrink: 0;
+}
+.hs-frontdesk-phone {
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border: 1px solid rgba(45,95,68,.22);
+    border-radius: 8px;
+    background: #f0fdf4;
+    color: #14532d;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    animation: hs-frontdesk-blink 1.2s ease-in-out infinite;
+}
+.hs-frontdesk-phone i {
+    font-size: 12px;
+    color: #2d5f44;
+}
+.hs-frontdesk-phone strong {
+    color: #0f3d2a;
+    font-weight: 800;
+}
+@@keyframes hs-frontdesk-blink {
+    0%, 100% {
+        background: #f0fdf4;
+        border-color: rgba(45,95,68,.22);
+        box-shadow: none;
+    }
+    50% {
+        background: #dcfce7;
+        border-color: rgba(45,95,68,.55);
+        box-shadow: 0 0 0 3px rgba(34,197,94,.16);
+    }
+}
+.hs-hdr-split { position: relative; display: inline-flex; }
+.hs-hdr-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 9px 14px;
+                font-size: 12.5px;
+                font-weight: 700;
+                border: none;
+                cursor: pointer;
+                text-decoration: none;
+                transition: background .15s, box-shadow .15s;
+                white-space: nowrap;
+}
+.hs-hdr-btn--main {
+    background-color: #2d5f44 !important;
+    background-image: none !important;
+    filter: none !important;
+    color: #fff !important;
+    border-radius: 8px 0 0 8px; padding-right: 12px;
+}
+.hs-hdr-btn--main:hover,
+.hs-hdr-btn--main:focus {
+    background-color: #3a6b50 !important;
+    filter: none !important;
+    color: #fff !important;
+    text-decoration: none;
+}
+.hs-hdr-btn--caret {
+    background-color: #2d5f44 !important;
+    background-image: none !important;
+    filter: none !important;
+    color: #fff !important;
+    border-radius: 0 8px 8px 0; padding: 6px 10px;
+    border-left: 1px solid rgba(255,255,255,.25);
+}
+.hs-hdr-btn--caret:hover,
+.hs-hdr-btn--caret:focus {
+    background-color: #3a6b50 !important;
+    filter: none !important;
+    color: #fff !important;
+}
+.hs-hdr-btn--outline {
+    background: transparent; color: var(--btnprimary, #2d5f44);
+    border: 1.5px solid var(--btnprimary, #2d5f44); border-radius: 8px;
+}
+.hs-hdr-btn--outline:hover { background: rgba(var(--btnprimary-rgb,45,95,68),.08); color: var(--btnprimary,#2d5f44); text-decoration: none; }
+.fd-booking-calendar-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1.5px solid var(--btnprimary, #2d5f44);
+    background: #ffffff;
+    color: var(--btnprimary, #2d5f44) !important;
+    font-size: 12.5px;
+    font-weight: 700;
+    text-decoration: none !important;
+    white-space: nowrap;
+    transition: background .15s, color .15s, box-shadow .15s;
+    margin-right: 6px;
+}
+.fd-booking-calendar-btn i {
+    font-size: 13px;
+    color: inherit;
+}
+body html .fd-booking-calendar-btn:hover,
+body html .fd-booking-calendar-btn:focus {
+    background: var(--btnprimary, #2d5f44);
+    color: #ffffff !important;
+    text-decoration: none !important;
+}
+body html .fd-booking-calendar-btn.active {
+    background: var(--btnprimary, #2d5f44);
+    color: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(45,95,68,.18);
+}
+.hs-hdr-split__menu {
+    display: none; position: absolute; top: calc(100% + 5px); left: 0;
+    background: #fff; border-radius: 10px; box-shadow: 0 8px 28px rgba(0,0,0,.15);
+    min-width: 220px; z-index: 9999; overflow: hidden;
+}
+.hs-hdr-split__menu.open { display: block; }
+.hs-hdr-split__item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px; color: #14532d !important; text-decoration: none; transition: background .15s;
+    background-color: transparent !important;
+}
+.hs-hdr-split__item:hover,
+.hs-hdr-split__item:focus {
+    background: #d1fae5 !important; text-decoration: none;
+    color: #052e16 !important;
+}
+.hs-hdr-split__item > i { font-size: 16px; width: 20px; text-align: center; color: #15803d !important; }
+.hs-hdr-split__item span { display: flex; flex-direction: column; }
+.hs-hdr-split__item strong { font-size: 12.5px; font-weight: 700; color: inherit !important; }
+.hs-hdr-split__item small { font-size: 11px; color: #4b5563 !important; margin-top: 1px; }
+.hs-hdr-split__item:hover small,
+.hs-hdr-split__item:focus small { color: #374151 !important; }
+/* ── Pulse animation (used by nav icon) ──────────────────────────── */
+@@keyframes it-pulse {
+  0%,100%{ opacity:1; transform:scale(1); }
+  50%    { opacity:.5; transform:scale(1.4); }
+}
+
+/* ── Report Issue Modal ───────────────────────────────────────────── */
+#reportIssueModal .modal-header {
+    background: var(--card-head-header, #2F6B4F);
+    color: var(--card-head-text, #fff);
+    border-radius: 0; padding: 14px 20px;
+}
+#reportIssueModal .modal-title { font-size: 15px; font-weight: 700; }
+#reportIssueModal .modal-header .close {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; margin: 0; padding: 0;
+    border-radius: 50%;
+    color: #fff; opacity: .85; text-shadow: none;
+    font-size: 14px; line-height: 1;
+    background: rgba(255,255,255,.12);
+    transition: background .15s, opacity .15s;
+}
+#reportIssueModal .modal-header .close:hover { opacity: 1; background: rgba(255,255,255,.22); }
+#reportIssueModal .modal-body { padding: 20px 24px; background: var(--cardcolor,#fff); }
+#reportIssueModal .modal-footer { background: var(--tab-card-bg,#f8fafc); border-top:1px solid var(--input-border,#eee); }
+.ri-label {
+    font-size: 12px; font-weight: 700 !important;
+    color: var(--card-head-header, #2F6B4F) !important;
+    margin-bottom: 5px; display: block;
+}
+.ri-input {
+    width: 100%;
+    border: 1.5px solid var(--input-border, #D5D5DE) !important;
+    border-radius: 6px !important; padding: 8px 12px !important;
+    font-size: 13px !important;
+    color: var(--colorblack, #000) !important;
+    background: var(--input-background, #fff) !important;
+    transition: border-color .18s;
+}
+.ri-input:focus { border-color: var(--btnprimary,#2F6B4F) !important; outline:none; box-shadow:0 0 0 3px rgba(0,0,0,.05) !important; }
+.ri-submit-btn {
+    background: var(--btnprimary,#2F6B4F) !important;
+    color: var(--btncolor,#fff) !important;
+    border: none; border-radius: 6px;
+    padding: 9px 24px; font-size: 13px; font-weight: 700;
+    cursor: pointer;
+}
+.ri-cancel-btn {
+    background: transparent !important;
+    color: var(--card-head-header,#2F6B4F) !important;
+    border: 1.5px solid var(--card-head-header,#2F6B4F) !important;
+    border-radius: 6px; padding: 9px 20px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.ri-autofill-bar {
+    background: linear-gradient(90deg,var(--card-head-header,#2F6B4F),#1565c0);
+    color: #fff; border-radius: 6px; padding: 8px 14px;
+    font-size: 12px; display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+}
+.ri-autofill-bar i { font-size: 14px; }
+.ri-url-badge {
+    display: inline-block; background: var(--btnprimary,#2F6B4F);
+    color: #fff; border-radius: 4px; padding: 1px 7px;
+    font-size: 10px; font-weight: 700; margin-left: 6px;
+}
+/* ── Modal body – scrollable so all content is reachable on small screens ── */
+#reportIssueModal .modal-body {
+    max-height: calc(100vh - 190px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 18px 22px !important;
+}
+/* ── Screenshot preview block ─────────────────────────────────────── */
+.ri-screenshot-block {
+    border: 1.5px dashed var(--input-border,#ccc);
+    border-radius: 8px; padding: 8px 12px;
+    margin-bottom: 14px; background: var(--tab-card-bg,#f8fafc);
+}
+.ri-screenshot-toolbar {
+    display: flex; align-items: center; gap: 6px;
+}
+.ri-screenshot-toolbar .ri-label { margin-bottom: 0; flex: 1; }
+.ri-ss-action-btn {
+    border: 1px solid var(--input-border,#ccc) !important;
+    background: var(--cardcolor,#fff) !important;
+    color: var(--card-head-header,#2F6B4F) !important;
+    border-radius: 5px; padding: 3px 9px;
+    font-size: 11px; font-weight: 700; cursor: pointer;
+    white-space: nowrap; transition: background .15s;
+}
+.ri-ss-action-btn:hover { background: var(--tab-card-bg,#f0f4f0) !important; }
+.ri-ss-action-btn.remove { color: #e53935 !important; border-color: #e5393533 !important; }
+
+/* Thumbnail strip – always visible in collapsed state */
+#ri-screenshot-thumb {
+    display: block; width: 100%; margin-top: 7px;
+    height: 70px; object-fit: cover; object-position: top left;
+    border-radius: 5px; border: 1px solid var(--input-border,#ddd);
+    cursor: zoom-in; transition: opacity .18s;
+}
+#ri-screenshot-thumb:hover { opacity: .82; }
+
+/* Full-size panel – hidden by default, shown on expand */
+#ri-screenshot-body {
+    display: none; margin-top: 8px;
+    max-height: 340px; overflow-y: auto; overflow-x: hidden;
+    border-radius: 6px; border: 1px solid var(--input-border,#ddd);
+}
+#ri-screenshot-body.ri-ss-open { display: block; }
+#ri-screenshot-preview {
+    width: 100%; display: block; cursor: zoom-in;
+}
+.ri-ss-no-capture {
+    color: var(--colorblack,#555); font-size: 12px; opacity: .65;
+    display: flex; align-items: center; gap: 8px; padding: 4px 0;
+}
+</style>
+
+<!-- html2canvas – renders the current page to a canvas for screenshot capture -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- Capture toast shown while screenshot is being taken -->
+<div id="ri-capture-toast"
+     style="display:none;position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+            background:rgba(20,20,20,.82);color:#fff;border-radius:24px;
+            padding:9px 22px;font-size:13px;z-index:99999;pointer-events:none;
+            backdrop-filter:blur(4px);white-space:nowrap;">
+  <i class="fa fa-camera mr-2"></i>Capturing screenshot…
+</div>
+
+<!-- ── Report Issue Modal ──────────────────────────────────────────── -->
+<div class="modal fade" id="reportIssueModal" tabindex="-1" role="dialog" aria-labelledby="reportIssueModalLabel">
+  <div class="modal-dialog modal-lg" role="document" style="margin:30px auto;">
+    <div class="modal-content" style="border-radius:10px;overflow:hidden;border:none;box-shadow:0 8px 32px rgba(0,0,0,.22);">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h4 class="modal-title" id="reportIssueModalLabel">
+          <i class="fa fa-bug mr-2"></i>Report an Issue
+        </h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><i class="fa fa-times" aria-hidden="true"></i></button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- Auto-fill info bar (shown when opened from a page) -->
+        <div class="ri-autofill-bar" id="ri-autofill-bar" style="display:none;">
+          <i class="fa fa-magic"></i>
+          <span style="flex:1;">Auto-filled from: <strong id="ri-autofill-page"></strong></span>
+          <span class="ri-url-badge">Auto</span>
+          <button type="button" id="ri-clear-autofill" title="Clear and choose manually"
+                  style="margin-left:10px;background:rgba(255,255,255,.22);border:1px solid rgba(255,255,255,.45);
+                         color:#fff;border-radius:5px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;
+                         white-space:nowrap;transition:background .15s;">
+            <i class="fa fa-times mr-1"></i>Clear
+          </button>
+        </div>
+
+        <!-- Screenshot preview (shown after capture) -->
+        <div class="ri-screenshot-block" id="ri-screenshot-wrap" style="display:none;">
+          <!-- Toolbar row -->
+          <div class="ri-screenshot-toolbar">
+            <label class="ri-label" style="font-size:11px;">
+              <i class="fa fa-camera mr-1"></i>Screenshot
+              <small style="font-weight:400;opacity:.65">(auto-captured)</small>
+            </label>
+            <!-- Expand / Collapse toggle -->
+            <button type="button" class="ri-ss-action-btn" id="ri-toggle-screenshot" title="Expand to view full screenshot">
+              <i class="fa fa-expand mr-1"></i><span id="ri-toggle-label">Expand</span>
+            </button>
+            <button type="button" class="ri-ss-action-btn" id="ri-retake-screenshot" title="Retake screenshot">
+              <i class="fa fa-refresh mr-1"></i>Retake
+            </button>
+            <button type="button" class="ri-ss-action-btn remove" id="ri-remove-screenshot" title="Remove screenshot">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+          <!-- Compact thumbnail strip – always visible -->
+          <img id="ri-screenshot-thumb" src="" alt="Page screenshot thumbnail" title="Click to expand">
+          <!-- Full-size panel – collapsed by default -->
+          <div id="ri-screenshot-body">
+            <img id="ri-screenshot-preview" src="" alt="Page screenshot" title="Click to open full size">
+          </div>
+        </div>
+
+        <!-- Shown while capture is in progress (inside modal if modal opens before capture finishes) -->
+        <div class="ri-screenshot-block" id="ri-screenshot-pending" style="display:none;">
+          <div class="ri-ss-no-capture">
+            <i class="fa fa-spinner fa-spin"></i> Capturing screenshot, please wait…
+          </div>
+        </div>
+
+        <!-- Shown when capture failed or was skipped -->
+        <div class="ri-screenshot-block" id="ri-screenshot-failed" style="display:none;">
+          <div class="ri-screenshot-toolbar">
+            <span class="ri-ss-no-capture" style="flex:1;"><i class="fa fa-exclamation-circle mr-1"></i>Screenshot not available</span>
+            <button type="button" class="ri-ss-action-btn" id="ri-retry-screenshot" title="Try to capture again">
+              <i class="fa fa-refresh mr-1"></i>Retry
+            </button>
+          </div>
+        </div>
+
+        <div class="row">
+
+          <!-- Entity -->
+          <div class="col-sm-4 mb-3">
+            <label class="ri-label">Entity / Module <span style="color:#e53935">*</span></label>
+            <select id="ri-entity" class="ri-input">
+              <option value="">— Select Entity —</option>
+            </select>
+          </div>
+
+          <!-- File -->
+          <div class="col-sm-4 mb-3" id="ri-file-wrap">
+            <label class="ri-label">File / Page</label>
+            <select id="ri-file" class="ri-input">
+              <option value="">— Select File —</option>
+            </select>
+          </div>
+
+          <!-- Priority -->
+          <div class="col-sm-4 mb-3">
+            <label class="ri-label">Priority</label>
+            <select id="ri-priority" class="ri-input">
+              <option value="Low">🟢 Low</option>
+              <option value="Medium" selected>🟡 Medium</option>
+              <option value="High">🟠 High</option>
+              <option value="Critical">🔴 Critical</option>
+            </select>
+          </div>
+
+          <!-- Reporter -->
+          <div class="col-sm-6 mb-3">
+            <label class="ri-label">Your Name <small style="font-weight:400;opacity:.65">(optional)</small></label>
+            <input type="text" id="ri-reporter" class="ri-input" placeholder="e.g. Dr. Ravi / Front Desk">
+          </div>
+
+          <!-- Page URL -->
+          <div class="col-sm-6 mb-3">
+            <label class="ri-label">Page URL <small style="font-weight:400;opacity:.65">(auto-filled)</small></label>
+            <input type="text" id="ri-url" class="ri-input" placeholder="https://…" readonly style="background:var(--tab-card-bg,#f8fafc) !important;cursor:default;">
+          </div>
+
+          <!-- Issue Text -->
+          <div class="col-sm-12 mb-2">
+            <label class="ri-label">Issue Description <span style="color:#e53935">*</span></label>
+            <textarea id="ri-issuetext" class="ri-input" rows="4"
+                      placeholder="Describe the issue clearly — what happened, steps to reproduce, what was expected…"
+                      style="resize:vertical;min-height:90px;"></textarea>
+          </div>
+
+        </div>
+      </div><!-- /modal-body -->
+
+      <!-- Footer -->
+      <div class="modal-footer" style="display:flex;align-items:center;justify-content:flex-end;gap:10px;">
+        <button type="button" class="ri-cancel-btn" data-dismiss="modal">
+          <i class="fa fa-times mr-1"></i> Cancel
+        </button>
+        <button type="button" class="ri-submit-btn" id="ri-submit">
+          <i class="fa fa-paper-plane mr-1"></i> Submit Issue
+        </button>
+      </div>
+
+    </div><!-- /modal-content -->
+  </div><!-- /modal-dialog -->
+</div><!-- /modal -->
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+var _riScreenshot    = null;   // current captured base64 data URI (or null)
+var _riCapturing     = false;  // guard against double-capture
+
+// ── Server-generated URLs (safe with any virtual path prefix) ──────────────
+var RI_URL_ENTITIES  = '@Url.Action("GetEntities",  "IssueTracker")';
+var RI_URL_FILES     = '@Url.Action("GetFiles",     "IssueTracker")';
+var RI_URL_REPORT    = '@Url.Action("ReportIssue",  "IssueTracker")';
+var RI_URL_OPENCOUNT = '@Url.Action("GetOpenCount", "IssueTracker")';
+
+// ── Open bug count badge ────────────────────────────────────────────────────
+function loadBugCount() {
+    $.ajax({
+        url: RI_URL_OPENCOUNT,
+        method: 'GET',
+        success: function(res) {
+            var n = (res && res.count) ? res.count : 0;
+            var $badge = $('#it-nav-bug-count');
+            if (n > 0) {
+                $badge.text(n > 99 ? '99+' : n).show();
+            } else {
+                $badge.hide();
+            }
+        }
+    });
+}
+$(document).ready(function() { loadBugCount(); });
+// Refresh count every 2 minutes while the page is open
+setInterval(loadBugCount, 120000);
+
+// ── Generic entities for the modal dropdown ────────────────────────────────
+var RI_GENERIC = [
+    { sep: true,  label: '── General ──' },
+    { sep: false, value: 'General',           label: 'General' },
+    { sep: false, value: 'All Pages',         label: 'All Pages' },
+    { sep: false, value: 'Menu / Navigation', label: 'Menu / Navigation' },
+    { sep: false, value: 'Dashboard',         label: 'Dashboard' },
+    { sep: false, value: 'Login / Auth',      label: 'Login / Auth' },
+    { sep: false, value: 'Layout / Theme',    label: 'Layout / Theme' },
+    { sep: false, value: 'Reports',           label: 'Reports' },
+    { sep: false, value: 'Performance',       label: 'Performance' },
+    { sep: false, value: 'API / Integration', label: 'API / Integration' },
+    { sep: false, value: 'Print / Export',    label: 'Print / Export' },
+    { sep: true,  label: '── Modules ──' }
+];
+var RI_GENERIC_VALUES = RI_GENERIC.filter(function(g){ return !g.sep; }).map(function(g){ return g.value; });
+var _riEntitiesLoaded = false;
+
+function openReportIssueModal() {
+    // ── 1. Reset form ────────────────────────────────────────────────────
+    $('#ri-issuetext').val('');
+    $('#ri-reporter').val('');
+    $('#ri-priority').val('Medium');
+    $('#ri-autofill-bar').hide();
+    $('#ri-file').empty().append('<option value="">— Select File —</option>');
+    $('#ri-file-wrap').show();
+    $('#ri-url').prop('readonly', true)
+        .css({ 'background': 'var(--tab-card-bg,#f8fafc) !important', 'cursor': 'default' });
+    riResetScreenshotUI();
+
+    // ── 2. Autofill URL / entity / file from current page path ───────────
+    var currentUrl = window.location.href;
+    $('#ri-url').val(currentUrl);
+
+    try {
+        var parsed   = new URL(currentUrl);
+        var segments = parsed.pathname.split('/').filter(Boolean);
+        var knownPrefixes = ['admin','client','nalamvazhadev','nalamvazha'];
+        segments = segments.filter(function(s){
+            return knownPrefixes.indexOf(s.toLowerCase()) === -1;
+        });
+        var entity = segments.length >= 2 ? segments[segments.length - 2] : (segments.length === 1 ? segments[0] : null);
+        var action = segments.length >= 1 ? segments[segments.length - 1] : null;
+
+        loadRiEntities(function() {
+            if (entity) {
+                var $opt = $('#ri-entity option').filter(function(){
+                    return $(this).val().toLowerCase() === entity.toLowerCase();
+                });
+                if ($opt.length) {
+                    // Set entity value WITHOUT triggering change (avoids double file load)
+                    $('#ri-entity').val($opt.val());
+                    // Load files and auto-select the action inside the AJAX success callback
+                    loadRiFiles(entity, action);
+                } else {
+                    $('#ri-entity').val('General');
+                    $('#ri-file-wrap').hide();
+                }
+            }
+            var pageLabel = entity ? entity + (action ? ' › ' + action : '') : parsed.pathname;
+            $('#ri-autofill-page').text(pageLabel);
+            $('#ri-autofill-bar').show();
+        });
+    } catch(e) {
+        loadRiEntities(null);
+    }
+
+    // ── 3. Capture screenshot BEFORE opening the modal ───────────────────
+    //      Show a toast so the user knows why there is a 1-2 s delay.
+    captureRiScreenshot(function() {
+        $('#reportIssueModal').modal('show');
+        setTimeout(function(){ $('#ri-issuetext').focus(); }, 420);
+    });
+}
+
+// ── Screenshot capture ────────────────────────────────────────────────────
+function captureRiScreenshot(callback) {
+    if (_riCapturing) { if (callback) callback(); return; }
+
+    if (typeof html2canvas === 'undefined') {
+        // Library not loaded – show failed state and open modal anyway
+        $('#ri-screenshot-failed').show();
+        if (callback) callback();
+        return;
+    }
+
+    _riCapturing = true;
+    $('#ri-screenshot-pending').show();
+
+    // Safety timeout – if capture hangs for > 10 s, continue without it
+    var tOut = setTimeout(function(){
+        _riCapturing = false;
+        $('#ri-screenshot-pending').hide();
+        $('#ri-screenshot-failed').show();
+        if (callback) callback();
+    }, 10000);
+
+    html2canvas(document.body, {
+        scale          : 0.5,        // half-res → smaller payload (~50–150 KB JPEG)
+        useCORS        : true,
+        allowTaint     : true,
+        logging        : false,
+        imageTimeout   : 6000,
+        ignoreElements : function(el) {
+            // Keep the modal and toast out of the screenshot
+            return el.id === 'reportIssueModal'
+                || el.id === 'ri-capture-toast'
+                || el.classList.contains('modal-backdrop');
+        }
+    }).then(function(canvas) {
+        clearTimeout(tOut);
+        _riCapturing  = false;
+        _riScreenshot = canvas.toDataURL('image/jpeg', 0.72);
+        $('#ri-screenshot-pending').hide();
+        // Set both thumbnail strip and full-size image
+        $('#ri-screenshot-thumb').attr('src', _riScreenshot);
+        $('#ri-screenshot-preview').attr('src', _riScreenshot);
+        // Start collapsed – thumbnail only
+        $('#ri-screenshot-body').removeClass('ri-ss-open');
+        $('#ri-toggle-label').text('Expand');
+        $('#ri-toggle-screenshot').find('i').removeClass('fa-compress').addClass('fa-expand');
+        $('#ri-screenshot-wrap').show();
+        if (callback) callback();
+    }).catch(function() {
+        clearTimeout(tOut);
+        _riCapturing = false;
+        _riScreenshot = null;
+        $('#ri-screenshot-pending').hide();
+        $('#ri-screenshot-failed').show();
+        if (callback) callback();
+    });
+}
+
+function riResetScreenshotUI() {
+    _riScreenshot = null;
+    $('#ri-screenshot-wrap').hide();
+    $('#ri-screenshot-pending').hide();
+    $('#ri-screenshot-failed').hide();
+    $('#ri-screenshot-body').removeClass('ri-ss-open');
+    $('#ri-toggle-label').text('Expand');
+    $('#ri-toggle-screenshot').find('i').removeClass('fa-compress').addClass('fa-expand');
+}
+
+// Expand / Collapse toggle
+$(document).on('click', '#ri-toggle-screenshot', function(){
+    var $body     = $('#ri-screenshot-body');
+    var $icon     = $(this).find('i');
+    var $lbl      = $('#ri-toggle-label');
+    var expanding = !$body.hasClass('ri-ss-open');
+    $body.toggleClass('ri-ss-open', expanding);
+    $icon.toggleClass('fa-expand', !expanding).toggleClass('fa-compress', expanding);
+    $lbl.text(expanding ? 'Collapse' : 'Expand');
+});
+
+// Click thumbnail → also expands the full panel
+$(document).on('click', '#ri-screenshot-thumb', function(){
+    if (!_riScreenshot) return;
+    var $body = $('#ri-screenshot-body');
+    if (!$body.hasClass('ri-ss-open')) {
+        $body.addClass('ri-ss-open');
+        $('#ri-toggle-screenshot').find('i').removeClass('fa-expand').addClass('fa-compress');
+        $('#ri-toggle-label').text('Collapse');
+        // Scroll the modal body so the expanded panel is visible
+        var $mb = $('#reportIssueModal .modal-body');
+        setTimeout(function(){ $mb.animate({ scrollTop: $mb[0].scrollHeight }, 220); }, 50);
+    }
+});
+
+// Click full-size preview → open in new tab
+$(document).on('click', '#ri-screenshot-preview', function(){
+    if (!_riScreenshot) return;
+    var w = window.open('', '_blank');
+    if (!w) return;
+    w.document.write(
+        '<html><head><title>Screenshot<\/title><\/head>'
+        + '<body style="margin:0;background:#111;text-align:center;">'
+        + '<img src="' + _riScreenshot + '" style="max-width:100%;border:none;">'
+        + '<\/body><\/html>'
+    );
+    w.document.close();
+});
+
+// Retake / Remove / Retry buttons
+$(document).on('click', '#ri-retake-screenshot, #ri-retry-screenshot', function(){
+    riResetScreenshotUI();
+    $('#ri-screenshot-pending').show();
+    captureRiScreenshot(function(){});
+});
+$(document).on('click', '#ri-remove-screenshot', function(){
+    riResetScreenshotUI();
+});
+
+function loadRiEntities(callback) {
+    var $sel = $('#ri-entity');
+    if (_riEntitiesLoaded) {
+        if (callback) callback();
+        return;
+    }
+    // Prepend generic options
+    $.each(RI_GENERIC, function(_, item) {
+        if (item.sep) {
+            $sel.append($('<optgroup>').attr('label', item.label));
+        } else {
+            $sel.append('<option value="' + item.value + '">' + item.label + '</option>');
+        }
+    });
+    // Fetch folder-based entities
+    $.ajax({
+        url: RI_URL_ENTITIES, method: 'GET',
+        success: function(data) {
+            $.each(data, function(_, e) {
+                $sel.append('<option value="' + e + '">' + e + '</option>');
+            });
+            _riEntitiesLoaded = true;
+            if (callback) callback();
+        },
+        error: function() {
+            _riEntitiesLoaded = true;
+            if (callback) callback();
+        }
+    });
+}
+
+// Clear auto-fill → reset dropdowns and unlock URL field
+$('#ri-clear-autofill').on('click', function(){
+    // Reset entity & file
+    $('#ri-entity').val('').trigger('change');
+    $('#ri-file').empty().append('<option value="">— Select File —</option>');
+    $('#ri-file-wrap').show();
+    // Unlock URL so the user can type freely
+    $('#ri-url').val('').prop('readonly', false)
+        .css({ 'background': 'var(--input-background,#fff) !important', 'cursor': 'text' });
+    // Hide the bar
+    $('#ri-autofill-bar').fadeOut(160);
+    $('#ri-entity').focus();
+});
+
+// Shared file-loader: called by both the entity change handler and auto-fill.
+// selectAction (optional) – action name to pre-select after options are loaded.
+// Matches against raw value OR value with .cshtml stripped, case-insensitive.
+function loadRiFiles(entityname, selectAction) {
+    var $fileWrap = $('#ri-file-wrap');
+    var $file     = $('#ri-file').empty().append('<option value="">— Select File —</option>');
+
+    if (!entityname) { $fileWrap.show(); return; }
+
+    if (RI_GENERIC_VALUES.indexOf(entityname) !== -1) { $fileWrap.hide(); return; }
+
+    $fileWrap.show();
+    $.ajax({
+        url: RI_URL_FILES, method: 'GET', data: { entityname: entityname },
+        success: function(data) {
+            if (!data || data.length === 0) { $fileWrap.hide(); return; }
+            $.each(data, function(_, f) {
+                $file.append('<option value="' + f + '">' + f + '</option>');
+            });
+            // Auto-select: match raw value or strip .cshtml, case-insensitive
+            if (selectAction) {
+                var target = selectAction.toLowerCase();
+                $file.find('option').each(function(){
+                    var raw      = $(this).val();
+                    var stripped = raw.replace(/\.cshtml$/i, '').toLowerCase();
+                    if (raw.toLowerCase() === target || stripped === target) {
+                        $file.val(raw);
+                        return false; // break
+                    }
+                });
+            }
+        }
+    });
+}
+
+// Entity change → load files (no auto-select needed from manual change)
+$('#ri-entity').on('change', function(){
+    loadRiFiles($(this).val(), null);
+});
+
+// Submit
+$('#ri-submit').on('click', function(){
+    var entity = $('#ri-entity').val();
+    var text   = $.trim($('#ri-issuetext').val());
+    if (!entity) { alert('Please select an Entity / Module.'); return; }
+    if (!text)   { alert('Please enter an issue description.'); return; }
+
+    var payload = {
+        entityname:     entity,
+        filename:       $('#ri-file').val()      || null,
+        pageurl:        $('#ri-url').val()       || null,
+        issuetext:      text,
+        priority:       $('#ri-priority').val()  || 'Medium',
+        status:         'Open',
+        reporterdesc:   $('#ri-reporter').val()  || null,
+        screenshotdata: _riScreenshot            || null
+    };
+
+    var $btn = $(this).prop('disabled', true).html('<i class="fa fa-spinner fa-spin mr-1"></i> Saving…');
+
+    $.ajax({
+        url: RI_URL_REPORT,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        success: function() {
+            $('#reportIssueModal').modal('hide');
+            loadBugCount(); // refresh nav badge immediately after new issue added
+            if (typeof swal === 'function') {
+                swal({ title:'Submitted!', text:'Your issue has been reported. Thank you!', type:'success', buttonsStyling:false, confirmButtonClass:'btn btn-primary' });
+            } else {
+                alert('Issue submitted successfully!');
+            }
+        },
+        error: function(xhr) {
+            alert('Failed to submit: ' + (xhr.responseText || 'Unknown error'));
+        },
+        complete: function() {
+            $btn.prop('disabled', false).html('<i class="fa fa-paper-plane mr-1"></i> Submit Issue');
+        }
+    });
+});
+</script>
+}
+
+    @* <script src="~/js/mobile-numeric-input.js"></script> *@
+</body>
+
+</html>
+<script>
+    $(document).ready(function () {
+        var currentCulture = "@Context.Request.Cookies["NalamVazhaCurrentCulture"]" || "en-US";
+        var langCode = currentCulture.split("-")[0];
+        $("#languageHTML").text(langCode.toUpperCase());
+        setValidationLanguage(langCode);
+    });
+
+    function setValidationLanguage(langCode)
+    {
+        const indianLangs = ["bn", "ta", "te", "ml", "kn", "gu", "mr", "pa", "hi", "ur", "ne"];
+
+        if (indianLangs.includes(langCode))
+        {
+            loadCustomValidationMessages(langCode);
+        }
+        else
+        {
+            var scriptUrl = "https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/localization/messages_" + langCode + ".min.js";
+            if ($('script[src="' + scriptUrl + '"]').length > 0) {
+                addCustomValidationMethod(langCode);
+                return;
+            }
+
+            var script = document.createElement("script");
+            script.src = scriptUrl;
+            script.onload = function () {
+                addCustomValidationMessage(langCode);
+            };
+            script.onerror = function () {
+                console.warn("Localization not found for " + langCode + ", using default English.");
+                addCustomValidationMessage("en");
+            };
+            document.head.appendChild(script);
+        }
+    }
+
+    function loadCustomValidationMessages(langCode)
+    {
+        const validationMessages = {
+            bn: { required: "এই ক্ষেত্রটি প্রয়োজন।" },
+            ta: { required: "இந்த புலம் தேவை." },
+            te: { required: "ఈ ఫీల్డ్ అవసరం." },
+            ml: { required: "ഈ ഫീൽഡ് ആവശ്യമാണ്." },
+            kn: { required: "ಈ ಕ್ಷೇತ್ರ ಅಗತ್ಯವಿದೆ." },
+            gu: { required: "આ ક્ષેત્ર આવશ્યક છે." },
+            mr: { required: "हे क्षेत्र आवश्यक आहे." },
+            pa: { required: "ਇਹ ਖੇਤਰ ਲਾਜ਼ਮੀ ਹੈ।" },
+            hi: { required: "यह फ़ील्ड आवश्यक है।" },
+            ur: { required: "یہ فیلڈ ضروری ہے۔" },
+            ne: { required: "यो फाँट आवश्यक छ।" }
+        };
+
+        const messages = validationMessages[langCode] || validationMessages["en"];
+        $.extend($.validator.messages, {
+            required: messages.required || "This field is required."
+        });
+
+        console.log("Custom validation loaded for:", langCode);
+        rebindValidators();
+    }
+
+    function addCustomValidationMethod(langCode)
+    {
+        console.log("Loaded official validation messages for:", langCode);
+        rebindValidators();
+    }
+
+    function rebindValidators()
+    {
+        $("form").each(function () {
+            if ($(this).data("validator")) {
+                $(this).removeData("validator").removeData("unobtrusiveValidation");
+                $.validator.unobtrusive.parse(this);
+            }
+        });
+    }
+
+
+    //phone number
+    function addCustomValidationMessage(langCode)
+    {
+
+        let translatedMessage = "Please enter a valid value";
+        switch (langCode)
+        {
+            case "bn": translatedMessage = "দয়া করে একটি বৈধ মান লিখুন"; break; // Bengali
+            case "ta": translatedMessage = "சரியான மதிப்பை உள்ளிடவும்"; break; // Tamil
+            case "te": translatedMessage = "దయచేసి సరైన విలువను నమోదు చేయండి"; break; // Telugu
+            case "ml": translatedMessage = "സരിയായ മൂല്യം നൽകുക"; break; // Malayalam
+            case "kn": translatedMessage = "ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ ಮೌಲ್ಯವನ್ನು ನಮೂದಿಸಿ"; break; // Kannada
+            case "gu": translatedMessage = "કૃપા કરીને માન્ય મૂલ્ય દાખલ કરો"; break; // Gujarati
+            case "mr": translatedMessage = "कृपया वैध मूल्य प्रविष्ट करा"; break; // Marathi
+            case "pa": translatedMessage = "ਕਿਰਪਾ ਕਰਕੇ ਇੱਕ ਵੈਧ ਮੁੱਲ ਦਰਜ ਕਰੋ"; break; // Punjabi
+            case "ne": translatedMessage = "कृपया मान्य मान प्रविष्ट गर्नुहोस्"; break; // Nepali
+            case "ur": translatedMessage = "براہ کرم ایک درست قدر درج کریں"; break; // Urdu
+            case "ar": translatedMessage = "يرجى إدخال قيمة صالحة"; break; // Arabic
+            case "zh": translatedMessage = "请输入有效的值"; break; // Chinese (Simplified)
+            case "ja": translatedMessage = "有効な値を入力してください"; break; // Japanese
+            case "ko": translatedMessage = "유효한 값을 입력하세요"; break; // Korean
+            case "es": translatedMessage = "Por favor ingrese un valor válido"; break; // Spanish
+            case "fr": translatedMessage = "Veuillez saisir une valeur valide"; break; // French
+            case "de": translatedMessage = "Bitte geben Sie einen gültigen Wert ein"; break; // German
+            case "it": translatedMessage = "Per favore inserisci un valore valido"; break; // Italian
+            case "pt": translatedMessage = "Por favor insira um valor válido"; break; // Portuguese
+            case "ru": translatedMessage = "Пожалуйста, введите допустимое значение"; break; // Russian
+            default: translatedMessage = "Please enter a valid value"; break; // English
+    }
+
+        $.validator.addMethod("invalidphone", function (value, element)
+        { return value !== "invalid"; }, translatedMessage); }
+
+</script>
+
+<script>
+                        document.addEventListener("DOMContentLoaded", function () {
+
+        const element = document.querySelector('.card.tab-card');
+
+        if (element) {
+            document.body.classList.add('card-tab-page');
+        }
+
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.cma_cancel_button').forEach(function (btn) {
+            if (!btn.querySelector('.fa, .fas, .far, .fab')) {
+                var icon = document.createElement('i');
+                icon.className = 'fa fa-arrow-left';
+                icon.style.marginRight = '6px';
+                btn.insertBefore(icon, btn.firstChild);
+            }
+        });
+    });
+</script>
+
+<style>
+    .patient-header-dos {
+        display: inline-flex;
+        align-items: center;
+        margin-left: 14px;
+        padding: 7px 13px;
+        border: 1px solid #cbded3;
+        border-radius: 18px;
+        background: #f3f8f5;
+        color: #24583d;
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 1;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var query = new URLSearchParams(window.location.search);
+        var ipdId = query.get('IPDApplicationFormid') || query.get('ipdapplicationformid') ||
+            query.get('ipdform') || query.get('ipdno') || query.get('ipdNo');
+        if (!ipdId || !/^[0-9a-f-]{36}$/i.test(ipdId)) return;
+
+        function value(obj, keys) {
+            for (var i = 0; i < keys.length; i++) {
+                if (obj && obj[keys[i]] !== undefined && obj[keys[i]] !== null) return obj[keys[i]];
+            }
+            return '';
+        }
+        function formatDate(raw) {
+            if (!raw) return '';
+            var text = raw.toString().substring(0, 10);
+            var parts = text.indexOf('/') >= 0 ? text.split('/') : text.split('-');
+            var day, month, year;
+            if (text.indexOf('/') >= 0) { day = +parts[0]; month = +parts[1] - 1; year = +parts[2]; }
+            else { year = +parts[0]; month = +parts[1] - 1; day = +parts[2]; }
+            var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            if (!day || month < 0 || month > 11 || !year) return '';
+            return (day < 10 ? '0' : '') + day + '-' + months[month] + '-' + year;
+        }
+        function parseRows(raw) {
+            if (!raw) return [];
+            try {
+                var parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (_) { return []; }
+        }
+        function addBadge(patientName, badgeText) {
+            var header = document.querySelector('.page-header-box h1');
+            if (!header || header.querySelector('.patient-header-dos') || header.querySelector('.ipd-header-dos')) return;
+            if (patientName && header.textContent.toLowerCase().indexOf(patientName.toLowerCase()) === -1) return;
+            var badge = document.createElement('span');
+            badge.className = 'patient-header-dos';
+            badge.textContent = badgeText;
+            header.appendChild(badge);
+        }
+
+        fetch('@Url.Action("getById_allinfo_IPDApplicationForm", "IPDApplicationForm")?IPDApplicationFormid=' + encodeURIComponent(ipdId), {
+            credentials: 'same-origin'
+        }).then(function (response) { return response.json(); }).then(function (data) {
+            var obj = Array.isArray(data) ? data[0] : data;
+            if (!obj) return;
+            var patientName = (value(obj, ['patientname', 'patientname_master', 'PatientName']) || '').toString().trim();
+            var rows = parseRows(value(obj, [
+                'automaton_IPDApplicationForm_preferreddatesofadmission',
+                'preferreddatesofadmission', 'PreferredDatesOfAdmission'
+            ]));
+            if (!rows.length) return;
+            var first = rows[0];
+            var fromRaw = value(first, ['dateofarrival', 'Dateofarrival', 'DateOfArrival']);
+            var toRaw = value(first, ['dateofdeparture', 'Dateofdeparture', 'DateOfDeparture']);
+            var days = rows.reduce(function (total, row) {
+                var count = parseInt(value(row, ['daysofstay', 'Daysofstay', 'DaysOfStay']) || 0, 10);
+                return total + (isNaN(count) ? 0 : count);
+            }, 0);
+            if (!days && fromRaw && toRaw) {
+                var fromDate = new Date(fromRaw), toDate = new Date(toRaw);
+                if (!isNaN(fromDate.getTime()) && !isNaN(toDate.getTime()))
+                    days = Math.floor((toDate - fromDate) / 86400000) + 1;
+            }
+            if (!days) return;
+            var from = formatDate(fromRaw), to = formatDate(toRaw);
+            var badgeText = 'DOS - ' + days + (days === 1 ? ' Day' : ' Days') +
+                (from && to ? ': ' + from + ' - ' + to : '');
+            var applyBadge = function () { addBadge(patientName, badgeText); };
+            applyBadge();
+            var headerBox = document.querySelector('.page-header-box');
+            if (headerBox) new MutationObserver(applyBadge).observe(headerBox, { childList: true, subtree: true });
+        }).catch(function () { /* Header enhancement is non-blocking. */ });
+    });
+</script>

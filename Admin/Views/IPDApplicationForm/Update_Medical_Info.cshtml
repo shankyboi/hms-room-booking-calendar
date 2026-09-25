@@ -1,0 +1,841 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@model NalamVazha.Models.IPDApplicationFormModel
+@{
+    ViewData["Title"] = "Update Medical Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isPopup = Context.Request.Query.ContainsKey("popup");
+    string tenantIdQs = Context.Request.Query["tenantid"].ToString();
+    string resolvedTenantId = !string.IsNullOrEmpty(tenantIdQs)
+        ? tenantIdQs
+        : (Context.Session.GetString("NalamVazhatenantid") ?? "");
+}
+@if (isPopup)
+{
+    <!-- Strip the layout chrome when shown inside the modal iframe -->
+    <style>
+        #header   { display: none !important; }
+        .menubar  { display: none !important; }
+        body      { padding-top: 0 !important; }
+        #base     { padding-left: 0 !important; }
+        :root     { --app-footer-height: 0px !important; }
+        section.main-content { padding-top: 10px !important; }
+        .ipd-update-medical-card > .card-head { display: none !important; }
+        .page_footer { display: none !important; }
+        .page-loader { display: none !important; }
+    </style>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card ipd-update-medical-card">
+                <div class="card-head">
+                    <header>Update Medical Information</header>
+                </div>
+                <div class="card-body">
+
+                    @if (TempData["message"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            @TempData["message"]
+                        </div>
+                    }
+                    @if (TempData["errMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            @TempData["errMessage"]
+                        </div>
+                    }
+
+                    <form id="formId" method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="IPDApplicationFormid" name="IPDApplicationFormid" value="@Model?.IPDApplicationFormid" />
+
+                        <div class="row">
+                            <div class="col-lg-12 col-md-9">
+
+                                <style>
+                                    .ipd-med-card { border: 1px solid #e5e9f2; border-radius: 8px; background:#fff; overflow:hidden; }
+                                    .ipd-med-card__head { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 14px; border-bottom:1px solid #eef2f7; background:#f8fafc; }
+                                    .ipd-med-card__title { display:flex; align-items:center; gap:10px; }
+                                    .ipd-med-card__icon { display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:8px; background:#eef5ff; color:#1d4ed8; font-size:15px; flex:0 0 32px; }
+                                    .ipd-med-card--meds   .ipd-med-card__icon { background:#ecfdf5; color:#047857; }
+                                    .ipd-med-card--records .ipd-med-card__icon { background:#fef3c7; color:#b45309; }
+                                    .ipd-med-card__heading { margin:0; font-size:14px; font-weight:600; color:#0f172a; display:flex; align-items:center; gap:6px; }
+                                    .ipd-med-card__count { display:inline-flex; align-items:center; justify-content:center; min-width:20px; height:20px; padding:0 6px; border-radius:999px; background:#e2e8f0; color:#0f172a; font-size:11px; font-weight:600; line-height:1; }
+                                    .ipd-med-card__subtitle { font-size:11px; color:#64748b; margin-top:1px; }
+                                    .ipd-med-card__actions .ipd-med-card__add { border-radius:6px; padding:5px 12px; font-size:13px; font-weight:500; }
+                                    .ipd-med-list { padding: 4px 8px 8px; }
+                                    .ipd-med-row { background:#fff; border:1px solid #e5e9f2 !important; border-radius:8px; margin:6px 0 !important; padding: 6px 8px 2px 8px; transition: border-color .15s ease; }
+                                    .ipd-med-row:hover { border-color:#c7d2fe !important; }
+                                    .ipd-med-row > [class*="col-"] { min-width: 0; }
+                                    .ipd-med-row .form-group { margin-bottom: 8px !important; }
+                                    .ipd-med-row .form-group .help-block,
+                                    .ipd-med-row .form-group label.error,
+                                    .ipd-med-row .form-group .field-validation-error {
+                                        position: static !important;
+                                        right: auto !important;
+                                        bottom: auto !important;
+                                        display: block;
+                                        width: 100%;
+                                        margin: 4px 0 0 !important;
+                                        color: #dc2626 !important;
+                                        font-size: 10px;
+                                        line-height: 1.25;
+                                        white-space: normal;
+                                        overflow-wrap: anywhere;
+                                        opacity: 1;
+                                    }
+                                    .ipd-med-row__remove-wrap { display:flex; align-items:center; justify-content:flex-end; }
+                                    .ipd-med-row__remove { border-radius:6px; padding:4px 8px; }
+                                    .ipd-med-file-control {
+                                        display: block;
+                                        width: 100%;
+                                        height: 34px;
+                                        padding: 0;
+                                        border: 1px solid #d1d5db;
+                                        border-radius: 4px;
+                                        background: #fff;
+                                        color: #111827;
+                                        font-size: 13px;
+                                        line-height: 32px;
+                                        box-sizing: border-box;
+                                    }
+                                    .ipd-med-file-control::file-selector-button {
+                                        height: 32px;
+                                        margin: 0 10px 0 0;
+                                        padding: 0 12px;
+                                        border: 0;
+                                        border-right: 1px solid #d1d5db;
+                                        background: #f8fafc;
+                                        color: #111827;
+                                        cursor: pointer;
+                                    }
+                                    .medicalrecordfile_craftmyapp_container .help-block,
+                                    .medicalrecordfile_craftmyapp_container label.error {
+                                        display: block;
+                                        margin-top: 3px;
+                                        margin-bottom: 0;
+                                        line-height: 1.2;
+                                    }
+                                    .ipd-med-empty { text-align:center; padding:18px 12px 14px; color:#475569; }
+                                    .ipd-med-empty__icon { font-size:22px; color:#94a3b8; margin-bottom:4px; }
+                                    .ipd-med-empty__title { font-weight:600; font-size:13px; color:#0f172a; margin-bottom:2px; }
+                                    .ipd-med-empty__text { font-size:12px; color:#64748b; }
+                                </style>
+
+                                <!-- Medical Conditions -->
+                                <div id="ipd-section-medicalinfo" class="col-sm-12 col-xs-12 medicalinfo_craftmyapp_container ipd-medical-wizard__section ipd-medical-wizard__section--active">
+                                    <div class="card card-blue cma_dependent_band ipd-med-card ipd-med-card--info">
+                                        <div class="card-head ipd-med-card__head">
+                                            <div class="ipd-med-card__title">
+                                                <div>
+                                                    <header class="ipd-med-card__heading">@Resource.medicalinfo <span class="ipd-med-card__count" id="mi-count-medicalinfo">0</span></header>
+                                                </div>
+                                            </div>
+                                            <div class="ipd-med-card__actions">
+                                                <button type="button" class="btn btn-primary ipd-med-card__add btn-add-medicalinfo"><i class="fa fa-plus"></i>&nbsp;Add Condition</button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+                                            <div id="medicalinfoContainer" class="medicalinfoContainer ipd-med-list"></div>
+                                            <div class="ipd-med-empty" id="mi-empty-medicalinfo">
+                                                <div class="ipd-med-empty__icon"><i class="fa fa-stethoscope"></i></div>
+                                                <div class="ipd-med-empty__title">No medical conditions added</div>
+                                                <div class="ipd-med-empty__text">Click <b>Add Condition</b> to record the patient's existing conditions.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Medications -->
+                                <div id="ipd-section-medicationinfo" class="col-sm-12 col-xs-12 medicationinfo_craftmyapp_container ipd-medical-wizard__section ipd-medical-wizard__section--active" style="margin-top:16px;">
+                                    <div class="card card-blue cma_dependent_band ipd-med-card ipd-med-card--meds">
+                                        <div class="card-head ipd-med-card__head">
+                                            <div class="ipd-med-card__title">
+                                                <div>
+                                                    <header class="ipd-med-card__heading">@Resource.medicationinfo <span class="ipd-med-card__count" id="mi-count-medicationinfo">0</span></header>
+                                                </div>
+                                            </div>
+                                            <div class="ipd-med-card__actions">
+                                                <button type="button" class="btn btn-primary ipd-med-card__add btn-add-medicationinfo"><i class="fa fa-plus"></i>&nbsp;Add Medication</button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+                                            <div id="medicationinfoContainer" class="medicationinfoContainer ipd-med-list"></div>
+                                            <div class="ipd-med-empty" id="mi-empty-medicationinfo">
+                                                <div class="ipd-med-empty__icon"><i class="fa fa-pills"></i></div>
+                                                <div class="ipd-med-empty__title">No medications added</div>
+                                                <div class="ipd-med-empty__text">Click <b>Add Medication</b> to record what the patient is currently taking.</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Medical Records -->
+                                <div id="ipd-section-medicalrecords" class="col-sm-12 col-xs-12 medicalrecords_craftmyapp_container ipd-medical-wizard__section ipd-medical-wizard__section--active" style="margin-top:16px;">
+                                    <div class="card card-blue cma_dependent_band ipd-med-card ipd-med-card--records">
+                                        <div class="card-head ipd-med-card__head">
+                                            <div class="ipd-med-card__title">
+                                                <div>
+                                                    <header class="ipd-med-card__heading">@Resource.medicalrecords <span class="ipd-med-card__count" id="mi-count-medicalrecords">0</span></header>
+                                                </div>
+                                            </div>
+                                            <div class="ipd-med-card__actions">
+                                                <button type="button" class="btn btn-primary ipd-med-card__add btn-add-medicalrecords"><i class="fa fa-plus"></i>&nbsp;Add Record</button>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+                                            <div id="medicalrecordsContainer" class="medicalrecordsContainer ipd-med-list"></div>
+                                            <div class="ipd-med-empty" id="mi-empty-medicalrecords">
+                                                <div class="ipd-med-empty__icon"><i class="fa fa-cloud-upload"></i></div>
+                                                <div class="ipd-med-empty__title">No medical records uploaded</div>
+                                                <div class="ipd-med-empty__text">Click <b>Add Record</b> to attach prior reports or prescriptions (PDF, JPG, PNG).</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div class="row mt-3">
+                            <div class="col-sm-12 text-right">
+                                <button type="button" id="btnSubmit" class="btn btn-primary btn-lg"><i class="fa fa-save"></i>&nbsp;Update Medical Info</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Medical condition select2 — loaded once, reused across rows -->
+<script>
+    var _medConditionsAll = null;
+
+    /* ── Alias map: typed term → condition name fragment(s) to match ── */
+    var MEDICAL_COND_ALIASES = {
+        /* Hypertension */
+        'bp': ['hypertension'], 'high bp': ['hypertension'], 'htn': ['hypertension'],
+        'hbp': ['hypertension'], 'high blood pressure': ['hypertension'],
+        /* Hypotension */
+        'low bp': ['hypotension'], 'low blood pressure': ['hypotension'],
+        /* Diabetes */
+        'sugar': ['diabetes mellitus'], 'diabetes': ['diabetes mellitus'],
+        'dm': ['diabetes mellitus'],
+        't1dm': ['type 1 diabetes'], 'dm1': ['type 1 diabetes'], 'iddm': ['type 1 diabetes'],
+        'juvenile diabetes': ['type 1 diabetes'], 'type 1 dm': ['type 1 diabetes'],
+        't2dm': ['type 2 diabetes'], 'dm2': ['type 2 diabetes'], 'niddm': ['type 2 diabetes'],
+        'type 2 dm': ['type 2 diabetes'],
+        /* Heart */
+        'cad': ['coronary artery disease'], 'ihd': ['coronary artery disease'],
+        'heart attack': ['myocardial infarction'], 'mi': ['myocardial infarction'],
+        'chf': ['congestive heart failure'],
+        'hf': ['heart failure'], 'cardiac failure': ['heart failure', 'congestive heart failure'],
+        'af': ['atrial fibrillation'], 'afib': ['atrial fibrillation'],
+        'irregular heartbeat': ['atrial fibrillation'],
+        'chest pain': ['angina', 'myocardial infarction'],
+        'heart disease': ['coronary artery disease', 'heart failure', 'cardiomyopathy'],
+        /* Lungs */
+        'copd': ['chronic obstructive pulmonary disease'], 'emphysema': ['chronic obstructive pulmonary disease'],
+        'bronchial asthma': ['asthma'], 'wheezing': ['asthma'],
+        'lung infection': ['pneumonia'], 'chest infection': ['pneumonia', 'bronchitis'],
+        'bronchitis': ['bronchitis'],
+        /* GI */
+        'gerd': ['gastroesophageal reflux disease'], 'acid reflux': ['gastroesophageal reflux disease'],
+        'heartburn': ['gastroesophageal reflux disease'],
+        'acidity': ['gastritis', 'gastroesophageal reflux disease'],
+        'stomach pain': ['gastritis', 'peptic ulcer'],
+        'pud': ['peptic ulcer disease'], 'stomach ulcer': ['peptic ulcer disease'], 'ulcer': ['peptic ulcer disease'],
+        /* Neuro / Mental */
+        'headache': ['migraine'], 'head pain': ['migraine'],
+        'brain attack': ['stroke'], 'cva': ['stroke'],
+        'depression': ['major depressive disorder'], 'mdd': ['major depressive disorder'],
+        'anxiety': ['generalized anxiety disorder'], 'gad': ['generalized anxiety disorder'],
+        /* Joints */
+        'oa': ['osteoarthritis'], 'joint pain': ['osteoarthritis', 'rheumatoid arthritis'],
+        'ra': ['rheumatoid arthritis'],
+        /* Urinary / Renal */
+        'uti': ['urinary tract infection'], 'urine infection': ['urinary tract infection'],
+        'kidney stone': ['kidney stones'], 'renal stone': ['kidney stones'],
+        'nephrolithiasis': ['kidney stones'], 'calculi': ['kidney stones'],
+        /* Gynaecology */
+        'pcos': ['polycystic ovary syndrome'], 'pcod': ['polycystic ovary syndrome'],
+        /* Skin */
+        'atopic dermatitis': ['eczema'], 'skin rash': ['dermatitis', 'eczema'],
+        /* Infections */
+        'covid': ['covid-19'], 'corona': ['covid-19'], 'coronavirus': ['covid-19'],
+        'flu': ['influenza'], 'dengue': ['dengue fever'],
+        'typhoid': ['typhoid fever'], 'enteric fever': ['typhoid fever'],
+        /* General */
+        'septicemia': ['sepsis'], 'blood poisoning': ['sepsis'],
+        'fatigue': ['chronic fatigue syndrome'], 'cfs': ['chronic fatigue syndrome'],
+        'fever': ['fever of unknown origin', 'dengue fever', 'typhoid fever'],
+        'weakness': ['cachexia', 'chronic fatigue']
+    };
+
+    function buildselectmedicalconditionname(strmedicalconditionname, index) {
+        var ddltarget_medicalconditionname = $('#medicalconditionname' + index);
+        ddltarget_medicalconditionname.empty();
+
+        function _initSelect2WithData(allItems) {
+            if ($.fn.select2 && ddltarget_medicalconditionname.data('select2')) {
+                ddltarget_medicalconditionname.select2('destroy');
+            }
+            ddltarget_medicalconditionname.select2({
+                data: allItems,
+                placeholder: 'Choose',
+                allowClear: true,
+                matcher: function (params, data) {
+                    if (!params.term || params.term.trim() === '') return data;
+                    var term = params.term.trim().toLowerCase();
+                    var condName = String(data.text || '').toLowerCase();
+                    if (condName.indexOf(term) >= 0) return data;
+                    var aliasTargets = MEDICAL_COND_ALIASES[term];
+                    if (aliasTargets) {
+                        for (var i = 0; i < aliasTargets.length; i++) {
+                            if (condName.indexOf(aliasTargets[i]) >= 0) return data;
+                        }
+                    }
+                    return null;
+                },
+                templateResult: formatSelectOption_medicalconditionname,
+                templateSelection: formatSelectSelected_medicalconditionname
+            });
+
+            if (strmedicalconditionname) {
+                var found = null;
+                for (var k = 0; k < allItems.length; k++) {
+                    if (allItems[k].id == strmedicalconditionname) { found = allItems[k]; break; }
+                }
+                if (found) {
+                    ddltarget_medicalconditionname.val(found.id).trigger('change');
+                }
+            }
+        }
+
+        if (_medConditionsAll !== null) {
+            _initSelect2WithData(_medConditionsAll);
+            return;
+        }
+
+        $.ajax({
+            url: '@Url.Action("get_all_MedicalCondition")',
+            dataType: 'json',
+            data: {
+                'tenantid': $("#tenantid").val(),
+                'searchterm': '',
+                'pagesize': 9999,
+                'pagenumber': 1
+            },
+            success: function (data) {
+                data = (data || []).filter(function (item) { return item.conditionname != null; });
+                data.sort(function (a, b) {
+                    return String(a.conditionname).toLowerCase().localeCompare(String(b.conditionname).toLowerCase());
+                });
+                _medConditionsAll = data.map(function (item) {
+                    return {
+                        id: item.MedicalConditionid,
+                        text: item.conditionname,
+                        conditionname: item.conditionname
+                    };
+                });
+                _initSelect2WithData(_medConditionsAll);
+            }
+        });
+    }
+
+    function formatSelectSelected_medicalconditionname(item) {
+        if (!item) return 'Choose';
+        if (item.text != "") { return item.text; }
+        else if (item.conditionname) { return item.conditionname; }
+        return item.text;
+    }
+    function formatSelectOption_medicalconditionname(item) {
+        if (item.loading) { return item.text; }
+        return item.conditionname;
+    }
+</script>
+
+<script>
+    /* IPDApplicationForm lookups (unit, severitylevel, frequencyinaday, medicationduration, gender) */
+    var dataIPDApplicationForm;
+    $.ajax({
+        url: '@Url.Action("get_lookups_by_entity", "lookups")',
+        dataType: 'json',
+        data: { id: 'IPDApplicationForm' },
+        async: false,
+        success: function (data) { dataIPDApplicationForm = data; }
+    });
+
+    function buildselectIPDApplicationForm(columnName, selected, index) {
+        var select;
+        if (columnName == 'unit' || columnName == 'severitylevel' || columnName == 'frequencyinaday' || columnName == 'medicationduration' || columnName == 'gender') {
+            var cssClass = (columnName == 'unit' || columnName == 'severitylevel') ? 'form-control select2 select2-list  required' : ((columnName == 'frequencyinaday' || columnName == 'medicationduration') ? 'form-control  ' : 'form-control  required');
+            select = '<select name="' + columnName + index + '" id="' + columnName + index + '" class="' + columnName + ' form-control--active ' + cssClass + '" style="width:100%">';
+            select = select + '<option value="">Choose</option>';
+            $.each(dataIPDApplicationForm, function (cnt, optionDataInner) {
+                if (optionDataInner.fieldname == columnName) {
+                    var options_ = optionDataInner.fielddesc.split(',');
+                    options_.sort(function (a, b) { return a.localeCompare(b); });
+                    options_.forEach(function (opt) {
+                        if (selected == opt) select = select + '<option selected value="' + opt + '">' + opt + '</option>';
+                        else select = select + '<option value="' + opt + '">' + opt + '</option>';
+                    });
+                }
+            });
+            select = select + '</select>';
+        }
+        return select;
+    }
+
+    function cmaRandRowId() {
+        return Math.floor(Math.random() * 999999) + 57;
+    }
+
+    function cmaInitSelect2In($root) {
+        if (!$root || !$root.length) return;
+        $root.find('select.select2-list').each(function () {
+            try { $(this).select2(); } catch (e) { }
+        });
+    }
+
+    $(document).ready(function () {
+
+        /* -- Add-row handlers -- */
+
+        $("body").on("click", ".btn-add-medicalinfo", function () {
+            var index = cmaRandRowId();
+            var rowHtml =
+                '<div class="row m-t-10 medicalinfo dependentContainerBorder ipd-med-row" id="medicalinfo' + index + '">' +
+                    '<input type="hidden" class="IPDApplicationForm_medicalinfoid" value="00000000-0000-0000-0000-000000000000" />' +
+                    '<div class="col-sm-3 col-xs-12 p-2 medicalconditionname_craftmyapp_container"><div><div class="form-group form-group--float-above my-2"><label>Medical Condition <b class="iconRed">*</b></label><select id="medicalconditionname' + index + '" name="medicalconditionname' + index + '" class="medicalconditionname form-control select2 required"></select><i class="form-group__bar"></i></div></div></div>' +
+                    '<div class="col-sm-2 col-xs-12 p-2 duration_craftmyapp_container"><div><div class="form-group"><label>Duration <b class="iconRed">*</b></label><input type="text" class="duration form-control--active form-control form-control-lg required" min="0" max="99999999" /></div></div></div>' +
+                    '<div class="col-sm-3 col-xs-12 p-2 unit_craftmyapp_container"><div><div class="form-group form-group--float-above my-2"><label>Unit <b class="iconRed">*</b></label>' + buildselectIPDApplicationForm('unit', '', index) + '<i class="form-group__bar"></i></div></div></div>' +
+                    '<div class="col-sm-3 col-xs-12 p-2 severitylevel_craftmyapp_container"><div><div class="form-group form-group--float-above my-2"><label>Severity <b class="iconRed">*</b></label>' + buildselectIPDApplicationForm('severitylevel', '', index) + '<i class="form-group__bar"></i></div></div></div>' +
+                    '<div class="col-sm-1 detele-common-icon ipd-med-row__remove-wrap"><button type="button" class="btn btn-danger btn-remove-row-medicalinfo ipd-med-row__remove" title="Remove"><span class="fa fa-trash"></span></button></div>' +
+                '</div>';
+            $("#medicalinfoContainer").prepend(rowHtml);
+            buildselectmedicalconditionname('', index);
+            cmaInitSelect2In($("#medicalinfo" + index));
+            refreshIpdMedSectionMeta();
+        });
+        $("body").on("click", ".btn-remove-row-medicalinfo", function () {
+            $(this).closest(".medicalinfo").remove();
+            refreshIpdMedSectionMeta();
+        });
+
+        $("body").on("click", ".btn-add-medicationinfo", function () {
+            var index = cmaRandRowId();
+            var rowHtml =
+                '<div class="row m-t-10 medicationinfo dependentContainerBorder ipd-med-row" id="medicationinfo' + index + '">' +
+                    '<input type="hidden" class="IPDApplicationForm_medicationinfoid" value="00000000-0000-0000-0000-000000000000" />' +
+                    '<div class="col-sm-3 col-xs-12 p-2 medicinename_craftmyapp_container"><div><div class="form-group"><label for="medicinename' + index + '">Medicine Name <b class="iconRed">*</b></label><input type="text" name="medicinename' + index + '" id="medicinename' + index + '" class="medicinename form-control--active form-control form-control-lg required" maxlength="128" placeholder="e.g. Metformin 500mg" /></div></div></div>' +
+                    '<div class="col-sm-3 col-xs-12 p-2 frequencyinaday_craftmyapp_container"><div><div class="form-group form-group--float-above my-2"><label>Frequency in a day</label>' + buildselectIPDApplicationForm('frequencyinaday', '', index) + '<i class="form-group__bar"></i></div></div></div>' +
+                    '<div class="col-sm-3 col-xs-12 p-2 medicationduration_craftmyapp_container"><div><div class="form-group form-group--float-above my-2"><label>@Resource.ipdapplicationform_medicationinfo_medicationduration</label>' + buildselectIPDApplicationForm('medicationduration', '', index) + '<i class="form-group__bar"></i></div></div></div>' +
+                    '<div class="col-sm-1 detele-common-icon ipd-med-row__remove-wrap"><button type="button" class="btn btn-danger btn-remove-row-medicationinfo ipd-med-row__remove" title="Remove"><span class="fa fa-trash"></span></button></div>' +
+                '</div>';
+            $("#medicationinfoContainer").prepend(rowHtml);
+            cmaInitSelect2In($("#medicationinfo" + index));
+            refreshIpdMedSectionMeta();
+        });
+        $("body").on("click", ".btn-remove-row-medicationinfo", function () {
+            $(this).closest(".medicationinfo").remove();
+            refreshIpdMedSectionMeta();
+        });
+
+        $("body").on("click", ".btn-add-medicalrecords", function () {
+            var index = cmaRandRowId();
+            var rowHtml =
+                '<div class="row m-t-10 medicalrecords dependentContainerBorder ipd-med-row" id="medicalrecords' + index + '">' +
+                    '<input type="hidden" class="IPDApplicationForm_medicalrecordsid" value="00000000-0000-0000-0000-000000000000" />' +
+                    '<div class="col-sm-4 col-xs-12 p-2 medicalrecordname_craftmyapp_container"><div><div class="form-group"><label for="medicalrecordname' + index + '">Medical Record Name</label><input type="text" name="medicalrecordname' + index + '" id="medicalrecordname' + index + '" class="medicalrecordname form-control--active form-control form-control-lg" maxlength="128" /></div></div></div>' +
+                    '<div class="col-sm-6 col-xs-12 p-2 medicalrecordfile_craftmyapp_container"><div><div class="form-group"><label for="medicalrecordfile_uploader' + index + '">Medical Record File <b class="iconRed">*</b></label><input type="file" name="medicalrecordfile_uploader' + index + '" id="medicalrecordfile_uploader' + index + '" class="medicalrecordfile_uploader ipd-med-file-control required" required /><input type="hidden" class="medicalrecordfile" value="" /></div></div></div>' +
+                    '<div class="col-sm-1 detele-common-icon ipd-med-row__remove-wrap"><button type="button" class="btn btn-danger btn-remove-row-medicalrecords ipd-med-row__remove" title="Remove"><span class="fa fa-trash"></span></button></div>' +
+                '</div>';
+            $("#medicalrecordsContainer").prepend(rowHtml);
+            refreshIpdMedSectionMeta();
+        });
+        $("body").on("click", ".btn-remove-row-medicalrecords", function () {
+            $(this).closest(".medicalrecords").remove();
+            refreshIpdMedSectionMeta();
+        });
+
+        /* Count + empty-state refresh */
+        window.refreshIpdMedSectionMeta = function () {
+            [
+                { container: "#medicalinfoContainer",    rowClass: ".medicalinfo",    countEl: "#mi-count-medicalinfo",    emptyEl: "#mi-empty-medicalinfo" },
+                { container: "#medicationinfoContainer", rowClass: ".medicationinfo", countEl: "#mi-count-medicationinfo", emptyEl: "#mi-empty-medicationinfo" },
+                { container: "#medicalrecordsContainer", rowClass: ".medicalrecords", countEl: "#mi-count-medicalrecords", emptyEl: "#mi-empty-medicalrecords" }
+            ].forEach(function (s) {
+                var n = $(s.container).find(s.rowClass).length;
+                $(s.countEl).text(n);
+                $(s.emptyEl).toggle(n === 0);
+            });
+        };
+
+        refreshIpdMedSectionMeta();
+        try {
+            ["medicalinfoContainer","medicationinfoContainer","medicalrecordsContainer"].forEach(function (id) {
+                var obs = new MutationObserver(function() { refreshIpdMedSectionMeta(); });
+                var el = document.getElementById(id);
+                if (el) obs.observe(el, { childList: true });
+            });
+        } catch(e) {}
+
+    });
+</script>
+
+<script>
+    /* -- Data-collect functions -- */
+    function getmedicalinfo() {
+        var medicalinfoModel = [];
+        var el = $('.medicalinfoContainer .medicalinfo');
+        el.each(function (cnt) {
+            var attrs = {};
+            attrs['medicalconditionname'] = ($(this).find('.medicalconditionname').select2("val") ? $(this).find('.medicalconditionname').select2("val").toString() : '');
+            attrs['duration'] = $(this).find('.duration').val() ? $(this).find('.duration').val() : 0;
+            attrs['unit'] = ($(this).find('.unit').select2("val") ? $(this).find('.unit').select2("val").toString() : '');
+            attrs['severitylevel'] = ($(this).find('.severitylevel').select2("val") ? $(this).find('.severitylevel').select2("val").toString() : '');
+            attrs['IPDApplicationForm_medicalinfoid'] = ($(this).find('.IPDApplicationForm_medicalinfoid').val() != undefined ? $(this).find('.IPDApplicationForm_medicalinfoid').val().toString() : "00000000-0000-0000-0000-000000000000");
+            attrs['craftmyapp_actionmethodname'] = 'Add_IPD_Application_Form';
+            attrs['record_order'] = cnt;
+            attrs['cma_client_row_id'] = $(this).attr("id").replace("medicalinfo", "");
+            medicalinfoModel.push(attrs);
+        });
+        return medicalinfoModel;
+    }
+    function getmedicationinfo() {
+        var medicationinfoModel = [];
+        var el = $('.medicationinfoContainer .medicationinfo');
+        el.each(function (cnt) {
+            var attrs = {};
+            attrs['medicinename'] = ($(this).find('.medicinename').val() ? $(this).find('.medicinename').val().toString() : '');
+            attrs['frequencyinaday'] = ($(this).find('.frequencyinaday').val() ? $(this).find('.frequencyinaday').val().toString() : '');
+            attrs['medicationduration'] = ($(this).find('.medicationduration').val() ? $(this).find('.medicationduration').val().toString() : '');
+            attrs['IPDApplicationForm_medicationinfoid'] = ($(this).find('.IPDApplicationForm_medicationinfoid').val() != undefined ? $(this).find('.IPDApplicationForm_medicationinfoid').val().toString() : "00000000-0000-0000-0000-000000000000");
+            attrs['craftmyapp_actionmethodname'] = 'Add_IPD_Application_Form';
+            attrs['record_order'] = cnt;
+            attrs['cma_client_row_id'] = $(this).attr("id").replace("medicationinfo", "");
+            medicationinfoModel.push(attrs);
+        });
+        return medicationinfoModel;
+    }
+    function getmedicalrecords() {
+        var medicalrecordsModel = [];
+        var el = $('.medicalrecordsContainer .medicalrecords');
+        el.each(function (cnt) {
+            var attrs = {};
+            attrs['medicalrecordname'] = ($(this).find('.medicalrecordname').val() ? $(this).find('.medicalrecordname').val().toString() : '');
+            if (($(this).find('.medicalrecordfile_uploader').val() ? $(this).find('.medicalrecordfile_uploader').val().toString() : '') == '')
+                attrs['medicalrecordfile'] = ($(this).find('.medicalrecordfile').val() ? $(this).find('.medicalrecordfile').val().toString() : '');
+            else
+                attrs['medicalrecordfile'] = ($(this).find('.medicalrecordfile_uploader').val() ? $(this).find('.medicalrecordfile_uploader').val().toString() : '');
+            attrs['IPDApplicationForm_medicalrecordsid'] = ($(this).find('.IPDApplicationForm_medicalrecordsid').val() != undefined ? $(this).find('.IPDApplicationForm_medicalrecordsid').val().toString() : "00000000-0000-0000-0000-000000000000");
+            attrs['craftmyapp_actionmethodname'] = 'Add_IPD_Application_Form';
+            attrs['record_order'] = cnt;
+            attrs['cma_client_row_id'] = $(this).attr("id").replace("medicalrecords", "");
+            medicalrecordsModel.push(attrs);
+        });
+        return medicalrecordsModel;
+    }
+
+    /* Medical-record file validation */
+    function validateMedicalRecordFiles() {
+        var missing = false;
+        var $missingRow = null;
+        $('.medicalrecordsContainer .medicalrecords').each(function () {
+            var $row = $(this);
+            var uploadedFile = ($row.find('.medicalrecordfile_uploader, .medicalrecords_medicalrecordfile_cma_uploader').val() || '').toString().trim();
+            var existingFile = ($row.find('.medicalrecordfile').val() || '').toString().trim();
+            if (!uploadedFile && !existingFile) {
+                missing = true;
+                $missingRow = $row;
+                $row.find('.medicalrecordfile_craftmyapp_container .form-group').addClass('has-error');
+                return false;
+            }
+            $row.find('.medicalrecordfile_craftmyapp_container .form-group').removeClass('has-error');
+        });
+
+        if (missing) {
+            swal({
+                title: 'Medical record file required',
+                text: 'Please upload a file for each medical record row.',
+                type: 'warning',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            }).then(function () {
+                if ($missingRow && $missingRow.length) {
+                    $('html, body').animate({ scrollTop: $missingRow.offset().top - 100 }, 400);
+                }
+            });
+            return false;
+        }
+        return true;
+    }
+</script>
+
+<script>
+    /* -- Submit handler -- */
+    $(document).ready(function () {
+        $("#btnSubmit").click(function () {
+            if (!validateMedicalRecordFiles()) return false;
+
+            $(".page-loader").show();
+
+            var medicalinfoModel    = getmedicalinfo();
+            var medicationinfoModel = getmedicationinfo();
+            var medicalrecordsModel = getmedicalrecords();
+
+            var form = $('#formId')[0];
+            var formdata = new FormData(form);
+
+            // Append tenantid from URL param (passed by the parent page when opening the popup)
+            var urlParams = new URLSearchParams(window.location.search);
+            var tenantId = urlParams.get('tenantid') || '';
+            if (tenantId) formdata.append('tenantid', tenantId);
+
+            for (var i = 0; i < medicalinfoModel.length; i++) {
+                formdata.append("medicalinfo[" + i + "].medicalconditionname",               medicalinfoModel[i].medicalconditionname);
+                formdata.append("medicalinfo[" + i + "].record_order",                        medicalinfoModel[i].record_order);
+                formdata.append("medicalinfo[" + i + "].cma_client_row_id",                   medicalinfoModel[i].cma_client_row_id);
+                formdata.append("medicalinfo[" + i + "].duration",                            medicalinfoModel[i].duration);
+                formdata.append("medicalinfo[" + i + "].unit",                                medicalinfoModel[i].unit);
+                formdata.append("medicalinfo[" + i + "].severitylevel",                       medicalinfoModel[i].severitylevel);
+                formdata.append("medicalinfo[" + i + "].IPDApplicationForm_medicalinfoid",    medicalinfoModel[i].IPDApplicationForm_medicalinfoid);
+                formdata.append("medicalinfo[" + i + "].IPDApplicationFormid",                $("#IPDApplicationFormid").val());
+                formdata.append("medicalinfo[" + i + "].craftmyapp_actionmethodname",         'Add_IPD_Application_Form');
+            }
+            for (var i = 0; i < medicationinfoModel.length; i++) {
+                formdata.append("medicationinfo[" + i + "].medicinename",                           medicationinfoModel[i].medicinename);
+                formdata.append("medicationinfo[" + i + "].record_order",                            medicationinfoModel[i].record_order);
+                formdata.append("medicationinfo[" + i + "].cma_client_row_id",                       medicationinfoModel[i].cma_client_row_id);
+                formdata.append("medicationinfo[" + i + "].frequencyinaday",                         medicationinfoModel[i].frequencyinaday);
+                formdata.append("medicationinfo[" + i + "].medicationduration",                      medicationinfoModel[i].medicationduration);
+                formdata.append("medicationinfo[" + i + "].IPDApplicationForm_medicationinfoid",     medicationinfoModel[i].IPDApplicationForm_medicationinfoid);
+                formdata.append("medicationinfo[" + i + "].IPDApplicationFormid",                    $("#IPDApplicationFormid").val());
+                formdata.append("medicationinfo[" + i + "].craftmyapp_actionmethodname",             'Add_IPD_Application_Form');
+            }
+            for (var i = 0; i < medicalrecordsModel.length; i++) {
+                formdata.append("medicalrecords[" + i + "].medicalrecordname",                       medicalrecordsModel[i].medicalrecordname);
+                formdata.append("medicalrecords[" + i + "].record_order",                             medicalrecordsModel[i].record_order);
+                formdata.append("medicalrecords[" + i + "].cma_client_row_id",                        medicalrecordsModel[i].cma_client_row_id);
+                formdata.append("medicalrecords[" + i + "].medicalrecordfile",                        medicalrecordsModel[i].medicalrecordfile);
+                formdata.append("medicalrecords[" + i + "].IPDApplicationForm_medicalrecordsid",      medicalrecordsModel[i].IPDApplicationForm_medicalrecordsid);
+                formdata.append("medicalrecords[" + i + "].IPDApplicationFormid",                     $("#IPDApplicationFormid").val());
+                formdata.append("medicalrecords[" + i + "].craftmyapp_actionmethodname",              'Add_IPD_Application_Form');
+            }
+
+            $.ajax({
+                url: '@Url.Action("Update_Medical_Info")',
+                type: 'POST',
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                cache: false,
+                data: formdata,
+                success: function (data) {
+                    $(".page-loader").hide();
+                    if (data == "Success") {
+                        swal({
+                            title: 'Saved!',
+                            text: 'Medical information updated successfully.',
+                            type: 'success',
+                            buttonsStyling: false,
+                            confirmButtonClass: 'btn btn-primary',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            allowEnterKey: false
+                        }).then(function () {
+                            var inPopup = (new URLSearchParams(window.location.search)).get('popup') === '1';
+                            if (inPopup) {
+                                try { window.parent.$('#modalUpdateMedicalInfo').modal('hide'); } catch(e) {}
+                            } else {
+                                let userRole = "@Context.Session.GetString("NalamVazhauserrole")";
+                                var list_URL = "@Url.Action("IPD_Application_Forms_for_Review", "IPDApplicationForm")";
+                                if (userRole == "Health Seeker") {
+                                    list_URL = "@Url.Action("Index", "PatientDashboard")";
+                                }
+                                window.location = list_URL;
+                            }
+                        });
+                    } else if (data == "Session Expired") {
+                        swal({ title: "Error !!", text: data, type: "error", showCancelButton: false, confirmButtonText: "OK", allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false }).then(function () { window.location = "@Url.Action("Logout", "users")" });
+                    } else {
+                        swal({ title: "Error !!", text: data, type: "error", showCancelButton: false, confirmButtonText: "OK", allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false });
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $(".page-loader").hide();
+                    if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+                        swal({ title: 'Failed!', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false }).then(function () { window.location = "@Url.Action("AuthorizationFailed", "users")" });
+                    else
+                        swal({ title: 'Contact Administrator !', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false });
+                }
+            });
+        });
+    });
+</script>
+
+@if (Model != null)
+{
+    <!-- Prefill: Medical Conditions -->
+    <script>
+        $(document).ready(function () {
+            var resultSet = ("@Model.medicalinfo" ? @Html.Raw(Json.Serialize(@Model.medicalinfo)) : []);
+            $.each(resultSet, function (key, obj) {
+                var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+                $(".medicalinfo").removeClass('showthelables');
+                $(".btn-remove-row-medicalinfo").removeClass('btn-remove-row');
+                $("#medicalinfoContainer").prepend(
+                    '<div class="row m-t-10 medicalinfo dependentContainerBorder ipd-med-row" id="medicalinfo' + index + '">' +
+                    '<input type="hidden" class="IPDApplicationForm_medicalinfoid" value="' + obj.IPDApplicationForm_medicalinfoid + '">' +
+                    '<div class="col-sm-2 col-xs-12 p-2 medicalconditionname_craftmyapp_container">' +
+                        '<div><div class="form-group form-group--float-above my-3">' +
+                            '<label for="medicalconditionname">@Resource.ipdapplicationform_medicalinfo_medicalconditionname <b class="iconRed">*</b></label>' +
+                            '<select name="medicalconditionname' + index + '" id="medicalconditionname' + index + '" class="medicalconditionname form-control"></select>' +
+                            '<i class="form-group__bar"></i>' +
+                        '</div></div>' +
+                    '</div>' +
+                    '<div class="col-sm-2 col-xs-12 p-2 duration_craftmyapp_container">' +
+                        '<div><div class="form-group">' +
+                            '<label for="duration">@Resource.ipdapplicationform_medicalinfo_duration <b class="iconRed">*</b></label>' +
+                            '<input value="' + (obj.duration ? obj.duration : '') + '" name="duration' + index + '" id="duration' + index + '" type="text" min="0" max="9999999999999999" class="duration form-control--active form-control form-control-lg required" />' +
+                        '</div></div>' +
+                    '</div>' +
+                    '<div class="col-sm-2 col-xs-12 p-2 unit_craftmyapp_container">' +
+                        '<div><div class="form-group form-group--float-above my-3">' +
+                            '<label for="unit">@Resource.ipdapplicationform_medicalinfo_unit <b class="iconRed">*</b></label>' +
+                            buildselectIPDApplicationForm('unit', obj.unit, index) +
+                            '<i class="form-group__bar"></i>' +
+                        '</div></div>' +
+                    '</div>' +
+                    '<div class="col-sm-2 col-xs-12 p-2 severitylevel_craftmyapp_container">' +
+                        '<div><div class="form-group form-group--float-above my-3">' +
+                            '<label for="severitylevel">@Resource.ipdapplicationform_medicalinfo_severitylevel <b class="iconRed">*</b></label>' +
+                            buildselectIPDApplicationForm('severitylevel', obj.severitylevel, index) +
+                            '<i class="form-group__bar"></i>' +
+                        '</div></div>' +
+                    '</div>' +
+                    '<div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-medicalinfo"><span class="fa fa-trash"></span></button></div>' +
+                    '</div>'
+                );
+
+                var cmafirstcontainer = $('.medicalinfoContainer :first-child').attr("id");
+                $('#' + cmafirstcontainer).addClass('showthelables');
+                if (cmafirstcontainer)
+                    $('.removebtn' + cmafirstcontainer.replace('medicalinfo', '')).addClass('btn-remove-row');
+
+                if ($("#duration" + index).data('autoNumeric') == undefined)
+                    $("#duration" + index).autoNumeric('init', { aSep: '', vMin: '0.00', vMax: '9999999999999999.00' });
+                $("#unit" + index).select2();
+                $("#severitylevel" + index).select2();
+                buildselectmedicalconditionname(obj.medicalconditionname, index);
+            });
+        });
+    </script>
+
+    <!-- Prefill: Medications -->
+    <script>
+        $(document).ready(function () {
+            var resultSet = ("@Model.medicationinfo" ? @Html.Raw(Json.Serialize(@Model.medicationinfo)) : []);
+            $.each(resultSet, function (key, obj) {
+                var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+                $(".medicationinfo").removeClass('showthelables');
+                $(".btn-remove-row-medicationinfo").removeClass('btn-remove-row');
+                $("#medicationinfoContainer").prepend(
+                    '<div class="row m-t-10 medicationinfo dependentContainerBorder ipd-med-row" id="medicationinfo' + index + '">' +
+                    '<input type="hidden" class="IPDApplicationForm_medicationinfoid" value="' + obj.IPDApplicationForm_medicationinfoid + '">' +
+                    '<div class="col-sm-2 col-xs-12 p-2 medicinename_craftmyapp_container">' +
+                        '<div><div class="form-group">' +
+                            '<label for="medicinename">@Resource.ipdapplicationform_medicationinfo_medicinename <b class="iconRed">*</b></label>' +
+                            '<input value="' + (obj.medicinename ? obj.medicinename : '') + '" name="medicinename' + index + '" id="medicinename' + index + '" type="text" maxlength="128" class="medicinename form-control--active form-control form-control-lg required" />' +
+                        '</div></div>' +
+                    '</div>' +
+                    '<div class="col-sm-2 col-xs-12 p-2 frequencyinaday_craftmyapp_container">' +
+                        '<div><div class="form-group form-group--float-above my-3">' +
+                            '<label for="frequencyinaday">@Resource.ipdapplicationform_medicationinfo_frequencyinaday</label>' +
+                            buildselectIPDApplicationForm('frequencyinaday', obj.frequencyinaday, index) +
+                            '<i class="form-group__bar"></i>' +
+                        '</div></div>' +
+                    '</div>' +
+                    '<div class="col-sm-2 col-xs-12 p-2 medicationduration_craftmyapp_container">' +
+                        '<div><div class="form-group form-group--float-above my-3">' +
+                            '<label for="medicationduration">@Resource.ipdapplicationform_medicationinfo_medicationduration</label>' +
+                            buildselectIPDApplicationForm('medicationduration', obj.medicationduration, index) +
+                            '<i class="form-group__bar"></i>' +
+                        '</div><div id="medicationduration' + index + '-error" class="help-block" style="display: none" role="alert"></div></div>' +
+                    '</div>' +
+                    '<div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-medicationinfo"><span class="fa fa-trash"></span></button></div>' +
+                    '</div>'
+                );
+
+                var cmafirstcontainer = $('.medicationinfoContainer :first-child').attr("id");
+                $('#' + cmafirstcontainer).addClass('showthelables');
+                if (cmafirstcontainer)
+                    $('.removebtn' + cmafirstcontainer.replace('medicationinfo', '')).addClass('btn-remove-row');
+            });
+        });
+    </script>
+
+    <!-- Prefill: Medical Records -->
+    <script>
+        $(document).ready(function () {
+            var resultSet = ("@Model.medicalrecords" ? @Html.Raw(Json.Serialize(@Model.medicalrecords)) : []);
+            $.each(resultSet, function (key, obj) {
+                var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+                $(".medicalrecords").removeClass('showthelables');
+                $(".btn-remove-row-medicalrecords").removeClass('btn-remove-row');
+                $("#medicalrecordsContainer").prepend(
+                    '<div class="row m-t-10 medicalrecords dependentContainerBorder ipd-med-row" id="medicalrecords' + index + '">' +
+                    '<input type="hidden" class="IPDApplicationForm_medicalrecordsid" value="' + obj.IPDApplicationForm_medicalrecordsid + '">' +
+                    '<div class="col-sm-2 col-xs-12 p-2 medicalrecordname_craftmyapp_container">' +
+                        '<div><div class="form-group">' +
+                            '<label for="medicalrecordname">@Resource.ipdapplicationform_medicalrecords_medicalrecordname</label>' +
+                            '<input value="' + (obj.medicalrecordname ? obj.medicalrecordname : '') + '" name="medicalrecordname' + index + '" id="medicalrecordname' + index + '" type="text" maxlength="128" class="medicalrecordname form-control--active form-control form-control-lg" />' +
+                        '</div></div>' +
+                    '</div>' +
+                    '<div class="col-sm-2 col-xs-12 p-2 medicalrecordfile_craftmyapp_container">' +
+                        '<div><div class="form-group form-group--float-above my-3">' +
+                            '<label for="medicalrecordfile">@Resource.ipdapplicationform_medicalrecords_medicalrecordfile <b class="iconRed">*</b></label>' +
+                            '<input value="' + (obj.medicalrecordfile ? obj.medicalrecordfile : '') + '" type="hidden" class="medicalrecordfile" name="medicalrecordfile' + index + '" id="medicalrecordfile' + index + '">' +
+                            '<br><input type="file" multiple class="medicalrecords_medicalrecordfile_cma_uploader ipd-med-file-control ' + ((obj && obj.medicalrecordfile) ? '' : 'required') + '" name="medicalrecords_medicalrecordfile_cma_uploader' + index + '" id="medicalrecords_medicalrecordfile_cma_uploader' + index + '"' + ((obj && obj.medicalrecordfile) ? '' : ' required') + '>' +
+                            '<div id="medicalrecordfileDisp' + index + '" class="medicalrecordfileDisp' + index + '" href=""></div>' +
+                            '<i class="form-group__bar"></i>' +
+                        '</div></div>' +
+                    '</div>' +
+                    '<div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-medicalrecords"><span class="fa fa-trash"></span></button></div>' +
+                    '</div>'
+                );
+
+                var cmafirstcontainer = $('.medicalrecordsContainer :first-child').attr("id");
+                $('#' + cmafirstcontainer).addClass('showthelables');
+                if (cmafirstcontainer)
+                    $('.removebtn' + cmafirstcontainer.replace('medicalrecords', '')).addClass('btn-remove-row');
+
+                $('.medicalrecordfileDisp' + index).empty();
+                if ((obj.medicalrecordfile ? obj.medicalrecordfile : '') != '') {
+                    var uploaded_medicalrecordfile = (obj.medicalrecordfile ? obj.medicalrecordfile : '').split('|');
+                    for (var i = 0; i < uploaded_medicalrecordfile.length; i++) {
+                        if (uploaded_medicalrecordfile[i] != "") {
+                            var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_medicalrecordfile[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+                            $('.medicalrecordfileDisp' + index).append('<a href=' + filepath + ' class="imgmedicalrecordfile auto_clr_medicalrecordfile' + index + '"><i class="fa fa-file"></i></a>');
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+}

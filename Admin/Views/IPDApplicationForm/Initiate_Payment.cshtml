@@ -1,0 +1,597 @@
+
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@using Newtonsoft.Json.Linq
+@using NalamVazha.Models
+@model NalamVazha.Models.IPDPaymentDetailsModel
+@{
+    ViewData["Title"] = "IPD Booking Deposit Payment";
+    Layout = Context.Request.Query["embed"] == "1"
+        ? "~/Views/Shared/_EmbedLayout.cshtml"
+        : "~/Views/Shared/_Layout.cshtml";
+    var billingSummary = ViewBag.BillingSummary as NalamVazha.Models.IPDBillingSummaryModel;
+    var tenantName = !string.IsNullOrWhiteSpace(billingSummary?.tenantname)
+        ? billingSummary.tenantname
+        : "Healthcare Provider";
+}
+<style>
+    .mandatory-row { background-color: #fff5f5; }
+    .optional-row  { background-color: #f8fff8; }
+    .badge-required { background: #d9534f; color: #fff; padding: 3px 8px; border-radius: 10px; font-size: 11px; }
+    .badge-optional { background: #5bc0de; color: #fff; padding: 3px 8px; border-radius: 10px; font-size: 11px; }
+</style>
+
+<div class="card card-block contCard">
+    <div class="mobileHeader">
+        <div class="row">
+            <div class="col-sm-12 col-xs-12">
+                <h4 class="formHdr">IPD Booking Deposit Payment</h4>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["errMessage"] != null)
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">x</span></button>
+                    @TempData["errMessage"]
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="card-block">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Booking Reference</label>
+                    <p class="form-control-static"><strong>@Model.bookingreferencenumber</strong></p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Patient Name</label>
+                    <p class="form-control-static"><strong>@Model.firstname @Model.lastname</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Package</label>
+                    <p class="form-control-static">@Model.packagename_master</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Accommodation Type</label>
+                    <p class="form-control-static">@Model.accommodationtype</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Days of Stay</label>
+                    <p class="form-control-static">@Model.daysofstay day(s)</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Attendants</label>
+                    <p class="form-control-static">@Model.attendantcount</p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Mobile</label>
+                    <p class="form-control-static">@Model.mobilenumber</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="control-label">Booking Status</label>
+                    <p class="form-control-static"><span class="label label-warning">@Model.bookingstatus</span></p>
+                </div>
+            </div>
+        </div>
+
+        @{
+            var roomDetails = new JArray();
+            if (!string.IsNullOrWhiteSpace(Model.blocked_room_details_json))
+            {
+                try { roomDetails = JArray.Parse(Model.blocked_room_details_json); } catch { roomDetails = new JArray(); }
+            }
+            var roomTypeRefundPolicies = new JArray();
+            if (!string.IsNullOrWhiteSpace(Model.roomtype_refundpolicy_json))
+            {
+                try { roomTypeRefundPolicies = JArray.Parse(Model.roomtype_refundpolicy_json); } catch { roomTypeRefundPolicies = new JArray(); }
+            }
+            JObject bookingDepositPolicy = null;
+            foreach (var p in roomTypeRefundPolicies)
+            {
+                var rft = (p["refundtype"]?.ToString() ?? "").Trim().ToLower().Replace(" ", "");
+                if (rft == "bookingdeposit") { bookingDepositPolicy = p as JObject; break; }
+            }
+
+            // Booking deposit receivables from the Receivable table
+            var depositReceivables = new JArray();
+            if (!string.IsNullOrWhiteSpace(Model.booking_deposit_receivables_json))
+            {
+                try { depositReceivables = JArray.Parse(Model.booking_deposit_receivables_json); } catch { depositReceivables = new JArray(); }
+            }
+
+            decimal mandatoryReceivableBalance = 0;
+            foreach (var rec in depositReceivables)
+            {
+                if (rec["ismandatory"] != null && (bool)rec["ismandatory"])
+                    mandatoryReceivableBalance += ((decimal?)rec["balance"]) ?? 0;
+            }
+
+            // Razorpay charges all mandatory booking-deposit receivables, including attendant deposit.
+            decimal configuredDeposit = Model.patient_booking_deposit.GetValueOrDefault();
+            if (configuredDeposit <= 0) configuredDeposit = Model.bookingdepositamount.GetValueOrDefault();
+            if (configuredDeposit <= 0) configuredDeposit = Model.advanceamount.GetValueOrDefault();
+
+            decimal receiveNow = mandatoryReceivableBalance > 0 ? mandatoryReceivableBalance : configuredDeposit;
+
+            var receiveNowText = receiveNow.ToString("N2");
+            var days = Model.daysofstay.GetValueOrDefault() > 0 ? Model.daysofstay.GetValueOrDefault() : 1;
+        }
+
+        <hr />
+
+        @if (depositReceivables.Count > 0)
+        {
+            <div class="row" style="margin-bottom:15px;">
+                <div class="col-sm-12">
+                    <h5>Payment Summary</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Receivable Date</th>
+                                    <th>Bill</th>
+                                    <th>Category</th>
+                                    <th class="text-right">Total Amount</th>
+                                    <th class="text-right">Paid</th>
+                                    <th class="text-right">Balance</th>
+                                    <th>Mandatory?</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var rec in depositReceivables)
+                                {
+                                    var billLabel = rec["receivablefor"]?.ToString() ?? "";
+                                    var remarkStr = rec["remarks"]?.ToString() ?? "";
+                                    var remarkDisplay = string.Join(" : ", remarkStr.Split(':').Select(p => System.Text.RegularExpressions.Regex.Replace(p.Trim(), "([a-z])([A-Z])", "$1 $2")));
+                                    var isMandRec = rec["ismandatory"] != null && (bool)rec["ismandatory"];
+                                    var rowCssClass = isMandRec ? "mandatory-row" : "optional-row";
+                                    <tr class="@rowCssClass">
+                                        <td>@(rec["receivabledate"]?.ToString())</td>
+                                        <td>@billLabel@(string.IsNullOrWhiteSpace(remarkStr) ? "" : " — " + remarkDisplay)</td>
+                                        <td>@(rec["category"]?.ToString())</td>
+                                        <td class="text-right">@(((decimal?)rec["amount"] ?? 0).ToString("N2"))</td>
+                                        <td class="text-right">@(((decimal?)rec["paidamount"] ?? 0).ToString("N2"))</td>
+                                        <td class="text-right">@(((decimal?)rec["balance"] ?? 0).ToString("N2"))</td>
+                                        <td>
+                                            @if (isMandRec)
+                                            { <span class="badge-required">Required</span> }
+                                            else
+                                            { <span class="badge-optional">Optional / Partial OK</span> }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="active">
+                                    <td colspan="5" class="text-right"><strong>Total Outstanding</strong></td>
+                                    <td class="text-right"><strong>&#8377; @mandatoryReceivableBalance.ToString("N2")</strong></td>
+                                    <td></td>
+                                </tr>
+                                <tr class="success">
+                                    <td colspan="5" class="text-right"><strong>Booking Deposit Payable Now</strong></td>
+                                    <td class="text-right"><strong>&#8377; @receiveNowText</strong></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-sm-8" style="display:none;">
+                <h5>Blocked Room Details</h5>
+                @if (roomDetails.Count > 0)
+                {
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Allotted To</th>
+                                <th>Blocked Room Number</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th class="text-right">No. of Days</th>
+                                <th class="text-right">Cost Per Day</th>
+                                <th class="text-right">Line Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                decimal blockedRoomsGrandTotal = 0;
+                            }
+                            @foreach (var room in roomDetails)
+                            {
+                                var role = (room["allottedto"]?.ToString() ?? "").Trim();
+                                var roomNo = (room["roomnumber"]?.ToString() ?? "").Trim();
+                                var fromDateRaw = (room["fromdate"]?.ToString() ?? "").Trim();
+                                var toDateRaw = (room["todate"]?.ToString() ?? "").Trim();
+                                DateTime parsedFrom;
+                                DateTime parsedTo;
+                                var fromDate = DateTime.TryParse(fromDateRaw, out parsedFrom) ? parsedFrom.ToString("dd/MM/yyyy") : fromDateRaw.Split(' ')[0];
+                                var toDate = DateTime.TryParse(toDateRaw, out parsedTo) ? parsedTo.ToString("dd/MM/yyyy") : toDateRaw.Split(' ')[0];
+                                var patientCpd = (decimal?)room["costperday"] ?? 0;
+                                var attendantCpd = (decimal?)room["attendantcostperday"] ?? 0;
+                                var rowCost = role.Equals("Attendant", StringComparison.OrdinalIgnoreCase) ? attendantCpd : patientCpd;
+                                var rowDays = (DateTime.TryParse(fromDateRaw, out parsedFrom) && DateTime.TryParse(toDateRaw, out parsedTo))
+                                    ? Math.Max(1, (parsedTo.Date - parsedFrom.Date).Days + 1)
+                                    : days;
+                                var lineTotal = rowCost * rowDays;
+                                blockedRoomsGrandTotal += lineTotal;
+                                <tr>
+                                    <td>@role</td>
+                                    <td><strong>@(string.IsNullOrWhiteSpace(roomNo) ? "-" : roomNo)</strong></td>
+                                    <td>@(string.IsNullOrWhiteSpace(fromDate) ? "-" : fromDate)</td>
+                                    <td>@(string.IsNullOrWhiteSpace(toDate) ? "-" : toDate)</td>
+                                    <td class="text-right">@rowDays</td>
+                                    <td class="text-right">&#8377; @rowCost.ToString("N2")</td>
+                                    <td class="text-right"><strong>&#8377; @lineTotal.ToString("N2")</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-warning">Room details are not available for this booking.</div>
+                }
+            </div>
+            <div class="col-sm-12">
+                <h5>Amount Summary</h5>
+                <table class="table table-bordered table-sm">
+                    <tbody>
+                        <tr class="table-success">
+                            <td><strong>Amount to Pay Now</strong></td>
+                            <td class="text-right"><strong class="text-success" style="font-size:1.2em;">&#8377; @receiveNowText</strong></td>
+                        </tr>
+                        @if (bookingDepositPolicy != null)
+                        {
+                            <tr>
+                                <td>Booking Deposit Refund Policy</td>
+                                <td class="text-right">
+                                    @bookingDepositPolicy["refundtype"]
+                                    @if ((decimal?)bookingDepositPolicy["refundpercentage"] > 0)
+                                    {
+                                        <text> (@(((decimal?)bookingDepositPolicy["refundpercentage"] ?? 0).ToString("N2"))%)</text>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        @* <tr>
+                            <td><em>Balance payable at admission (Cost/day * Days)</em></td>
+                            <td class="text-right"><em>&#8377; @balance.ToString("N2")</em></td>
+                        </tr> *@
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="payment-status-msg" class="alert" style="display:none; margin-top:10px;"></div>
+        <div class="row" style="margin-top:10px;">
+            <div class="col-sm-6 col-xs-6">
+                <a href="javascript:history.back()" class="btn btn-secondary cma_cancel_button waves-effect">Back</a>
+            </div>
+            <div class="col-sm-6 col-xs-6 text-right">
+                <button id="btn-pay" class="btn btn-success btn-lg" type="button">
+                    <i class="fa fa-credit-card"></i>&nbsp; Pay Booking Deposit &#8377; @receiveNowText via Razorpay
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+        var ipdFormId = '@Model.IPDApplicationFormid';
+        var createRazorpayOrderUrl = '@Url.Action("Create_Razorpay_Order", "IPDApplicationForm")';
+        var paymentStatusUrl = '@Url.Action("Get_IPD_Booking_Deposit_Payment_Status", "IPDApplicationForm")';
+        var payButtonHtml = '<i class="fa fa-credit-card"></i>&nbsp; Pay Booking Deposit &#8377; @receiveNowText via Razorpay';
+        var activePaymentRequestId = null;
+        var paymentCompleting = false;
+        var currentPaymentCanPay = true;
+
+    refreshPaymentStatus();
+
+    document.getElementById('btn-pay').addEventListener('click', function () {
+        var btn = this;
+        if (!currentPaymentCanPay) {
+            refreshPaymentStatus();
+            return;
+        }
+        cleanupRazorpayOverlay();
+        if (typeof Razorpay === 'undefined') {
+            showError('Razorpay checkout could not be loaded. Please check your network and try again.');
+            resetBtn(btn);
+            return;
+        }
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Awaiting Payment...';
+
+        fetchWithTimeout(createRazorpayOrderUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ IPDApplicationFormid: ipdFormId })
+        }, 30000)
+        .then(parsePaymentResponse)
+        .then(function(order) {
+            if (!order || !order.order_id) {
+                showError(order && order.error ? order.error : 'Failed to create payment order. Please try again.');
+                resetBtn(btn);
+                return;
+            }
+            activePaymentRequestId = order.paymentrequestid;
+            paymentCompleting = false;
+            showInfo('Payment status: In Progress. Complete the Razorpay popup or close it to cancel this attempt.');
+
+            var options = {
+                key: order.razorpay_key_id,
+                amount: order.amount,
+                currency: order.currency || 'INR',
+                name: @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(tenantName)),
+                description: order.description,
+                order_id: order.order_id,
+                prefill: {
+                    name: order.name,
+                    contact: order.contact
+                },
+                theme: { color: '#3399cc' },
+                handler: function (response) {
+                    paymentCompleting = true;
+                    btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Recording Payment...';
+                    completePayment(response, order.paymentrequestid);
+                },
+                modal: {
+                    ondismiss: function () {
+                        cleanupRazorpayOverlay();
+                        if (!paymentCompleting && activePaymentRequestId) {
+                            recordPaymentFailure({
+                                error: {
+                                    code: 'modal_dismissed',
+                                    description: 'Razorpay checkout was closed before payment completion.',
+                                    source: 'customer',
+                                    step: 'checkout',
+                                    reason: 'popup_closed',
+                                    metadata: { order_id: order.order_id, payment_id: '' }
+                                }
+                            }, activePaymentRequestId);
+                        }
+                        activePaymentRequestId = null;
+                        resetBtn(btn);
+                    }
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                recordPaymentFailure(response, order.paymentrequestid);
+                showError('Payment failed: ' + (response.error.description || 'Unknown error'));
+                cleanupRazorpayOverlay();
+                activePaymentRequestId = null;
+                resetBtn(btn);
+            });
+            rzp.open();
+        })
+        .catch(function(err) {
+            showError('Error: ' + err.message);
+            activePaymentRequestId = null;
+            resetBtn(btn);
+        });
+    });
+
+    function refreshPaymentStatus() {
+        return fetchWithTimeout(paymentStatusUrl + '?IPDApplicationFormid=' + encodeURIComponent(ipdFormId), {
+            method: 'GET'
+        }, 15000)
+        .then(parsePaymentResponse)
+        .then(function (status) {
+            applyPaymentStatus(status || {});
+        })
+        .catch(function (err) {
+            showError(err.message || 'Unable to check payment status. Please refresh the page.');
+            currentPaymentCanPay = false;
+            var btn = document.getElementById('btn-pay');
+            if (btn) btn.disabled = true;
+        });
+    }
+
+    function applyPaymentStatus(status) {
+        var btn = document.getElementById('btn-pay');
+        currentPaymentCanPay = status.canPay !== false;
+        if (!btn) return;
+
+        if (currentPaymentCanPay) {
+            if (!activePaymentRequestId && !paymentCompleting) {
+                btn.disabled = false;
+                btn.innerHTML = payButtonHtml;
+                var statusBox = document.getElementById('payment-status-msg');
+                if (statusBox && !status.message) statusBox.style.display = 'none';
+            }
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = status.status === 'Paid'
+            ? '<i class="fa fa-check"></i>&nbsp; Booking Deposit Paid'
+            : '<i class="fa fa-clock-o"></i>&nbsp; Payment In Progress';
+        if (status.message) showInfo(status.message);
+    }
+
+    function completePayment(rzpResponse, paymentrequestid) {
+        var payload = {
+            IPDApplicationFormid: ipdFormId,
+            paymentrequestid: paymentrequestid,
+            razorpay_order_id: rzpResponse.razorpay_order_id,
+            razorpay_payment_id: rzpResponse.razorpay_payment_id,
+            razorpay_signature: rzpResponse.razorpay_signature,
+                          amount: rzpResponse.amount
+        };
+
+        fetchWithTimeout('@Url.Action("Complete_IPD_Payment", "IPDApplicationForm")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }, 45000)
+        .then(parsePaymentResponse)
+        .then(function(result) {
+            if (isPaymentSuccess(result)) {
+                activePaymentRequestId = null;
+                showSuccess('Advance payment successful! Booking is now Confirmed. Redirecting...');
+                setTimeout(function() {
+                        window.location.href = '@Url.Action("Index", "PatientDashboard", new { isDashboardView = "Y" })';
+                }, 2000);
+            } else {
+                showError((result && (result.error || result.message)) || 'Payment recorded but status update failed. Contact administrator.');
+                resetBtn(document.getElementById('btn-pay'));
+            }
+        })
+        .catch(function(err) {
+            showError('Error recording payment: ' + err.message);
+            resetBtn(document.getElementById('btn-pay'));
+        });
+    }
+
+    function parsePaymentResponse(res) {
+        return res.text().then(function (text) {
+            var data = {};
+            try { data = text ? JSON.parse(text) : {}; }
+            catch (e) { data = { error: text }; }
+            if (!res.ok) {
+                throw new Error(data.error || data.message || data.Message || text || 'Payment request failed.');
+            }
+            return data;
+        });
+    }
+
+    function isPaymentSuccess(result) {
+        if (!result) return false;
+        if (result.success === true) return true;
+        var msg = (typeof result === 'string') ? result : (result.message || result.Message || '');
+        return msg.toString().replace(/"/g, '') === '201.1';
+    }
+
+    function recordPaymentFailure(response, paymentrequestid, useBeacon) {
+        var error = (response && response.error) ? response.error : {};
+        var metadata = error.metadata || {};
+        var payload = {
+            IPDApplicationFormid: ipdFormId,
+            paymentrequestid: paymentrequestid,
+            razorpay_order_id: metadata.order_id || '',
+            razorpay_payment_id: metadata.payment_id || '',
+            error_code: error.code || '',
+            error_description: error.description || '',
+            error_source: error.source || '',
+            error_step: error.step || '',
+            error_reason: error.reason || '',
+            failed_at: new Date().toISOString()
+        };
+
+        if (useBeacon && navigator.sendBeacon) {
+            try {
+                var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+                navigator.sendBeacon('@Url.Action("Fail_IPD_Payment", "IPDApplicationForm")', blob);
+                return;
+            } catch (e) { }
+        }
+
+        fetch('@Url.Action("Fail_IPD_Payment", "IPDApplicationForm")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(function() { });
+    }
+
+    window.addEventListener('pagehide', function () {
+        if (!paymentCompleting && activePaymentRequestId) {
+            recordPaymentFailure({
+                error: {
+                    code: 'page_unloaded',
+                    description: 'Payment page was refreshed or left before completion.',
+                    source: 'customer',
+                    step: 'checkout',
+                    reason: 'page_unloaded',
+                    metadata: { order_id: '', payment_id: '' }
+                }
+            }, activePaymentRequestId, true);
+            activePaymentRequestId = null;
+        }
+    });
+
+    function fetchWithTimeout(url, options, timeoutMs) {
+        if (!window.AbortController) return fetch(url, options);
+        var controller = new AbortController();
+        var timer = setTimeout(function () { controller.abort(); }, timeoutMs);
+        var requestOptions = Object.assign({}, options, { signal: controller.signal });
+        return fetch(url, requestOptions).finally(function () { clearTimeout(timer); });
+    }
+
+    function showError(msg) {
+        var el = document.getElementById('payment-status-msg');
+        el.className = 'alert alert-danger';
+        el.innerHTML = '<strong>Error:</strong> ' + msg;
+        el.style.display = 'block';
+    }
+
+    function showSuccess(msg) {
+        var el = document.getElementById('payment-status-msg');
+        el.className = 'alert alert-success';
+        el.innerHTML = '<strong>Success!</strong> ' + msg;
+        el.style.display = 'block';
+    }
+
+    function showInfo(msg) {
+        var el = document.getElementById('payment-status-msg');
+        el.className = 'alert alert-info';
+        el.innerHTML = msg;
+        el.style.display = 'block';
+    }
+
+    function resetBtn(btn) {
+        if (!currentPaymentCanPay) {
+            btn.disabled = true;
+            return;
+        }
+        btn.disabled = false;
+            btn.innerHTML = payButtonHtml;
+    }
+
+    function cleanupRazorpayOverlay() {
+        try {
+            document.querySelectorAll('.razorpay-backdrop').forEach(function (el) {
+                if (el && el.parentNode) el.parentNode.removeChild(el);
+            });
+            document.body.classList.remove('razorpay-checkout-frame');
+            document.body.style.overflow = '';
+        } catch (e) { }
+    }
+</script>
+}

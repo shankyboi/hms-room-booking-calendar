@@ -1,0 +1,2587 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:57 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.OPDFormModel
+			@{
+			ViewData["Title"] = @Resource.updateopdform;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+
+			}
+			<style>
+				.hs-slotpreference-hidden {
+					display: none !important;
+				}
+
+				.hs-slotpreference-chiplist {
+					align-items: center;
+					background: #f7fbf8;
+					border: 1px solid #d5e6dc;
+					border-radius: 8px;
+					display: flex;
+					flex-wrap: wrap;
+					gap: 8px;
+					min-height: 46px;
+					padding: 8px;
+				}
+
+				.hs-slotpreference-chip {
+					background: #fff;
+					border: 1px solid #b7d2c2;
+					border-radius: 6px;
+					color: #1f5f43;
+					cursor: pointer;
+					font-size: 12px;
+					font-weight: 600;
+					line-height: 1.2;
+					padding: 7px 11px;
+					transition: background .15s, border-color .15s, color .15s, box-shadow .15s;
+				}
+
+				.hs-slotpreference-chip:hover:not(.is-selected),
+				.hs-slotpreference-chip:focus:not(.is-selected) {
+					background: #eef7f1 !important;
+					border-color: #2f7d51 !important;
+					color: #1f5f43 !important;
+					box-shadow: 0 2px 8px rgba(47,125,81,.13);
+					outline: none;
+				}
+
+				.hs-slotpreference-chip.is-selected {
+					background: #2f7d51 !important;
+					border-color: #2f7d51 !important;
+					color: #fff !important;
+					box-shadow: 0 2px 8px rgba(47,125,81,.24);
+				}
+
+				.hs-slotpreference-chip.is-selected:hover,
+				.hs-slotpreference-chip.is-selected:focus,
+				.hs-slotpreference-chip.is-selected:active {
+					background: #256943 !important;
+					border-color: #256943 !important;
+					color: #fff !important;
+					box-shadow: 0 2px 10px rgba(37,105,67,.28);
+					outline: none;
+				}
+
+				.hs-slotpreference-chip .fa {
+					margin-right: 5px;
+				}
+
+				.hs-slotpreference-chip.is-disabled {
+					background: #f1f5f9 !important;
+					border-color: #cbd5e1 !important;
+					color: #94a3b8 !important;
+					cursor: not-allowed;
+					box-shadow: none !important;
+				}
+			</style>
+			<script>
+				if (window.jQuery && !jQuery.fn.SumoSelect) {
+					jQuery.fn.SumoSelect = function () { return this; };
+				}
+			</script>
+
+			@using(Html.BeginForm("Update_OPD_Form", "OPDForm", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updateopdform</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+
+
+
+
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.OPDFormid)
+
+
+
+
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" >
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>
+
+				<div class="col-sm-12 col-xs-12 mt-3 BasicInfo_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 bookingreferencenumber_craftmyapp_container" style="display:none">
+									<div>
+										<div class="form-group form-group--float-above my-2" >
+											<label for="bookingreferencenumber">@Resource.opdform_bookingreferencenumber</label>
+											@Html.TextBoxFor(m => m.bookingreferencenumber, new {@placeholder="Auto Number YYYYMMDD-999" ,@maxlength="128", @readonly="readonly", @class = "form-control form-control-lg " })
+
+										</div>
+									</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 patientname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="patientname">@Resource.opdform_patientname <b class="iconRed">*</b></label>
+										<select name="patientname" id="patientname"  class="form-control select2 select2-list  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientname)
+									<div id="patientname-error" class="help-block" style="display: none" role="alert"></div>
+							</div>
+						</div>
+						<div class="col-sm-3 col-xs-12 p-2 appointmentmode_craftmyapp_container">
+							<div>
+								<div class="form-group form-group--float-above my-3">
+									<label for="appointmentmode">@Resource.opdform_appointmentmode</label>
+									<select name="appointmentmode" id="appointmentmode" class="form-control  "></select>
+								</div>
+								@Html.ValidationMessageFor(model => model.appointmentmode)
+								<div id="appointmentmode-error" class="help-block" style="display: none" role="alert"></div>
+							</div>
+						</div>
+						<div class="col-sm-3 col-xs-12 p-2 task_craftmyapp_container">
+							<div>
+								<div class="form-group form-group--float-above my-3">
+									<label for="task">Booking For</label>
+									<select name="task" id="task" class="form-control  "></select>
+								</div>
+								@Html.ValidationMessageFor(model => model.task)
+								<div id="task-error" class="help-block" style="display: none" role="alert"></div>
+							</div>
+						</div>
+						<div class="col-sm-3 col-xs-12 p-2 preferreddoctor_craftmyapp_container">
+							<div>
+								<div class="form-group form-group--float-above my-3">
+									<label for="preferreddoctor">@Resource.opdform_preferreddoctor</label>
+									<select name="preferreddoctor" id="preferreddoctor" class="form-control select2 select2-list"></select>
+								</div>
+								@Html.ValidationMessageFor(model => model.preferreddoctor)
+								<div id="preferreddoctor-error" class="help-block" style="display: none" role="alert"></div>
+							</div>
+						</div>
+						@Html.HiddenFor(m => m.preferreddate, new { id = "preferreddate" })
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+
+				<script>window._patientEmergencyContactProfileId = '@Model.patientname'; window._bookingEmergencyContactEntity = 'OPDForm'; window._bookingEmergencyContactId = '@Model.OPDFormid';</script>
+				@await Html.PartialAsync("_PatientEmergencyContactEditor")
+
+ <div class="col-sm-12 col-xs-12 mt-3 appointmentpreferences_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Appointment Preferences Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.appointmentpreferences
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-appointmentpreferences pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="appointmentpreferencesContainer" class="appointmentpreferencesContainer">
+							</div>
+
+
+						</div>
+					</div></div><!--Dependent Appointment Preferences Containder Block-->
+
+
+ <div class="col-sm-12 col-xs-12 mt-3 medicalinfo_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Medical Info Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.medicalinfo
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-medicalinfo pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="medicalinfoContainer" class="medicalinfoContainer">
+							</div>
+
+
+						</div>
+					</div></div><!--Dependent Medical Info Containder Block-->
+
+
+ <div class="col-sm-12 col-xs-12 mt-3 medicationinfo_craftmyapp_container" style="display:none"><div class="card card card-blue cma_dependent_band"><!--Dependent Medication Info Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.medicationinfo
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-medicationinfo pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="medicationinfoContainer" class="medicationinfoContainer">
+							</div>
+
+
+						</div>
+					</div></div><!--Dependent Medication Info Containder Block-->
+
+
+ <div class="col-sm-12 col-xs-12 mt-3 medicalrecords_craftmyapp_container" style="display:none"><div class="card card card-blue cma_dependent_band"><!--Dependent Medical Records Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.medicalrecords
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-medicalrecords pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="medicalrecordsContainer" class="medicalrecordsContainer">
+							</div>
+
+
+						</div>
+					</div></div><!--Dependent Medical Records Containder Block-->
+
+					<div class="col-sm-3 col-xs-12 p-2 verifiedstatus_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="verifiedstatus">@Resource.opdform_verifiedstatus</label>
+										<select name="verifiedstatus" id="verifiedstatus" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.verifiedstatus)
+									<div id="verifiedstatus-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+							<!--fieldsEndsHere-->
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updateopdform</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+<!--from_cma_script-->
+			 <script type="text/javascript">
+				if ($.fn && !$.fn.SumoSelect) {
+					$.fn.SumoSelect = function () { return this; };
+				}
+
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("OPDForm","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+<script>
+	var strtask;
+</script>
+@if (Model != null)
+{
+	if (Model.task != null && Model.task.ToString() != "")
+	{
+		<script>
+			strtask="@Model.task"
+		</script>
+	}
+}
+<script>
+	function lookup_OPDForm_task(tenantid) {
+
+	var sendFilterData = {
+		"tenantid":tenantid
+	}
+
+	$.ajax({
+	url: '@Url.Action("lookup_OPDForm_task")',
+	dataType: 'json',
+	data: sendFilterData,
+	success: function(data) {
+
+			if (data.length > 0) {
+				data = data.filter(item => item.taskname !== null);
+				data.sort((a, b) =>
+					String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase())
+				);
+			}
+		   var ddltarget_task="#task"
+			$(ddltarget_task).empty();
+
+			$(ddltarget_task).append("<option value=''>Choose</option>");
+
+
+
+
+			$.each(data, function(index, optionDataInner) {
+
+						if(strtask== optionDataInner.Taskid){
+						$(ddltarget_task).append('<option selected value="' + optionDataInner.Taskid + '">' + optionDataInner.taskname+ '</option>')
+
+					   }
+						else
+						$(ddltarget_task).append('<option  value="' + optionDataInner.Taskid+ '">' + optionDataInner.taskname+ '</option>')
+
+
+			});
+
+
+			if (typeof window.refreshOPDHolidayBlockedDates === 'function') {
+				window.refreshOPDHolidayBlockedDates();
+			}
+
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+
+	}
+</script>
+<script>
+	$(document).ready(function(){
+
+		lookup_OPDForm_task(str_tenantid)
+
+
+
+	})
+
+</script>
+
+<script>
+var strappointmentmode;
+var strverifiedstatus;
+</script>
+@if (Model != null)
+{
+if (Model.appointmentmode != null && Model.appointmentmode.ToString() != "")
+{
+<script>
+strappointmentmode = "@Model.appointmentmode";
+</script>
+}
+if (Model.verifiedstatus != null && Model.verifiedstatus.ToString() != "")
+{
+<script>
+strverifiedstatus = "@Model.verifiedstatus";
+</script>
+}
+}
+
+			<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'OPDForm' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+
+											if(optionDataInner.fieldname=="appointmentmode"){
+												var ddltarget_appointmentmode = "#appointmentmode"
+												$(ddltarget_appointmentmode).empty();
+												$(ddltarget_appointmentmode).append("<option value=''>Choose</option>")
+												var options_appointmentmode = optionDataInner.fielddesc.split(',');
+												options_appointmentmode.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_appointmentmode.forEach(function(option_appointmentmode){
+													if(strappointmentmode== option_appointmentmode){
+													$(ddltarget_appointmentmode).append('<option selected value="' + option_appointmentmode + '">' + option_appointmentmode+ '</option>')
+
+													}
+													else
+													$(ddltarget_appointmentmode).append('<option  value="' + option_appointmentmode + '">' + option_appointmentmode+ '</option>')
+
+												})
+
+											}
+
+
+											if(optionDataInner.fieldname=="verifiedstatus"){
+												var ddltarget_verifiedstatus = "#verifiedstatus"
+												$(ddltarget_verifiedstatus).empty();
+												$(ddltarget_verifiedstatus).append("<option value=''>Choose</option>")
+												var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+												options_verifiedstatus.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_verifiedstatus.forEach(function(option_verifiedstatus){
+													if(strverifiedstatus== option_verifiedstatus){
+													$(ddltarget_verifiedstatus).append('<option selected value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+
+													}
+													else
+													$(ddltarget_verifiedstatus).append('<option  value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+
+												})
+
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+})
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+})
+}
+}
+})
+})
+
+</script>
+			<script>
+				function formatAppointmentPreferenceDate(value) {
+					if (!value) {
+						return '';
+					}
+					var raw = value.toString();
+					if (/^\d{4}-\d{2}-\d{2}/.test(raw)) {
+						var parts = raw.substring(0, 10).split('-');
+						return parts[2] + '/' + parts[1] + '/' + parts[0];
+					}
+					return raw;
+				}
+				var _opdHolidayBlockedDates = {};
+				var _opdHolidayBlockedUrl = '@Url.Action("Get_Holiday_Blocked_Dates", "HolidayCalendar")';
+				function _opdParseDmyDate(v) {
+					var s = (v || '').toString().split(' ')[0];
+					var p = s.split('/');
+					if (p.length !== 3) return null;
+					return p[2] + '-' + ('0' + p[1]).slice(-2) + '-' + ('0' + p[0]).slice(-2);
+				}
+				function _opdFmtIsoDate(d) {
+					return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2);
+				}
+				function _opdHolidayBeforeShowDay(date) {
+					var key = _opdFmtIsoDate(date);
+					return _opdHolidayBlockedDates[key] ? [false, 'xdsoft_disabled', _opdHolidayBlockedDates[key]] : [true, '', ''];
+				}
+				function _opdHolidayMessageForValue(value) {
+					var key = _opdParseDmyDate(value);
+					return key && _opdHolidayBlockedDates[key] ? _opdHolidayBlockedDates[key] : '';
+				}
+				function _opdClearBlockedPreferredDate($input) {
+					var message = _opdHolidayMessageForValue($input.val());
+					if (!message) return false;
+					$input.val('').css('color', '');
+					swal({
+						title: 'Holiday Calendar',
+						text: message,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary'
+					});
+					return true;
+				}
+				function _opdApplyHolidayDateOptions() {
+					$('.appointmentpreferencesContainer .preferreddate').datetimepicker('setOptions', {
+						beforeShowDay: _opdHolidayBeforeShowDay
+					});
+				}
+				window.initOPDPreferredDatePicker = function ($input) {
+					$input.datetimepicker({
+						minDate: moment(),
+						timepicker: false,
+						scrollInput: false,
+						format: "d/m/Y",
+						formatDate: "d/m/Y",
+						beforeShowDay: _opdHolidayBeforeShowDay,
+						onSelectDate: function (dp, $pickerInput) {
+							_opdClearBlockedPreferredDate($pickerInput);
+						}
+					});
+				};
+				window.refreshOPDHolidayBlockedDates = function () {
+					var start = new Date();
+					var end = new Date();
+					end.setFullYear(end.getFullYear() + 1);
+					$.ajax({
+						url: _opdHolidayBlockedUrl,
+						type: 'GET',
+						dataType: 'json',
+						data: {
+							tenantid: $('#tenantid').val() || '',
+							taskid: $('#task').val() || '',
+							datefrom: _opdFmtIsoDate(start),
+							dateto: _opdFmtIsoDate(end)
+						},
+						success: function (rows) {
+							if (typeof rows === 'string') { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }
+							_opdHolidayBlockedDates = {};
+							$.each(rows || [], function (_, row) {
+								var raw = row.holidaydate || row.HolidayDate || '';
+								var key = raw ? raw.toString().split('T')[0].split(' ')[0] : '';
+								if (key) _opdHolidayBlockedDates[key] = row.holidayname || row.HolidayName || 'Holiday';
+							});
+							_opdApplyHolidayDateOptions();
+							$('.appointmentpreferencesContainer .preferreddate').each(function () {
+								_opdClearBlockedPreferredDate($(this));
+							});
+						}
+					});
+				};
+
+				$(document).ready(function () {
+			  window.refreshOPDHolidayBlockedDates();
+			  $(document).on('change select2:select select2:clear select2:unselect', '#task,#tenantid', window.refreshOPDHolidayBlockedDates);
+			  window.renumberAppointmentPreferenceRows = function () {
+				$('.appointmentpreferencesContainer .appointmentpreferences').each(function (idx) {
+					var order = idx + 1;
+					$(this).attr('data-preference-order', order);
+					$(this).find('.appointmentpreference-order-badge').text('Preference ' + order);
+				});
+			  };
+			  function appointmentPreferenceDateMoment(value) {
+				var raw = (value || '').toString().trim();
+				if (!raw) return null;
+				var parsed = moment(raw, ['D/M/YYYY', 'DD/MM/YYYY', 'YYYY-MM-DD'], true);
+				return parsed.isValid() ? parsed : null;
+			  }
+			  function appointmentPreferenceWindowEndMinutes(value) {
+				var pref = (value || '').toString().toLowerCase().trim();
+				if (pref === 'early morning') return 10 * 60;
+				if (pref === 'closer to lunch') return 14 * 60;
+				if (pref === 'closer to day') return 24 * 60;
+				return null;
+			  }
+			  function setOPDSlotPreferenceChipState($chip, selected) {
+				$chip.toggleClass('is-selected', selected);
+				$chip.find('.fa')
+					.toggleClass('fa-check-circle', selected)
+					.toggleClass('fa-circle-o', !selected);
+			  }
+			  function applyOPDSlotPreferenceSelectionRules($row, $clickedChip) {
+				var target = $clickedChip.attr('data-target') || '';
+				var $select = $('#' + target);
+				var $chips = $row.find('.hs-slotpreference-chip');
+				if (!$select.length || !$chips.length) return;
+
+				var clickedValue = $clickedChip.attr('data-value') || '';
+				if ($clickedChip.hasClass('is-selected') && isAnyOPDSlotPreference(clickedValue)) {
+					$chips.not($clickedChip).each(function () { setOPDSlotPreferenceChipState($(this), false); });
+				} else if ($clickedChip.hasClass('is-selected')) {
+					$chips.filter(function () { return isAnyOPDSlotPreference($(this).attr('data-value')); })
+						.each(function () { setOPDSlotPreferenceChipState($(this), false); });
+				}
+
+				var $anySlotChips = $chips.filter(function () { return isAnyOPDSlotPreference($(this).attr('data-value')); });
+				var $specificChips = $chips.filter(function () { return !isAnyOPDSlotPreference($(this).attr('data-value')); });
+				if ($anySlotChips.length && $specificChips.length
+					&& $specificChips.filter('.is-selected').length === $specificChips.length) {
+					$specificChips.each(function () { setOPDSlotPreferenceChipState($(this), false); });
+					$anySlotChips.each(function () { setOPDSlotPreferenceChipState($(this), true); });
+				}
+
+				$chips.each(function () {
+					var $chip = $(this);
+					var value = $chip.attr('data-value') || '';
+					$select.find('option').filter(function () { return ($(this).val() || '') === value; })
+						.prop('selected', $chip.hasClass('is-selected'));
+				});
+				$select.trigger('change');
+			  }
+			  window.refreshOPDSlotPreferenceAvailability = function () {
+				$('.appointmentpreferencesContainer .appointmentpreferences').each(function () {
+					var $row = $(this);
+					var preferredDate = appointmentPreferenceDateMoment($row.find('.preferreddate').val());
+					var isToday = !!(preferredDate && preferredDate.isSame(moment(), 'day'));
+					var nowMinutes = (moment().hours() * 60) + moment().minutes();
+					$row.find('.hs-slotpreference-chip').each(function () {
+						var $chip = $(this);
+						var value = $chip.attr('data-value') || '';
+						var endMinutes = appointmentPreferenceWindowEndMinutes(value);
+						var isDisabled = !!(isToday && endMinutes !== null && nowMinutes >= endMinutes);
+						$chip.toggleClass('is-disabled', isDisabled)
+							.prop('disabled', isDisabled)
+							.attr('aria-disabled', isDisabled ? 'true' : 'false')
+							.attr('title', isDisabled ? 'This preference window is already over for today.' : '');
+						if (isDisabled && $chip.hasClass('is-selected')) {
+							var target = $chip.attr('data-target') || '';
+							var $select = $('#' + target);
+							$chip.removeClass('is-selected');
+							$chip.find('.fa').removeClass('fa-check-circle').addClass('fa-circle-o');
+							$select.find('option').filter(function () {
+								return ($(this).val() || '') === value;
+							}).prop('selected', false);
+							$select.trigger('change');
+						}
+					});
+				});
+			  };
+		  $("body").on("click", ".btn-add-appointmentpreferences", function () {
+
+
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".appointmentpreferences").removeClass('showthelables');
+			   $(".btn-remove-row-appointmentpreferences").removeClass('btn-remove-row');
+				$("#appointmentpreferencesContainer").append(
+				'<div class="row m-t-10 appointmentpreferences dependentContainerBorder" id="appointmentpreferences' + index + '">' +
+
+
+					'<div class="col-sm-1 col-xs-12 p-2 appointmentpreferenceorder_craftmyapp_container">'+
+						'<span class="appointmentpreference-order-badge" style="display:inline-flex;align-items:center;height:34px;padding:0 8px;border-radius:4px;background:#e8f5f0;color:#04745f;font-size:11px;font-weight:700;white-space:nowrap;">Preference</span>'+
+					'</div>'+
+					'<div class="col-sm-4 col-xs-12 p-2 preferreddate_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+
+										'<label for="preferreddate">@Resource.opdform_appointmentpreferences_preferreddate</label>'+
+										'<input  name="preferreddate' + index + '" id="preferreddate' + index + '" autocomplete="off" type="text" class="preferreddate form-control--active form-control form-control-lg " placeholder="dd/mm/yyyy" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="preferreddate' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-6 col-xs-12 p-2 slotpreference_craftmyapp_container">'+
+							'<div>'+
+								'<div class="form-group form-group--float-above my-3" >'+
+									'<label for="slotpreference">@Resource.opdform_appointmentpreferences_slotpreference</label>'+
+									buildselectOPDForm('slotpreference','', index)+
+
+									'<i class="form-group__bar" ></i>'+
+								'</div>'+
+								'<div id="slotpreference' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+							'</div>'+
+						'</div>'+
+
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-appointmentpreferences"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+
+				);
+
+					var cmafirstcontainer = $('.appointmentpreferencesContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('appointmentpreferences', '')).addClass('btn-remove-row');
+
+				if (typeof window.initOPDPreferredDatePicker === 'function') {
+					window.initOPDPreferredDatePicker($('#preferreddate' + index));
+				}
+				window.renumberAppointmentPreferenceRows();
+				window.refreshOPDSlotPreferenceAvailability();
+
+			});
+				$('body').on('click', '.hs-slotpreference-chip', function () {
+					var $chip = $(this);
+					if ($chip.hasClass('is-disabled') || $chip.prop('disabled')) {
+						return;
+					}
+					var value = $chip.attr('data-value') || '';
+					var target = $chip.attr('data-target') || '';
+					var $select = $('#' + target);
+					if (!$select.length || !value) return;
+					var selected = !$chip.hasClass('is-selected');
+					setOPDSlotPreferenceChipState($chip, selected);
+					applyOPDSlotPreferenceSelectionRules($chip.closest('.appointmentpreferences'), $chip);
+				});
+				$('body').on('change blur', '.appointmentpreferencesContainer .preferreddate', function () {
+					_opdClearBlockedPreferredDate($(this));
+					if (typeof window.refreshOPDSlotPreferenceAvailability === 'function') {
+						window.refreshOPDSlotPreferenceAvailability();
+					}
+				});
+				$('body').on('click', '.btn-remove-row-appointmentpreferences', function (e) {
+					var appointmentpreferencesRow = $(this).closest(".appointmentpreferences");
+					appointmentpreferencesRow.remove();
+					window.renumberAppointmentPreferenceRows();
+				});
+				})
+				</script>
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.appointmentpreferences" ? @Html.Raw(Json.Serialize(@Model.appointmentpreferences)) :[]);
+							$.each(resultSet, function(key, obj) {
+
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".appointmentpreferences").removeClass('showthelables');
+			   $(".btn-remove-row-appointmentpreferences").removeClass('btn-remove-row');
+				$("#appointmentpreferencesContainer").append(
+				'<div class="row m-t-10 appointmentpreferences dependentContainerBorder" id="appointmentpreferences' + index + '">' +
+				'<input type="hidden" class="OPDForm_appointmentpreferencesid" value="' + obj.OPDForm_appointmentpreferencesid + '">'+
+
+
+					'<div class="col-sm-1 col-xs-12 p-2 appointmentpreferenceorder_craftmyapp_container">'+
+						'<span class="appointmentpreference-order-badge" style="display:inline-flex;align-items:center;height:34px;padding:0 8px;border-radius:4px;background:#e8f5f0;color:#04745f;font-size:11px;font-weight:700;white-space:nowrap;">Preference</span>'+
+					'</div>'+
+					'<div class="col-sm-4 col-xs-12 p-2 preferreddate_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+
+										'<label for="preferreddate">@Resource.opdform_appointmentpreferences_preferreddate</label>'+
+										'<input value="'+formatAppointmentPreferenceDate(obj.preferreddate)+'" name="preferreddate' + index + '" id="preferreddate' + index + '" autocomplete="off" type="text" class="preferreddate form-control--active form-control form-control-lg " placeholder="dd/mm/yyyy" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="preferreddate' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-6 col-xs-12 p-2 slotpreference_craftmyapp_container">'+
+							'<div>'+
+								'<div class="form-group form-group--float-above my-3" >'+
+									'<label for="slotpreference">@Resource.opdform_appointmentpreferences_slotpreference</label>'+
+									buildselectOPDForm('slotpreference',obj.slotpreference, index)+
+
+									'<i class="form-group__bar" ></i>'+
+								'</div>'+
+								'<div id="slotpreference' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+							'</div>'+
+						'</div>'+
+
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-appointmentpreferences"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+
+				  var cmafirstcontainer = $('.appointmentpreferencesContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('appointmentpreferences', '')).addClass('btn-remove-row');
+
+					if (typeof window.initOPDPreferredDatePicker === 'function') {
+						window.initOPDPreferredDatePicker($('#preferreddate' + index));
+					}
+					if (typeof window.renumberAppointmentPreferenceRows === 'function') {
+						window.renumberAppointmentPreferenceRows();
+					}
+					if (typeof window.refreshOPDSlotPreferenceAvailability === 'function') {
+						window.refreshOPDSlotPreferenceAvailability();
+					}
+
+	});
+
+						})
+					</script>
+				}
+
+			<script>
+
+					function buildselectmedicalconditionname(strmedicalconditionname,index) {
+
+					var ddltarget_medicalconditionname = $('#medicalconditionname'+index);
+					ddltarget_medicalconditionname.empty();
+					ddltarget_medicalconditionname.select2({
+						ajax: {
+							url: '@Url.Action("get_all_MedicalCondition")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									'tenantid':$("#tenantid").val()
+									,'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+
+								if (data.length > 0) {
+									data = data.filter(item => item.conditionname !== null);
+									data.sort((a, b) =>
+										String(a.conditionname).toLowerCase().localeCompare(String(b.conditionname).toLowerCase())
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id = data[i].MedicalConditionid;
+									data[i].name = data[i].conditionname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_medicalconditionname,
+						 templateSelection: formatSelectSelected_medicalconditionname
+
+					});
+
+							  var sendFilterData = {
+									'tenantid':$("#tenantid").val()
+									,'searchterm': strmedicalconditionname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("get_all_MedicalCondition")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].MedicalConditionid == strmedicalconditionname) {
+											var option = new Option(data[i].conditionname, data[i].MedicalConditionid, true, true);
+											ddltarget_medicalconditionname.append(option).trigger('update');
+
+											ddltarget_medicalconditionname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_medicalconditionname(item) {
+
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.conditionname) {
+						var textValue = item.conditionname
+					}
+					return textValue;
+				}
+				function formatSelectOption_medicalconditionname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.conditionname;
+					return textValue;
+
+				 }
+
+
+
+</script>
+
+
+
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+
+
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+})
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+})
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-medicalinfo", function () {
+
+
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".medicalinfo").removeClass('showthelables');
+			   $(".btn-remove-row-medicalinfo").removeClass('btn-remove-row');
+				$("#medicalinfoContainer").prepend(
+				'<div class="row m-t-10 medicalinfo dependentContainerBorder" id="medicalinfo' + index + '">' +
+
+
+					'<div class="col-sm-2 col-xs-12 p-2 medicalconditionname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="medicalconditionname">@Resource.opdform_medicalinfo_medicalconditionname <b class="iconRed">*</b></label>'+
+										'<select name="medicalconditionname' + index + '" id="medicalconditionname' + index + '"  class="medicalconditionname form-control"></select>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicalconditionname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 duration_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+
+								'<label for="duration">@Resource.opdform_medicalinfo_duration <b class="iconRed">*</b></label>'+
+									'<input   name="duration' + index + '" id="duration' + index + '"  type="text" min="0" max="9999999999999999" class="duration form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 unit_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="unit">@Resource.opdform_medicalinfo_unit <b class="iconRed">*</b></label>'+
+										buildselectOPDForm('unit','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="unit' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 severitylevel_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="severitylevel">@Resource.opdform_medicalinfo_severitylevel <b class="iconRed">*</b></label>'+
+										buildselectOPDForm('severitylevel','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="severitylevel' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-medicalinfo"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+
+				);
+
+
+					var cmafirstcontainer = $('#medicalinfoContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('medicalinfo', '')).addClass('btn-remove-row');
+
+
+				if ($("#duration" + index).data('autoNumeric') == undefined)
+$("#duration" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '9999999999999999.00'})
+$("#unit"+index).select2()
+$("#severitylevel"+index).select2()
+
+				buildselectmedicalconditionname("",index)
+
+
+
+				});
+				$('body').on('click', '.btn-remove-row-medicalinfo', function (e) {
+
+
+
+					var medicalinfoRow = $(this).closest(".medicalinfo");
+					var index = medicalinfoRow.attr("id").replace("medicalinfo", "");
+					medicalinfoRow.remove();
+
+
+				});
+				})
+				</script>
+
+
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.medicalinfo" ? @Html.Raw(Json.Serialize(@Model.medicalinfo)) :[]);
+							$.each(resultSet, function(key, obj) {
+
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".medicalinfo").removeClass('showthelables');
+			   $(".btn-remove-row-medicalinfo").removeClass('btn-remove-row');
+				$("#medicalinfoContainer").prepend(
+				'<div class="row m-t-10 medicalinfo dependentContainerBorder" id="medicalinfo' + index + '">' +
+				'<input type="hidden" class="OPDForm_medicalinfoid" value="' + obj.OPDForm_medicalinfoid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 medicalconditionname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="medicalconditionname">@Resource.opdform_medicalinfo_medicalconditionname <b class="iconRed">*</b></label>'+
+										'<select name="medicalconditionname' + index + '" id="medicalconditionname' + index + '"  class="medicalconditionname form-control"></select>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicalconditionname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 duration_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+
+								'<label for="duration">@Resource.opdform_medicalinfo_duration <b class="iconRed">*</b></label>'+
+									'<input  value="'+(obj.duration?obj.duration:'')+'" name="duration' + index + '" id="duration' + index + '"  type="text" min="0" max="9999999999999999" class="duration form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 unit_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="unit">@Resource.opdform_medicalinfo_unit <b class="iconRed">*</b></label>'+
+										buildselectOPDForm('unit',obj.unit, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="unit' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 severitylevel_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="severitylevel">@Resource.opdform_medicalinfo_severitylevel <b class="iconRed">*</b></label>'+
+										buildselectOPDForm('severitylevel',obj.severitylevel, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="severitylevel' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-medicalinfo"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+
+				  var cmafirstcontainer = $('.medicalinfoContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('medicalinfo', '')).addClass('btn-remove-row');
+
+				if ($("#duration" + index).data('autoNumeric') == undefined)
+$("#duration" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '9999999999999999.00'})
+$("#unit"+index).select2()
+$("#severitylevel"+index).select2()
+
+
+
+
+
+				buildselectmedicalconditionname(obj.medicalconditionname,index)
+
+
+	});
+
+						})
+					</script>
+				}
+
+<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-medicationinfo", function () {
+
+
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".medicationinfo").removeClass('showthelables');
+			   $(".btn-remove-row-medicationinfo").removeClass('btn-remove-row');
+				$("#medicationinfoContainer").prepend(
+				'<div class="row m-t-10 medicationinfo dependentContainerBorder" id="medicationinfo' + index + '">' +
+
+
+					'<div class="col-sm-2 col-xs-12 p-2 medicinename_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+
+								'<label for="medicinename">@Resource.opdform_medicationinfo_medicinename <b class="iconRed">*</b></label>'+
+									'<input  name="medicinename' + index + '" id="medicinename' + index + '"  type="text"  maxlength="128" class="medicinename form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 frequencyinaday_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="frequencyinaday">@Resource.opdform_medicationinfo_frequencyinaday <b class="iconRed">*</b></label>'+
+										buildselectOPDForm('frequencyinaday','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="frequencyinaday' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+	'<div class="col-sm-2 col-xs-12 p-2 medicationduration_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="medicationduration">@Resource.opdform_medicationinfo_medicationduration</label>'+
+										buildselectOPDForm('medicationduration','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicationduration' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-medicationinfo"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+
+				);
+
+
+					var cmafirstcontainer = $('#medicationinfoContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('medicationinfo', '')).addClass('btn-remove-row');
+
+
+
+
+
+
+				});
+				$('body').on('click', '.btn-remove-row-medicationinfo', function (e) {
+
+
+
+					var medicationinfoRow = $(this).closest(".medicationinfo");
+					var index = medicationinfoRow.attr("id").replace("medicationinfo", "");
+					medicationinfoRow.remove();
+
+
+				});
+				})
+				</script>
+
+
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.medicationinfo" ? @Html.Raw(Json.Serialize(@Model.medicationinfo)) :[]);
+							$.each(resultSet, function(key, obj) {
+
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".medicationinfo").removeClass('showthelables');
+			   $(".btn-remove-row-medicationinfo").removeClass('btn-remove-row');
+				$("#medicationinfoContainer").prepend(
+				'<div class="row m-t-10 medicationinfo dependentContainerBorder" id="medicationinfo' + index + '">' +
+				'<input type="hidden" class="OPDForm_medicationinfoid" value="' + obj.OPDForm_medicationinfoid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 medicinename_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+
+								'<label for="medicinename">@Resource.opdform_medicationinfo_medicinename <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.medicinename?obj.medicinename:'')+'" name="medicinename' + index + '" id="medicinename' + index + '"  type="text"  maxlength="128" class="medicinename form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 frequencyinaday_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="frequencyinaday">@Resource.opdform_medicationinfo_frequencyinaday <b class="iconRed">*</b></label>'+
+										buildselectOPDForm('frequencyinaday',obj.frequencyinaday, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="frequencyinaday' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+	'<div class="col-sm-2 col-xs-12 p-2 medicationduration_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="medicationduration">@Resource.opdform_medicationinfo_medicationduration</label>'+
+										buildselectOPDForm('medicationduration',obj.medicationduration, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicationduration' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-medicationinfo"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+
+				  var cmafirstcontainer = $('.medicationinfoContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('medicationinfo', '')).addClass('btn-remove-row');
+
+
+
+
+
+
+
+
+	});
+
+						})
+					</script>
+				}
+
+<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-medicalrecords", function () {
+
+
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".medicalrecords").removeClass('showthelables');
+			   $(".btn-remove-row-medicalrecords").removeClass('btn-remove-row');
+				$("#medicalrecordsContainer").prepend(
+				'<div class="row m-t-10 medicalrecords dependentContainerBorder" id="medicalrecords' + index + '">' +
+
+
+					'<div class="col-sm-2 col-xs-12 p-2 medicalrecordname_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+
+								'<label for="medicalrecordname">@Resource.opdform_medicalrecords_medicalrecordname <b class="iconRed">*</b></label>'+
+									'<input  name="medicalrecordname' + index + '" id="medicalrecordname' + index + '"  type="text"  maxlength="128" class="medicalrecordname form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 medicalrecordfile_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="medicalrecordfile">@Resource.opdform_medicalrecords_medicalrecordfile <b class="iconRed">*</b></label>'+
+										'<input   type="hidden" class="medicalrecordfile" name="medicalrecordfile' + index + '" id="medicalrecordfile' + index + '">'+
+'<br><input type="file" multiple class="medicalrecords_medicalrecordfile_cma_uploader"  name="medicalrecords_medicalrecordfile_cma_uploader' + index + '" id="medicalrecords_medicalrecordfile_cma_uploader' + index + '"required>'+
+'<div id="medicalrecordfileDisp' + index + '"  class="medicalrecordfileDisp' + index + '" href=""></div>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicalrecordfile' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-medicalrecords"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+
+				);
+
+
+					var cmafirstcontainer = $('#medicalrecordsContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('medicalrecords', '')).addClass('btn-remove-row');
+
+
+
+
+
+
+				});
+				$('body').on('click', '.btn-remove-row-medicalrecords', function (e) {
+
+
+
+					var medicalrecordsRow = $(this).closest(".medicalrecords");
+					var index = medicalrecordsRow.attr("id").replace("medicalrecords", "");
+					medicalrecordsRow.remove();
+
+
+				});
+				})
+				</script>
+
+
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.medicalrecords" ? @Html.Raw(Json.Serialize(@Model.medicalrecords)) :[]);
+							$.each(resultSet, function(key, obj) {
+
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".medicalrecords").removeClass('showthelables');
+			   $(".btn-remove-row-medicalrecords").removeClass('btn-remove-row');
+				$("#medicalrecordsContainer").prepend(
+				'<div class="row m-t-10 medicalrecords dependentContainerBorder" id="medicalrecords' + index + '">' +
+				'<input type="hidden" class="OPDForm_medicalrecordsid" value="' + obj.OPDForm_medicalrecordsid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 medicalrecordname_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+
+								'<label for="medicalrecordname">@Resource.opdform_medicalrecords_medicalrecordname <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.medicalrecordname?obj.medicalrecordname:'')+'" name="medicalrecordname' + index + '" id="medicalrecordname' + index + '"  type="text"  maxlength="128" class="medicalrecordname form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 medicalrecordfile_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+
+										'<label for="medicalrecordfile">@Resource.opdform_medicalrecords_medicalrecordfile <b class="iconRed">*</b></label>'+
+										'<input  value="'+(obj.medicalrecordfile?obj.medicalrecordfile:'')+'" type="hidden" class="medicalrecordfile" name="medicalrecordfile' + index + '" id="medicalrecordfile' + index + '">'+
+'<br><input type="file" multiple class="medicalrecords_medicalrecordfile_cma_uploader"  name="medicalrecords_medicalrecordfile_cma_uploader' + index + '" id="medicalrecords_medicalrecordfile_cma_uploader' + index + '"' + ((obj && obj.medicalrecordfile) ? '' : 'required') + '>'+
+'<div id="medicalrecordfileDisp' + index + '"  class="medicalrecordfileDisp' + index + '" href=""></div>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicalrecordfile' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-medicalrecords"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+
+				  var cmafirstcontainer = $('.medicalrecordsContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('medicalrecords', '')).addClass('btn-remove-row');
+
+
+				$('.medicalrecordfileDisp' + index ).empty()
+																			if((obj.medicalrecordfile?obj.medicalrecordfile:'') !='')  {
+
+																			var uploaded_medicalrecordfile = (obj.medicalrecordfile?obj.medicalrecordfile:'').split('|');
+																			var iterate=1
+																			for (var i = 0; i < uploaded_medicalrecordfile.length; i++) {
+
+
+																				if (uploaded_medicalrecordfile[i] != "") {
+																						var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_medicalrecordfile[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																						$('.medicalrecordfileDisp' + index ).append('<a  href=' + filepath + ' class="imgmedicalrecordfile auto_clr_medicalrecordfile'+index+'"><i class="fa fa-file"></i></a>')
+
+																						iterate+=1
+																				}
+
+
+																			}
+
+																	}
+
+
+
+
+
+
+	});
+
+						})
+					</script>
+				}
+
+<script>
+var dataOPDForm
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'OPDForm' },
+async:false,
+success: function(data) {
+dataOPDForm=data
+}
+})
+function isAnyOPDSlotPreference(value) {
+	return (value || '').toString().replace(/[\s_-]+/g, '').toLowerCase() === 'anyslot';
+}
+function buildselectOPDForm(columnName,selected, index) {
+if(columnName=='unit')
+{
+var select;
+$.each(dataOPDForm, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='unit')
+{
+select = '<select name="unit' + index + '" id="unit' + index + '"   class="unit form-control--active form-control select2 select2-list  required" style="width:100%">'
+ select = select + '<option value="">Choose</option>';
+
+
+										var options_unit = optionDataInner.fielddesc.split(',');
+										options_unit.sort(function (a, b) {
+													return a.localeCompare(b);
+										});
+										options_unit.forEach(function(option_unit){
+											if(selected== option_unit)
+											select = select + '<option selected value="' + option_unit + '">' + option_unit+ '</option>'
+											else
+											select = select + '<option  value="' + option_unit + '">' + option_unit+ '</option>'
+
+										})
+
+
+select=select + '</select>';
+}
+})
+return select;
+}
+if(columnName=='severitylevel')
+{
+var select;
+$.each(dataOPDForm, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='severitylevel')
+{
+select = '<select name="severitylevel' + index + '" id="severitylevel' + index + '"   class="severitylevel form-control--active form-control select2 select2-list  required" style="width:100%">'
+ select = select + '<option value="">Choose</option>';
+
+
+										var options_severitylevel = optionDataInner.fielddesc.split(',');
+										options_severitylevel.sort(function (a, b) {
+													return a.localeCompare(b);
+										});
+										options_severitylevel.forEach(function(option_severitylevel){
+											if(selected== option_severitylevel)
+											select = select + '<option selected value="' + option_severitylevel + '">' + option_severitylevel+ '</option>'
+											else
+											select = select + '<option  value="' + option_severitylevel + '">' + option_severitylevel+ '</option>'
+
+										})
+
+
+select=select + '</select>';
+}
+})
+return select;
+}
+if(columnName=='frequencyinaday')
+{
+var select;
+$.each(dataOPDForm, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='frequencyinaday')
+{
+select = '<select name="frequencyinaday' + index + '" id="frequencyinaday' + index + '" class="frequencyinaday form-control--active form-control  required">'
+ select = select + '<option value="">Choose</option>';
+
+
+										var options_frequencyinaday = optionDataInner.fielddesc.split(',');
+										options_frequencyinaday.sort(function (a, b) {
+										return a.localeCompare(b);
+										});
+										options_frequencyinaday.forEach(function(option_frequencyinaday){
+											if(selected== option_frequencyinaday)
+											select = select + '<option selected value="' + option_frequencyinaday + '">' + option_frequencyinaday+ '</option>'
+											else
+											select = select + '<option  value="' + option_frequencyinaday + '">' + option_frequencyinaday+ '</option>'
+
+										})
+
+
+select=select + '</select>';
+}
+})
+return select;
+}
+if(columnName=='medicationduration')
+{
+var select = '<select name="medicationduration' + index + '" id="medicationduration' + index + '" class="medicationduration form-control--active form-control">'
+ select = select + '<option value="">Choose</option>';
+$.each(dataOPDForm, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='medicationduration')
+{
+
+
+										var options_medicationduration = optionDataInner.fielddesc.split(',');
+										options_medicationduration.sort(function (a, b) {
+										return a.localeCompare(b);
+										});
+										options_medicationduration.forEach(function(option_medicationduration){
+											if(selected== option_medicationduration)
+											select = select + '<option selected value="' + option_medicationduration + '">' + option_medicationduration+ '</option>'
+											else
+											select = select + '<option  value="' + option_medicationduration + '">' + option_medicationduration+ '</option>'
+
+										})
+
+
+}
+})
+select=select + '</select>';
+return select;
+}
+if(columnName=='slotpreference')
+{
+var isHealthSeekerSlotPreference = "@Context.Session.GetString("NalamVazhauserrole")" === "Health Seeker";
+var select = '<select name="slotpreference' + index + (isHealthSeekerSlotPreference ? '[]' : '') + '" id="slotpreference' + index + '" class="slotpreference form-control' + (isHealthSeekerSlotPreference ? ' hs-slotpreference-hidden' : '') + '" style="width:100%"' + (isHealthSeekerSlotPreference ? ' multiple="multiple"' : '') + '>' + (isHealthSeekerSlotPreference ? '' : '<option value="">Choose</option>')
+var selected_slotpreference = selected ? selected.toString().split(',').map(function (item) { return item.trim(); }) : [];
+var chipList = isHealthSeekerSlotPreference ? '<div class="hs-slotpreference-chiplist" data-select="slotpreference' + index + '">' : '';
+$.each(dataOPDForm, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='slotpreference')
+{
+
+
+										var options_slotpreference = optionDataInner.fielddesc.split(',');
+										options_slotpreference.sort(function (a, b) {
+										return a.localeCompare(b);
+										});
+										var anySlotOption = options_slotpreference.find(isAnyOPDSlotPreference);
+										var specificSlotOptions = options_slotpreference.filter(function (option) { return !isAnyOPDSlotPreference(option); });
+										if (anySlotOption && (selected_slotpreference.some(isAnyOPDSlotPreference)
+											|| (specificSlotOptions.length && specificSlotOptions.every(function (option) { return selected_slotpreference.indexOf(option) >= 0; })))) {
+											selected_slotpreference = [anySlotOption];
+										}
+										options_slotpreference.forEach(function(option_slotpreference){
+											var isSelectedSlotOption = selected_slotpreference.indexOf(option_slotpreference) >= 0;
+											if(isSelectedSlotOption)
+											select = select + '<option selected value="' + option_slotpreference + '">' + option_slotpreference+ '</option>'
+											else
+											select = select + '<option  value="' + option_slotpreference + '">' + option_slotpreference+ '</option>'
+											if (isHealthSeekerSlotPreference) {
+												chipList = chipList + '<button type="button" class="hs-slotpreference-chip' + (isSelectedSlotOption ? ' is-selected' : '') + '" data-target="slotpreference' + index + '" data-value="' + option_slotpreference + '"><i class="fa ' + (isSelectedSlotOption ? 'fa-check-circle' : 'fa-circle-o') + '"></i>' + option_slotpreference + '</button>';
+											}
+										})
+}
+})
+select=select + '</select>';
+if (isHealthSeekerSlotPreference) {
+	select = select + chipList + '</div>';
+}
+return select;
+}
+
+	 }
+</script>
+
+
+			<script>
+
+			  function getmedicalinfo() {
+
+					$("#medicalinfo").val("");
+					var medicalinfoModel = [];
+
+
+
+
+					var el = $('.medicalinfoContainer .medicalinfo');
+
+					el.each(function (cnt) {
+
+							medicalinfoAttributes = {}
+
+							 medicalinfoAttributes['medicalconditionname']=($(this).find('.medicalconditionname').select2("val") ? $(this).find('.medicalconditionname').select2("val").toString() :'')
+medicalinfoAttributes['duration']=$(this).find('.duration').val() ? $(this).find('.duration').val():0
+medicalinfoAttributes['unit']=($(this).find('.unit').select2("val") ? $(this).find('.unit').select2("val").toString() :'')
+medicalinfoAttributes['severitylevel']=($(this).find('.severitylevel').select2("val") ? $(this).find('.severitylevel').select2("val").toString() :'')
+medicalinfoAttributes['OPDForm_medicalinfoid']=($(this).find('.OPDForm_medicalinfoid').val() != undefined ? $(this).find('.OPDForm_medicalinfoid').val().toString() : "00000000-0000-0000-0000-000000000000")
+medicalinfoAttributes['craftmyapp_actionmethodname']='Update_OPD_Form'
+medicalinfoAttributes['record_order']=cnt
+medicalinfoAttributes['cma_client_row_id']=$(this).attr("id").replace("medicalinfo","")
+
+							if (!medicalinfoAttributes['medicalconditionname']
+								&& Number(medicalinfoAttributes['duration']) === 0
+								&& !medicalinfoAttributes['unit']
+								&& !medicalinfoAttributes['severitylevel']) {
+								return;
+							}
+
+							medicalinfoModel.push(medicalinfoAttributes);
+
+
+
+					});
+
+					return medicalinfoModel
+
+
+				}
+  function getmedicationinfo() {
+
+					$("#medicationinfo").val("");
+					var medicationinfoModel = [];
+
+
+
+
+					var el = $('.medicationinfoContainer .medicationinfo');
+
+					el.each(function (cnt) {
+
+							medicationinfoAttributes = {}
+
+							 medicationinfoAttributes['medicinename']=($(this).find('.medicinename').val() ? $(this).find('.medicinename').val().toString() :'')
+medicationinfoAttributes['frequencyinaday']=($(this).find('.frequencyinaday').val() ? $(this).find('.frequencyinaday').val().toString() :'')
+medicationinfoAttributes['medicationduration']=($(this).find('.medicationduration').val() ? $(this).find('.medicationduration').val().toString() :'')
+medicationinfoAttributes['OPDForm_medicationinfoid']=($(this).find('.OPDForm_medicationinfoid').val() != undefined ? $(this).find('.OPDForm_medicationinfoid').val().toString() : "00000000-0000-0000-0000-000000000000")
+medicationinfoAttributes['craftmyapp_actionmethodname']='Update_OPD_Form'
+medicationinfoAttributes['record_order']=cnt
+medicationinfoAttributes['cma_client_row_id']=$(this).attr("id").replace("medicationinfo","")
+
+							if (!medicationinfoAttributes['medicinename'].trim()
+								&& !medicationinfoAttributes['frequencyinaday'].trim()
+								&& !medicationinfoAttributes['medicationduration'].trim()) {
+								return;
+							}
+
+							medicationinfoModel.push(medicationinfoAttributes);
+
+
+
+					});
+
+					return medicationinfoModel
+
+
+				}
+  function getmedicalrecords() {
+
+					$("#medicalrecords").val("");
+					var medicalrecordsModel = [];
+
+
+
+
+					var el = $('.medicalrecordsContainer .medicalrecords');
+
+					el.each(function (cnt) {
+
+							medicalrecordsAttributes = {}
+
+							 medicalrecordsAttributes['medicalrecordname']=($(this).find('.medicalrecordname').val() ? $(this).find('.medicalrecordname').val().toString() :'')
+if (($(this).find('.medicalrecordfile_uploader').val() ? $(this).find('.medicalrecordfile_uploader').val().toString() : '') == '')
+	medicalrecordsAttributes['medicalrecordfile'] = ($(this).find('.medicalrecordfile').val() ? $(this).find('.medicalrecordfile').val().toString() : '')
+else
+	medicalrecordsAttributes['medicalrecordfile'] = ($(this).find('.medicalrecordfile_uploader').val() ? $(this).find('.medicalrecordfile_uploader').val().toString() : '')
+
+
+medicalrecordsAttributes['OPDForm_medicalrecordsid']=($(this).find('.OPDForm_medicalrecordsid').val() != undefined ? $(this).find('.OPDForm_medicalrecordsid').val().toString() : "00000000-0000-0000-0000-000000000000")
+medicalrecordsAttributes['craftmyapp_actionmethodname']='Update_OPD_Form'
+medicalrecordsAttributes['record_order']=cnt
+medicalrecordsAttributes['cma_client_row_id']=$(this).attr("id").replace("medicalrecords","")
+
+							if (!medicalrecordsAttributes['medicalrecordname'].trim()
+								&& !medicalrecordsAttributes['medicalrecordfile'].trim()) {
+								return;
+							}
+
+							medicalrecordsModel.push(medicalrecordsAttributes);
+
+
+
+					});
+
+					return medicalrecordsModel
+
+
+				}
+  function getappointmentpreferences() {
+
+					$("#appointmentpreferences").val("");
+					var appointmentpreferencesModel = [];
+
+
+
+
+					var el = $('.appointmentpreferencesContainer .appointmentpreferences');
+
+					el.each(function (cnt) {
+
+							appointmentpreferencesAttributes = {}
+
+							 appointmentpreferencesAttributes['preferreddate']=$(this).find('.preferreddate').val()?getSqlDate($(this).find('.preferreddate').val()):''
+appointmentpreferencesAttributes['slotpreference']=($(this).find('.slotpreference').val() ? $(this).find('.slotpreference').val().toString() :'')
+appointmentpreferencesAttributes['OPDForm_appointmentpreferencesid']=($(this).find('.OPDForm_appointmentpreferencesid').val() != undefined ? $(this).find('.OPDForm_appointmentpreferencesid').val().toString() : "00000000-0000-0000-0000-000000000000")
+appointmentpreferencesAttributes['craftmyapp_actionmethodname']='Update_OPD_Form'
+appointmentpreferencesAttributes['record_order']=cnt
+appointmentpreferencesAttributes['cma_client_row_id']=$(this).attr("id").replace("appointmentpreferences","")
+
+							if (!appointmentpreferencesAttributes['preferreddate'].trim()
+								&& !appointmentpreferencesAttributes['slotpreference'].trim()) {
+								return;
+							}
+
+							appointmentpreferencesModel.push(appointmentpreferencesAttributes);
+
+
+
+					});
+
+					return appointmentpreferencesModel
+
+
+				}
+
+
+			</script>
+
+
+
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_OPD_Form")';
+								$('.error-file').hide()
+								</script>
+							}else{
+
+									<script>
+												   posturl = '@Url.Action("Update_OPD_Form")';
+
+														  </script>
+
+
+														ViewData["Title"] = @Resource.updateopdform;
+														 <script>
+
+													 $("#btnSubmit").html("@Resource.updateopdform")
+														  </script>
+
+
+							}
+
+<script>
+$(document).ready(function () {
+
+
+
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+
+var validator = $("#formId").validate({ /* settings */ });
+
+$("#btnSubmit").click(function(){
+
+if (typeof window.validatePatientEmergencyContacts === 'function' && !window.validatePatientEmergencyContacts()) {
+    swal({ title: 'Validation !', text: 'Please enter a valid emergency contact mobile number.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+    return;
+}
+
+ var medicalinfoModel=getmedicalinfo()
+var medicationinfoModel=getmedicationinfo()
+var medicalrecordsModel=getmedicalrecords()
+var appointmentpreferencesModel=getappointmentpreferences()
+
+
+
+
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ for (var i = 0; i < medicalinfoModel.length; i++) {
+formdata.append("medicalinfo[" + i + "].medicalconditionname", medicalinfoModel[i].medicalconditionname)
+formdata.append("medicalinfo[" + i + "].record_order", medicalinfoModel[i].record_order)
+formdata.append("medicalinfo[" + i + "].cma_client_row_id", medicalinfoModel[i].cma_client_row_id)
+formdata.append("medicalinfo[" + i + "].duration", medicalinfoModel[i].duration)
+formdata.append("medicalinfo[" + i + "].unit", medicalinfoModel[i].unit)
+formdata.append("medicalinfo[" + i + "].severitylevel", medicalinfoModel[i].severitylevel)
+formdata.append("medicalinfo[" + i + "].OPDForm_medicalinfoid", medicalinfoModel[i].OPDForm_medicalinfoid)
+formdata.append("medicalinfo[" + i + "].OPDFormid", $("#OPDFormid").val())
+
+formdata.append("medicalinfo[" + i + "].craftmyapp_actionmethodname", 'Update_OPD_Form')
+}
+for (var i = 0; i < medicationinfoModel.length; i++) {
+formdata.append("medicationinfo[" + i + "].medicinename", medicationinfoModel[i].medicinename)
+formdata.append("medicationinfo[" + i + "].record_order", medicationinfoModel[i].record_order)
+formdata.append("medicationinfo[" + i + "].cma_client_row_id", medicationinfoModel[i].cma_client_row_id)
+formdata.append("medicationinfo[" + i + "].frequencyinaday", medicationinfoModel[i].frequencyinaday)
+formdata.append("medicationinfo[" + i + "].medicationduration", medicationinfoModel[i].medicationduration)
+formdata.append("medicationinfo[" + i + "].OPDForm_medicationinfoid", medicationinfoModel[i].OPDForm_medicationinfoid)
+formdata.append("medicationinfo[" + i + "].OPDFormid", $("#OPDFormid").val())
+
+formdata.append("medicationinfo[" + i + "].craftmyapp_actionmethodname", 'Update_OPD_Form')
+}
+for (var i = 0; i < medicalrecordsModel.length; i++) {
+formdata.append("medicalrecords[" + i + "].medicalrecordname", medicalrecordsModel[i].medicalrecordname)
+formdata.append("medicalrecords[" + i + "].record_order", medicalrecordsModel[i].record_order)
+formdata.append("medicalrecords[" + i + "].cma_client_row_id", medicalrecordsModel[i].cma_client_row_id)
+formdata.append("medicalrecords[" + i + "].medicalrecordfile", medicalrecordsModel[i].medicalrecordfile)
+formdata.append("medicalrecords[" + i + "].OPDForm_medicalrecordsid", medicalrecordsModel[i].OPDForm_medicalrecordsid)
+formdata.append("medicalrecords[" + i + "].OPDFormid", $("#OPDFormid").val())
+
+formdata.append("medicalrecords[" + i + "].craftmyapp_actionmethodname", 'Update_OPD_Form')
+}
+for (var i = 0; i < appointmentpreferencesModel.length; i++) {
+formdata.append("appointmentpreferences[" + i + "].preferreddate", appointmentpreferencesModel[i].preferreddate)
+formdata.append("appointmentpreferences[" + i + "].record_order", appointmentpreferencesModel[i].record_order)
+formdata.append("appointmentpreferences[" + i + "].cma_client_row_id", appointmentpreferencesModel[i].cma_client_row_id)
+formdata.append("appointmentpreferences[" + i + "].slotpreference", appointmentpreferencesModel[i].slotpreference)
+formdata.append("appointmentpreferences[" + i + "].OPDForm_appointmentpreferencesid", appointmentpreferencesModel[i].OPDForm_appointmentpreferencesid)
+formdata.append("appointmentpreferences[" + i + "].OPDFormid", $("#OPDFormid").val())
+
+formdata.append("appointmentpreferences[" + i + "].craftmyapp_actionmethodname", 'Update_OPD_Form')
+}
+
+
+
+
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+
+
+
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("OPDForm","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "OPDForm")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+
+	}
+
+ }
+
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	})
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"];
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"];
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			<script>
+			$(document).ready(function () {
+
+				$("#tenantid").change(function(){
+						$("#medicalinfoContainer").empty()
+$("#medicationinfoContainer").empty()
+$("#medicalrecordsContainer").empty()
+
+
+				})
+
+
+			});
+			</script>
+
+
+
+
+
+
+
+
+
+
+			 <!--to_cma_script-->
+			<script>
+				$(".verifiedstatus_craftmyapp_container").hide()
+				</script>
+					<script>
+					var strpatientname;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientname != null && Model.patientname.ToString() != "")
+							{
+							<script>
+								 strpatientname="@Model.patientname"
+							</script>
+							}
+						}
+					<script>
+
+
+					function lookup_OPDForm_patientname(tenantid) {
+
+					var ddltarget_patientname = $('#patientname');
+					ddltarget_patientname.empty();;
+					ddltarget_patientname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_OPDForm_patientname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase())
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientProfileid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_OPDForm_patientname,
+						 templateSelection: formatSelectSelected_lookup_OPDForm_patientname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_OPDForm_patientname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientProfileid == strpatientname) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname,data[i].PatientProfileid, true, true);
+											ddltarget_patientname.append(option).trigger('update');
+
+											ddltarget_patientname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_OPDForm_patientname(item) {
+
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname) {
+						var textValue = item.firstname+ ' ' + item.lastname
+					}
+
+					return textValue;
+				}
+				function formatSelectOption_lookup_OPDForm_patientname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname;
+					return textValue;
+
+				 }
+
+
+
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_OPDForm_patientname(str_tenantid)
+								}, 3000)
+
+
+
+
+						})
+
+						</script>
+
+					<script>
+					var strpreferreddoctor;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.preferreddoctor != null && Model.preferreddoctor.ToString() != "")
+							{
+							<script>
+								 strpreferreddoctor="@Model.preferreddoctor"
+							</script>
+							}
+						}
+					<script>
+
+
+					function lookup_OPDForm_preferreddoctor(tenantid) {
+
+					var ddltarget_preferreddoctor = $('#preferreddoctor');
+					ddltarget_preferreddoctor.empty();;
+					ddltarget_preferreddoctor.select2({
+						ajax: {
+							url: '@Url.Action("lookup_OPDForm_preferreddoctor")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase())
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].Peopleid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_OPDForm_preferreddoctor,
+						 templateSelection: formatSelectSelected_lookup_OPDForm_preferreddoctor
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpreferreddoctor || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_OPDForm_preferreddoctor")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].Peopleid == strpreferreddoctor) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname,data[i].Peopleid, true, true);
+											ddltarget_preferreddoctor.append(option).trigger('update');
+
+											ddltarget_preferreddoctor.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_OPDForm_preferreddoctor(item) {
+
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname) {
+						var textValue = item.firstname+ ' ' + item.lastname
+					}
+
+					return textValue;
+				}
+				function formatSelectOption_lookup_OPDForm_preferreddoctor(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname;
+					return textValue;
+
+				 }
+
+
+
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_OPDForm_preferreddoctor(str_tenantid)
+								}, 3000)
+
+
+
+
+						})
+
+						</script>
+
+<script>
+					$(document).ready(function () {
+
+						$("#tenantid").change(function(){
+								 lookup_OPDForm_patientname($("#tenantid").val())
+									 lookup_OPDForm_task($("#tenantid").val())
+	lookup_OPDForm_preferreddoctor($("#tenantid").val())
+
+						})
+
+
+					});
+					</script>

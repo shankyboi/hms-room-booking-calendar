@@ -1,0 +1,1135 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@model NalamVazha.Models.DailyTaskModel
+@{
+    ViewData["Title"] = @Resource.dailytasklist;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="ft-wrap">
+
+    <!-- ── Main Area ── -->
+    <div class="ft-main">
+        <div class="ft-header">
+            <div>
+                <h1 id="ftPageTitle" data-default="@Resource.dailytasklist">@Resource.dailytasklist</h1>
+                <span id="ftCatBreadcrumb" class="ft-breadcrumb-hidden"></span>
+            </div>
+            <div class="ft-tools">
+                <input type="date" id="ftTaskDate">
+                <input id="ftSearch" class="ft-search" placeholder="Search patient or reference…">
+            </div>
+        </div>
+        <div class="ft-content">
+            <div class="ft-panel">
+                <!-- Finance summary strip -->
+                <div class="ft-finance" id="ftFinance">
+                    <button class="ft-fin-tab active" id="ftFinAmtDue">Amount Due ₹0</button>
+                    <button class="ft-fin-tab" id="ftFinCollected">Collected ₹0</button>
+                    <button class="ft-fin-tab" id="ftFinBalance">Balance ₹0</button>
+                    <button class="ft-fin-tab" id="ftFinRefunds">Refunds ₹0</button>
+                    <button class="ft-fin-tab" id="ftFinNet">Net Collection ₹0</button>
+                </div>
+                <!-- Status filter tabs -->
+                <div class="ft-tabs" id="ftStatusTabs">
+                    <button class="ft-tab active" data-status="">All <span id="ftSC_all">0</span></button>
+                    <button class="ft-tab" data-status="Pending">Pending <span id="ftSC_pending">0</span></button>
+                    <button class="ft-tab" data-status="In Progress">In Progress <span id="ftSC_progress">0</span></button>
+                    <button class="ft-tab" data-status="Waiting">Waiting <span id="ftSC_waiting">0</span></button>
+                    <button class="ft-tab" data-status="Not Completed">Not Completed <span id="ftSC_overdue">0</span></button>
+                    <button class="ft-tab" data-status="Closed">Closed <span id="ftSC_closed">0</span></button>
+                    <button class="ft-tab" data-status="Completed">Completed <span id="ftSC_completed">0</span></button>
+                </div>
+                <!-- Task list table -->
+                <div class="ft-tablewrap">
+                    <table class="ft-table">
+                        <thead>
+                            <tr>
+                                <th>TIME</th>
+                                <th>PATIENT / REFERENCE</th>
+                                <th>ACTIVITY</th>
+                                <th>DETAILS</th>
+                                <th>PRIORITY</th>
+                                <th>AMOUNT</th>
+                                <th>STATUS</th>
+                                <th>NEXT ACTION</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ftTaskRows">
+                            <tr><td colspan="8" class="ft-row-msg pad-36"><i class="fa fa-spinner fa-spin"></i> Loading tasks...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="ft-foot" id="ftFoot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Right Detail Panel (always open) ── -->
+    <div class="ft-detail" id="ftDetailPanel">
+        <div class="ft-detail-loading">
+            <i class="fa fa-spinner fa-spin ft-spin-lg"></i>
+        </div>
+    </div>
+
+</div>
+
+<div class="ft-toast" id="ftToast"></div>
+
+<script src="~/js/dtpager.js"></script>
+<script>
+var ftTenantId  = "@Context.Session.GetString("NalamVazhachoosedtenantid")";
+var ftLoginUser = "@Context.Session.GetString("NalamVazhaloginUserID")";
+var ftUsername  = "@Context.Session.GetString("NalamVazhausername")";
+
+var ftAllTasks       = [];
+var ftSelectedTaskId = null;
+var ftActiveStatus   = '';
+var ftSearchTerm     = '';
+var ftAssignableUsers = [];
+
+/* ── Read active category from URL query params ── */
+var _urlParams      = new URLSearchParams(window.location.search);
+var ftActiveCat     = _urlParams.get('tasktype') || '';
+var ftActiveCatName = _urlParams.get('catname')  ? decodeURIComponent(_urlParams.get('catname')) : 'All Tasks';
+var ftListPageUrl   = '@Url.Action("Daily_Task__List", "DailyTask")';
+
+var ftListUrl      = '@Url.Action("get_Daily_Task__List",   "DailyTask")';
+var ftAddDailyTaskUrl = '@Url.Action("Add_Daily_Task",      "DailyTask")';
+var ftTypesUrl     = '@Url.Action("lookup_DailyTask_tasktype", "DailyTask")';
+var ftActionLogUrl = '@Url.Action("get_Finance_Task__List", "TaskActionLog")';
+var ftAddLogUrl    = '@Url.Action("Add_Finance_Task",        "TaskActionLog")';
+var ftCloseTaskUrl = '@Url.Action("Close_Daily_Task",        "DailyTask")';
+var ftUsersUrl     = '@Url.Action("get_all_users",           "DailyTask")';
+var ftSendEscalationUrl = '@Url.Action("Send_Task_Escalation", "DailyTask")';
+var ftLogoutUrl    = '@Url.Action("Logout","users")';
+var ftAuthFailUrl  = '@Url.Action("AuthorizationFailed","users")';
+
+/* Frontdesk workflow entry points.  Keep these pointed at the same MVC actions
+   used by FrontDesk/Dashboard; Daily Task is only an alternate launcher. */
+var ftFrontDeskUrl       = '@Url.Action("Dashboard", "FrontDesk")';
+var ftConfirmArrivalUrl  = '@Url.Action("Confirm_Arrival", "IPDApplicationForm")';
+var ftAllotRoomUrl       = '@Url.Action("Allot_Room", "IPDApplicationForm")';
+var ftAddAssessmentUrl   = '@Url.Action("Add_Assessment", "Assessment")';
+var ftCancelIpdUrl       = '@Url.Action("Cancel_IPD", "IPDApplicationForm")';
+var ftUnifiedPaymentUrl  = '@Url.Action("UnifiedPayment", "BillingPayment")';
+var ftDepositUrl         = '@Url.Action("Manual_Deposit_Receipt", "IPDApplicationForm")';
+var ftMarkDischargedUrl  = '@Url.Action("Mark_IPD_Discharged", "IPDApplicationForm")';
+var ftMarkAdmittedUrl    = '@Url.Action("Mark_IPD_Admitted", "IPDApplicationForm")';
+var ftAssessmentByIpdUrl = '@Url.Action("get_AssessmentId_by_IPDForm", "Assessment")';
+var ftIpdPatientUrl      = '@Url.Action("Get_IPD_PatientDetails", "IPDApplicationForm")';
+var ftPatientDetailUrl   = '@Url.Action("getById_allinfo_PatientProfile", "PatientProfile")';
+var ftAppointmentListUrl = '@Url.Action("get_Clinical_Appointment_List", "ClinicalAppointment")';
+var ftPatientVisitListUrl = '@Url.Action("get_Patient_Visit_List", "PatientVisit")';
+var ftAssessmentsForIpdUrl = '@Url.Action("get_Assessments_for_IPD_Data", "Assessment")';
+var ftDoctorListUrl       = '@Url.Action("lookup_Assessment_doctorname", "Assessment")';
+var ftInternDoctorListUrl = '@Url.Action("lookup_DoctorInternMap_interndoctor", "DoctorInternMap")';
+var ftDoctorScheduleUrl   = '@Url.Action("Get_Clinical_Slot_Doctor_Schedule", "ClinicalAppointment")';
+var ftRoomOccupancyUrl   = '@Url.Action("Room_Occupancy_Status_List", "RoomOccupancyStatus")';
+
+/* ── Default the task list to today's date. ── */
+(function () {
+    var d = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
+    var todayStr = d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+    var dateInput = document.getElementById('ftTaskDate');
+    dateInput.value = todayStr;
+    dateInput.max = todayStr;
+    dateInput.title = 'Choose a date to filter tasks';
+})();
+
+/* ── Toast ── */
+function ftToast(msg) {
+    var t = document.getElementById('ftToast');
+    t.textContent = msg; t.style.display = 'block';
+    clearTimeout(ftToast._t);
+    ftToast._t = setTimeout(function () { t.style.display = 'none'; }, 2200);
+}
+
+/* ── Helpers ── */
+function ftCurrency(val) { return '₹' + (parseFloat(val) || 0).toLocaleString('en-IN'); }
+/* Task Time is the insertion timestamp: when the task first entered Daily Task. */
+function ftTaskCreatedTime(task) {
+    var raw = task && (task.createddate || task.dateandtime);
+    if (!raw) return '-';
+    var dt = new Date(raw);
+    /* Support the legacy dd/MM/yyyy HH:mm value returned for dateandtime. */
+    if (isNaN(dt.getTime())) {
+        var m = String(raw).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
+        if (m) dt = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]), Number(m[4] || 0), Number(m[5] || 0));
+    }
+    if (isNaN(dt.getTime())) return '-';
+    return dt.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', hour12:true });
+}
+function ftPriorityBadge(priority) {
+    var value = (priority || '').trim();
+    if (!value) return '<span class="ft-priority other">-</span>';
+    var key = value.toLowerCase();
+    var cls = ['high','urgent','critical','medium','normal','low'].indexOf(key) >= 0 ? key : 'other';
+    return '<span class="ft-priority ' + cls + '">' + value + '</span>';
+}
+
+function ftStatusColor(s) {
+    if (!s) return 'blue'; var l = s.toLowerCase();
+    if (l.indexOf('overdue') >= 0 || l.indexOf('not completed') >= 0) return 'red';
+    if (l.indexOf('block') >= 0 || l.indexOf('waiting') >= 0)         return 'amber';
+    if (l.indexOf('pending') >= 0)                                     return 'amber';
+    if (l.indexOf('closed') >= 0)                                      return 'green';
+    if (l.indexOf('complete') >= 0 || l.indexOf('done') >= 0 || l.indexOf('ready') >= 0) return 'green';
+    if (l.indexOf('progress') >= 0 || l.indexOf('confirm') >= 0)       return 'blue';
+    return 'blue';
+}
+
+function ftTemplateNextActions(task) {
+    var actions = task.nextactiondetails || [];
+    if (typeof actions === 'string') { try { actions = JSON.parse(actions); } catch (e) { actions = []; } }
+    return Array.isArray(actions) ? actions.filter(function (a) { return a && a.actionname; }) : [];
+}
+
+function ftTemplateEscalations(task) {
+    var details = task.escalationdetails || [];
+    if (typeof details === 'string') { try { details = JSON.parse(details); } catch (e) { details = []; } }
+    return Array.isArray(details) ? details.filter(function (x) { return x && String(x.emailid || '').trim(); }) : [];
+}
+
+function ftActionName(value) {
+    return (value || '').toString().trim().toLowerCase().replace(/[-\u2010-\u2015_]+/g, ' ').replace(/\s+/g, ' ');
+}
+
+function ftRequireIpd(task, actionName) {
+    var id = task && task.ipdreferencenumber;
+    if (!id) ftToast(actionName + ' requires an IPD application.');
+    return id || '';
+}
+
+function ftGo(url, query) {
+    query = query || {};
+    query.returnurl = window.location.pathname + window.location.search;
+    window.location.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + $.param(query);
+}
+function ftTaskScheduledTime(task) {
+    var copy = Object.assign({}, task || {}, { createddate: (task && task.dateandtime) || (task && task.createddate) });
+    return ftTaskCreatedTime(copy);
+}
+
+function ftStatusKey(value) {
+    var key = String(value || '').trim().toLowerCase();
+    return key === 'complete' || key === 'completed' || key === 'done' ? 'Completed' :
+        key === 'closed' ? 'Closed' : String(value || 'Pending').trim();
+}
+
+function ftDateKey(value) {
+    if (!value) return '';
+    var dt = new Date(value);
+    if (isNaN(dt.getTime())) {
+        var m = String(value).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (m) return m[3] + '-' + String(m[2]).padStart(2, '0') + '-' + String(m[1]).padStart(2, '0');
+        return '';
+    }
+    return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+}
+
+/* Closed tasks belong to the day they were closed. Other statuses belong to
+   the task's scheduled/created day. This keeps every status tab scoped to the
+   date selected at the top of the list. */
+function ftTaskStatusDateKey(task) {
+    var status = ftStatusKey(task && task.status);
+    var value = (status === 'Closed' || status === 'Completed')
+        ? (task.closeddate || task.modifieddate)
+        : (task.dateandtime || task.createddate);
+    return ftDateKey(value);
+}
+
+function ftToServerDateTime(value) {
+    var match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+    return match ? match[3] + '/' + match[2] + '/' + match[1] + ' ' + match[4] + ':' + match[5] : '';
+}
+
+function ftPopup(title, body) {
+    return swal({ title: title, html: body, type: 'info', confirmButtonText: 'Close',
+        buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false });
+}
+
+function ftEsc(value) { return $('<div/>').text(value == null || value === '' ? '-' : value).html(); }
+function ftPick(obj, keys, fallback) {
+    obj = obj || {};
+    for (var i = 0; i < keys.length; i++) if (obj[keys[i]] !== undefined && obj[keys[i]] !== null && obj[keys[i]] !== '') return obj[keys[i]];
+    return fallback;
+}
+function ftRows(raw) {
+    if (typeof raw === 'string') { try { raw = JSON.parse(raw); } catch (e) { return []; } }
+    if (Array.isArray(raw)) return raw;
+    return (raw && (raw.detail || raw.Detail || raw.data)) || [];
+}
+function ftInfoRows(rows) {
+    return '<div class="ft-info-rows">' + rows.map(function (r) {
+        return '<div class="ft-info-row">' +
+            '<span class="ft-info-label">' + ftEsc(r[0]) + '</span><strong class="ft-info-value">' + ftEsc(r[1]) + '</strong></div>';
+    }).join('') + '</div>';
+}
+
+function ftMarkAsSubmit(task) {
+    var id = ftRequireIpd(task, 'Mark as Submit'); if (!id) return;
+    var pending = Number(task.amount) || 0;
+    swal({ title: 'Mark as Discharged?', text: pending > 0
+        ? 'Warning: This patient has a pending balance of ₹' + pending.toLocaleString('en-IN') + '. Proceeding will discharge the patient without clearing the balance. Continue?'
+        : 'This will update the booking status to Discharged and release the allocated room(s).',
+        type: 'warning', showCancelButton: true, confirmButtonText: 'Yes, discharge', cancelButtonText: 'Cancel',
+        buttonsStyling: false, confirmButtonClass: pending > 0 ? 'btn btn-danger' : 'btn btn-primary', cancelButtonClass: 'btn btn-secondary'
+    }).then(function (result) {
+        if (result && (result.dismiss || result.value === false)) return;
+        $('.page-loader').show();
+        $.ajax({ url: ftMarkDischargedUrl, type: 'POST', contentType: 'application/json',
+            data: JSON.stringify({ IPDApplicationFormid: id, bookingstatus: 'Discharged', modifieduser: '' }),
+            complete: function () { $('.page-loader').hide(); },
+            success: function (res) {
+                if (res && res.success) swal({ title:'Discharged', text:'Patient has been marked as Discharged and room(s) released.', type:'success' }).then(ftLoadList);
+                else swal({ title:'Failed', text:(res && res.message) || 'Update failed', type:'error' });
+            }, error: function (xhr) { swal({ title:'Error', text:xhr.responseText || 'Request failed', type:'error' }); }
+        });
+    });
+}
+
+function ftMarkAsAdmit(task) {
+    var id = ftRequireIpd(task, 'Mark As Admit'); if (!id) return;
+    swal({ title:'Mark as Admitted?', text:'This will update the booking status to Admitted.', type:'warning',
+        showCancelButton:true, confirmButtonText:'Yes, mark admitted', cancelButtonText:'Cancel',
+        buttonsStyling:false, confirmButtonClass:'btn btn-primary', cancelButtonClass:'btn btn-secondary'
+    }).then(function (result) {
+        if (result && (result.dismiss || result.value === false)) return;
+        $('.page-loader').show();
+        $.ajax({ url:ftMarkAdmittedUrl, type:'POST', contentType:'application/json',
+            data:JSON.stringify({ IPDApplicationFormid:id, bookingstatus:'Admitted', modifieduser:'' }),
+            complete:function () { $('.page-loader').hide(); },
+            success:function (res) {
+                if (res && res.success) swal({ title:'Done', text:'Booking status updated to Admitted.', type:'success' }).then(ftLoadList);
+                else swal({ title:'Failed', text:(res && res.message) || 'Update failed', type:'error' });
+            }, error:function (xhr) { swal({ title:'Error', text:xhr.responseText || 'Request failed', type:'error' }); }
+        });
+    });
+}
+
+function ftCompleteAssessment(task) {
+    var id = ftRequireIpd(task, 'Complete Assessment'); if (!id) return;
+    $('.page-loader').show();
+    $.get(ftAssessmentByIpdUrl, { ipdform:id }).done(function (data) {
+        var query = { ipdform:id, patientname:task.patientname || '', completedraft:true };
+        if (data && data.assessmentid) query.Assessmentid = data.assessmentid;
+        ftGo(ftAddAssessmentUrl, query);
+    }).fail(function () {
+        ftGo(ftAddAssessmentUrl, { ipdform:id, patientname:task.patientname || '', completedraft:true });
+    }).always(function () { $('.page-loader').hide(); });
+}
+
+function ftLoadDoctorDetails(task, complete) {
+    var id = task && task.ipdreferencenumber;
+    if (!id) { complete(null); return; }
+    $.get(ftAppointmentListUrl, { tenantid: task.tenantid || ftTenantId, tasktype:'', patient:'', practitioner:'',
+        appointmentdate_automatonfrom:'', appointmentdate_automatonto:'', status:'', origin:'IPD', pagesize:100, pagenumber:0,
+        searchterm:id, sortFieldsJson:'' }).done(function (raw) {
+        var allRows = ftRows(raw);
+        var rows = allRows.filter(function (x) {
+            return String(ftPick(x, ['bookingid','BookingId','ipdapplicationformid','IPDApplicationFormid','ipdform'], '')).toLowerCase() === String(id).toLowerCase();
+        });
+        if (!rows.length && allRows.length === 1) rows = allRows;
+        var a = rows.length ? rows[rows.length - 1] : null;
+        var doctor = a && ftPick(a, ['actualpractitioner_master','practitioner_master','doctorname_master','practitionername','doctorname'], '');
+        if (doctor) {
+            complete({ name:doctor, time:[ftPick(a, ['appointmentdate','appointmentDate'], ''), ftPick(a, ['durationfrom','durationFrom'], '')].filter(Boolean).join(' '), status:ftPick(a, ['status','appointmentstatus'], '-') });
+            return;
+        }
+        $.get(ftPatientVisitListUrl, { tenantid:task.tenantid || ftTenantId, pagesize:100, pagenumber:0, searchterm:id, sortFieldsJson:'' }).done(function (visitRaw) {
+            var visits = ftRows(visitRaw).filter(function (v) { return String(ftPick(v, ['ipdnumber'], '')).toLowerCase() === String(id).toLowerCase(); });
+            var visit = visits.length ? visits[visits.length - 1] : null;
+            var visitDoctor = visit && ftPick(visit, ['consultingdoctor_master','doctorname_master'], '');
+            if (visitDoctor) { complete({ name:visitDoctor, time:ftPick(visit, ['visitdatetime'], '-'), status:ftPick(visit, ['visitstatus'], '-') }); return; }
+            $.get(ftAssessmentsForIpdUrl, { IPDApplicationFormid:id }).done(function (assessmentRaw) {
+                var assessments = ftRows(assessmentRaw), assessment = assessments.length ? assessments[assessments.length - 1] : null;
+                var assessmentDoctor = assessment && ftPick(assessment, ['doctorname_master','doctor_master','doctorfullname'], '');
+                complete(assessmentDoctor ? { name:assessmentDoctor, time:ftPick(assessment, ['modifieddate','createddate'], '-'), status:'Assessment assigned' } : null);
+            }).fail(function () { complete(null); });
+        }).fail(function () { complete(null); });
+    }).fail(function () { complete(null); });
+}
+
+function ftTodayIso() {
+    var d = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+}
+
+function ftLoadDoctorRoster(task, complete) {
+    var tenantId = (task && task.tenantid) || ftTenantId;
+    function safeGet(url, data) {
+        var request = $.Deferred();
+        $.get(url, data).done(function (raw) { request.resolve(raw); }).fail(function () { request.resolve([]); });
+        return request.promise();
+    }
+    $.when(
+        safeGet(ftDoctorListUrl, { tenantid:tenantId, searchterm:'', pagesize:1000, pagenumber:0 }),
+        safeGet(ftInternDoctorListUrl, { tenantid:tenantId, searchterm:'', pagesize:1000, pagenumber:0 }),
+        safeGet(ftDoctorScheduleUrl, { selecteddate:ftTodayIso() })
+    ).done(function (doctorRaw, internRaw, scheduleRaw) {
+        var doctors = ftRows(doctorRaw);
+        var interns = ftRows(internRaw);
+        var schedules = ftRows(scheduleRaw);
+        var scheduleByDoctor = {};
+        schedules.forEach(function (row) {
+            var doctorId = String(ftPick(row, ['doctorid','DoctorId'], '')).toLowerCase();
+            if (!doctorId) return;
+            if (!scheduleByDoctor[doctorId]) scheduleByDoctor[doctorId] = [];
+            scheduleByDoctor[doctorId].push(row);
+        });
+        complete({ doctors:doctors, interns:interns, scheduleByDoctor:scheduleByDoctor });
+    });
+}
+
+function ftDoctorRosterHtml(roster) {
+    function personName(person) {
+        return [ftPick(person, ['firstname','firstName'], ''), ftPick(person, ['lastname','lastName'], '')]
+            .filter(Boolean).join(' ') || 'Unnamed doctor';
+    }
+    function listHtml(items, emptyMessage) {
+        if (!items.length) return '<div class="ft-muted-sm" style="padding:8px 0">' + ftEsc(emptyMessage) + '</div>';
+        return items.map(function (person) {
+            var id = String(ftPick(person, ['Peopleid','peopleid','doctorid'], '')).toLowerCase();
+            var rows = roster.scheduleByDoctor[id] || [];
+            var first = rows[0] || {};
+            var start = ftPick(first, ['shiftstarttime','taskstarttime','workhourstarts'], '');
+            var end = ftPick(first, ['shiftendtime','taskendtime','workhourends'], '');
+            var availability = rows.length ? 'Available today' : 'No schedule today';
+            var hours = [start, end].filter(Boolean).join(' - ');
+            return '<div style="display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #edf1ef;text-align:left">' +
+                '<strong>' + ftEsc(personName(person)) + '</strong><span style="text-align:right;color:' + (rows.length ? '#147a57' : '#7b8580') + '">' +
+                ftEsc(availability) + (hours ? '<br><small>' + ftEsc(hours) + '</small>' : '') + '</span></div>';
+        }).join('');
+    }
+    return '<div style="margin-top:14px;max-height:320px;overflow:auto">' +
+        '<div style="font-weight:700;text-align:left;margin-top:6px">Doctors (' + roster.doctors.length + ')</div>' +
+        listHtml(roster.doctors, 'No doctors found for this tenant.') +
+        '<div style="font-weight:700;text-align:left;margin-top:14px">Intern Doctors (' + roster.interns.length + ')</div>' +
+        listHtml(roster.interns, 'No intern doctors found for this tenant.') + '</div>';
+}
+
+function ftShowDoctorFollowup(task) {
+    var id = ftRequireIpd(task, 'Follow-up with Doctor'); if (!id) return;
+    $('.page-loader').show();
+    ftLoadDoctorDetails(task, function (doctor) {
+        ftLoadDoctorRoster(task, function (roster) {
+            $('.page-loader').hide();
+            ftPopup('Follow-up with Doctor', ftInfoRows([
+                ['Allotted Doctor Time', doctor ? doctor.time : '-'],
+                ['Appointment Status', doctor ? doctor.status : '-'],
+                ['Assigned Doctor', doctor ? doctor.name : 'No doctor assigned']
+            ]) + ftDoctorRosterHtml(roster));
+        });
+    });
+}
+
+function ftShowPatient(task) {
+    if (!task.patientname) { ftToast('Patient details are not available for this task.'); return; }
+    $('.page-loader').show();
+    $.get(ftPatientDetailUrl, { PatientProfileid: task.patientname }).done(function (raw) {
+        var rows = ftRows(raw), p = rows[0] || raw || {};
+        ftPopup('Follow-up with Health Seeker', ftInfoRows([
+            ['Patient Name', ftPick(p, ['patientname_master','fullname'], task.patientname_master)],
+            ['Phone Number', ftPick(p, ['mobilenumber','phonenumber','contactnumber'], '-')],
+            ['Email Address', ftPick(p, ['email','emailaddress'], '-')],
+            ['Gender', ftPick(p, ['gender_master','gender'], '-')], ['Date of Birth', ftPick(p, ['dateofbirth','dob'], '-')],
+            ['Address', ftPick(p, ['address','addressline1'], '-')]
+        ]));
+    }).fail(function () { ftToast('Unable to load patient details.'); }).always(function () { $('.page-loader').hide(); });
+}
+
+function ftLoadPatientContact(panel, task) {
+    var target = panel.querySelector('#ftdPatientContact');
+    if (!target || !task.patientname) return;
+    $.get(ftPatientDetailUrl, { PatientProfileid: task.patientname }).done(function (raw) {
+        var rows = ftRows(raw), p = rows[0] || raw || {};
+        var phone = ftPick(p, ['mobilenumber','phonenumber','contactnumber'], '-');
+        var email = ftPick(p, ['emailaddress','email'], '-');
+        var patientName = ftPick(p, ['patientname_master','fullname'], task.patientname_master || '-');
+        target.innerHTML = '<div class="ft-d-row"><span>Health Seeker</span><b>' + ftEsc(patientName) + '</b></div>' +
+            '<div class="ft-d-row"><span>Phone</span><b>' + ftEsc(phone) + '</b></div>' +
+            '<div class="ft-d-row"><span>Email</span><b>' + ftEsc(email) + '</b></div>';
+    }).fail(function () { target.innerHTML = '<div class="ft-muted-sm">Contact details unavailable.</div>'; });
+}
+
+function ftLoadFollowupDoctor(panel, task) {
+    var target = panel.querySelector('#ftdDoctorContact');
+    if (!target) return;
+    ftLoadDoctorDetails(task, function (doctor) {
+        target.innerHTML = doctor
+            ? '<div class="ft-d-row"><span>Doctor</span><b>' + ftEsc(doctor.name) + '</b></div>' +
+              '<div class="ft-d-row"><span>Scheduled</span><b>' + ftEsc(doctor.time || '-') + '</b></div>' +
+              '<div class="ft-d-row"><span>Status</span><b>' + ftEsc(doctor.status || '-') + '</b></div>'
+            : '<div class="ft-muted-sm">No doctor is currently assigned.</div>';
+    });
+}
+
+function ftShowRooms(title) {
+    /* Dashboard renders this same occupancy view in an iframe.  Reusing the
+       view keeps availability, filters and occupancy calculations identical. */
+    swal({ title:title,
+        html:'<iframe title="' + ftEsc(title) + '" src="' + ftRoomOccupancyUrl + '?embed=1&_=' + Date.now() + '" class="ft-room-iframe"></iframe>',
+        width:'90%', showConfirmButton:true, confirmButtonText:'Close', buttonsStyling:false,
+        confirmButtonClass:'btn btn-primary', allowOutsideClick:false });
+}
+
+function ftRunNextAction(task, label) {
+    var action = ftActionName(label), id;
+    if (action === 'close task') {
+        ftSelectedTaskId = task.dailytaskid;
+        ftLoadDetail(task.dailytaskid);
+        var closeButton = document.getElementById('ftdBtnCloseTask');
+        if (closeButton) closeButton.click();
+        return;
+    }
+    if (action === 'mark as submit' || action === 'mark as discharge' || action === 'mark as discharged') return ftMarkAsSubmit(task);
+    if (action === 'confirm arrival') { id = ftRequireIpd(task, label); if (id) ftGo(ftConfirmArrivalUrl, { IPDApplicationFormid:id }); return; }
+    if (action === 'review ipd' || action === 'check & allot room') { id = ftRequireIpd(task, label); if (id) ftGo(ftAllotRoomUrl, { IPDApplicationFormid:id }); return; }
+    if (action === 'add assessment') { id = ftRequireIpd(task, label); if (id) ftGo(ftAddAssessmentUrl, { ipdform:id, patientname:task.patientname || '', taskname:'IP Screening' }); return; }
+    if (action === 'complete assessment') return ftCompleteAssessment(task);
+    if (action === 'follow up with doctor') return ftShowDoctorFollowup(task);
+    if (action === 'allot doctor') { id = ftRequireIpd(task, label); if (id) ftGo(ftFrontDeskUrl, { dailyTaskAction:'allot-doctor', IPDApplicationFormid:id }); return; }
+    if (action === 'follow up with health seeker') return ftShowPatient(task);
+    if (action === 'submit discharge checklist') { id = ftRequireIpd(task, label); if (id) ftGo(ftAddAssessmentUrl, { ipdform:id, patientname:task.patientname || '', taskname:'Dischargechecklist' }); return; }
+    if (action === 'trigger refund') { id = ftRequireIpd(task, label); if (id) ftGo(ftCancelIpdUrl, { IPDApplicationFormid:id, cancellationby:'Patient' }); return; }
+    if (action === 'mark as admit') return ftMarkAsAdmit(task);
+    if (action === 'check slots' || action === 'check slot status') return ftShowRooms('Current Room Slot Availability');
+    if (action === 'receive payment') { id = ftRequireIpd(task, label); if (id) ftGo(ftUnifiedPaymentUrl, { patientid:task.patientname || '', type:'IPD', ipdNo:id, bookingstatus:task.status || '' }); return; }
+    if (action === 'collect booking deposit') { id = ftRequireIpd(task, label); if (id) ftGo(ftDepositUrl, { IPDApplicationFormid:id, patientname:task.patientname || '' }); return; }
+    if (action === 'check room status' || action === 'validate the room status') return ftShowRooms('Room Status');
+    ftToast('No Frontdesk workflow is configured for "' + label + '".');
+}
+
+/* ── Update page title to show the active task type ── */
+function ftLoadTaskTypes() {
+    var title = document.getElementById('ftPageTitle');
+    var bc    = document.getElementById('ftCatBreadcrumb');
+    if (ftActiveCatName && ftActiveCatName !== 'All Tasks') {
+        /* Show task type name as the main heading, nothing below */
+        if (title) title.textContent = ftActiveCatName;
+        if (bc) bc.style.display = 'none';
+    } else {
+        /* "All Tasks" selected — show "All Tasks" as the heading */
+        if (title) title.textContent = 'All Tasks';
+        if (bc) bc.style.display = 'none';
+    }
+}
+
+/* ── Load task list ── */
+function ftLoadList() {
+    document.getElementById('ftTaskRows').innerHTML =
+        '<tr><td colspan="8" class="ft-row-msg pad-32"><i class="fa fa-spinner fa-spin"></i> Loading...</td></tr>';
+
+    var lc = ftActiveCatName.toLowerCase();
+    var showFin = ftActiveCat === '' || lc.indexOf('finance') >= 0 || lc.indexOf('payment') >= 0 || lc.indexOf('tally') >= 0;
+    document.getElementById('ftFinance').classList.toggle('show', showFin);
+
+    $.ajax({
+        url: ftListUrl, type: 'GET',
+        data: {
+            tenantid: ftTenantId, tasktype: ftActiveCat, taskname: '', patientname: '',
+            ipdreferencenumber: '', opdreferencenumber: '',
+            searchterm: ftSearchTerm, pagesize: 200, pagenumber: 0
+        },
+        success: function (resp) {
+            if (typeof resp === 'string') { try { resp = JSON.parse(resp); } catch (e) {} }
+            var items = resp.detail || resp || [];
+            if (!Array.isArray(items)) items = [];
+            ftAllTasks = items;
+            ftRenderList();
+        },
+        error: function () {
+            document.getElementById('ftTaskRows').innerHTML =
+                '<tr><td colspan="8" class="ft-row-error">Error loading tasks.</td></tr>';
+        }
+    });
+}
+
+/* ── Render (client-side filter by status/search) ── */
+function ftRenderList() {
+    var selectedDate = document.getElementById('ftTaskDate').value;
+    var items = ftAllTasks.filter(function (t) {
+        var normalizedStatus = ftStatusKey(t.status);
+        var ms = !ftActiveStatus || normalizedStatus === ftActiveStatus;
+        var md = !selectedDate || ftTaskStatusDateKey(t) === selectedDate;
+        var mq = !ftSearchTerm ||
+            (t.patientname_master        || '').toLowerCase().indexOf(ftSearchTerm) >= 0 ||
+            (t.ipdreferencenumber_master || '').toLowerCase().indexOf(ftSearchTerm) >= 0 ||
+            (t.opdreferencenumber_master || '').toLowerCase().indexOf(ftSearchTerm) >= 0 ||
+            (t.taskno                    || '').toLowerCase().indexOf(ftSearchTerm) >= 0 ||
+            (t.priority_master           || '').toLowerCase().indexOf(ftSearchTerm) >= 0;
+        return ms && mq && md;
+    });
+
+    /* User-created follow-ups are actionable additions and should be seen
+       immediately. Keep them above generated workflow tasks, newest first. */
+    items.sort(function (a, b) {
+        var aFollowup = !a.taskname ? 1 : 0;
+        var bFollowup = !b.taskname ? 1 : 0;
+        if (aFollowup !== bFollowup) return bFollowup - aFollowup;
+        var aTime = new Date(a.createddate || a.dateandtime || 0).getTime();
+        var bTime = new Date(b.createddate || b.dateandtime || 0).getTime();
+        if (isNaN(aTime)) aTime = 0;
+        if (isNaN(bTime)) bTime = 0;
+        return bTime - aTime;
+    });
+
+    var datedTasks = ftAllTasks.filter(function (t) { return !selectedDate || ftTaskStatusDateKey(t) === selectedDate; });
+    var cnt = function (s) { return datedTasks.filter(function (t) { return ftStatusKey(t.status) === s; }).length; };
+    document.getElementById('ftSC_all').textContent      = datedTasks.length;
+    document.getElementById('ftSC_pending').textContent  = cnt('Pending');
+    document.getElementById('ftSC_progress').textContent = cnt('In Progress');
+    document.getElementById('ftSC_waiting').textContent  = cnt('Waiting');
+    document.getElementById('ftSC_overdue').textContent  = cnt('Not Completed');
+    document.getElementById('ftSC_closed').textContent   = cnt('Closed');
+    document.getElementById('ftSC_completed').textContent = cnt('Completed');
+
+    /* Finance strip */
+    var total = 0, paid = 0, balance = 0, financeSeen = {};
+    ftAllTasks.forEach(function (t) {
+        var financeKey = t.ipdreferencenumber ? 'ipd:' + t.ipdreferencenumber : 'task:' + t.dailytaskid;
+        if (financeSeen[financeKey]) return;
+        financeSeen[financeKey] = true;
+        var taskBalance = parseFloat(t.receivable_balance != null ? t.receivable_balance : t.amount) || 0;
+        var taskPaid = parseFloat(t.receivable_paid) || 0;
+        var taskTotal = parseFloat(t.receivable_total);
+        balance += taskBalance;
+        paid += taskPaid;
+        total += isNaN(taskTotal) ? taskBalance : taskTotal;
+    });
+    document.getElementById('ftFinAmtDue').textContent    = 'Amount Due '     + ftCurrency(balance);
+    document.getElementById('ftFinCollected').textContent = 'Collected '      + ftCurrency(paid);
+    document.getElementById('ftFinBalance').textContent   = 'Balance '        + ftCurrency(balance);
+    document.getElementById('ftFinRefunds').textContent   = 'Refunds ₹0';
+    document.getElementById('ftFinNet').textContent       = 'Net Collection '  + ftCurrency(paid);
+
+    if (items.length === 0) {
+        document.getElementById('ftTaskRows').innerHTML =
+            '<tr><td colspan="8" class="ft-row-msg pad-36">No tasks found.</td></tr>';
+        document.getElementById('ftFoot').textContent = 'Showing 0 tasks';
+        return;
+    }
+
+    document.getElementById('ftTaskRows').innerHTML = items.map(function (t) {
+        var ref     = t.ipdreferencenumber_master || t.opdreferencenumber_master || t.taskno || '-';
+        var patient = t.patientname_master || '-';
+        var act     = t.taskname_master || (!t.taskname ? 'Follow-up' + (t.activityname ? ': ' + t.activityname : '') : '-');
+        var detail  = t.tasktype_master    || '-';
+        var status  = t.status || 'Pending';
+        var priority = t.priority_display || t.priority || t.priority_master || '';
+        var amountHtml = !t.taskname ? '' : ftCurrency(t.amount);
+        var isClosed = status.toLowerCase() === 'closed';
+        var isCompleted = ['completed', 'complete', 'done'].indexOf(status.toLowerCase()) >= 0;
+        var color   = ftStatusColor(status);
+        var actions = ftTemplateNextActions(t);
+        var opts    = isCompleted
+            ? '<option value="close-task">Close Task</option>'
+            : actions.map(function (a) { return '<option value="' + (a.actionid || '') + '">' + a.actionname + '</option>'; }).join('');
+        var timeStr = ftTaskScheduledTime(t);
+        var sel = t.dailytaskid === ftSelectedTaskId ? ' ft-selected' : '';
+        return '<tr class="ft-task-row' + sel + '" data-taskid="' + t.dailytaskid + '">' +
+            '<td>' + timeStr + '</td>' +
+            '<td><b>' + patient + '</b><span class="ft-ref">' + ref + '</span></td>' +
+            '<td>' + ftEsc(act) + '</td>' +
+            '<td>' + detail + '</td>' +
+            '<td>' + ftPriorityBadge(priority) + '</td>' +
+            '<td>' + amountHtml + '</td>' +
+            '<td><span class="ft-pill ' + color + '">' + status + '</span></td>' +
+            '<td><select class="ft-act-select" ' + (isClosed || (!isCompleted && actions.length === 0) ? 'disabled' : '') + '><option value="" selected disabled>' + (isClosed ? 'Closed' : isCompleted ? 'Choose' : actions.length ? 'Choose' : 'No actions') + '</option>' + opts + '</select></td>' +
+            '</tr>';
+    }).join('');
+
+    document.getElementById('ftFoot').textContent = 'Showing ' + items.length + ' task' + (items.length === 1 ? '' : 's');
+
+    /* Row click → detail panel */
+    document.querySelectorAll('.ft-task-row').forEach(function (row) {
+        row.addEventListener('click', function (e) {
+            if (e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION') return;
+            var tid = row.getAttribute('data-taskid');
+            ftSelectedTaskId = tid;
+            document.querySelectorAll('.ft-task-row').forEach(function (r) { r.classList.remove('ft-selected'); });
+            row.classList.add('ft-selected');
+            ftLoadDetail(tid);
+        });
+    });
+
+    document.querySelectorAll('.ft-act-select').forEach(function (sel) {
+        sel.addEventListener('change', function (e) {
+            e.stopPropagation();
+            var row = sel.closest('.ft-task-row'), taskId = row && row.getAttribute('data-taskid');
+            var task = ftAllTasks.filter(function (x) { return String(x.dailytaskid) === String(taskId); })[0];
+            var label = sel.options[sel.selectedIndex].text;
+            sel.selectedIndex = 0;
+            if (task) ftRunNextAction(task, label);
+        });
+    });
+
+    /* Auto-select: if nothing selected yet (or current selection gone), load first row */
+    var stillSelected = ftSelectedTaskId && document.querySelector('.ft-task-row[data-taskid="' + ftSelectedTaskId + '"]');
+    if (!stillSelected) { ftAutoSelectFirst(); }
+    else { ftLoadDetail(ftSelectedTaskId); }
+}
+
+function ftAutoSelectFirst() {
+    var first = document.querySelector('.ft-task-row');
+    if (!first) return;
+    var tid = first.getAttribute('data-taskid');
+    ftSelectedTaskId = tid;
+    document.querySelectorAll('.ft-task-row').forEach(function (r) { r.classList.remove('ft-selected'); });
+    first.classList.add('ft-selected');
+    ftLoadDetail(tid);
+}
+
+/* ── Render detail panel directly from ftAllTasks data (no server round-trip) ── */
+function ftLoadDetail(dailyTaskId) {
+    var task = null;
+    for (var i = 0; i < ftAllTasks.length; i++) {
+        if (ftAllTasks[i].dailytaskid === dailyTaskId) { task = ftAllTasks[i]; break; }
+    }
+    if (!task) return;
+
+    var name     = task.patientname_master || task.taskno || 'Task';
+    var ref      = task.ipdreferencenumber_master || task.opdreferencenumber_master || task.taskno || '-';
+    var code     = task.tasktype_master || '';
+    var initials = name.split(' ').slice(0, 2).map(function (w) { return (w[0] || '').toUpperCase(); }).join('') || '?';
+    var status   = task.status || 'Pending';
+    var isClosed = status.toLowerCase() === 'closed';
+    var isCompleted = ['completed', 'complete', 'done'].indexOf(status.toLowerCase()) >= 0;
+    var isManualFollowup = !task.taskname;
+    var amt      = isManualFollowup ? 0 : (parseFloat(task.receivable_balance != null ? task.receivable_balance : task.amount) || 0);
+    var totalAmt = parseFloat(task.receivable_total);
+    var paidAmt  = parseFloat(task.receivable_paid) || 0;
+    if (isNaN(totalAmt)) totalAmt = amt + paidAmt;
+    var timeStr  = ftTaskCreatedTime(task);
+
+    var closedDate = '-';
+    if (task.closeddate) { try { closedDate = new Date(task.closeddate).toLocaleString('en-IN'); } catch (e) {} }
+    var closedBy = task.closedby_master || '-';
+    var escalation = ftTemplateEscalations(task)[0] || null;
+    var actionsHtml = isClosed ? '' : isCompleted ?
+        '<div class="ft-d-actions"><button id="ftdBtnCloseTask" class="ft-d-close-task">&#10003; Close Task</button></div>' :
+        '<div class="ft-d-actions">' +
+            '<button id="ftdBtnFollowup" class="ft-d-followup">&#43; Follow-up</button>' +
+            (escalation ? '<button id="ftdBtnEscalate" class="ft-d-esc">&#8679; Escalate</button>' : '') +
+            '<button id="ftdBtnCloseTask" class="ft-d-close-task">&#10003; Close Task</button>' +
+        '</div>';
+    var contactRelevant = isManualFollowup || (task.tasktype_master || '').toLowerCase().indexOf('payment') >= 0 ||
+        ftTemplateNextActions(task).some(function (a) { return ['receive payment','follow up with health seeker'].indexOf(ftActionName(a.actionname)) >= 0; });
+
+    /* Dependencies */
+    var deps = [];
+    if (amt > 0 && status !== 'Completed')
+        deps.push({ type:'block', label:'Payment pending', desc: ftCurrency(amt) + ' must be collected' });
+    var depsHtml = deps.map(function (d) {
+        return '<div class="ft-d-dep ' + d.type + '">' + (d.type === 'ok' ? '&#10003;' : '!') + ' ' + d.label + '<small>' + d.desc + '</small></div>';
+    }).join('') || '<div class="ft-d-dep ok">&#10003; No pending dependencies</div>';
+
+    var panel = document.getElementById('ftDetailPanel');
+    panel.innerHTML =
+        /* ── Header ── */
+        '<div class="ft-d-head">' +
+            '<div class="ft-d-avatar">' + initials + '</div>' +
+            '<div><h2>' + name + '</h2><span class="ft-d-ref">' + ref + '</span>' +
+            (code ? '<span class="ft-d-code">' + code + '</span>' : '') + '</div>' +
+        '</div>' +
+        /* ── Action buttons ── */
+        actionsHtml +
+        /* ── Inline form area ── */
+        '<div id="ftdFormWrap" class="ft-d-formwrap">' +
+            '<div class="ft-d-formcard">' +
+                '<div class="ft-d-formhead"><h3 id="ftdFormTitle">Action</h3>' +
+                '<button id="ftdCloseForm" title="Close">&#215;</button></div>' +
+                '<form id="ftdActionForm" autocomplete="off">' +
+                    '<div class="ft-d-formbody" id="ftdFormFields"></div>' +
+                    '<div class="ft-d-formfoot">' +
+                        '<button type="button" id="ftdCancelForm">Cancel</button>' +
+                        '<button type="submit" class="ft-d-save" id="ftdSubmitAction">Save</button>' +
+                    '</div>' +
+                '</form>' +
+            '</div>' +
+        '</div>' +
+        /* ── Task details ── */
+        '<div class="ft-d-section"><h3>Task Details</h3>' +
+            '<div class="ft-d-row"><span>Task Time</span><b>' + timeStr + '</b></div>' +
+            '<div class="ft-d-row"><span>Source Status</span><b>' + status + '</b></div>' +
+            '<div class="ft-d-row"><span>Priority</span><b>' + ftPriorityBadge(task.priority_display || task.priority || task.priority_master) + '</b></div>' +
+            /* Assigned To is intentionally hidden from the right-side details panel. */
+            (task.description ? '<div class="ft-d-row ft-d-description"><span>Description</span><b>' + ftEsc(task.description) + '</b></div>' : '') +
+            (isClosed ? '<div class="ft-d-row"><span>Closed Date</span><b>' + closedDate + '</b></div>' +
+                '<div class="ft-d-row"><span>Closed By</span><b>' + closedBy + '</b></div>' : '') +
+            '<div class="ft-d-row"><span>Due / SLA</span><b>' + (status === 'Not Completed' ? 'Not Completed' : timeStr + ' · SLA active') + '</b></div>' +
+        '</div>' +
+        /* ── Billing ── */
+        (isManualFollowup ? '' : '<div class="ft-d-section"><h3>Billing Summary</h3>' +
+            '<div class="ft-d-bill">' +
+                '<div><small>Total</small><b>' + ftCurrency(totalAmt) + '</b></div>' +
+                '<div><small>Paid</small><b class="ft-text-brand">' + ftCurrency(paidAmt) + '</b></div>' +
+                '<div><small>Balance</small><b class="ft-d-danger">' + ftCurrency(amt) + '</b></div>' +
+            '</div>' +
+        '</div>') +
+        (contactRelevant ? '<div class="ft-d-section"><h3>' + (isManualFollowup ? 'Follow-up Contact' : 'Patient Contact') + '</h3>' +
+            '<div id="ftdPatientContact"><div class="ft-muted-sm">Loading health-seeker details...</div></div>' +
+            (isManualFollowup && task.ipdreferencenumber ? '<div id="ftdDoctorContact" class="ft-d-contact-separator"><div class="ft-muted-sm">Loading doctor details...</div></div>' : '') +
+        '</div>' : '') +
+        /* ── Dependencies ── */
+        '<div class="ft-d-section"><h3>Dependencies &amp; Clearance</h3>' +
+            '<div id="ftdDeps">' + depsHtml + '</div>' +
+        '</div>' +
+        /* ── Timeline ── */
+        '<div class="ft-d-section ft-d-section-noborder"><h3>Activity Timeline</h3>' +
+            '<div class="ft-d-timeline" id="ftdTimeline">' +
+                '<div class="ft-muted-sm"><i class="fa fa-spinner fa-spin"></i> Loading...</div>' +
+            '</div>' +
+        '</div>';
+
+    ftLoadTimeline(panel, dailyTaskId, ftTenantId, task);
+    if (contactRelevant) ftLoadPatientContact(panel, task);
+    if (isManualFollowup && task.ipdreferencenumber) ftLoadFollowupDoctor(panel, task);
+    ftSetupForms(panel, dailyTaskId, task);
+}
+
+/* ── Activity timeline ── */
+function ftTimelineDateTime(value) {
+    if (!value) return '-';
+    var dt = new Date(value);
+    if (isNaN(dt.getTime())) {
+        var m = String(value).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
+        if (m) dt = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]), Number(m[4] || 0), Number(m[5] || 0));
+    }
+    if (isNaN(dt.getTime())) return '-';
+    return dt.toLocaleString('en-IN', {
+        day:'2-digit', month:'short', year:'numeric',
+        hour:'2-digit', minute:'2-digit', hour12:true
+    });
+}
+
+function ftLoadTimeline(panel, dailyTaskId, tenantId, task) {
+    var tl = panel.querySelector('#ftdTimeline');
+    if (!tl) return;
+    var taskCreatedAt = ftTimelineDateTime(task && (task.createddate || task.dateandtime));
+    tl.innerHTML = '<div class="ft-muted-sm">Loading...</div>';
+    $.ajax({
+        url: ftActionLogUrl, type: 'GET',
+        data: { tenantid: tenantId, taskname: dailyTaskId, pagesize: 1000, pagenumber: 0, searchterm: '' },
+        success: function (resp) {
+            if (typeof resp === 'string') { try { resp = JSON.parse(resp); } catch (e) {} }
+            var items = resp.detail || resp || [];
+            if (Array.isArray(items)) {
+                items = items.filter(function (item) { return String(item.taskname || '').toLowerCase() === String(dailyTaskId).toLowerCase(); });
+                items.sort(function (a, b) { return new Date(a.actiondate || a.createddate || 0) - new Date(b.actiondate || b.createddate || 0); });
+            }
+            if (!Array.isArray(items) || items.length === 0) {
+                tl.innerHTML = '<div class="ft-d-event"><small>' + taskCreatedAt + '</small><b>Task created</b><small>System</small></div>'; return;
+            }
+            tl.innerHTML = items.map(function (item) {
+                var t = ftTimelineDateTime(item.actiondate || item.createddate);
+                var action = item.summary || item.tasktype_master || 'Action recorded';
+                var by     = item.actionby_master || 'System';
+                var details = [];
+                if (action === 'Follow-up Task Added') {
+                    if (item.tasktype_master) details.push('Task Type: ' + item.tasktype_master);
+                    if (item.comments) details.push('Summary: ' + item.comments);
+                    if (item.description) details.push('Description: ' + item.description);
+                } else {
+                    if (item.escalateto_master) details.push('Escalated To: ' + item.escalateto_master);
+                    if (item.comments) details.push('Comments: ' + item.comments);
+                    else if (item.description) details.push(item.description);
+                }
+                return '<div class="ft-d-event"><small>' + t + '</small><b>' + action + '</b><small>' + by + '</small>' +
+                    (details.length ? '<small class="ft-timeline-detail">' + details.join('<br>') + '</small>' : '') + '</div>';
+            }).join('');
+        },
+        error: function () {
+            tl.innerHTML = '<div class="ft-d-event"><small>' + taskCreatedAt + '</small><b>Task created</b><small>System</small></div>';
+        }
+    });
+}
+
+/* ── Inline action forms ── */
+function ftSetupForms(panel, dailyTaskId, task) {
+    var formWrap  = panel.querySelector('#ftdFormWrap');
+    var formTitle = panel.querySelector('#ftdFormTitle');
+    var formFields= panel.querySelector('#ftdFormFields');
+    var formEl    = panel.querySelector('#ftdActionForm');
+    var submitBtn = panel.querySelector('#ftdSubmitAction');
+
+    function showForm(mode) {
+        formWrap.style.display = 'block';
+        formEl.setAttribute('data-mode', mode);
+        submitBtn.textContent = 'Save';
+        submitBtn.style.background = '';
+        if (mode === 'followup') {
+            var now = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            var availableUsers = ftAssignableUsers.length ? ftAssignableUsers : [{ usersid: ftLoginUser, firstname: ftUsername }];
+            var userOptions = availableUsers.map(function (u) {
+                var id = u.usersid || u.Usersid || '';
+                var name = [u.firstname, u.lastname].filter(Boolean).join(' ').trim() || u.username || u.emailid || id;
+                return '<option value="' + ftEsc(id) + '"' + (String(id).toLowerCase() === String(ftLoginUser).toLowerCase() ? ' selected' : '') + '>' + ftEsc(name) + '</option>';
+            }).join('');
+            formTitle.textContent = 'Add Follow-up Task';
+            formFields.innerHTML =
+                '<div class="ft-d-fg"><label>Activity Name <span class="ft-required">*</span></label><input class="ft-d-ctrl" id="ftdFupSummary" type="text" placeholder="Activity name..." required></div>' +
+                '<div class="ft-d-fg"><label>Follow-up Date and Time <span class="ft-required">*</span></label><input class="ft-d-ctrl" id="ftdFupDate" type="datetime-local" value="' + now + '" required></div>' +
+                '<div class="ft-d-fg"><label>Priority <span class="ft-required">*</span></label><select class="ft-d-ctrl" id="ftdFupPriority" required><option value="Low">Low</option><option value="Medium" selected>Medium</option><option value="High">High</option><option value="Critical">Critical</option></select></div>' +
+                '<div class="ft-d-fg"><label>Assign To <span class="ft-required">*</span></label><select class="ft-d-ctrl" id="ftdFupAssigned" required>' + userOptions + '</select></div>' +
+                '<div class="ft-d-fg"><label>Description <span class="ft-required">*</span></label><textarea class="ft-d-ctrl" id="ftdFupDesc" rows="3" placeholder="Describe the follow-up task..." required></textarea></div>';
+        } else if (mode === 'escalate') {
+            formTitle.textContent = 'Escalate Task';
+            formFields.innerHTML =
+                '<div class="ft-d-fg"><label>Escalate To</label><input class="ft-d-ctrl" id="ftdEscTo" type="text" readonly value="' + ftEsc(escalation.notifyto_master || escalation.emailid) + '"></div>' +
+                '<div class="ft-d-fg"><label>Comments <span class="ft-required">*</span></label><textarea class="ft-d-ctrl" id="ftdEscCmt" rows="3" placeholder="Reason for escalation..." required></textarea></div>';
+        } else if (mode === 'close') {
+            formTitle.textContent = 'Close Task';
+            submitBtn.textContent = 'Close Task';
+            submitBtn.style.background = '#b42318';
+            formFields.innerHTML =
+                '<div class="ft-close-warning">' +
+                    '<b>Are you sure you want to close this task?</b><br>' +
+                    'This action indicates that the required business activity has been completed.' +
+                '</div>' +
+                '<div class="ft-d-fg ft-d-fg-flush"><label>Comments <span class="ft-required">*</span></label>' +
+                    '<textarea class="ft-d-ctrl" id="ftdCloseComments" rows="3" placeholder="Enter closing comments..." required></textarea></div>';
+        }
+    }
+
+    function closeForm() { formWrap.style.display = 'none'; formEl.removeAttribute('data-mode'); }
+
+    var btnFup   = panel.querySelector('#ftdBtnFollowup');
+    var btnEsc   = panel.querySelector('#ftdBtnEscalate');
+    var btnCloseTask = panel.querySelector('#ftdBtnCloseTask');
+    var btnClose = panel.querySelector('#ftdCloseForm');
+    var btnCancel= panel.querySelector('#ftdCancelForm');
+
+    if (btnFup)    btnFup.onclick    = function () { showForm('followup'); };
+    if (btnEsc)    btnEsc.onclick    = function () { showForm('escalate'); };
+    if (btnCloseTask) btnCloseTask.onclick = function () { showForm('close'); };
+    if (btnClose)  btnClose.onclick  = closeForm;
+    if (btnCancel) btnCancel.onclick = closeForm;
+
+    if (formEl) {
+        formEl.onsubmit = function (e) {
+            e.preventDefault();
+            var mode = formEl.getAttribute('data-mode');
+            if (mode === 'close') {
+                var closeComments = panel.querySelector('#ftdCloseComments');
+                if (!closeComments || !closeComments.value.trim()) { ftToast('Comments are required.'); if (closeComments) closeComments.focus(); return; }
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Closing...';
+                $('.page-loader').show();
+                $.ajax({
+                    url: ftCloseTaskUrl,
+                    type: 'POST',
+                    data: { DailyTaskid: dailyTaskId, tenantid: ftTenantId, comments: closeComments ? closeComments.value.trim() : '' },
+                    success: function (resp) {
+                        $('.page-loader').hide();
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Close Task';
+                        if (resp === 'Success') {
+                            closeForm();
+                            ftToast('Task closed');
+                            ftLoadList();
+                        } else if (resp === 'Session Expired') {
+                            window.location = ftLogoutUrl;
+                        } else if (resp === 'You are not authorized to perform this action.') {
+                            window.location = ftAuthFailUrl;
+                        } else {
+                            ftToast(resp || 'Unable to close task');
+                        }
+                    },
+                    error: function (xhr) {
+                        $('.page-loader').hide();
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = 'Close Task';
+                        ftToast((xhr.responseText || 'Unable to close task').replace(/^"|"$/g, ''));
+                    }
+                });
+                return;
+            }
+            var fd = new FormData();
+            fd.append('tenantid', ftTenantId);
+            fd.append('taskname', dailyTaskId);
+            fd.append('actionby', ftLoginUser);
+            fd.append('craftmyapp_actionmethodname', 'Add_Finance_Task');
+            if (mode === 'followup') {
+                var summaryEl = panel.querySelector('#ftdFupSummary');
+                var descEl = panel.querySelector('#ftdFupDesc');
+                var dateEl = panel.querySelector('#ftdFupDate');
+                var priorityEl = panel.querySelector('#ftdFupPriority');
+                var assignedEl = panel.querySelector('#ftdFupAssigned');
+                if (!summaryEl || !summaryEl.value.trim()) { ftToast('Activity Name is required.'); if (summaryEl) summaryEl.focus(); return; }
+                if (!descEl || !descEl.value.trim()) { ftToast('Description is required'); return; }
+                var serverDateTime = ftToServerDateTime(dateEl && dateEl.value);
+                if (!serverDateTime) { ftToast('A valid Follow-up Date and Time is required.'); if (dateEl) dateEl.focus(); return; }
+                fd.append('tasktype',    task.tasktype || '');
+                fd.append('summary',     'Follow-up Task Added');
+                fd.append('comments',    summaryEl.value.trim());
+                fd.append('description', descEl.value);
+
+                var dailyFd = new FormData();
+                dailyFd.append('tenantid', task.tenantid || ftTenantId);
+                dailyFd.append('tasktype', task.tasktype || '');
+                /* A follow-up is a DailyTask entry without a template. This preserves
+                   its task type/reference while ensuring it has no Next Actions. */
+                dailyFd.append('taskname', '');
+                dailyFd.append('patientname', task.patientname || '');
+                dailyFd.append('ipdreferencenumber', task.ipdreferencenumber || '');
+                dailyFd.append('opdreferencenumber', task.opdreferencenumber || '');
+                dailyFd.append('status', 'Pending');
+                dailyFd.append('amount', '0');
+                dailyFd.append('activityname', summaryEl.value.trim());
+                dailyFd.append('description', descEl.value.trim());
+                dailyFd.append('dateandtime', serverDateTime);
+                dailyFd.append('priority', priorityEl.value);
+                dailyFd.append('assignedto', assignedEl.value || ftLoginUser);
+                dailyFd.append('craftmyapp_actionmethodname', 'Add_Daily_Task');
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+                $('.page-loader').show();
+                $.ajax({
+                    url: ftAddDailyTaskUrl, type: 'POST', processData: false, contentType: false, data: dailyFd,
+                    success: function (dailyResp) {
+                        if (dailyResp !== 'Success') {
+                            $('.page-loader').hide(); submitBtn.disabled = false; submitBtn.textContent = 'Save';
+                            ftToast(dailyResp || 'Unable to create follow-up task'); return;
+                        }
+                        $.ajax({
+                            url: ftAddLogUrl, type: 'POST', processData: false, contentType: false, data: fd,
+                            success: function (logResp) {
+                                $('.page-loader').hide(); submitBtn.disabled = false; submitBtn.textContent = 'Save';
+                                closeForm();
+                                ftToast(logResp === 'Success' ? 'Follow-up task created' : 'Follow-up task created; activity log could not be saved');
+                                ftSelectedTaskId = null;
+                                ftLoadList();
+                            },
+                            error: function () {
+                                $('.page-loader').hide(); submitBtn.disabled = false; submitBtn.textContent = 'Save';
+                                closeForm(); ftToast('Follow-up task created; activity log could not be saved');
+                                ftSelectedTaskId = null; ftLoadList();
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        $('.page-loader').hide(); submitBtn.disabled = false; submitBtn.textContent = 'Save';
+                        ftToast((xhr.responseText || 'Unable to create follow-up task').replace(/^"|"$/g, ''));
+                    }
+                });
+                return;
+            } else if (mode === 'escalate') {
+                var escCmt = panel.querySelector('#ftdEscCmt');
+                if (!escCmt || !escCmt.value.trim()) { ftToast('Comments are required'); return; }
+                fd.append('escalateto',  escalation.notifyto || '');
+                fd.append('summary',     'Task Escalated');
+                fd.append('comments',    escCmt.value.trim());
+                fd.append('description', escCmt.value);
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending...';
+                $('.page-loader').show();
+                $.ajax({
+                    url: ftSendEscalationUrl,
+                    type: 'POST',
+                    data: { taskTemplateId: task.taskname, dailyTaskId: dailyTaskId, comments: escCmt.value.trim() },
+                    success: function (mailResp) {
+                        if (mailResp !== 'Success') {
+                            $('.page-loader').hide(); submitBtn.disabled = false; submitBtn.textContent = 'Save';
+                            ftToast(mailResp || 'Unable to send escalation email'); return;
+                        }
+                        $.ajax({
+                            url: ftAddLogUrl, type: 'POST', processData: false, contentType: false, data: fd,
+                            complete: function () {
+                                $('.page-loader').hide(); submitBtn.disabled = false; submitBtn.textContent = 'Save';
+                                closeForm(); ftToast('Task escalated and email sent');
+                                ftLoadTimeline(panel, dailyTaskId, ftTenantId, task);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        $('.page-loader').hide(); submitBtn.disabled = false; submitBtn.textContent = 'Save';
+                        ftToast((xhr.responseText || 'Unable to send escalation email').replace(/^"|"$/g, ''));
+                    }
+                });
+                return;
+            } else { return; }
+            $('.page-loader').show();
+            $.ajax({
+                url: ftAddLogUrl, type: 'POST', processData: false, contentType: false, data: fd,
+                success: function (resp) {
+                    $('.page-loader').hide();
+                    if (resp === 'Success') {
+                        closeForm();
+                        ftToast('Task updated');
+                        ftLoadTimeline(panel, dailyTaskId, ftTenantId, task);
+                    } else if (resp === 'Session Expired') {
+                        window.location = ftLogoutUrl;
+                    } else {
+                        swal({ title: 'Error !!', text: resp, type: 'error', confirmButtonText: 'OK', allowOutsideClick: false, allowEscapeKey: false });
+                    }
+                },
+                error: function (jqXHR) {
+                    $('.page-loader').hide();
+                    if (JSON.stringify(jqXHR.responseText) === '"API Authorization failed"') {
+                        swal({ title: 'Failed!', text: jqXHR.responseText, type: 'error', confirmButtonText: 'OK', allowOutsideClick: false }).then(function () { window.location = ftAuthFailUrl; });
+                    } else {
+                        swal({ title: 'Contact Administrator!', text: jqXHR.responseText, type: 'error', confirmButtonText: 'OK', allowOutsideClick: false });
+                    }
+                }
+            });
+        };
+    }
+}
+
+/* ── Wire up controls ── */
+$(document).ready(function () {
+
+    /* This page needs its ancestor .main-content to lose the default page
+       padding/overflow (the finance table and detail panel manage their own
+       scrolling). Flagging it with a class here — instead of a global rule
+       in appstyles.css — keeps the override scoped to this page only. */
+    $('.main-content').addClass('ft-daily-task-page');
+
+    /* Role check */
+    var Actions = getAutho("DailyTask", "list");
+    if (Actions == undefined) { window.location = "@Url.Action("RoleAuthorizationFailed", "users")"; return; }
+
+
+    /* Status tabs */
+    document.querySelectorAll('#ftStatusTabs .ft-tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+            document.querySelectorAll('#ftStatusTabs .ft-tab').forEach(function (t) { t.classList.remove('active'); });
+            tab.classList.add('active');
+            ftActiveStatus = tab.getAttribute('data-status');
+            ftRenderList();
+        });
+    });
+
+    /* Search */
+    var searchTimer = null;
+    document.getElementById('ftSearch').addEventListener('input', function () {
+        clearTimeout(searchTimer);
+        var v = this.value.toLowerCase().trim();
+        searchTimer = setTimeout(function () { ftSearchTerm = v; ftRenderList(); }, 300);
+    });
+
+    /* Date change */
+    document.getElementById('ftTaskDate').addEventListener('change', function () {
+        if (this.max && this.value > this.max) { this.value = this.max; }
+        ftLoadList();
+    });
+
+    /* Refresh button removed */
+
+    $.get(ftUsersUrl, { tenantid: ftTenantId }).done(function (raw) {
+        if (typeof raw === 'string') { try { raw = JSON.parse(raw); } catch (e) { raw = []; } }
+        ftAssignableUsers = Array.isArray(raw) ? raw : ((raw && raw.detail) || []);
+    });
+
+    /* Initial load */
+    ftLoadTaskTypes();
+    ftLoadList();
+});
+</script>

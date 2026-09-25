@@ -1,0 +1,214 @@
+/* ============================================
+   Shared wizard styles – works with variables.css for all themes
+   Use with .patient-wizard, .ipd-wizard, .people-wizard
+   ============================================ */
+
+/* ── Base wrapper ── */
+.patient-wizard,
+.ipd-wizard,
+.people-wizard {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ── Horizontal step bar (default) ── */
+.patient-wizard .wizard-steps,
+.ipd-wizard .wizard-steps,
+.people-wizard .wizard-steps {
+  border-bottom: 2px solid var(--input-border, #e0e0e0);
+  padding: 1.25rem 0.5rem 1rem;
+  background: var(--cardbackground, #fff);
+  border-radius: 10px 10px 0 0;
+}
+
+.patient-wizard .wizard-step-item,
+.ipd-wizard .wizard-step-item,
+.people-wizard .wizard-step-item {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding: 0 0.25rem;
+  min-width: 0;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.patient-wizard .wizard-step-item:not(:last-child)::after,
+.ipd-wizard .wizard-step-item:not(:last-child)::after,
+.people-wizard .wizard-step-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 1.15rem;
+  right: -50%;
+  width: 100%;
+  height: 2px;
+  background: var(--input-border, #e0e0e0);
+  z-index: 0;
+  transition: background 0.3s;
+}
+
+.patient-wizard .wizard-step-item.active::after,
+.patient-wizard .wizard-step-item.completed::after,
+.ipd-wizard .wizard-step-item.active::after,
+.ipd-wizard .wizard-step-item.completed::after,
+.people-wizard .wizard-step-item.active::after,
+.people-wizard .wizard-step-item.completed::after {
+  background: var(--theme-primary, var(--btnprimary, #2F6B4F));
+}
+
+.patient-wizard .wizard-step-item .step-num,
+.ipd-wizard .wizard-step-item .step-num,
+.people-wizard .wizard-step-item .step-num {
+  display: inline-flex;
+  width: 2.5rem;
+  height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--input-border, #e0e0e0);
+  color: var(--labelcolor, #666);
+  font-weight: 700;
+  font-size: 1.125rem;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0.3rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.patient-wizard .wizard-step-item.active .step-num,
+.ipd-wizard .wizard-step-item.active .step-num,
+.people-wizard .wizard-step-item.active .step-num {
+  background: var(--theme-primary, var(--btnprimary, #2F6B4F));
+  color: var(--colorwhite, #fff);
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  transform: scale(1.08);
+}
+
+.patient-wizard .wizard-step-item.completed .step-num,
+.ipd-wizard .wizard-step-item.completed .step-num,
+.people-wizard .wizard-step-item.completed .step-num {
+  background: var(--Addbtnbackgroundhover, #198754);
+  color: var(--colorwhite, #fff);
+}
+
+/* Completed step: replace number text with checkmark */
+.patient-wizard .wizard-step-item.completed .step-num .step-num-text,
+.ipd-wizard .wizard-step-item.completed .step-num .step-num-text,
+.people-wizard .wizard-step-item.completed .step-num .step-num-text {
+  display: none;
+}
+
+.patient-wizard .wizard-step-item.completed .step-num::before,
+.ipd-wizard .wizard-step-item.completed .step-num::before,
+.people-wizard .wizard-step-item.completed .step-num::before {
+  content: '\f00c';
+  font-family: 'Font Awesome 6 Free', 'Font Awesome 5 Free', 'FontAwesome';
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+.patient-wizard .wizard-step-item .step-title,
+.ipd-wizard .wizard-step-item .step-title,
+.people-wizard .wizard-step-item .step-title {
+  display: block;
+  font-size: var(--fs-label, 13px);
+  font-weight: 600;
+  color: var(--labelcolor, #666);
+  transition: color 0.2s, font-size 0.2s;
+}
+
+.patient-wizard .wizard-step-item.active .step-title,
+.ipd-wizard .wizard-step-item.active .step-title,
+.people-wizard .wizard-step-item.active .step-title {
+  color: var(--theme-primary, var(--btnprimary, #2F6B4F));
+  font-weight: 700;
+}
+
+.patient-wizard .wizard-step-item.completed .step-title,
+.ipd-wizard .wizard-step-item.completed .step-title,
+.people-wizard .wizard-step-item.completed .step-title {
+  color: var(--Addbtnbackgroundhover, #198754);
+}
+
+/* Disabled state */
+.patient-wizard .wizard-step-item.wizard-step-disabled,
+.ipd-wizard .wizard-step-item.wizard-step-disabled,
+.people-wizard .wizard-step-item.wizard-step-disabled {
+  pointer-events: auto;
+  cursor: pointer;
+  opacity: 0.55;
+}
+
+.patient-wizard .wizard-step-item.wizard-step-disabled .step-num,
+.ipd-wizard .wizard-step-item.wizard-step-disabled .step-num,
+.people-wizard .wizard-step-item.wizard-step-disabled .step-num {
+  background: var(--input-border, #e0e0e0);
+  color: var(--labelcolor, #666);
+}
+
+/* Content area */
+.patient-wizard .wizard-content,
+.ipd-wizard .wizard-content,
+.people-wizard .wizard-content {
+  min-height: 280px;
+  width: 100%;
+  max-width: 100%;
+  padding: 1rem 0.5rem;
+}
+
+.patient-wizard .wizard-step-pane,
+.ipd-wizard .wizard-step-pane,
+.people-wizard .wizard-step-pane {
+  display: none;
+  width: 100%;
+  animation: wizardFade 0.3s ease;
+}
+
+.patient-wizard .wizard-step-pane.active,
+.ipd-wizard .wizard-step-pane.active,
+.people-wizard .wizard-step-pane.active {
+  display: block;
+}
+
+@keyframes wizardFade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Footer navigation */
+.wizard-actions {
+  width: 100%;
+  gap: 0.75rem;
+  padding: 1rem 0.5rem 0;
+  border-top: 1px solid var(--input-border, #e0e0e0);
+  margin-top: 1rem;
+}
+
+.wizard-nav-buttons {
+  justify-content: flex-end;
+  margin-left: auto;
+  gap: 0.5rem;
+}
+
+.patient-wizard .wizard-nav-buttons .btn,
+.ipd-wizard .wizard-nav-buttons .btn,
+.people-wizard .wizard-nav-buttons .btn {
+  margin-left: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 575px) {
+  .patient-wizard .wizard-step-item .step-title,
+  .ipd-wizard .wizard-step-item .step-title,
+  .people-wizard .wizard-step-item .step-title {
+    font-size: var(--fs-small, 12px);
+  }
+  .patient-wizard .wizard-step-item .step-num,
+  .ipd-wizard .wizard-step-item .step-num,
+  .people-wizard .wizard-step-item .step-num {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.9rem;
+  }
+}

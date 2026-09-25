@@ -1,0 +1,361 @@
+@* ═══════════════════════════════════════════════════════════════
+   Fork of _PatientEmergencyContactEditor.cshtml, used ONLY by
+   Add_IPD_Application_Form.cshtml, so the new design's markup
+   (contact-card / contact-grid / .field) can be applied without
+   touching the shared partial the old page still renders.
+   All ids/classes the JS binds to (.contact-name, .contact-relationship,
+   .contact-phone, .contact-id, .emergency-contact-row, .emergency-contact-remove,
+   .emergency-contact-add, .emergency-contact-save, .emergency-contact-rows,
+   .emergency-contact-guidance, .form-group, .has-error, .emergency-contact-field-error)
+   and every AJAX endpoint are identical to the original — functionality unchanged.
+   ═══════════════════════════════════════════════════════════════ *@
+  @using Admin
+<div class="col-sm-12 col-xs-12 mt-3 patient-emergency-contact-container">
+    <div class="card">
+        @* Head layout mirrors the reference: icon, then title + Mandated badge, then the
+           description underneath, with "+ Add" pinned top-right. Uses .ipd-head-left /
+           .ipd-head-title-row (see the page's stylesheet) rather than .row, and <div>s rather
+           than <span>s — a <p> inside a <span> is invalid nesting and the browser was breaking
+           the block apart, which is what pushed the description onto its own line. *@
+        <div class="card-head section-title ipd-section-head">
+            <div class="ipd-head-left">
+                <span class="icon-tile" aria-hidden="true">&#9742;</span>
+                <div>
+                    <div class="ipd-head-title-row"><header>@Resource.emergencycontactinfo</header><span class="required">Mandated</span></div>
+                    <p>Extension of patient profile. At least one emergency contact is required for hospital records.</p>
+                </div>
+            </div>
+            <button type="button" class="primary small-button emergency-contact-add" disabled>+ Add</button>
+        </div>
+        <div class="info-banner emergency-contact-guidance">ⓘ Select or create a patient to view and add emergency contacts.</div>
+        <div class="emergency-contact-rows contact-list"></div>
+        <button type="button" class="emergency-contact-save" disabled hidden aria-hidden="true" tabindex="-1">Save Emergency Contact</button>
+    </div>
+</div>
+
+<script>
+(function () {
+    var $container = $('.patient-emergency-contact-container').last();
+    var $rows = $container.find('.emergency-contact-rows');
+    var $guidance = $container.find('.emergency-contact-guidance');
+    var $actions = $container.find('.emergency-contact-add, .emergency-contact-save');
+    var loadSequence = 0;
+    var autoSaveTimer = null;
+
+    function patientId() {
+        return ($('#patientname').val() || $('#patientname_healthseeker').val() || window._patientEmergencyContactProfileId || '').toString();
+    }
+
+    function escapeHtml(value) {
+        return $('<div/>').text(value || '').html();
+    }
+
+    function parseJson(value) {
+        if (typeof value !== 'string') return value;
+        try { return JSON.parse(value || '[]'); } catch (e) { return []; }
+    }
+
+    function unwrapRows(value) {
+        var parsed = parseJson(value);
+        if (Array.isArray(parsed)) return parsed;
+        if (parsed && Array.isArray(parsed.detail)) return parsed.detail;
+        if (parsed && Array.isArray(parsed.data)) return parsed.data;
+        return [];
+    }
+
+    function firstValue(source, names) {
+        source = source || {};
+        for (var i = 0; i < names.length; i++) {
+            if (source[names[i]] !== undefined && source[names[i]] !== null) return source[names[i]];
+        }
+        return '';
+    }
+
+    function normaliseContact(contact) {
+        return {
+            PatientProfile_emergencycontactinfoid: firstValue(contact, [
+                'PatientProfile_emergencycontactinfoid',
+                'patientProfile_emergencycontactinfoid',
+                'patientprofile_emergencycontactinfoid'
+            ]),
+            personname: firstValue(contact, ['personname', 'PersonName', 'Person Name']),
+            relationship: firstValue(contact, ['relationship', 'Relationship']),
+            phonenumber: firstValue(contact, ['phonenumber', 'PhoneNumber', 'Phone Number'])
+        };
+    }
+
+    function contactsFromPatient(patient) {
+        if (Array.isArray(patient)) patient = patient.length ? patient[0] : null;
+        if (!patient) return [];
+        var candidates = [
+            patient.emergencycontactinfo,
+            patient.automaton_PatientProfile_emergencycontactinfo,
+            patient.automaton_patientprofile_emergencycontactinfo
+        ];
+        for (var i = 0; i < candidates.length; i++) {
+            var contacts = unwrapRows(candidates[i]);
+            if (contacts.length) return contacts.map(normaliseContact);
+        }
+        return [];
+    }
+
+    /* Phone is captured as a bare 10-digit national number — the country code comes from the
+       intl-tel-input flag, never from what is typed, so anything non-numeric (or an 11th digit)
+       is dropped as it is entered and the row is rejected on save until exactly 10 remain. */
+    var PHONE_DIGITS = 10;
+
+    function nationalDigits(value) {
+        return (value || '').toString().replace(/\D/g, '').slice(-PHONE_DIGITS);
+    }
+
+    function initialisePhoneInput(input, value) {
+        if (!input) return;
+        var digits = nationalDigits(value);
+        if (typeof window.intlTelInput !== 'undefined') {
+            var iti = window.intlTelInput(input, {
+                nationalMode: true,
+                initialCountry: 'in',
+                preferredCountries: ['in', 'us', 'sg']
+            });
+            if (digits) iti.setNumber(digits);
+        }
+        input.value = digits;
+    }
+
+    /* Relationship comes from the same "relationship" lookup the patient-profile screens use, so
+       the emergency contact offers exactly the same choices (it used to be a free-text box here).
+       Loaded once; rows built before it arrives are patched when it lands. */
+    var _relationshipOptions = null;
+
+    function relationshipSelectHtml(selected) {
+        var current = $.trim(selected || '');
+        var options = (_relationshipOptions || []).slice();
+        /* Contacts saved before this was a dropdown can hold free text ("friend"). Keep such a
+           value as its own option so opening the form never silently clears it. */
+        var known = options.some(function (option) {
+            return String(option).toLowerCase() === current.toLowerCase();
+        });
+        if (current && !known) options.push(current);
+
+        var html = '<select class="form-control required contact-relationship">' +
+                   '<option value="">Select relationship...</option>';
+        options.forEach(function (option) {
+            html += '<option value="' + escapeHtml(option) + '"' +
+                    (String(option).toLowerCase() === current.toLowerCase() ? ' selected' : '') + '>' +
+                    escapeHtml(option) + '</option>';
+        });
+        return html + '</select>';
+    }
+
+    function relationshipsFromLookups(data) {
+        /* The endpoint is declared as Task<string>, so depending on the response content type
+           jQuery hands back either the parsed rows or the raw JSON text — parse defensively. */
+        var rows = parseJson(data);
+        if (!Array.isArray(rows)) rows = (rows && (rows.detail || rows.data)) || [];
+        var options = [];
+        rows.forEach(function (row) {
+            if (row && (row.fieldname || '').toLowerCase() === 'relationship' && row.fielddesc) {
+                options = options.concat(row.fielddesc.split(',').map(function (v) { return $.trim(v); }));
+            }
+        });
+        return options.filter(Boolean);
+    }
+
+    function loadRelationshipOptions() {
+        if (_relationshipOptions) return;
+        /* The relationship choices live on the People lookup (that is what the patient-profile
+           emergency-contact screen builds its dropdown from); PatientProfile is queried too so
+           either configuration supplies the list. */
+        var requests = ['People', 'PatientProfile'].map(function (entity) {
+            return $.ajax({ url: '@Url.Action("get_lookups_by_entity", "lookups")', dataType: 'json', data: { id: entity } });
+        });
+        $.when.apply($, requests.map(function (request) {
+                return request.then(function (data) { return data; }, function () { return null; });
+            }))
+            .done(function () {
+                var seen = {}, options = [];
+                Array.prototype.slice.call(arguments).forEach(function (data) {
+                    relationshipsFromLookups(data).forEach(function (option) {
+                        var key = option.toLowerCase();
+                        if (!seen[key]) { seen[key] = true; options.push(option); }
+                    });
+                });
+                options.sort(function (a, b) { return a.localeCompare(b); });
+                _relationshipOptions = options;
+                /* Patch any editable row already on screen, keeping whatever it holds selected.
+                   Locked rows keep their readonly text input. */
+                $rows.find('.emergency-contact-row').not('.is-locked').find('.contact-relationship').each(function () {
+                    var $old = $(this);
+                    $old.replaceWith(relationshipSelectHtml($old.val()));
+                });
+            });
+    }
+    loadRelationshipOptions();
+
+    /* Contacts that already exist on the patient profile are shown read-only: this screen may add
+       new contacts (which are written back to the profile) but must never edit or delete what the
+       profile already holds. Locked rows keep the same .contact-* classes — as readonly <input>s
+       rather than editable fields/selects — so validation, save and the summary all still see them. */
+    function addRow(contact, locked) {
+        contact = contact || {};
+        var isFirst = $rows.find('.emergency-contact-row').length === 0;
+        var relationshipField = locked
+            ? '<input type="text" class="form-control contact-relationship" readonly value="' + escapeHtml(contact.relationship) + '">'
+            : relationshipSelectHtml(contact.relationship);
+        var lockedAttr = locked ? ' readonly' : '';
+        $rows.append('<div class="contact-card emergency-contact-row' + (locked ? ' is-locked' : '') + '">' +
+            '<div class="contact-title"><span>Contact ' + (isFirst ? '<em class="badge-muted">Primary</em>' : '') +
+            (locked ? ' <em class="badge-muted">From patient profile</em>' : '') + '</span>' +
+            (locked ? '' : '<button type="button" class="btn btn-danger emergency-contact-remove" title="Remove"><span class="fa fa-trash"></span></button>') +
+            '</div>' +
+            '<input type="hidden" class="contact-id" value="' + escapeHtml(contact.PatientProfile_emergencycontactinfoid || contact.patientProfile_emergencycontactinfoid || '') + '">' +
+            '<div class="grid contact-grid">' +
+            '<div class="form-group field"><label class="field-label">@Resource.patientprofile_emergencycontactinfo_personname <b class="iconRed">*</b></label><input type="text" maxlength="128" class="form-control required contact-name"' + lockedAttr + ' value="' + escapeHtml(contact.personname) + '"><div class="help-block emergency-contact-field-error" style="display:none" role="alert">This field is required.</div></div>' +
+            '<div class="form-group field"><label class="field-label">@Resource.patientprofile_emergencycontactinfo_relationship <b class="iconRed">*</b></label>' + relationshipField + '<div class="help-block emergency-contact-field-error" style="display:none" role="alert">This field is required.</div></div>' +
+            '<div class="form-group field ipd-phone-field"><label class="field-label">@Resource.patientprofile_emergencycontactinfo_phonenumber <b class="iconRed">*</b></label><input type="tel" inputmode="numeric" maxlength="' + PHONE_DIGITS + '" class="form-control required contact-phone"' + lockedAttr + ' value="' + escapeHtml(nationalDigits(contact.phonenumber)) + '"><div class="help-block emergency-contact-field-error" style="display:none" role="alert">Enter a valid 10 digit mobile number.</div></div>' +
+            '</div></div>');
+        var input = $rows.find('.emergency-contact-row').last().find('.contact-phone')[0];
+        initialisePhoneInput(input, contact.phonenumber || '');
+    }
+
+    function renderContacts(contacts, sequence) {
+        if (sequence !== loadSequence) return;
+        $rows.empty();
+        if (contacts && contacts.length) contacts.map(normaliseContact).forEach(function (contact) { addRow(contact, true); });
+        else addRow();
+        if (typeof refreshBookingSummary === 'function') refreshBookingSummary();
+    }
+
+    function loadContacts(selectedPatient) {
+        var id = patientId();
+        var sequence = ++loadSequence;
+        $rows.empty();
+        if (!id) {
+            $guidance.show();
+            $actions.prop('disabled', true);
+            return;
+        }
+        $container.show();
+        $guidance.hide();
+        $actions.prop('disabled', false);
+        $.get('@Url.Action("getById_emergencycontactinfo", "PatientProfile")', { PatientProfileid: id })
+            .done(function (result) {
+                var contacts = unwrapRows(result);
+                if (contacts.length) {
+                    renderContacts(contacts, sequence);
+                    return;
+                }
+
+                contacts = contactsFromPatient(selectedPatient);
+                if (contacts.length) {
+                    renderContacts(contacts, sequence);
+                    return;
+                }
+
+                $.get('@Url.Action("getById_allinfo_PatientProfile", "PatientProfile")', { PatientProfileid: id })
+                    .done(function (patientResult) {
+                        var patients = unwrapRows(patientResult);
+                        renderContacts(contactsFromPatient(patients), sequence);
+                    })
+                    .fail(function () { renderContacts([], sequence); });
+            })
+            .fail(function () {
+                var contacts = contactsFromPatient(selectedPatient);
+                if (contacts.length) renderContacts(contacts, sequence);
+                else {
+                    $.get('@Url.Action("getById_allinfo_PatientProfile", "PatientProfile")', { PatientProfileid: id })
+                        .done(function (patientResult) {
+                            renderContacts(contactsFromPatient(unwrapRows(patientResult)), sequence);
+                        })
+                        .fail(function () { renderContacts([], sequence); });
+                }
+            });
+    }
+
+    $container.on('click', '.emergency-contact-add', function () {
+        addRow();
+        if (typeof refreshBookingSummary === 'function') refreshBookingSummary();
+    });
+    $container.on('click', '.emergency-contact-remove', function () {
+        if ($rows.find('.emergency-contact-row').length > 1) $(this).closest('.emergency-contact-row').remove();
+        if (typeof refreshBookingSummary === 'function') refreshBookingSummary();
+    });
+    /* Strip anything that is not a digit (and any 11th digit) as the user types / pastes. */
+    $container.on('input', '.contact-phone', function () {
+        var cleaned = (this.value || '').replace(/\D/g, '').slice(0, PHONE_DIGITS);
+        if (cleaned !== this.value) this.value = cleaned;
+    });
+    $container.on('input change', '.contact-name, .contact-relationship, .contact-phone', function () {
+        var $group = $(this).closest('.form-group');
+        var value = ($(this).val() || '').trim();
+        var ok = $(this).hasClass('contact-phone') ? value.length === PHONE_DIGITS : !!value;
+        if (ok) $group.removeClass('has-error').find('.emergency-contact-field-error').hide();
+
+        clearTimeout(autoSaveTimer);
+        autoSaveTimer = setTimeout(function () {
+            var complete = !!patientId() && $rows.find('.emergency-contact-row').length > 0;
+            $rows.find('.emergency-contact-row').each(function () {
+                if (!$(this).find('.contact-name').val().trim() ||
+                    !$(this).find('.contact-relationship').val().trim() ||
+                    nationalDigits($(this).find('.contact-phone').val()).length !== PHONE_DIGITS) complete = false;
+            });
+            if (complete) $container.find('.emergency-contact-save').trigger('click');
+        }, 700);
+    });
+    $container.on('click', '.emergency-contact-save', function () {
+        var id = patientId(), contacts = [], valid = true;
+        $rows.find('.form-group').removeClass('has-error').find('.emergency-contact-field-error').hide();
+        $rows.find('.emergency-contact-row').each(function () {
+            var $row = $(this), name = $row.find('.contact-name').val().trim(), relationship = $row.find('.contact-relationship').val().trim();
+            /* Stored as the bare 10-digit number — the country code is deliberately not prefixed. */
+            var phone = nationalDigits($row.find('.contact-phone').val());
+            [[ $row.find('.contact-name'), !!name ], [ $row.find('.contact-relationship'), !!relationship ], [ $row.find('.contact-phone'), phone.length === PHONE_DIGITS ]].forEach(function (field) {
+                if (!field[1]) {
+                    valid = false;
+                    field[0].closest('.form-group').addClass('has-error').find('.emergency-contact-field-error').show();
+                }
+            });
+            if (!name || !relationship || phone.length !== PHONE_DIGITS) return;
+            contacts.push({ PatientProfile_emergencycontactinfoid: $row.find('.contact-id').val() || null, personname: name, relationship: relationship, phonenumber: phone });
+        });
+        if (!id || !valid || !contacts.length) {
+            var $firstInvalid = $rows.find('.form-group.has-error').first();
+            if ($firstInvalid.length) {
+                $firstInvalid.find('input').first().trigger('focus');
+                $('html, body').animate({ scrollTop: Math.max(0, $firstInvalid.offset().top - 140) }, 200);
+            }
+            notify('Please complete all emergency contact fields.', 'error');
+            return;
+        }
+        var $button = $(this).prop('disabled', true);
+        $.ajax({ url: '@Url.Action("Update_Emergency_Contact_Info", "PatientProfile")', type: 'POST', contentType: 'application/json', data: JSON.stringify({ PatientProfileid: id, emergencycontactinfo: contacts }) })
+            .done(function (result) {
+                if ((result || '').toString().replace(/"/g, '') === '201.1') { notify('Emergency contact information updated successfully.', 'success'); loadContacts(); }
+                else notify(result || 'Unable to update emergency contact information.', 'error');
+            }).fail(function () { notify('Unable to update emergency contact information.', 'error'); })
+            .always(function () { $button.prop('disabled', false); });
+    });
+
+    $(document).on('change select2:select', '#patientname', function () {
+        window._patientEmergencyContactProfileId = ($(this).val() || '').toString();
+        loadContacts();
+    });
+    $(document).on('psc:patientSelected', function (event, patient) {
+        setTimeout(function () { loadContacts(patient); }, 0);
+    });
+    $(document).on('psc:patientCleared', function () {
+        loadSequence++;
+        $rows.empty();
+        $guidance.show();
+        $actions.prop('disabled', true);
+    });
+    $(function () {
+        setTimeout(function () {
+            var selectedPatient = window.PatientSearchControl && window.PatientSearchControl.getSelectedPatient
+                ? window.PatientSearchControl.getSelectedPatient()
+                : null;
+            loadContacts(selectedPatient);
+        }, 700);
+    });
+})();
+</script>

@@ -1,0 +1,927 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:58 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					 @model NalamVazha.Models.OPDFormModel
+					@{
+					ViewData["Title"] = "OPD Form";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					var requestedOpdFormId = Context.Request.Query["OPDFormid"].ToString();
+					var viewOpdFormId = Model?.OPDFormid?.ToString();
+					if (string.IsNullOrWhiteSpace(viewOpdFormId)
+						&& Guid.TryParse(requestedOpdFormId, out var parsedOpdFormId))
+					{
+						viewOpdFormId = parsedOpdFormId.ToString();
+					}
+					<script>
+						function getOPDViewReturnUrl() {
+							try {
+								var requested = new URLSearchParams(window.location.search).get('returnurl');
+								if (requested && requested.charAt(0) === '/' && requested.indexOf('//') !== 0) return requested;
+							} catch (e) { }
+							return document.referrer || '/';
+						}
+					</script>
+					}
+
+					<div class="">
+
+					<div class="">
+
+						<div class="row" id="reworksection" style="display:none">
+							<div class="col-sm-12">
+								<div class="review-common-title rework">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+										<path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+										<path d="M12 8V12" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+										<path d="M12 16H12.01" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+									</svg>
+									<label>Reason for Re-work : </label><span class="auto_cls_reviewcomments"> </span>
+								</div>
+							</div>
+						</div>
+
+						<div class="row" id="rejectedsection" style="display:none">
+							<div class="col-sm-12">
+								<div class="review-common-title rejected">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+										<path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+										<path d="M12 8V12" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+										<path d="M12 16H12.01" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+									</svg>
+									<label>Reason for Rejection : </label><span class="auto_cls_reviewcomments"> </span>
+								</div>
+							</div>
+						</div>
+						  <div id="cma_printableArea" style="padding:20px">
+
+							<div class="row printablerow">
+							<div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>OPD Form</b>
+							</h3>
+
+							<br />
+							</div>
+							<div class="col-sm-12 revisions" style="display:none;">
+					<div class="card-head">
+						<header><span class="auto_cls_quotenumber"></span></header>
+
+						<ul class="nav nav-tabs tabs-vessels pull-right">
+							<li class="dropdown">
+								<a href="javascript:void(0);" class="cma_highlight" data-toggle="dropdown">
+								<i class="md md-more-vert"></i><sup class="badge style-danger number_of_records"></sup>
+								</a>
+								<ul class="dropdown-menu dropleft animation-expand allrecords">
+								</ul><!--end .dropdown-menu -->
+							</li><!--end .dropdown -->
+
+
+						</ul>
+					</div>
+				</div>
+
+
+				<div class="col-sm-12 col-xs-12 mt-3 BasicInfo_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.basicinfo</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 bookingreferencenumber_craftmyapp_viewcontainer" style="@(Context.Session.GetString("NalamVazhauserrole") == "Frontdesk Admin" ? "display:none" : "")">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="bookingreferencenumber">@Resource.opdform_bookingreferencenumber</label><br>
+										<span class="auto_cls_bookingreferencenumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 patientname_craftmyapp_viewcontainer" style="@(Context.Session.GetString("NalamVazhauserrole") == "Frontdesk Admin" ? "display:none" : "")">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="patientname">@Resource.opdform_patientname</label><br>
+										<span class="auto_cls_patientname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 appointmentmode_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="appointmentmode">@Resource.opdform_appointmentmode</label><br>
+										<span class="auto_cls_appointmentmode"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+			  </div><!--form_group_div_block-->
+
+			<div class="col-sm-12 col-xs-12 mt-3 opd-emergency-contact-section">
+				<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+					<div class="card-head"><header>@Resource.emergencycontactinfo</header></div>
+					<div class="card-body card-container-Padding-NoShadow">
+						<div class="table-responsive-lg">
+							<table class="table table-bordered mb-0 opd-emergency-contact-table">
+								<colgroup><col><col><col></colgroup>
+								<thead><tr><th>Person Name</th><th>Relationship</th><th>Phone Number</th></tr></thead>
+								<tbody class="opd-emergency-contact-body"><tr><td colspan="3" class="text-muted">No emergency contact information available.</td></tr></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<style>
+				.opd-emergency-contact-table { table-layout: fixed; width: 100%; }
+				.opd-emergency-contact-table col { width: 33.3333%; }
+				.opd-emergency-contact-table th,
+				.opd-emergency-contact-table td {
+					text-align: left !important;
+					vertical-align: middle !important;
+					padding: 10px !important;
+					word-break: break-word;
+				}
+			</style>
+
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent appointmentpreferencesContainerBodyParent hide"><!--Dependent Appointment Preferences Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.appointmentpreferences
+							</header>
+
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="appointmentpreferencesContainer" class="table table-bordered mb-0 appointmentpreferencesContainer">
+							<thead id="appointmentpreferencesContainerHead">
+								<th>Preferred Date</th>
+<th>Slot Preference</th>
+
+
+							</thead>
+
+							<tbody id="appointmentpreferencesContainerBody">
+							</tbody>
+
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Appointment Preferences Containder Block-->
+
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicalinfoContainerBodyParent hide"><!--Dependent Medical Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.medicalinfo
+							</header>
+
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="medicalinfoContainer" class="table table-bordered mb-0 medicalinfoContainer">
+							<thead id="medicalinfoContainerHead">
+								<th>Medical Condition Name</th>
+<th>Duration</th>
+<th>Unit</th>
+<th>Severity Level</th>
+
+
+							</thead>
+
+							<tbody id="medicalinfoContainerBody">
+							</tbody>
+
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Medical Info Containder Block-->
+
+
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicationinfoContainerBodyParent hide"><!--Dependent Medication Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.medicationinfo
+							</header>
+
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="medicationinfoContainer" class="table table-bordered mb-0 medicationinfoContainer">
+							<thead id="medicationinfoContainerHead">
+								<th>Medicine Name</th>
+<th>Frequency in a day</th>
+<th>Medication Duration</th>
+
+
+							</thead>
+
+							<tbody id="medicationinfoContainerBody">
+							</tbody>
+
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Medication Info Containder Block-->
+
+
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicalrecordsContainerBodyParent hide"><!--Dependent Medical Records Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.medicalrecords
+							</header>
+
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="medicalrecordsContainer" class="table table-bordered mb-0 medicalrecordsContainer">
+							<thead id="medicalrecordsContainerHead">
+								<th>Medical Record Name</th>
+<th>Medical Record File</th>
+
+
+							</thead>
+
+							<tbody id="medicalrecordsContainerBody">
+							</tbody>
+
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Medical Records Containder Block-->
+				<div class="col-sm-3 col-xs-12 p-2 task_craftmyapp_viewcontainer">
+					<div>
+						<div class="form-group form-group--float-above my-3">
+							<label for="taskname">@Resource.opdform_task</label><br>
+							<span class="auto_cls_task"></span>
+							<i class="form-group__bar"></i>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="col-sm-3 col-xs-12 p-2 preferreddoctor_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="preferreddoctor">@Resource.opdform_preferreddoctor</label><br>
+										<span class="auto_cls_preferreddoctor"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+				<div class="col-sm-3 col-xs-12 p-2 verifiedstatus_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="verifiedstatus">@Resource.opdform_verifiedstatus</label><br>
+										<span class="auto_cls_verifiedstatus"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+								   <div class="col-sm-12 col-xs-12 mt-3 review_logs_parent hide">
+												<!--Dependent review_logs Containder Block-->
+											   <div class="card card card-blue cma_dependent_band">
+												<div class="card-head">
+														<header>
+															 Review Log
+														</header>
+
+													</div>
+												<div class="card-body fluent-card-body commonContainer">
+
+														<div class="col-12">
+																<div class="col-12">
+														<ul class="nav nav-tabs tab-nav-right" role="tablist">
+															<li role="presentation" class="active"><a href="#home" data-toggle="tab"><i class="fa fa-calendar"></i></a></li>
+															<li role="presentation"><a href="#profile" data-toggle="tab"><i class="fa fa-history"></i></a></li>
+
+														</ul>
+
+														<div class="tab-content">
+																<div role="tabpanel" class="tab-pane fade in active" id="home">
+																		<div class="table-responsive-lg">
+																		<table id="review_logsContainer" class="table table-bordered mb-0 review_logsContainer">
+																		<thead id="review_logsContainerHead">
+																		<th>Reviewed On</th>
+																		<th>Reviewed By</th>
+																		<th>Status</th>
+																		<th>Comments</th>
+
+																		</thead>
+
+																		<tbody id="review_logsContainerBody">
+																		</tbody>
+
+																		</table>
+																		</div>
+
+																</div>
+																<div role="tabpanel" class="tab-pane fade" id="profile">
+																		<div class="table-responsive-lg">
+																			<table id="review_logs_historyContainer" class="table table-bordered mb-0 review_logsContainer">
+																			<thead id="review_logsContainerHead">
+																			<th>Booking Reference Number</th>
+																			<th>Reviewed On</th>
+																			<th>Reviewed By</th>
+																			<th>Status</th>
+																			<th>Comments</th>
+
+																			</thead>
+
+																			<tbody id="review_logs_historyContainerBody">
+																			</tbody>
+
+																			</table>
+																		</div>
+																</div>
+
+														</div>
+
+
+
+														</div>
+														</div>
+													</div>
+												</div>
+											</div>
+								<div class="col-sm-12 p-2 auto_review_comments">
+									<div>
+										<div class="form-group form-group--float-above my-3" >
+											<label>Review Comments</label><br>
+											<textarea id="reviewcomments" readonly class="form-control auto_cls_reviewcomments" name="reviewcomments"></textarea>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 ">
+									<div class="btn-group pull-right" id="verifiedstatus_buttons">
+									</div>
+								</div>
+							</div>
+						 </div>
+						<div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+
+									<button type="button"  onclick="window.location.href = getOPDViewReturnUrl()" class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+
+								</div>
+							</div>
+
+					</div>
+
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					<style>
+					.page-header-box h1 {
+						display: flex;
+						align-items: center;
+						gap: 8px;
+						flex-wrap: wrap;
+						line-height: 1.2;
+					}
+
+					.page-header-box h1 .review_title {
+						display: inline-flex;
+						align-items: center;
+						gap: 6px;
+						min-height: 24px;
+						padding: 4px 10px;
+						border-radius: 999px;
+						font-size: 12px;
+						font-weight: 700;
+						line-height: 1;
+						letter-spacing: 0;
+						text-transform: uppercase;
+						vertical-align: middle;
+						white-space: nowrap;
+						box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+					}
+
+					.page-header-box h1 .review_title svg {
+						width: 14px;
+						height: 14px;
+						flex: 0 0 auto;
+					}
+
+					.page-header-box h1 .review_title--rejected {
+						background: #c62828;
+						color: #fff;
+					}
+
+					.page-header-box h1 .review_title--rework {
+						background: #b7791f;
+						color: #fff;
+					}
+
+					@@media (max-width: 767px) {
+						.page-header-box h1 .review_title {
+							font-size: 11px;
+							padding: 4px 8px;
+						}
+					}
+
+					.opd-patient-badges { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+					.opd-patient-badge { display:inline-flex; align-items:center; gap:3px; border-radius:999px; font-size:10.5px; font-weight:700; padding:2px 8px; white-space:nowrap; }
+					.opd-patient-badge--danger { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; }
+					.opd-patient-badge--category { background:#ede9fe; color:#5b21b6; border:1px solid #ddd6fe; }
+					.opd-patient-badge--none { background:#f1f5f9; color:#64748b; border:1px solid #e2e8f0; }
+					.opd-header-name { font-weight: 700; font-size: 20px; text-transform: capitalize; letter-spacing: 0.5px; }
+					.opd-header-ref { font-weight: 700; font-size: 18px; color: #2f6b4f; letter-spacing: 0.5px; }
+					</style>
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					function buildOPDPatientBadges(obj) {
+						var badges = '';
+						var blacklisted = ((obj && obj.blacklisted) || 'No').toString().toLowerCase();
+						var category = ((obj && obj.patientcategoryname) || 'Not Categorized').toString().trim();
+						if (blacklisted === 'yes') {
+							badges += '<span class="opd-patient-badge opd-patient-badge--danger"><i class="fa fa-ban" style="font-size:9px;"></i> Blacklisted</span>';
+						}
+						if (category && category !== 'Not Categorized') {
+							badges += '<span class="opd-patient-badge opd-patient-badge--category"><i class="fa fa-tag" style="font-size:9px;"></i> ' + $('<span>').text(category).html() + '</span>';
+						} else {
+							badges += '<span class="opd-patient-badge opd-patient-badge--none"><i class="fa fa-tag" style="font-size:9px;"></i> Uncat.</span>';
+						}
+						return badges ? '<div class="opd-patient-badges">' + badges + '</div>' : '';
+					}
+					function loadOPDEmergencyContacts(patientProfileId) {
+						var $body = $('.opd-emergency-contact-body');
+						$body.html('<tr><td colspan="3" class="text-muted">No emergency contact information available.</td></tr>');
+						var hasContacts = false;
+						function appendContacts(contacts) {
+							(contacts || []).forEach(function (contact) {
+								if (!hasContacts) { $body.empty(); hasContacts = true; }
+								$body.append('<tr><td>' + $('<div/>').text(contact.personname || '').html() + '</td><td>' + $('<div/>').text(contact.relationship || '').html() + '</td><td>' + $('<div/>').text(contact.phonenumber || '').html() + '</td></tr>');
+							});
+						}
+						if (!patientProfileId) return;
+						$.get('@Url.Action("getById_emergencycontactinfo", "PatientProfile")', { PatientProfileid: patientProfileId })
+							.done(function (result) {
+								if (typeof result === 'string') { try { result = JSON.parse(result); } catch (e) { result = []; } }
+								var contacts = Array.isArray(result) ? result : (result && Array.isArray(result.data) ? result.data : []);
+								appendContacts(contacts);
+							});
+						var bookingOpdFormId = '@viewOpdFormId';
+						if (bookingOpdFormId) {
+							$.get('@Url.Action("Get_Booking_Emergency_Contacts", "OPDForm")', { OPDFormid: bookingOpdFormId })
+								.done(function (result) {
+									if (typeof result === 'string') { try { result = JSON.parse(result); } catch (e) { result = []; } }
+									appendContacts(Array.isArray(result) ? result : (result && Array.isArray(result.data) ? result.data : []));
+								});
+						}
+					}
+					function updateOPDViewHeader(obj) {
+						var patientText = (obj && obj.patientname ? obj.patientname : '').toString().trim();
+						if (!patientText || patientText === '-') return;
+						var bookingRef = (obj && obj.bookingreferencenumber ? obj.bookingreferencenumber : '').toString().trim();
+						var backBtn = '<a href="javascript:void(0);" onclick="window.location.href = getOPDViewReturnUrl()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>';
+						var patientHtml = '<span class="opd-header-name">' + $('<div/>').text(patientText).html() + '</span>';
+						var bookingHtml = bookingRef && bookingRef !== '-' ? ' / <span class="opd-header-ref">' + $('<div/>').text(bookingRef).html() + '</span>' : '';
+						$("div.page-header-box h1").html(backBtn + patientHtml + bookingHtml);
+					}
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('OPDForm.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+					function fill_OPDForm_view_data(id){
+						var  OPDFormid = id?id: getUrlVars()["OPDFormid"];
+
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_OPDForm")',
+												dataType: 'json',
+												data:{OPDFormid: OPDFormid },
+												success: function(data) {
+
+												if (typeof data === 'string') {
+													try { data = JSON.parse(data); } catch (e) { data = []; }
+												}
+												var rows = Array.isArray(data)
+													? data
+													: (data && Array.isArray(data.data) ? data.data : []);
+												if (!rows.length || !rows[0]) {
+													console.error('No OPD detail was returned for OPDFormid:', OPDFormid);
+													$('#viewDetails_Auto').prepend('<div class="alert alert-danger opd-detail-load-error">Unable to load the OPD form details.</div>');
+													return;
+												}
+												var obj = rows[0];
+												loadOPDEmergencyContacts(obj.patientid);
+												updateOPDViewHeader(obj);
+												$(".auto_cls_task").html(obj.taskname || obj.task_master || '-');
+												$(".auto_cls_patientname").html((obj.patientname || '-') + buildOPDPatientBadges(obj));
+													for (var key in obj) {
+
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															if(key=='patientname'){
+																$(".auto_cls_patientname").html((obj.patientname || '-') + buildOPDPatientBadges(obj));
+															}
+															if(key=='task'){
+																$(".auto_cls_task").html(obj.taskname || obj.task_master || obj[key] || '-');
+															}
+															if(key=='taskname' || key=='task_master'){
+																$(".auto_cls_task").html(obj[key] || '-');
+															}
+
+															if(key=='automaton_OPDForm_appointmentpreferences'){
+																			$('#appointmentpreferencesContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_appointmentpreferences_history'
+																					 $(".appointmentpreferencesauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("OPDForm","versionhistory")
+																				if(Actions == undefined){
+																				$("appointmentpreferencesauditheaderlink").parent().hide()
+																				}
+
+																			   $('.appointmentpreferencesContainerBodyParent').removeClass('hide')
+																			   $('#appointmentpreferencesContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.appointmentpreferencesContainerBodyParent').addClass('hide')
+																			}
+																	}
+															if(key=='automaton_OPDForm_medicalinfo'){
+																			$('#medicalinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_medicalinfo_history'
+																					 $(".medicalinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("OPDForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicalinfoauditheaderlink").parent().hide()
+																				}
+
+																			   $('.medicalinfoContainerBodyParent').removeClass('hide')
+																			   $('#medicalinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicalinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_OPDForm_medicationinfo'){
+																			$('#medicationinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_medicationinfo_history'
+																					 $(".medicationinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("OPDForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicationinfoauditheaderlink").parent().hide()
+																				}
+
+																			   $('.medicationinfoContainerBodyParent').removeClass('hide')
+																			   $('#medicationinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicationinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_OPDForm_medicalrecords'){
+																			$('#medicalrecordsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_medicalrecords_history'
+																					 $(".medicalrecordsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("OPDForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicalrecordsauditheaderlink").parent().hide()
+																				}
+
+																			   $('.medicalrecordsContainerBodyParent').removeClass('hide')
+																			   $('#medicalrecordsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicalrecordsContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='medicalrecordfile'){
+																			$('.auto_cls_medicalrecordfile').empty()
+																			if(obj[key] !=null)  {
+
+																			var uploaded_medicalrecordfile = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_medicalrecordfile.length; i++) {
+
+
+																				if (uploaded_medicalrecordfile[i] != "") {
+																							var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_medicalrecordfile[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+																					iterate = iterate + 1;
+																						 $('.auto_cls_medicalrecordfile').append('<a href=' + filepath + ' class="medicalrecordfile filedisplay"><i class="fa fa-file"></i></a>')
+
+																				}
+
+
+																			}
+
+
+																		  }
+
+
+																	}
+
+
+
+
+															if(key=='verifiedstatus'){
+																 var headerElement = $("div.page-header-box h1");
+																 headerElement.find(".review_title").remove();
+
+																	  if (obj[key] == 'Rejected' || obj[key] == 'OPD Rejected'){
+																	$("#rejectedsection").show()
+											headerElement.append(`
+						<span class="review_title review_title--rejected" id="rejecticon_header" aria-label="Rejected status">
+								<svg width="18" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+									<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+									<g id="SVGRepo_iconCarrier">
+										<circle cx="12" cy="12" r="9" stroke="#FFFFFF"></circle>
+										<path d="M18 18L6 6" stroke="#FFFFFF"></path>
+									</g>
+								</svg>
+								Rejected
+						</span>
+					`);
+		}
+									else if (obj[key] == 'Rework' || obj[key] == 'OPD Rework'){
+								$("#reworksection").show()
+								headerElement.append(`<span class="review_title review_title--rework" id="reworkicon_header" aria-label="Rework status">
+
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 18 16" fill="none" id="reworkicon_header_icon">
+	<path d="M1 1.77637V6.44426H5.36364" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+	<path d="M16.9999 14.2236V9.55566H12.6362" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+	<path d="M15.1745 5.66605C14.8057 4.55104 14.1788 3.55414 13.3524 2.76839C12.526 1.98264 11.5269 1.43365 10.4485 1.17263C9.3701 0.91161 8.24745 0.947078 7.18532 1.27572C6.12318 1.60437 5.15618 2.21548 4.37455 3.05203L1 6.44404M17 9.55596L13.6255 12.948C12.8438 13.7845 11.8768 14.3956 10.8147 14.7243C9.75255 15.0529 8.6299 15.0884 7.55148 14.8274C6.47307 14.5664 5.47404 14.0174 4.64761 13.2316C3.82119 12.4459 3.1943 11.449 2.82545 10.3339" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg> Rework
+
+				</span>`);
+				}
+																$("#verifiedstatus_buttons").empty().hide();
+																$(".auto_checker_action").hide();
+																$("#reviewcomments").attr('readonly','readonly');
+
+
+															}
+															  if (key == 'automaton_review_logs') {
+																$('#review_logsContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+																   $('#review_logsContainerBody').append(get_dependent_table(obj[key]))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logsContainerBody').append('No Data Available')
+																}
+
+															}
+															if (key == 'automaton_review_logs_history') {
+																$('#review_logs_historyContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+
+
+
+
+
+																		const jsonData = JSON.parse(obj[key])
+																		const distinctQuotes = {};
+																			 let  IdsSet = new Set();
+																		jsonData.forEach(item => {
+																			const quoteNumber = item["Booking Reference Number"];
+																			const OPDFormid = item["OPDFormid"];
+																			distinctQuotes[OPDFormid] = quoteNumber;
+																			 IdsSet.add(OPDFormid);
+																		});
+																		$(".allrecords").empty()
+
+																					 const IdsSetString = [...IdsSet].join(',');
+
+																					localStorage.setItem('OPDForm_Compare', IdsSetString);
+
+
+																	var cnt=0;
+for (const OPDFormid in distinctQuotes) {
+				if (distinctQuotes.hasOwnProperty(OPDFormid)) {
+
+								var requestcard = '<li id="' + OPDFormid + '">' +
+								'<a href="#" class="vessel-id-text">' +
+								'<span class="_cma_pda">' + distinctQuotes[OPDFormid] + '</span>'+
+
+
+								'<span class="material-icons create_pda_and_download_from_cloud" id="' + OPDFormid + '">'+
+
+								'</span>' +
+
+
+								'</a>' +
+
+								'</div>' +
+								'</li>'
+
+								cnt=cnt+1;
+
+
+								$(".allrecords").append(requestcard)
+
+								$("#" + OPDFormid).click(function () {
+								$('.page-loader').show()
+								fill_OPDForm_view_data($(this).attr('id'))
+
+								$('.page-loader').hide()
+
+
+
+								})
+								// if(cnt >0){
+								// $(".revisions").show()
+								// }
+
+								$(".number_of_records").html(cnt)
+
+				}
+}
+
+
+
+																		$.each(jsonData, function(index, item) {
+																		delete item.OPDFormid;
+																		});
+
+																		var jsonWithoutOPDFormid = JSON.stringify(jsonData, null, 2);
+																		$('#review_logs_historyContainerBody').append(get_dependent_table(jsonWithoutOPDFormid))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logs_historyContainerBody').append('No Data Available')
+																}
+
+															}
+
+													}
+
+												}
+
+												})
+
+				   }
+
+					 function redirectToSamePage() {
+						// Get the current URL
+						const currentUrl = window.location.href;
+
+						// Check if the URL already contains query parameters
+						if (currentUrl.indexOf('?') > -1) {
+							// If there are already query parameters, append '&iscompare=Y'
+							window.location.href = currentUrl + '&iscompare=Y';
+						} else {
+							// If there are no query parameters, append '?iscompare=Y'
+							window.location.href = currentUrl + '?iscompare=Y';
+						}
+					}
+					$(document).ready(function () {
+
+$("#verifiedstatus_buttons").empty().hide();
+$(".auto_checker_action").hide()
+$("#reviewcomments").attr('readonly','readonly');
+
+$("body").on("click",'.auto_checker_action',function(){
+
+if((this.id =='Rejected' || this.id=='Rework') &&   $("#reviewcomments").val()==''){
+															swal({
+															title: 'Validation !',
+															text: "Please enter Review Comments",
+															type: 'error',
+															buttonsStyling: false,
+															confirmButtonClass: 'btn btn-primary',
+															allowOutsideClick: false,
+															allowEscapeKey: false,
+															allowEnterKey: false
+															})
+															$("#reviewcomments").focus()
+															return;
+														}else{
+
+var  OPDFormid = getUrlVars()["OPDFormid"];
+		$.ajax({
+		url: '@Url.Action("verify_OPDForm")',
+		method: 'POST',
+		contentType: 'application/json',
+		dataType: 'json',
+		data: JSON.stringify({
+			OPDFormid: OPDFormid,
+			verifiedstatus: this.id,
+			reviewcomments: $("#reviewcomments").val()
+		}),
+		success: function(data) {
+
+			swal({
+				title: 'Success',
+				text: "Your review has been updated!",
+				type: 'success',
+				buttonsStyling: false,
+				confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+				}).then(() => {
+				  window.location = getOPDViewReturnUrl();
+				});
+
+				fill_OPDForm_view_data()
+
+
+		}
+
+		})
+}
+
+
+})
+
+$.ajax({
+	url: '@Url.Action("get_lookups_by_entity","lookups")',
+	dataType: 'json',
+	data:{id: 'OPDForm' },
+	success: function(data) {
+
+	$.each(data, function(index, optionDataInner) {
+	if(optionDataInner.fieldname=="verifiedstatus"){
+			var ddltarget_verifiedstatus = "#verifiedstatus_buttons"
+
+			$(ddltarget_verifiedstatus).empty()
+
+			if(optionDataInner.fieldname=="verifiedstatus"){
+					fill_OPDForm_view_data()
+				}
+
+
+	}
+	})
+
+
+}
+
+})
+
+
+
+
+
+
+
+
+
+					});
+
+					</script>
+
+					<script type="text/javascript">
+
+						$(document).ready(function () {
+
+						});
+					</script>

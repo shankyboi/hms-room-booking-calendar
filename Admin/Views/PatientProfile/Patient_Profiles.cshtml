@@ -1,0 +1,2995 @@
+<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 02/20/2026 10:34:31 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.PatientProfileModel
+@{
+	ViewData["Title"] = @Resource.patientprofiles;
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mobileHeader">
+	<!--form_card_header-->
+	<div class="row">
+		<div class="col-sm-12 col-xs-12">
+			<h3 class="formHdr">@Resource.patientprofiles</h3>
+		</div>
+	</div>
+</div><!--form_card_header-->
+@if (TempData["message"] != null)
+{
+	<div class="row">
+		<div class="col-sm-12 col-xs-12">
+			<div class="alert alert-success alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+				</button>
+				Info :  @TempData["message"]
+			</div>
+		</div>
+	</div>
+}
+<!-- ═══ Tenant Selector (hidden if single tenant) ═══ -->
+<div class="row tenantSection">
+	<div class="col-sm-3 col-xs-12 p-2">
+		<div class="form-group form-group--float-above my-3">
+			<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+			<select name="tenantid" id="tenantid" class="form-control"></select>
+			<i class="form-group__bar"></i>
+		</div>
+		<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+	</div>
+</div>
+
+<!-- ═══ SEARCH BAND ═══ -->
+<div class="pp-search-band">
+	<div class="pp-search-band__row">
+		<!-- Quick search -->
+
+
+		<div class="pp-search-band__field">
+			<label class="pp-search-band__label">Name</label>
+			@Html.TextBoxFor(m => m.firstname, new { @type = "text", @maxlength = "128", @placeholder = "Search by name...", @class = "form-control form-control-sm mahat_transliterate" })
+		</div>
+		<!-- DOB range -->
+		<div class="pp-search-band__field" style="display:none">
+			<label class="pp-search-band__label">DOB From</label>
+			<input type="text" id="dateofbirth_automatonfrom" placeholder="dd/mm/yyyy" autocomplete="off" class="form-control form-control-sm" />
+		</div>
+		<div class="pp-search-band__field" style="display:none">
+			<label class="pp-search-band__label">DOB To</label>
+			<input type="text" id="dateofbirth_automatonto" placeholder="dd/mm/yyyy" autocomplete="off" class="form-control form-control-sm" />
+		</div>
+		<!-- Mobile -->
+		<div class="pp-search-band__field mobilenumber_craftmyapp_container craftmyapp_phone_container">
+			<label class="pp-search-band__label">@Resource.patientprofile_mobilenumber</label>
+			<input type="tel" name="mobilenumber_ip" id="mobilenumber_ip" class="form-control form-control-sm">
+			@Html.HiddenFor(m => m.mobilenumber, new { @class = "invalidphone" })
+		</div>
+
+		<div class="pp-search-band__field emailaddress_craftmyapp_container">
+			<label class="pp-search-band__label">@Resource.patientprofile_emailaddress</label>
+			@Html.TextBoxFor(m => m.emailaddress, new { @type = "email", @maxlength = "128", @placeholder = "Email", @class = "form-control form-control-sm" })
+		</div>
+		<div class="pp-search-band__field whatsappnumber_craftmyapp_container craftmyapp_phone_container" style="display:none">
+			<label class="pp-search-band__label">@Resource.patientprofile_whatsappnumber</label>
+			<input type="tel" name="whatsappnumber_ip" id="whatsappnumber_ip" class="form-control form-control-sm">
+			@Html.HiddenFor(m => m.whatsappnumber, new { @class = "invalidphone" })
+		</div>
+		<div class="pp-search-band__field idprooftype_craftmyapp_container">
+			<label class="pp-search-band__label">@Resource.patientprofile_idprooftype</label>
+			<select name="idprooftype" id="idprooftype" class="form-control form-control-sm"></select>
+		</div>
+		<div class="pp-search-band__field idproofnumber_craftmyapp_container">
+			<label class="pp-search-band__label">@Resource.patientprofile_idproofnumber</label>
+			@Html.TextBoxFor(m => m.idproofnumber, new { @type = "text", @maxlength = "128", @placeholder = "ID number", @class = "form-control form-control-sm" })
+		</div>
+		<div class="pp-search-band__field pzip_craftmyapp_container" style="display:none">
+			<label class="pp-search-band__label">@Resource.patientprofile_pzip</label>
+			@Html.TextBoxFor(m => m.pzip, new { @type = "text", @min = "0", @max = "99999999", @placeholder = "Zip", @class = "form-control form-control-sm" })
+		</div>
+		<div class="pp-search-band__field blacklisted_craftmyapp_container">
+			<label class="pp-search-band__label">@Resource.patientprofile_blacklisted</label>
+			<select name="blacklisted" id="blacklisted" class="form-control form-control-sm"></select>
+		</div>
+		<div class="pp-search-band__field deceased_craftmyapp_container" style="display:none">
+			<label class="pp-search-band__label d-flex align-items-center gap-1">
+				<div class="checkbox checkbox-styled checkbox-inline mb-0">
+					@Html.CheckBoxFor(m => m.deceased, new { @class = "" })
+				</div>
+				@Resource.patientprofile_deceased
+			</label>
+		</div>
+		<div class="pp-search-band__field pp-search-band__field--btn">
+			<button type="button" id="btnPatientProfileSearch" class="btn btn-outline-secondary btn-sm" title="Search patient profiles" aria-label="Search patient profiles">
+				<i class="fa fa-search"></i>
+			</button>
+		</div>
+	</div>
+	<!-- Expanded filters (hidden by default) -->
+	<div class="pp-search-band__expanded" id="expandedFilters" style="display:none;">
+		<div class="pp-search-band__row">
+
+			@* <div class="pp-search-band__field deceased_craftmyapp_container" style="display:none">
+				<label class="pp-search-band__label d-flex align-items-center gap-1">
+					<div class="checkbox checkbox-styled checkbox-inline mb-0">
+						@Html.CheckBoxFor(m => m.deceased, new { @class = "" })
+					</div>
+					@Resource.patientprofile_deceased
+				</label>
+			</div> *@
+		</div>
+	</div>
+</div>
+
+<!-- HIDDEN — keep old fields so existing validation/JS references work -->
+<div style="display:none;">
+	<div class="col-sm-2 col-xs-12 p-2 blacklisted_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="blacklisted">@Resource.patientprofile_blacklisted</label>
+				<select name="blacklisted_hidden" id="blacklisted_hidden" class="form-control  "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.blacklisted)
+			<div id="blacklisted-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+</div><!-- end hidden old fields -->
+
+
+<div class="card tab-card">
+	<div class="card-head">
+		<ul class="nav nav-tabs" data-toggle="tabs">
+			<li class="active cma_fill_tab"><a href="#cma_card_tab"><i class="fa fa-address-card"></i></a></li>
+			<li class="cma_fill_tab"><a href="#cma_table_tab"><i class="fa fa-table"></i></a></li>
+		</ul>
+	</div>
+	<!--end .card-head -->
+	<div class="card-body tab-content pt-0">
+
+		<div class="tab-pane active" id="cma_card_tab">
+			<div class="dataTables_wrapper dicover-engae-wrap" style="min-height:0px">
+
+				<div class="dataTables__top" id="cma_card_tab_action_container">
+
+					<div class="dataTables_buttons actions" id="cma_card_tab_action_container_action_btn">
+					</div>
+				</div>
+			</div>
+			<div class="row automaton_card" id="PatientProfileContainer">
+			</div>
+		</div>
+		<!--end #cma_card_tab -->
+
+		<div class="tab-pane" id="cma_table_tab">
+
+			<div class="row automaton_table hidden-sm-down">
+				<div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+						<table id="tblPatientProfile" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+							<thead class="thead-default">
+								<tr>
+
+									<th>@Resource.patientprofile_registrationid</th>
+									<th>@Resource.patientprofile_firstname</th>
+									<th>@Resource.patientprofile_lastname</th>
+									<th>@Resource.patientprofile_gender</th>
+									<th>@Resource.patientprofile_dateofbirth</th>
+									<th>@Resource.patientprofile_age</th>
+									<th>@Resource.patientprofile_bloodgroup</th>
+									<th>@Resource.patientprofile_nationality</th>
+									<th>@Resource.patientprofile_countryoforigin</th>
+									<th>@Resource.patientprofile_emailaddress</th>
+									<th>@Resource.patientprofile_mobilenumber</th>
+									<th>@Resource.patientprofile_whatsappnumber</th>
+									<th>@Resource.patientprofile_photo</th>
+									<th>@Resource.patientprofile_idprooftype</th>
+									<th>@Resource.patientprofile_idproofnumber</th>
+									<th>@Resource.patientprofile_uploadidproof</th>
+									<th>@Resource.patientprofile_paddressline1</th>
+									<th>@Resource.patientprofile_paddressline2</th>
+									<th>@Resource.patientprofile_pzip</th>
+									<th>@Resource.patientprofile_ptown</th>
+									<th>@Resource.patientprofile_pcityordistrict</th>
+									<th>@Resource.patientprofile_ppstatename</th>
+									<th>@Resource.patientprofile_sameaspermanentaddress</th>
+									<th>@Resource.patientprofile_caddressline1</th>
+									<th>@Resource.patientprofile_caddressline2</th>
+									<th>@Resource.patientprofile_czip</th>
+									<th>@Resource.patientprofile_ctown</th>
+									<th>@Resource.patientprofile_ccityordistrict</th>
+									<th>@Resource.patientprofile_cstatename</th>
+									<th>@Resource.emergencycontactinfo</th>
+									<th>@Resource.patientprofile_languagesknown</th>
+									<th>@Resource.patientprofile_languagespreferrable</th>
+									<th>@Resource.patientprofile_otherlanguages</th>
+									<th>@Resource.patientprofile_maritalstatus</th>
+									<th>@Resource.patientprofile_education</th>
+									<th>@Resource.patientprofile_occupation</th>
+									<th>@Resource.patientprofile_meditationpractice</th>
+									<th>@Resource.patientprofile_typeofpractice</th>
+									<th>@Resource.patientprofile_creativeactivities</th>
+									<th>@Resource.patientprofile_othercreativeactivities</th>
+									<th>@Resource.patientprofile_insurancetype</th>
+									<th>@Resource.patientprofile_insurancecompany</th>
+									<th>@Resource.patientprofile_policynumber</th>
+									<th>@Resource.patientprofile_policyclaimlimit</th>
+									<th>@Resource.patientprofile_policyexpirydate</th>
+
+									<th>@Resource.patientprofile_referrername</th>
+									<th>@Resource.patientprofile_referrerphonenumber</th>
+									<th>@Resource.patientprofile_magazinename</th>
+									<th>@Resource.patientprofile_socialmediaplatform</th>
+									<th>@Resource.patientprofile_otherreferral</th>
+									<th>@Resource.patientprofile_blacklisted</th>
+									<th>@Resource.patientprofile_reasonforblacklisting</th>
+									<th>@Resource.patientprofile_detailedremarks</th>
+									<th>@Resource.patientprofile_deceased</th>
+									<th>@Resource.patientprofile_causeofdeath</th>
+									<th>@Resource.patientprofile_dateandtimeofdeath</th>
+
+									<th class="all">Action</th>
+
+								</tr>
+							</thead>
+							<tbody></tbody>
+
+						</table>
+					</div>
+				</div>
+			</div>
+			<!--end #cma_table_tab -->
+
+		</div>
+		<!--end .card-body -->
+	</div>
+	<!--end .tab-card -->
+
+
+	<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+	<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+
+	<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+
+	<script src="~/js/dtpager.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-scrollTo/2.1.3/jquery.scrollTo.min.js"></script>
+	<script type="text/javascript">
+			var currentCardPageNumber = -1;
+			var patientMobileFilterIti = null;
+			var patientWhatsAppFilterIti = null;
+			var patientFilterEventsSuspended = false;
+			var arr_selected_for_verification = [];
+			// Same logic as rooms: cloud path + SAS token for patient photo URLs
+			var _patientCloudPath = '@(Context.Session.GetString("NalamVazhacloudpath") ?? "")';
+			var _patientSasToken = '@(Context.Session.GetString("NalamVazhaSAStoken") ?? "")';
+			var _defaultHumanImage = (typeof vBaseurl !== 'undefined' ? vBaseurl : '') + '/images/defaulthumanimage.png';
+			function getPatientPhotoUrl(photo) {
+				if (!photo) return '';
+				var img = (photo + '').toString();
+				var segments = img.split('|').filter(function(s) { return (s && s.trim() !== ''); });
+				if (segments.length === 0) return '';
+				return _patientCloudPath + '/' + segments[0].trim() + _patientSasToken;
+			}
+
+			function syncPatientProfilePhoneFilters() {
+				function syncPhone(instance, inputSelector, hiddenSelector) {
+					var value = '';
+					if (instance && instance.getNumber) {
+						value = instance.getNumber() || '';
+					} else {
+						value = $(inputSelector).val() || '';
+					}
+					$(hiddenSelector).val(value === 'invalid' ? '' : value);
+				}
+				syncPhone(patientMobileFilterIti, '#mobilenumber_ip', '#mobilenumber');
+				syncPhone(patientWhatsAppFilterIti, '#whatsappnumber_ip', '#whatsappnumber');
+			}
+
+			function reloadPatientProfileResults() {
+				syncPatientProfilePhoneFilters();
+				currentCardPageNumber = -1;
+				currentPageNumber = 1;
+				reachedEOF = false;
+				reachedRequestsEOF = false;
+				fetchingDataFromApi = false;
+				$('#PatientProfileContainer').empty();
+				if ($.fn.DataTable && $.fn.DataTable.isDataTable('#tblPatientProfile')) {
+					$('#tblPatientProfile').DataTable().search('');
+				}
+				fill_PatientProfile_cards();
+				fill_PatientProfile();
+			}
+
+			function clearPatientProfileFilters() {
+				patientFilterEventsSuspended = true;
+				$('#firstname, #emailaddress, #idproofnumber, #pzip, #dateofbirth_automatonfrom, #dateofbirth_automatonto').val('');
+				$('#idprooftype, #blacklisted').val('').trigger('change.select2');
+				$('#deceased').prop('checked', false);
+				$('#mobilenumber_ip, #mobilenumber, #whatsappnumber_ip, #whatsappnumber').val('');
+				if (patientMobileFilterIti) patientMobileFilterIti.setNumber('');
+				if (patientWhatsAppFilterIti) patientWhatsAppFilterIti.setNumber('');
+				patientFilterEventsSuspended = false;
+				reloadPatientProfileResults();
+			}
+		 function fill_PatientProfile()
+		 {
+
+			 if("@Context.Session.GetString("NalamVazhauserrole")"=="Health Seeker"){
+									 var PatientProfileid="@Context.Session.GetString("NalamVazhaloginUserID")";
+												   list_URL = "@Url.Action("Update_Patient_Profile", "PatientProfile")?PatientProfileid="+PatientProfileid;
+									   window.location=list_URL;
+									   return;
+						 }
+
+
+			 var sendFilterData = {
+																	"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+																	"firstname":$("#firstname").val(),
+		"dateofbirth_automatonfrom":getSqlDate($("#dateofbirth_automatonfrom").val()),"dateofbirth_automatonto":getSqlDate($("#dateofbirth_automatonto").val()),
+		"emailaddress":$("#emailaddress").val(),
+		"mobilenumber":$("#mobilenumber").val(),
+		"whatsappnumber":$("#whatsappnumber").val(),
+		"idprooftype":$("#idprooftype").val(),
+		"idproofnumber":$("#idproofnumber").val(),
+		"pzip":$("#pzip").val(),
+		"blacklisted":$("#blacklisted").val(),
+		"deceased":$("#deceased").is(':checked'),
+
+																	 "pagesize": pageSize,
+																	"pagenumber": (currentPageNumber - 1)
+
+																}
+
+
+
+				 dataTableId="#tblPatientProfile";
+				 reachedEOF = false;
+				 totalRecordsCount = 0;
+				 currentPageNumber = 1;
+				 fetchingDataFromApi = false;
+
+				var pagerControlsTemplate = "<div id='pager_container' class='dataTables_paginate'>"
+					+ "<button type='button' id='pager_btn_previous' onClick='pager_gotoPreviousPage(this);' class='paginate_button previous'>Previous</button>"
+					+ "<span>Page <input type='number' id='pager_txt_currentpage' min='1' max='^MAXPAGE^' maxlength='10' size='10' onFocus='this.oldValue=this.value;' onChange='pager_gotoPage(this);'/> of <span id='pager_lbl_pagecount'></span></span>"
+					+ "<select id='pager_ddl_pagesize' onChange='pager_pageSizeChanged(this);'>"
+					+ "<option value='50' selected>50 rows</option>"
+					+ "<option value='100'>100 rows</option>"
+					+ "<option value='200'>200 rows</option>"
+					+ "<option value='500'>500 rows</option>"
+					+ "<option value='^Everything^'>Everything</option>"
+					+ "</select>"
+					+ "<button type='button' id='pager_btn_next' onClick='pager_gotoNextPage(this);' class='paginate_button next'>Next</button>"
+					+ "</div>";
+
+			var table=$("#tblPatientProfile").DataTable({
+			columnDefs: [{
+			 targets: -1,
+			 title: '<i class="fa fa-pencil fa-lg"></i>'
+		  }],
+			paging:false,
+			destroy:true,
+			serverSide: true,
+			filter: true,
+			"orderMulti": false,
+			searchDelay: 2000,
+			autoWidth: false,
+			"order": [],"aaSorting": [],
+			autoWidth: !1,responsive:!0,
+			language: {
+			searchPlaceholder: "Search for records..."
+			},
+			 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+			dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+
+			buttons: [{
+			extend: "excelHtml5",
+			title: "List Of PatientProfile Data"
+			}, {
+			extend: "csvHtml5",
+			title: "List Of PatientProfile Data"
+			}, {
+			extend: "print",
+			title: "List Of PatientProfile Data"
+			}],
+		 initComplete: function(a, b) {
+
+
+
+			  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+
+				if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+			 $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			  `);
+				 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+					$("#cma_card_tab_action_container").prepend(`
+						<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+					`);
+				}
+		 }
+
+		var Actions=getAutho("PatientProfile","create")
+				if(Actions != undefined){
+					var create_URL = "@Url.Action("entry.viewname", "PatientProfile")"
+					create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+
+		if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+					$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+
+
+				<div class="dataTables_buttons actions">
+				<div class="input-group prefix">
+									<span class="input-group-addon">
+									<i class="material-icons">search</i>
+									</span>
+									<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+								</div>
+				  <div class="dropdown actions__item cma_top_icon">
+					<i data-toggle="dropdown" class="material-icons">share</i>
+					<ul class="dropdown-menu dropdown-menu-right">
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+					</ul>
+				  </div>
+				 <div class="dropdown actions__item cma_top_icon">
+											<i data-toggle="dropdown" class="material-icons">settings</i>
+											<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+											<li>
+																		<label> @Resource.patientprofile_registrationid
+		 <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_firstname
+		 <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_lastname
+		 <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_gender
+		 <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_dateofbirth
+		 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_age
+		 <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+																	  </li>
+																				</li>
+		<li>
+																		<label> @Resource.patientprofile_bloodgroup
+		 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_nationality
+		 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_countryoforigin
+		 <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_emailaddress
+		 <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_mobilenumber
+		 <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_whatsappnumber
+		 <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_photo
+		 <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_idprooftype
+		 <input type="checkbox" class="colvis_switch" data-column="12" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_idproofnumber
+		 <input type="checkbox" class="colvis_switch" data-column="13" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_uploadidproof
+		 <input type="checkbox" class="colvis_switch" data-column="14" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_paddressline1
+		 <input type="checkbox" class="colvis_switch" data-column="15" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_paddressline2
+		 <input type="checkbox" class="colvis_switch" data-column="16" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_pzip
+		 <input type="checkbox" class="colvis_switch" data-column="17" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_ptown
+		 <input type="checkbox" class="colvis_switch" data-column="18" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_pcityordistrict
+		 <input type="checkbox" class="colvis_switch" data-column="19" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_ppstatename
+		 <input type="checkbox" class="colvis_switch" data-column="20" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_sameaspermanentaddress
+		 <input type="checkbox" class="colvis_switch" data-column="21" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_caddressline1
+		 <input type="checkbox" class="colvis_switch" data-column="22" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_caddressline2
+		 <input type="checkbox" class="colvis_switch" data-column="23" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_czip
+		 <input type="checkbox" class="colvis_switch" data-column="24" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_ctown
+		 <input type="checkbox" class="colvis_switch" data-column="25" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_ccityordistrict
+		 <input type="checkbox" class="colvis_switch" data-column="26" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_cstatename
+		 <input type="checkbox" class="colvis_switch" data-column="27" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.emergencycontactinfo
+		 <input type="checkbox" class="colvis_switch" data-column="28" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_languagesknown
+		 <input type="checkbox" class="colvis_switch" data-column="29" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_languagespreferrable
+		 <input type="checkbox" class="colvis_switch" data-column="30" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_otherlanguages
+		 <input type="checkbox" class="colvis_switch" data-column="31" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_maritalstatus
+		 <input type="checkbox" class="colvis_switch" data-column="32" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_education
+		 <input type="checkbox" class="colvis_switch" data-column="33" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_occupation
+		 <input type="checkbox" class="colvis_switch" data-column="34" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_meditationpractice
+		 <input type="checkbox" class="colvis_switch" data-column="35" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_typeofpractice
+		 <input type="checkbox" class="colvis_switch" data-column="36" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_creativeactivities
+		 <input type="checkbox" class="colvis_switch" data-column="37" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_othercreativeactivities
+		 <input type="checkbox" class="colvis_switch" data-column="38" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_insurancetype
+		 <input type="checkbox" class="colvis_switch" data-column="39" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_insurancecompany
+		 <input type="checkbox" class="colvis_switch" data-column="40" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_policynumber
+		 <input type="checkbox" class="colvis_switch" data-column="41" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_policyclaimlimit
+		 <input type="checkbox" class="colvis_switch" data-column="42" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_policyexpirydate
+		 <input type="checkbox" class="colvis_switch" data-column="43" checked /></label>
+																	  </li>
+
+		<li>
+																		<label> @Resource.patientprofile_referrername
+		 <input type="checkbox" class="colvis_switch" data-column="45" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_referrerphonenumber
+		 <input type="checkbox" class="colvis_switch" data-column="46" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_magazinename
+		 <input type="checkbox" class="colvis_switch" data-column="47" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_socialmediaplatform
+		 <input type="checkbox" class="colvis_switch" data-column="48" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_otherreferral
+		 <input type="checkbox" class="colvis_switch" data-column="49" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_blacklisted
+		 <input type="checkbox" class="colvis_switch" data-column="50" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_reasonforblacklisting
+		 <input type="checkbox" class="colvis_switch" data-column="51" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_detailedremarks
+		 <input type="checkbox" class="colvis_switch" data-column="52" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_deceased
+		 <input type="checkbox" class="colvis_switch" data-column="53" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_causeofdeath
+		 <input type="checkbox" class="colvis_switch" data-column="54" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_dateandtimeofdeath
+		 <input type="checkbox" class="colvis_switch" data-column="55" checked /></label>
+																	  </li>
+
+											</ul>
+											</div>
+
+				 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+				</div>
+			  `.replace("create_URL", create_URL))
+		}
+			$("#cma_card_tab_action_container .card-lst").remove();
+			$("#cma_card_tab_action_container_action_btn").empty()
+			$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+
+
+		if ($(this).hasClass('make-active')) {
+				$('tbody', $(this)).children('tr').first().addClass('active-row');
+				setTimeout(() => {
+				  $('.active-row td:visible:last').addClass('last-active-td');
+				}, 200);
+			  }
+			  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+				table.search(this.value).draw();
+			  });
+
+				}
+					else{
+		if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+					$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+
+
+				<div class="dataTables_buttons actions">
+				 <div class="input-group prefix">
+									<span class="input-group-addon">
+									<i class="material-icons">search</i>
+									</span>
+									<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+								</div>
+				  <div class="dropdown actions__item cma_top_icon">
+					<i data-toggle="dropdown" class="material-icons">share</i>
+					<ul class="dropdown-menu dropdown-menu-right">
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+					</ul>
+				  </div>
+				 <div class="dropdown actions__item cma_top_icon">
+											<i data-toggle="dropdown" class="material-icons">settings</i>
+											<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+											<li>
+																		<label> @Resource.patientprofile_registrationid
+		 <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_firstname
+		 <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_lastname
+		 <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_gender
+		 <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_dateofbirth
+		 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_age
+		 <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+																	  </li>
+																				</li>
+		<li>
+																		<label> @Resource.patientprofile_bloodgroup
+		 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_nationality
+		 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_countryoforigin
+		 <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_emailaddress
+		 <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_mobilenumber
+		 <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_whatsappnumber
+		 <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_photo
+		 <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_idprooftype
+		 <input type="checkbox" class="colvis_switch" data-column="12" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_idproofnumber
+		 <input type="checkbox" class="colvis_switch" data-column="13" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_uploadidproof
+		 <input type="checkbox" class="colvis_switch" data-column="14" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_paddressline1
+		 <input type="checkbox" class="colvis_switch" data-column="15" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_paddressline2
+		 <input type="checkbox" class="colvis_switch" data-column="16" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_pzip
+		 <input type="checkbox" class="colvis_switch" data-column="17" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_ptown
+		 <input type="checkbox" class="colvis_switch" data-column="18" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_pcityordistrict
+		 <input type="checkbox" class="colvis_switch" data-column="19" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_ppstatename
+		 <input type="checkbox" class="colvis_switch" data-column="20" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_sameaspermanentaddress
+		 <input type="checkbox" class="colvis_switch" data-column="21" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_caddressline1
+		 <input type="checkbox" class="colvis_switch" data-column="22" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_caddressline2
+		 <input type="checkbox" class="colvis_switch" data-column="23" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_czip
+		 <input type="checkbox" class="colvis_switch" data-column="24" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_ctown
+		 <input type="checkbox" class="colvis_switch" data-column="25" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_ccityordistrict
+		 <input type="checkbox" class="colvis_switch" data-column="26" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_cstatename
+		 <input type="checkbox" class="colvis_switch" data-column="27" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.emergencycontactinfo
+		 <input type="checkbox" class="colvis_switch" data-column="28" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_languagesknown
+		 <input type="checkbox" class="colvis_switch" data-column="29" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_languagespreferrable
+		 <input type="checkbox" class="colvis_switch" data-column="30" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_otherlanguages
+		 <input type="checkbox" class="colvis_switch" data-column="31" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_maritalstatus
+		 <input type="checkbox" class="colvis_switch" data-column="32" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_education
+		 <input type="checkbox" class="colvis_switch" data-column="33" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_occupation
+		 <input type="checkbox" class="colvis_switch" data-column="34" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_meditationpractice
+		 <input type="checkbox" class="colvis_switch" data-column="35" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_typeofpractice
+		 <input type="checkbox" class="colvis_switch" data-column="36" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_creativeactivities
+		 <input type="checkbox" class="colvis_switch" data-column="37" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_othercreativeactivities
+		 <input type="checkbox" class="colvis_switch" data-column="38" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_insurancetype
+		 <input type="checkbox" class="colvis_switch" data-column="39" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_insurancecompany
+		 <input type="checkbox" class="colvis_switch" data-column="40" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_policynumber
+		 <input type="checkbox" class="colvis_switch" data-column="41" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_policyclaimlimit
+		 <input type="checkbox" class="colvis_switch" data-column="42" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_policyexpirydate
+		 <input type="checkbox" class="colvis_switch" data-column="43" checked /></label>
+																	  </li>
+
+		<li>
+																		<label> @Resource.patientprofile_referrername
+		 <input type="checkbox" class="colvis_switch" data-column="45" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_referrerphonenumber
+		 <input type="checkbox" class="colvis_switch" data-column="46" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_magazinename
+		 <input type="checkbox" class="colvis_switch" data-column="47" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_socialmediaplatform
+		 <input type="checkbox" class="colvis_switch" data-column="48" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_otherreferral
+		 <input type="checkbox" class="colvis_switch" data-column="49" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_blacklisted
+		 <input type="checkbox" class="colvis_switch" data-column="50" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_reasonforblacklisting
+		 <input type="checkbox" class="colvis_switch" data-column="51" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_detailedremarks
+		 <input type="checkbox" class="colvis_switch" data-column="52" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_deceased
+		 <input type="checkbox" class="colvis_switch" data-column="53" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_causeofdeath
+		 <input type="checkbox" class="colvis_switch" data-column="54" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.patientprofile_dateandtimeofdeath
+		 <input type="checkbox" class="colvis_switch" data-column="55" checked /></label>
+																	  </li>
+
+											</ul>
+											</div>
+				</div>
+			  `)
+		}
+		if ($(this).hasClass('make-active')) {
+				$('tbody', $(this)).children('tr').first().addClass('active-row');
+				setTimeout(() => {
+				  $('.active-row td:visible:last').addClass('last-active-td');
+				}, 200);
+			  }
+			  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+				table.search(this.value).draw();
+			  });
+
+				}
+		if (!$(pagerContainerId).length) {
+				$(dataTableId + '_info').parent().append(
+							pagerControlsTemplate.replace('^Everything^', totalRecordsCount).replace('^MAXPAGE^', pager_getPageCount())
+						);
+		}
+						//$(dataTableId + '_info').hide();
+						$(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+						pager_setCurrentPageNumber(1);
+						pager_onPageChanged();
+
+
+
+			}
+			 ,columns: [
+
+				{data: 'registrationid'},
+		{data: 'firstname'},
+		{data: 'lastname'},
+		{data: 'gender'},
+		{data: 'dateofbirth'},
+		{data: 'age'},
+		{data: 'bloodgroup'},
+		{data: 'nationality'},
+		{data: 'countryoforigin_master',
+		mRender: function (data, type, row) {
+		var Actions_=getAutho('Country','detail')
+		 if(row["countryoforigin_master"]==null) {
+		 return '-'
+		}else {
+
+		if(Actions_ !=  undefined)
+		{
+		var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Country")?Countryid=" + row['countryoforigin']
+		DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+		return '<a  href="' + DETAIL_URL  + '">'+ row["countryoforigin_master"]+ '</a>'
+		}else {
+
+		return row['countryoforigin_master']
+		}
+		}
+		}},
+		{data: 'emailaddress',mRender: function (data, type, row) {if(row["emailaddress"]==null) {
+		 return '-'
+		}else {
+		 return '<a  href="mailto:' + row["emailaddress"]+ '">'+ row["emailaddress"]+ '</a>'
+		}
+		}},
+		{data: 'mobilenumber',mRender: function (data, type, row) {if(row["mobilenumber"]==null) {
+		 return '-'
+		}else {
+		 return '<a  href="tel:' + row["mobilenumber"]+ '">'+ row["mobilenumber"]+ '</a>'
+		}
+		}},
+		{data: 'whatsappnumber',mRender: function (data, type, row) {if(row["whatsappnumber"]==null) {
+		 return '-'
+		}else {
+		 return '<a  href="tel:' + row["whatsappnumber"]+ '">'+ row["whatsappnumber"]+ '</a>'
+		}
+		}},
+		{data: 'photo',mRender: function (data, type, row) {if(row["photo"]==null) {
+		 return '-'
+		}else {
+		var random_num=Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+		var uploaded_photo = (row["photo"] || '').toString().split('|').filter(function(p) { return p && p.trim() !== ''; });
+		var collect_files = "";
+		var blankImg = _defaultHumanImage;
+		for (var i = 0; i < uploaded_photo.length; i++) {
+			var filepath = (i === 0) ? getPatientPhotoUrl(row["photo"]) : (_patientCloudPath + '/' + uploaded_photo[i].trim() + _patientSasToken);
+			if (!filepath) continue;
+			if (i === 0)
+				collect_files += '<a class="img'+random_num+'" href="' + filepath + '"><img class="disp_image '+random_num+'" style="width: 75px; height: 75px" src="' + filepath + '" alt="img" onerror="this.src=\'' + blankImg + '\'"></a>';
+			else
+				collect_files += '<a class="img'+random_num+'" href="' + filepath + '"><img class="disp_image '+random_num+'" style="display:none;width: 75px; height: 75px" src="' + filepath + '" alt="img" onerror="this.src=\'' + blankImg + '\'"></a>';
+		}
+		if (!collect_files) return '-';
+		$('body').off('click', 'a.img' + random_num).on('click', 'a.img' + random_num + '', function(e) {
+		e.preventDefault();
+		$('.img' + random_num + '').colorbox({rel: '.img' + random_num, width: "90%", height: "80%" });
+		$.colorbox({open: true });
+		});
+		return collect_files;  }}},
+		{data: 'idprooftype'},
+		{data: 'idproofnumber'},
+		{data: 'uploadidproof',mRender: function (data, type, row) {if(row["uploadidproof"]==null) {
+		 return '-'
+		}else {
+
+		var uploaded_uploadidproof = row["uploadidproof"].split('|');
+		var iterate = 1;
+													var collect_files="";
+													for (var i = 0; i < uploaded_uploadidproof.length; i++) {
+
+
+														if (uploaded_uploadidproof[i] != "") {
+		var filepath = _patientCloudPath + '/' + uploaded_uploadidproof[i].trim() + _patientSasToken;
+		collect_files+='<a class="filedisplay" href="' + filepath + '" id="' + filepath + '"><i class="fa fa-file"></i></a>'
+		iterate = iterate + 1;
+														}
+
+
+													}return collect_files;  }}},
+		{data: 'paddressline1'},
+		{data: 'paddressline2'},
+		{data: 'pzip'},
+		{data: 'ptown'},
+		{data: 'pcityordistrict'},
+		{data: 'ppstatename'},
+		{data: 'sameaspermanentaddress'},
+		{data: 'caddressline1'},
+		{data: 'caddressline2'},
+		{data: 'czip'},
+		{data: 'ctown'},
+		{data: 'ccityordistrict'},
+		{data: 'cstatename'},
+		{
+											data: 'automaton_patientprofile_emergencycontactinfo',
+											mRender: function(data, type, row) {
+												if (row['automaton_patientprofile_emergencycontactinfo'] == null)
+												{
+													return '-'
+												}
+												else
+												{
+													return get_dependent_li_l(row['automaton_patientprofile_emergencycontactinfo']);
+
+												}
+											}
+										},
+		{data: 'languagesknown'},
+		{data: 'languagespreferrable'},
+		{data: 'otherlanguages'},
+		{data: 'maritalstatus'},
+		{data: 'education'},
+		{data: 'occupation_master',
+		mRender: function (data, type, row) {
+		var Actions_=getAutho('Occupation','detail')
+		 if(row["occupation_master"]==null) {
+		 return '-'
+		}else {
+
+		if(Actions_ !=  undefined)
+		{
+		var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Occupation")?Occupationid=" + row['occupation']
+		DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+		return '<a  href="' + DETAIL_URL  + '">'+ row["occupation_master"]+ '</a>'
+		}else {
+
+		return row['occupation_master']
+		}
+		}
+		}},
+		{data: 'meditationpractice'},
+		{data: 'typeofpractice'},
+		{data: 'creativeactivities'},
+		{data: 'othercreativeactivities'},
+		{data: 'insurancetype'},
+		{data: 'insurancecompany'},
+		{data: 'policynumber'},
+		{data: 'policyclaimlimit',mRender: function (data, type, row) {if(row["policyclaimlimit"]==null) {
+		 return '-'
+		}else {
+		 return '&#8377;'+ row["policyclaimlimit"]
+		}
+		}},
+		{data: 'policyexpirydate'},
+
+		{data: 'referrername'},
+		{data: 'referrerphonenumber',mRender: function (data, type, row) {if(row["referrerphonenumber"]==null) {
+		 return '-'
+		}else {
+		 return '<a  href="tel:' + row["referrerphonenumber"]+ '">'+ row["referrerphonenumber"]+ '</a>'
+		}
+		}},
+		{data: 'magazinename'},
+		{data: 'socialmediaplatform'},
+		{data: 'otherreferral'},
+		{data: 'blacklisted'},
+		{data: 'reasonforblacklisting_master',
+		mRender: function (data, type, row) {
+		var Actions_=getAutho('Blacklistreason','detail')
+		 if(row["reasonforblacklisting_master"]==null) {
+		 return '-'
+		}else {
+
+		if(Actions_ !=  undefined)
+		{
+		var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Blacklistreason")?Blacklistreasonid=" + row['reasonforblacklisting']
+		DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+		return '<a  href="' + DETAIL_URL  + '">'+ row["reasonforblacklisting_master"]+ '</a>'
+		}else {
+
+		return row['reasonforblacklisting_master']
+		}
+		}
+		}},
+		{data: 'detailedremarks'},
+		{data: 'deceased'},
+		{data: 'causeofdeath'},
+		{data: 'dateandtimeofdeath'},
+
+				{
+							"sName": "patientprofileid",
+							"bSearchable": false,
+							"bSortable": false,
+							data: 'patientprofileid', "className": "dt-center",
+							mRender: function(data, type, row) {
+							var Actions=getAuthoController("PatientProfile")
+							var appendMessage='';
+							if(Actions !=undefined)
+							{
+							for (var index = 0; index < Actions.length; ++index) {
+							var entry = Actions[index];
+
+							if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+							var URL = "@Url.Action("entry.viewname", "PatientProfile")?PatientProfileid=" + row["patientprofileid"]
+							URL = URL.replace("entry.viewname", entry.actionmethodname);
+
+							if(entry.viewname=="delete")
+							{
+
+								appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>'
+
+
+							}
+
+							else if(entry.viewname=="detail")
+							{
+								var DETAIL_URL = "@Url.Action("entry.actionmethodname", "PatientProfile")?PatientProfileid=" + row["patientprofileid"]
+								DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+								appendMessage+='<a href="' + DETAIL_URL + '" class="dropdown-item">View</a>'
+		 }
+							else
+							{
+
+								appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>'
+							}
+
+							}
+
+							}
+
+							if(appendMessage =="")
+							{
+							return '-'
+
+							}
+							else
+							{
+							return '<div class="dropdown actions__item">' +
+							'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+							'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+
+
+							'</div>' +
+							'</div>'
+							}
+
+
+
+							}
+							else
+							{
+							return '-'
+
+							}
+
+
+							}
+							}
+
+
+			 ],
+
+				ajax: function (data, callback, settings) {
+				fetchingDataFromApi = true;
+				sendFilterData.searchterm = data.search.value;
+				sendFilterData.pagesize = pageSize;
+				sendFilterData.pagenumber =  (currentPageNumber - 1);
+				var sortParams = [];
+				for (var i = 0; i < data.order.length; i++) {
+					var colIndex = data.order[i].column;
+					var sortDirection = data.order[i].dir;
+					var columnName = data.columns[colIndex].data;
+
+					var sortParam = {};
+					sortParam["col"] = columnName;
+					sortParam["dir"] = sortDirection;
+
+					sortParams.push(sortParam);
+				}
+				sendFilterData.sortFieldsJson =  JSON.stringify(sortParams);
+				$.ajax({
+				url: "@Url.Action("get_Patient_Profile_List", "PatientProfile")",
+				type: 'GET',
+				dataType: 'json',
+				data: sendFilterData,
+
+				success: function(responsedata) {
+
+						 fetchingDataFromApi = false;
+						//to let grid say no data available and all other flows get through
+						if (responsedata.detail == null) {
+							responsedata.detail = [];
+						}
+						totalRecordsCount = responsedata.count;
+						if (responsedata.detail.length < pageSize) {
+							reachedEOF = true;
+						}
+
+						setTimeout(function () {
+						callback({
+							data: responsedata.detail,
+							recordsTotal: responsedata.count
+						  });
+						}, 50);
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					fetchingDataFromApi = false;
+
+					if (JSON.stringify(jqXHR.responseText) == "API Authorization failed") {
+							swal({
+							title: 'Failed!',
+							text: jqXHR.responseText,
+							type: 'error',
+							buttonsStyling: false,
+							confirmButtonClass: 'btn btn-primary',
+							 allowOutsideClick: false,
+								allowEscapeKey: false,
+								allowEnterKey: false
+							}).then(function() {
+							window.location = "@Url.Action("AuthorizationFailed", "users")"
+							})
+					}
+					else
+					{
+							swal({
+							title: 'Contact Administrator !',
+							text: jqXHR.responseText,
+							type: 'error',
+							buttonsStyling: false,
+							confirmButtonClass: 'btn btn-primary',
+								allowOutsideClick: false,
+								allowEscapeKey: false,
+								allowEnterKey: false
+							})
+					}
+				}
+				});
+				},
+				"infoCallback": function(settings, start, end, max, total, pre)
+				{
+						var startRowCount = (pageSize * currentPageNumber) - pageSize + 1;
+						var endRowCount = $(dataTableId).DataTable().rows().count() + startRowCount - 1;
+						var pagingInfo = 'Showing ' + startRowCount + ' to ' + endRowCount + ' of ' + totalRecordsCount + ' entries';
+
+						return pagingInfo;
+				}
+
+
+		})
+
+
+		 $('body').on('click', '.ColVis_collection li', function(a) {
+			event.stopPropagation();
+		  });
+
+		 $('body').on('change', '.colvis_switch', function(a) {
+			var column = table.column($(this).attr('data-column'));
+			column.visible(!column.visible());
+		  });
+
+
+
+
+
+
+
+
+
+
+		}
+		var _PP_VIEW_URL = '@Url.Action("View_Patient_Profile", "PatientProfile")';
+		var _PP_ADMIN_BASE_URL = '@(Configuration.GetSection("ApiSettings")["baseURL"] ?? "")';
+		var _tenantName = '';
+		var _tenantLogoUrl = '';
+
+		function buildPatientProfileQrUrl(patientProfileId) {
+			var baseUrl = (_PP_ADMIN_BASE_URL || window.location.origin || '').replace(/\/+$/, '');
+			var viewPath = _PP_VIEW_URL || '';
+			var query = '?PatientProfileid=' + encodeURIComponent(patientProfileId || '');
+			if (/^https?:\/\//i.test(viewPath)) return viewPath + query;
+			try {
+				var parsedBase = new URL(baseUrl);
+				var basePath = parsedBase.pathname.replace(/\/+$/, '').toLowerCase();
+				if (viewPath.charAt(0) === '/' && basePath && viewPath.toLowerCase().indexOf(basePath + '/') === 0) {
+					return parsedBase.origin + viewPath + query;
+				}
+			} catch (e) { }
+			return baseUrl + '/' + viewPath.replace(/^\/+/, '') + query;
+		}
+
+		/* Fetch tenant details (name + logo) on page load */
+		(function () {
+			var _tid = "@Context.Session.GetString("NalamVazhachoosedtenantid")";
+			if (!_tid) return;
+			$.ajax({
+				url: '@Url.Action("get_all_tenant", "tenant")',
+				data: { tenantid: _tid },
+				dataType: 'json',
+				async: false,
+				success: function (data) {
+
+					var list = (data && data.detail) ? data.detail : (Array.isArray(data) ? data : []);
+					if (list.length > 0) {
+						var t = list[0];
+						_tenantName = (t.businessname || t.BusinessName || '').toString();
+						var logo = (t.organizationlogo || t.OrganizationLogo || '').toString();
+						if (logo) {
+							var seg = logo.split('|').filter(function (s) { return s && s.trim() !== ''; });
+							if (seg.length > 0) {
+								_tenantLogoUrl = _patientCloudPath + '/' + seg[0].trim() + _patientSasToken;
+							}
+						}
+					}
+				}
+			});
+		})();
+
+		function fill_PatientProfile_cards()
+		 {
+
+			 if("@Context.Session.GetString("NalamVazhauserrole")"=="Health Seeker"){
+									 var PatientProfileid="@Context.Session.GetString("NalamVazhaloginUserID")";
+												   list_URL = "@Url.Action("Update_Patient_Profile", "PatientProfile")?PatientProfileid="+PatientProfileid;
+									   window.location=list_URL;
+									   return;
+						 }
+
+			 var PatientProfiledata;
+
+			 var sendFilterData = {
+																	"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+																	  "firstname":$("#firstname").val(),
+		"dateofbirth_automatonfrom":getSqlDate($("#dateofbirth_automatonfrom").val()),"dateofbirth_automatonto":getSqlDate($("#dateofbirth_automatonto").val()),
+		"emailaddress":$("#emailaddress").val(),
+		"mobilenumber":$("#mobilenumber").val(),
+		"whatsappnumber":$("#whatsappnumber").val(),
+		"idprooftype":$("#idprooftype").val(),
+		"idproofnumber":$("#idproofnumber").val(),
+		"pzip":$("#pzip").val(),
+		"blacklisted":$("#blacklisted").val(),
+		"deceased":$("#deceased").is(':checked'),
+
+																	 "pagesize": pageSize,
+																	"pagenumber":(++currentCardPageNumber).toString()
+
+																}
+			 $.ajax({
+		type: "GET",
+		url: "@Url.Action("get_Patient_Profile_List", "PatientProfile")",
+			data: sendFilterData,
+			contentType: "application/json; charset=utf-8",
+			 dataType: "Json",
+			 async: false,
+			success: function(data) {
+			var resultSet = data;
+			resultSet = data.detail;
+			PatientProfiledata = data.detail;
+			if(PatientProfiledata == null)
+			 return;
+		if (PatientProfiledata != null)
+		{
+		if (currentCardPageNumber <= 0)
+		$("#PatientProfileContainer").empty()
+		}
+			 $.each(resultSet, function(key, obj) {
+		$('body').on('click', 'a.img' + obj.patientprofileid + '', function(e) {
+		e.preventDefault();
+		$('.img' + obj.patientprofileid + '').colorbox({rel: '.img' + obj.patientprofileid, width: "90%", height: "80%" });
+		$.colorbox({open: true });
+		});
+		// ── Build photo URL (same logic as room images: cloud path + first segment + SAS token) ──
+		//var photoUrl = getPatientPhotoUrl(obj.photo) || (typeof vBaseurl !== 'undefined' ? vBaseurl : '') + '/images/blank.jpg';
+
+				var photoUrl = getPatientPhotoUrl(obj.photo);
+
+		if (!photoUrl || photoUrl.trim() === '') {
+			photoUrl = _defaultHumanImage;
+		}
+
+		// ── Build initials for avatar fallback ──
+		var initials = ((obj.firstname ? obj.firstname.charAt(0) : '') + (obj.lastname ? obj.lastname.charAt(0) : '')).toUpperCase() || '?';
+		var patientcategoryname = (obj.patientcategoryname ? obj.patientcategoryname : 'Not Categorized')
+
+		// ── Blacklisted / Deceased badges ──
+		var statusBadges = '';
+		if (obj.blacklisted && obj.blacklisted.toLowerCase() === 'yes') statusBadges += '<span class="pp-card__badge pp-card__badge--danger"><i class="fa fa-ban"></i> Blacklisted</span>';
+		if (obj.deceased === true || obj.deceased === 'True') statusBadges += '<span class="pp-card__badge pp-card__badge--dark"><i class="fa fa-cross"></i> Deceased</span>';
+		var roomInfo = '<span class="pp-card__room"><i class="fa fa-tags"></i>' + patientcategoryname + '</span>';
+		// ── Room allotment placeholder (dummy for now) ──
+
+		// ── Build action menu ──
+		var actionMenu = '';
+		var Actions = getAuthoController("PatientProfile");
+		if (Actions != undefined) {
+			var menuItems = '';
+			for (var index = 0; index < Actions.length; ++index) {
+				var entry = Actions[index];
+				if (entry.viewname != "bulkdelete" && entry.viewname != "compare" && entry.viewname != "bulkaction" && entry.viewname != "upload" && entry.viewname != "versionhistory" && entry.viewname != "list" && entry.viewname != "list_verify_approved" && entry.viewname != "list_verify" && entry.viewname != "post" && entry.viewname != "getall" && entry.viewname != "get" && entry.viewname != "create" && entry.viewname != "check_user" && entry.viewname != "change_password") {
+					var URL = "@Url.Action("entry.viewname", "PatientProfile")?PatientProfileid=" + obj.patientprofileid;
+					URL = URL.replace("entry.viewname", entry.actionmethodname);
+					if (entry.viewname == "delete") {
+						menuItems += '<li><a href="' + URL + '" class="dropdown-item deleteRecordFromTable">' + entry.actiondisplayname + '</a></li>';
+					} else {
+						menuItems += '<li><a href="' + URL + '" class="dropdown-item">' + entry.actiondisplayname + '</a></li>';
+					}
+				}
+			}
+			if (menuItems) {
+				// Add "Print Card" option to every patient's action menu
+				menuItems += '<li class="dropdown-divider"></li>';
+				menuItems += '<li><a href="javascript:void(0)" class="dropdown-item pp-print-card-btn"'
+					+ ' data-pid="' + (obj.patientprofileid || '') + '"'
+					+ ' data-name="' + ((obj.firstname || '') + ' ' + (obj.lastname || '')).replace(/"/g, '&quot;').trim() + '"'
+					+ ' data-regid="' + (obj.registrationid || '-') + '"'
+					+ ' data-gender="' + (obj.gender || '-') + '"'
+					+ ' data-dob="' + (obj.dateofbirth || '-') + '"'
+					+ ' data-age="' + (obj.age || '-') + '"'
+					+ ' data-agemonths="' + (obj.ageinmonths || '-') + '"'
+					+ ' data-phone="' + (obj.mobilenumber || '-') + '"'
+					+ ' data-photo="' + photoUrl.replace(/"/g, '&quot;') + '"'
+					+ ' data-category="' + (patientcategoryname || '-') + '"'
+					+ ' data-nationality="' + (obj.nationality || '-') + '"'
+					+ ' data-bloodgroup="' + (obj.bloodgroup || '-') + '"'
+					+ ' data-email="' + (obj.emailaddress || '-') + '"'
+					+ '><i class="fa fa-print"></i> Print Card</a></li>';
+
+				actionMenu = '<div class="pp-card__actions"><div class="btn-group">' +
+					'<a href="#" class="btn btn-icon-toggle dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>' +
+					'<ul class="dropdown-menu dropdown-menu-right menu-card-styling" role="menu">' + menuItems + '</ul>' +
+					'</div></div>';
+			}
+		}
+
+		// ── Build QR target URL ──
+		var _viewUrl = buildPatientProfileQrUrl(obj.patientprofileid || '');
+		var _fullName = ((obj.firstname || '') + ' ' + (obj.lastname || '')).trim();
+
+		// ── Build card (matches printable card format) ──
+						// ── Build card — new landscape Apollo-style format ──
+		var PatientProfileContainer =
+		'<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4 mb-4">' +
+			'<div class="pp-card">' +
+				actionMenu +
+				'<div class="pp-card__banner">' +
+					(_tenantLogoUrl
+						? '<img class="pp-card__org-logo" src="' + _tenantLogoUrl.replace(/"/g, '&quot;') + '" onerror="this.style.display=\'none\'" alt="Logo" />'
+						: '<div class="pp-card__org-logo-placeholder">' + (_tenantName ? _tenantName.charAt(0) : 'H') + '</div>') +
+					'<div class="pp-card__org-text">' +
+						'<div class="pp-card__org-name">' + (_tenantName || 'NalamVazha').replace(/</g, '&lt;') + '</div>' +
+						'<div class="pp-card__org-sub">Patient Identification Card</div>' +
+					'</div>' +
+					
+				'</div>' +
+				'<div class="pp-card__main">' +
+					'<div class="pp-card__photo-wrap">' +
+						'<img class="pp-card__photo" src="' + photoUrl + '" onerror="this.onerror=null;this.src=\'' + _defaultHumanImage + '\';" alt="' + (obj.firstname || '') + '" />' +
+					'</div>' +
+					'<div class="pp-card__details">' +
+						'<h6 class="pp-card__name">' + (_fullName || '-') + '</h6>' +
+						(statusBadges ? '<div class="pp-card__badges">' + statusBadges + '</div>' : '') +
+						'<div class="pp-card__two-col">' +
+							'<div class="pp-card__col">' +
+								'<div class="pp-card__field">' +
+									'<span class="pp-card__field-icon pp-icon-person"></span>' +
+									'<div><div class="pp-card__field-label">Gender</div><div class="pp-card__field-val">' + (obj.gender || '-') + '</div></div>' +
+								'</div>' +
+								'<div class="pp-card__hdiv"></div>' +
+								'<div class="pp-card__field">' +
+									'<span class="pp-card__field-icon pp-icon-cal"></span>' +
+									'<div><div class="pp-card__field-label">DOB</div><div class="pp-card__field-val">' + (obj.dateofbirth || '-') + '</div></div>' +
+								'</div>' +
+							'</div>' +
+							'<div class="pp-card__col-sep"></div>' +
+							'<div class="pp-card__col">' +
+								'<div class="pp-card__field">' +
+									'<span class="pp-card__field-icon pp-icon-blood"></span>' +
+									'<div><div class="pp-card__field-label">Blood Group</div><div class="pp-card__field-val">' + (obj.bloodgroup || '-') + '</div></div>' +
+								'</div>' +
+										'<div class="pp-card__field">' +
+			'<span class="pp-card__field-icon pp-icon-mail"></span>' +
+			'<div><div class="pp-card__field-label">Email</div><div class="pp-card__field-val">' + (obj.emailaddress || '-') + '</div></div>' +
+		'</div>' +
+								'<div class="pp-card__field">' +
+									'<span class="pp-card__field-icon pp-icon-globe"></span>' +
+									'<div><div class="pp-card__field-label">Nationality</div><div class="pp-card__field-val">' + (obj.nationality || '-') + '</div></div>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+				'<div class="pp-card__qr-footer">' +
+					'<div class="pp-card__footer-left">' +
+						'<div class="pp-card__qr" id="ppQR_' + (obj.patientprofileid || key) + '" data-qr-url="' + _viewUrl.replace(/"/g, '&quot;') + '"></div>' +
+						'<div class="pp-card__qr-text">' +
+							'Scan for Profile' +
+							'<strong>' + (obj.registrationid || '-') + '</strong>' +
+						'</div>' +
+					'</div>' +
+					'<div class="pp-card__footer-sep"></div>' +
+					'<div class="pp-card__footer-right">' +
+						'<svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:20px;height:20px;flex-shrink:0;margin-top:2px"><path d="M4 2h4l2 4.5-2.5 2A10 10 0 0 0 13.5 14.5L16 12l4.5 2v4c0 1.1-.9 2-2 2C7.61 20 2 14.39 2 4a2 2 0 0 1 2-2Z" stroke="#1b4d2e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+								'<div class="pp-card__emg">' +
+			'<div class="pp-card__emg-label">Mobile</div>' +
+			'<div class="pp-card__emg-val">' + (obj.mobilenumber || '-') + '</div>' +
+		'</div>'
+							'</div>' +
+				'</div>' +
+			'</div>' +
+		'</div>';
+
+		$("#PatientProfileContainer").append(PatientProfileContainer);
+
+			});
+
+			/* Generate QR codes for all newly-rendered cards */
+			if (typeof QRCode !== 'undefined') {
+				$('#PatientProfileContainer .pp-card__qr[data-qr-url]').each(function () {
+					var $el = $(this);
+					if ($el.children().length > 0) return; /* already rendered */
+					var url = $el.data('qr-url');
+					if (!url) return;
+					try {
+						new QRCode(this, { text: url, width: 64, height: 64, colorDark: '#1e293b', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+					} catch (e) { /* QRCode dup guard */ }
+				});
+			}
+
+			},
+			error: function () {
+		$("#PatientProfileContainer").empty()
+			$("#PatientProfileContainer").append('No Data');
+			}
+			});
+
+
+
+		}
+
+		   function fill_pagination(callback) {
+				if (reachedEOF || fetchingDataFromApi) {
+					return;
+				}
+				fetchingDataFromApi = true;
+					var sendFilterData = {
+																	"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+																	"firstname":$("#firstname").val(),
+		"dateofbirth_automatonfrom":getSqlDate($("#dateofbirth_automatonfrom").val()),"dateofbirth_automatonto":getSqlDate($("#dateofbirth_automatonto").val()),
+		"emailaddress":$("#emailaddress").val(),
+		"mobilenumber":$("#mobilenumber").val(),
+		"whatsappnumber":$("#whatsappnumber").val(),
+		"idprooftype":$("#idprooftype").val(),
+		"idproofnumber":$("#idproofnumber").val(),
+		"pzip":$("#pzip").val(),
+		"blacklisted":$("#blacklisted").val(),
+		"deceased":$("#deceased").is(':checked'),
+
+																	 "pagesize": pageSize,
+																	"pagenumber": (currentPageNumber - 1)
+
+																}
+				var currentPage = $(dataTableId).DataTable().page();
+
+				$.ajax({
+					url: "@Url.Action("get_Patient_Profile_List", "PatientProfile")",
+					type: 'GET',
+					dataType: 'json',
+					data: sendFilterData,
+					success: function (responsedata) {
+						if (responsedata != null && responsedata.detail.length > 0) {
+							if (responsedata.detail.length < pageSize) {
+								reachedEOF = true;
+							}
+
+							api_response_data = responsedata.detail;
+							var table = $(dataTableId).DataTable();
+							table.rows().remove();
+							table.rows.add(responsedata.detail).draw();
+						}
+						else {
+							reachedEOF = true;
+						}
+						fetchingDataFromApi = false;
+						if (callback != undefined) {
+							callback();
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						fetchingDataFromApi = false;
+						if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+							swal({
+								title: 'Failed!',
+								text: jqXHR.responseText,
+								type: 'error',
+								buttonsStyling: false,
+								confirmButtonClass: 'btn btn-primary',
+														allowOutsideClick: false,
+								allowEscapeKey: false,
+								allowEnterKey: false
+							}).then(function () {
+								window.location = "@Url.Action("AuthorizationFailed", "users")"
+							})
+						}
+						else {
+							swal({
+								title: 'Contact Administrator !',
+								text: jqXHR.responseText,
+								type: 'error',
+								buttonsStyling: false,
+								confirmButtonClass: 'btn btn-primary',
+							  allowOutsideClick: false,
+								allowEscapeKey: false,
+								allowEnterKey: false
+							})
+						}
+					}
+				});
+
+
+			}
+
+
+		$(document).ready(function () {
+		  fill_PatientProfile_cards()
+
+
+		 fill_PatientProfile()
+
+		$(".cma_fill_tab").click(function(){
+						$(document).scrollTo(0,100);
+						currentCardPageNumber = -1;
+					reachedRequestsEOF = false;
+
+						fill_PatientProfile()
+						 fill_PatientProfile_cards()
+
+				})
+				var Actions=getAutho("PatientProfile","list")
+				if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+		});
+
+		  $("body").on("click", "[data-table-action]", function(a) {
+			a.preventDefault();
+
+			var b = $(this).data("table-action");
+		   // console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+			if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+			  var c = $(this).closest(".card");
+			  c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+			}
+		  });
+
+		$(window).scroll(function () {
+				if ($(window).scrollTop() + $(window).height() + 250 >= $(document).height()) {
+					fill_PatientProfile_cards();
+				}
+			});
+
+	</script>
+	<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+	<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+	<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+	<script>
+		$(document).ready(function () {
+			$('#dateofbirth_automatonfrom').datetimepicker({
+				 format: "d/m/Y",
+				 formatDate: "d/m/Y",
+				 timepicker: false,
+		});
+			$('#dateofbirth_automatonto').datetimepicker({
+				 format: "d/m/Y",
+				 formatDate: "d/m/Y",
+				 timepicker: false,
+		});
+				$("#dateofbirth_automatonfrom").datetimepicker('defaultDate', moment().add(-365, 'days'));
+				$("#dateofbirth_automatonto").datetimepicker('defaultDate', moment());
+		})
+	</script>
+
+	<script>
+		$(document).ready(function () {
+			var mobilenumber_input = document.querySelector("#mobilenumber_ip");
+			patientMobileFilterIti = window.intlTelInput(mobilenumber_input, {
+				nationalMode: true,
+				initialCountry: "in",
+				preferredCountries: ['us','in','sg']
+			});
+			patientMobileFilterIti.setNumber($('#mobilenumber').val());
+			var handleChange_mobilenumber_input = function () {
+				$('#mobilenumber').val(patientMobileFilterIti.getNumber() || '');
+			};
+			mobilenumber_input.addEventListener('change', handleChange_mobilenumber_input);
+			mobilenumber_input.addEventListener('keyup', handleChange_mobilenumber_input);
+			mobilenumber_input.addEventListener('countrychange', handleChange_mobilenumber_input);
+
+			var whatsappnumber_input = document.querySelector("#whatsappnumber_ip");
+			patientWhatsAppFilterIti = window.intlTelInput(whatsappnumber_input, {
+					nationalMode: true,
+					initialCountry: "in",
+					preferredCountries: ['us','in','sg']
+				});
+				patientWhatsAppFilterIti.setNumber($('#whatsappnumber').val());
+				var handleChange_whatsappnumber_input = function () {
+					$('#whatsappnumber').val(patientWhatsAppFilterIti.getNumber() || '');
+				};
+
+				// listen to "keyup", but also "change" to update when the user selects a country
+				whatsappnumber_input.addEventListener('change', handleChange_whatsappnumber_input);
+				whatsappnumber_input.addEventListener('keyup', handleChange_whatsappnumber_input);
+
+				whatsappnumber_input.addEventListener("countrychange", handleChange_whatsappnumber_input);
+				syncPatientProfilePhoneFilters();
+		})
+	</script>
+	<script>
+		var stridprooftype;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.idprooftype != null && Model.idprooftype.ToString() != "")
+		{
+			<script>
+				stridprooftype = "@Model.idprooftype";
+			</script>
+		}
+	}
+	<script>
+		$(document).ready(function () {
+		$("#pzip").autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+		})
+	</script>
+	<script>
+		var strblacklisted;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.blacklisted != null && Model.blacklisted.ToString() != "")
+		{
+			<script>
+				strblacklisted = "@Model.blacklisted";
+			</script>
+		}
+	}
+	@if (Model != null)
+	{
+		if (Model.deceased != null && Model.deceased.ToString() != "")
+		{
+			<script>
+				if("@Model.deceased"=="True")
+				{
+				$("#deceasedparent").addClass("active")
+				}
+			</script>
+		}
+	}
+
+	<script>
+		$(document).ready(function () {
+		$.ajax({
+		url: '@Url.Action("get_lookups_by_entity", "lookups")',
+		dataType: 'json',
+		data:{id: 'PatientProfile' },
+		success: function(data) {
+
+
+
+				$.each(data, function(index, optionDataInner) {
+
+
+													if(optionDataInner.fieldname=="idprooftype"){
+														var ddltarget_idprooftype = "#idprooftype"
+														$(ddltarget_idprooftype).empty();
+														$(ddltarget_idprooftype).append("<option value=''>Choose</option>")
+														var options_idprooftype = optionDataInner.fielddesc.split(',');
+														options_idprooftype.sort(function (a, b) {
+																				return a.localeCompare(b);
+															});
+														options_idprooftype.forEach(function(option_idprooftype){
+															if(stridprooftype== option_idprooftype){
+															$(ddltarget_idprooftype).append('<option selected value="' + option_idprooftype + '">' + option_idprooftype+ '</option>')
+
+															}
+															else
+															$(ddltarget_idprooftype).append('<option  value="' + option_idprooftype + '">' + option_idprooftype+ '</option>')
+
+														})
+
+													}
+
+													if(optionDataInner.fieldname=="blacklisted"){
+														var ddltarget_blacklisted = "#blacklisted"
+														$(ddltarget_blacklisted).empty();
+														$(ddltarget_blacklisted).append("<option value=''>Choose</option>")
+														var options_blacklisted = optionDataInner.fielddesc.split(',');
+														options_blacklisted.sort(function (a, b) {
+																				return a.localeCompare(b);
+															});
+														options_blacklisted.forEach(function(option_blacklisted){
+															if(strblacklisted== option_blacklisted){
+															$(ddltarget_blacklisted).append('<option selected value="' + option_blacklisted + '">' + option_blacklisted+ '</option>')
+
+															}
+															else
+															$(ddltarget_blacklisted).append('<option  value="' + option_blacklisted + '">' + option_blacklisted+ '</option>')
+
+														})
+
+													}
+
+
+
+				});
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+		})
+
+	</script>
+
+
+	<script>
+		$(document).ready(function () {
+
+			$("#tenantid").change(function(){
+				reloadPatientProfileResults();
+			})
+
+			$("#btnPatientProfileSearch").click(function(){
+				$(document).scrollTo(0,100);
+				reloadPatientProfileResults();
+			});
+
+			$('.pp-search-band').on('keydown', 'input', function(event) {
+				if (event.key === 'Enter' || event.keyCode === 13) {
+					event.preventDefault();
+					reloadPatientProfileResults();
+				}
+			});
+
+			$('.pp-search-band').on('change', 'select, input', function() {
+				if (patientFilterEventsSuspended) return;
+				reloadPatientProfileResults();
+			});
+
+				var Actions_=getAutho("PatientProfile","create")
+				if(Actions_ !=  undefined)
+				{
+					var create_URL = "@Url.Action("entry.viewname", "PatientProfile")"
+					create_URL = create_URL.replace("entry.viewname", Actions_.actionmethodname);
+					$(".btnCreate").attr('href',create_URL)
+					$(".btnCreate").show()
+				}
+
+
+		});
+	</script>
+
+	<script>
+
+
+		// Function to create the option elements
+		function createOptionElement(value, label, className) {
+			var option = document.createElement("option");
+			option.value = value;
+			option.textContent = label;
+			option.className = className;
+			return option;
+		}
+
+		// Function to populate the dropdown
+		function populateDropdown(data) {
+			var dropdown = document.getElementById("tenantid");
+			dropdown.innerHTML = '<option value=""> Choose </option>';
+
+			// Create a dictionary to store child options grouped by parentid
+			var groupedOptions = { };
+
+						// Filter out duplicate entries with the same businessname
+						var filteredData = [];
+						var uniqueNames = new Set();
+
+						data.forEach(function(item) {
+							if (!uniqueNames.has(item.businessname))
+							{
+								filteredData.push(item);
+								uniqueNames.add(item.businessname);
+							}
+						});
+
+						// Group child options under corresponding parent options
+						filteredData.forEach(function(item) {
+							if (!item.parentid)
+							{
+								dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+							}
+							else
+							{
+								if (!groupedOptions[item.parentid])
+								{
+									groupedOptions[item.parentid] = [];
+								}
+								groupedOptions[item.parentid].push(item);
+							}
+						});
+
+						// Add child options to their corresponding parent options
+						Object.keys(groupedOptions).forEach(function(parentid) {
+							var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+							groupedOptions[parentid].forEach(function(childOption) {
+								parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+							});
+						});
+
+						filteredData.forEach(function (item) {
+							if (!item.parentid && !groupedOptions[item.tenantid]) {
+								var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+								if(item.natureofbusiness?.indexOf("Lead") !== -1)
+								parentOption.classList.add("optionNoChildLead");
+								else
+								parentOption.classList.add("optionNoChild");
+							}
+						});
+
+						$("#tenantid").val(str_tenantid);
+						$("#tenantid").select2()
+						var space = '&nbsp;&nbsp;&nbsp;'
+						$("#tenantid").find('.optionChild').prepend(space);
+
+
+					}
+		$(document).ready(function () {
+		 if ("@Context.Session.GetString("Nalamshowtenant")" =="Y")
+		 {
+		$.ajax({
+		url: '@Url.Action("get_project_tenant", "tenant")',
+		dataType: 'json',
+		data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("Nalamchoosedtenantid")"},
+		success: function(data) {
+
+			populateDropdown(data);
+
+
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+		}else
+		{
+
+			$(".tenant_display").hide()
+		}
+		});
+	</script>
+
+
+
+	<script>
+		$(document).ready(function () {
+			$("#tenantid").change(function(){
+			})
+		});
+	</script>
+
+	<!-- ═══ Search Band + Patient Card CSS ═══ -->
+	<style>
+		/* ── Search Band ── */
+		.pp-search-band {
+			background: var(--cardbackground, #fff);
+			border: 1px solid var(--input-border, #D5D5DE);
+			border-radius: 10px;
+			padding: 0.75rem 1rem;
+			margin-bottom: 1rem;
+			box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+		}
+
+		.pp-search-band__row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 0.6rem;
+			align-items: flex-end;
+		}
+
+		.pp-search-band__field {
+			min-width: 140px;
+			flex: 0 0 auto;
+		}
+
+		.pp-search-band__field--grow {
+			flex: 1 1 220px;
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+		.pp-search-band__field--btn {
+			min-width: auto;
+			flex: 0 0 auto;
+			display: flex;
+			align-items: center;
+			gap: 0.4rem;
+		}
+
+		.pp-search-band__icon {
+			color: var(--btnprimary, #2d5f44);
+			font-size: var(--fs-base, 14px);
+		}
+
+		.pp-search-band__label {
+			display: block;
+			font-size: var(--fs-small, 12px);
+			font-weight: 600;
+			color: var(--labelcolor, #4a4a4a);
+			margin-bottom: 2px;
+			white-space: nowrap;
+		}
+
+		.pp-search-band__expanded {
+			border-top: 1px solid var(--input-border, #D5D5DE);
+			margin-top: 0.6rem;
+			padding-top: 0.6rem;
+		}
+
+		/* ── Patient Profile Card (matches printable card format) ── */
+		.pp-card {
+			background: #ffffff;
+			border: 1.5px solid #c8d6cc;
+			border-radius: 16px;
+			overflow: hidden;
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			font-family: 'Roboto', 'Segoe UI', sans-serif;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.09);
+			transition: box-shadow 0.2s, transform 0.2s;
+			height:100%
+		}
+
+			.pp-card:hover {
+				box-shadow: 0 8px 24px rgba(0,0,0,0.14);
+				transform: translateY(-2px);
+				z-index: 10;
+			}
+
+		/* Action menu */
+		.pp-card__actions {
+			position: absolute;
+			top: 14px;
+			right: 14px;
+			z-index: 20;
+		}
+
+			.pp-card__actions .btn-icon-toggle {
+				background: transparent;
+				border-radius: 50%;
+				width: 28px;
+				height: 28px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 16px;
+				color: #ffffff;
+				border: none;
+				padding: 0;
+			}
+
+		.pp-icon-mail {
+			background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='4' width='16' height='12' rx='2' stroke='%231b4d2e' stroke-width='1.8'/%3E%3Cpath d='M3 5l7 6 7-6' stroke='%231b4d2e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+		}
+
+				.pp-card__actions .btn-icon-toggle:hover {
+					background: rgba(255,255,255,0.15);
+				}
+
+			.pp-card__actions .dropdown-menu {
+				z-index: 9999 !important;
+				position: absolute !important;
+			}
+
+			.pp-card__actions .btn-group.open,
+			.pp-card__actions .btn-group.show {
+				z-index: 9999;
+			}
+
+		/* ── Header ── */
+		.pp-card__banner {
+			background: #1b4d2e;
+			padding: 14px 18px 13px;
+			display: flex;
+			align-items: center;
+			gap: 11px;
+			position: relative;
+		}
+
+		.pp-card__org-logo {
+			width: 40px;
+			height: 40px;
+			object-fit: contain;
+			border-radius: 6px;
+			background: #ffffff;
+			padding: 5px;
+			flex-shrink: 0;
+		}
+
+		.pp-card__org-logo-placeholder {
+			width: 40px;
+			height: 40px;
+			border-radius: 6px;
+			background: #ffffff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			font-weight: 800;
+			color: #1b4d2e;
+			flex-shrink: 0;
+		}
+
+		.pp-card__org-text {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.pp-card__org-name {
+			font-size: 16px;
+			font-weight: 800;
+			color: #ffffff;
+			line-height: 1.1;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.pp-card__org-sub {
+			font-size: 9.5px;
+			font-weight: 700;
+			color: #9fd4b0;
+			text-transform: uppercase;
+			letter-spacing: 0.6px;
+			margin-top: 2px;
+		}
+
+		.pp-card__hearticon {
+			width: 38px;
+			height: 38px;
+			flex-shrink: 0;
+			margin-right: 4px;
+		}
+
+			.pp-card__hearticon svg {
+				width: 38px;
+				height: 38px;
+			}
+
+		/* ── Body ── */
+		.pp-card__main {
+			display: flex;
+			align-items: flex-start;
+			gap: 0;
+			padding: 18px 18px 14px;
+			background: #ffffff;
+			flex: 1;
+		}
+
+		.pp-card__photo-wrap {
+			width: 100px;
+			height: 118px;
+			min-width: 100px;
+			border-radius: 8px;
+			overflow: hidden;
+			background: #e2e8e4;
+			border: 1px solid #d0dbd2;
+			flex-shrink: 0;
+			margin-right: 18px;
+		}
+
+		.pp-card__photo {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			display: block;
+		}
+
+		.pp-card__details {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.pp-card__name {
+			font-size: 18px;
+			font-weight: 800;
+			color: #0d2216;
+			margin: 0 0 10px;
+			line-height: 1.1;
+			text-transform: uppercase;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		/* ── Two column layout ── */
+		.pp-card__two-col {
+			display: flex;
+			align-items: stretch;
+			gap: 0;
+		}
+
+		.pp-card__col {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 9px;
+		}
+
+		.pp-card__col-sep {
+			width: 1.5px;
+			background: #c8dace;
+			margin: 0 14px;
+			flex-shrink: 0;
+			align-self: stretch;
+		}
+
+		.pp-card__field {
+			display: flex;
+			align-items: flex-start;
+			gap: 8px;
+		}
+
+		.pp-card__field-icon {
+			width: 18px;
+			height: 18px;
+			flex-shrink: 0;
+			margin-top: 2px;
+			background-size: contain;
+			background-repeat: no-repeat;
+			background-position: center;
+		}
+
+		/* SVG icons as data URIs */
+		.pp-icon-person {
+			background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='6' r='4' stroke='%231b4d2e' stroke-width='1.8'/%3E%3Cpath d='M3 18c0-3.866 3.134-7 7-7s7 3.134 7 7' stroke='%231b4d2e' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+		}
+
+		.pp-icon-cal {
+			background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='3' width='16' height='16' rx='2' stroke='%231b4d2e' stroke-width='1.8'/%3E%3Cpath d='M6 1v4M14 1v4' stroke='%231b4d2e' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M2 8h16' stroke='%231b4d2e' stroke-width='1.5'/%3E%3C/svg%3E");
+		}
+
+		.pp-icon-blood {
+			background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 2C10 2 3 9 3 13.5a7 7 0 0 0 14 0C17 9 10 2 10 2Z' fill='%231b6640' stroke='%231b6640' stroke-width='1'/%3E%3C/svg%3E");
+		}
+
+		.pp-icon-phone {
+			background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 2h4l1.5 4-2 1.5a11 11 0 0 0 5 5L14 10.5l4 1.5v4c0 1.1-.9 2-2 2C7.16 18 2 12.84 2 4a2 2 0 0 1 2-2Z' stroke='%231b4d2e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+		}
+
+		.pp-icon-globe {
+			background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 20 20' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' stroke='%231b4d2e' stroke-width='1.8'/%3E%3Cellipse cx='10' cy='10' rx='3.5' ry='8' stroke='%231b4d2e' stroke-width='1.4'/%3E%3Cpath d='M2 10h16' stroke='%231b4d2e' stroke-width='1.4'/%3E%3C/svg%3E");
+		}
+
+		.pp-card__field-label {
+			font-size: 10.5px;
+			font-weight: 600;
+			color: #3a7a56;
+			letter-spacing: 0.1px;
+			line-height: 1.2;
+			margin-bottom: 1px;
+		}
+
+		.pp-card__field-val {
+			font-size: 13px;
+			font-weight: 700;
+			color: #0d2216;
+			line-height: 1.2;
+		}
+
+		.pp-card__hdiv {
+			height: 1px;
+			background: #d6e4da;
+			margin: 1px 0;
+		}
+
+		/* ── Badges ── */
+		.pp-card__badges {
+			display: flex;
+			gap: 4px;
+			margin-bottom: 8px;
+			flex-wrap: wrap;
+		}
+
+		.pp-card__badge {
+			font-size: 10px;
+			font-weight: 700;
+			padding: 2px 5px;
+			border-radius: 4px;
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
+		}
+
+		.pp-card__badge--danger {
+			background: #fee2e2;
+			color: #b91c1c;
+		}
+
+		.pp-card__badge--dark {
+			background: #e2e8f0;
+			color: #334155;
+		}
+
+		/* ── Footer ── */
+		.pp-card__qr-footer {
+			background: #f0f5f1;
+			border-top: 1.5px dashed #b8cebc;
+			padding: 12px 16px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-radius: 0 0 14px 14px;
+		}
+
+		.pp-card__footer-left {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+
+		.pp-card__qr {
+			width: 56px;
+			height: 56px;
+			flex-shrink: 0;
+			background: #fff;
+			border-radius: 4px;
+			line-height: 0;
+		}
+
+			.pp-card__qr img,
+			.pp-card__qr canvas {
+				width: 56px !important;
+				height: 56px !important;
+				display: block;
+			}
+
+		.pp-card__qr-text {
+			font-size: 10px;
+			font-weight: 700;
+			text-transform: uppercase;
+			color: #2e7050;
+			letter-spacing: 0.5px;
+			line-height: 1.3;
+		}
+
+			.pp-card__qr-text strong {
+				display: block;
+				font-size: 14px;
+				font-weight: 800;
+				color: #0d2216;
+				margin-top: 3px;
+				letter-spacing: 0.1px;
+			}
+
+		.pp-card__footer-sep {
+			width: 1.5px;
+			background: #c8dace;
+			height: 44px;
+			flex-shrink: 0;
+			margin: 0 14px;
+		}
+
+		.pp-card__footer-right {
+			display: flex;
+			align-items: flex-start;
+			gap: 8px;
+		}
+
+		.pp-card__emg-label {
+			font-size: 10px;
+			font-weight: 700;
+			text-transform: uppercase;
+			color: #2e7050;
+			letter-spacing: 0.5px;
+			line-height: 1.3;
+		}
+
+		.pp-card__emg-val {
+			font-size: 14px;
+			font-weight: 800;
+			color: #0d2216;
+			margin-top: 3px;
+		}
+
+		@@media (max-width: 575px) {
+			.pp-search-band__field {
+				min-width: 100%;
+			}
+
+			.pp-card__main {
+				padding: 14px 12px 10px;
+			}
+
+			.pp-card__photo-wrap {
+				width: 80px;
+				height: 96px;
+				min-width: 80px;
+			}
+
+			.pp-card__name {
+				font-size: 15px;
+			}
+		}
+	</style>
+
+	<!-- ═══ Expand/Collapse filter toggle ═══ -->
+	<script>
+		$(document).ready(function() {
+			/* ── Dropdown z-index fix: raise card above siblings when menu is open ── */
+			$(document).on('shown.bs.dropdown show.bs.dropdown', '.pp-card__actions .btn-group', function () {
+				$(this).closest('.pp-card').css('z-index', 9999);
+			});
+			$(document).on('hidden.bs.dropdown hide.bs.dropdown', '.pp-card__actions .btn-group', function () {
+				$(this).closest('.pp-card').css('z-index', '');
+			});
+		});
+	</script>
+
+	<!-- ═══════════════════════════════════════════════
+		 Patient Card Print with QR Code
+		 ═══════════════════════════════════════════════ -->
+	<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+	<!-- Hidden print container (rendered off-screen, used only for window.print) -->
+	<div id="ppPrintCardModal" style="display:none;">
+		<div class="ppc-backdrop"></div>
+		<div class="ppc-dialog">
+			<div class="ppc-dialog__head">
+				<span><i class="fa fa-print"></i> Patient Card Preview</span>
+				<button type="button" class="ppc-dialog__close" id="ppPrintCardClose"><i class="fas fa-xmark"></i></button>
+			</div>
+			<div class="ppc-dialog__body">
+				<div class="ppc-card" id="ppPrintCardContent">
+					<!-- Populated dynamically -->
+				</div>
+			</div>
+			<div class="ppc-dialog__foot">
+				<button type="button" class="btn btn-sm btn-default" id="ppPrintCardCancel"><i class="fas fa-xmark"></i> Close</button>
+				<button type="button" class="btn btn-sm btn-primary" id="ppPrintCardPrint"><i class="fa fa-print"></i> Print</button>
+			</div>
+		</div>
+	</div>
+
+	<style>
+		/* ── Print Card Modal ── */
+		#ppPrintCardModal {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			z-index: 10000;
+			display: none;
+		}
+
+			#ppPrintCardModal .ppc-backdrop {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: rgba(0,0,0,0.45);
+			}
+
+			#ppPrintCardModal .ppc-dialog {
+				position: relative;
+				margin: 40px auto;
+				max-width: 480px;
+				width: 95%;
+				background: #fff;
+				border-radius: 12px;
+				box-shadow: 0 16px 48px rgba(0,0,0,0.18);
+				z-index: 10001;
+				display: flex;
+				flex-direction: column;
+			}
+
+		.ppc-dialog__head {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding: 14px 20px;
+			border-bottom: 1px solid #e8ecf1;
+			font-weight: 700;
+			font-size: 15px;
+			color: #1e293b;
+		}
+
+		.ppc-dialog__close {
+			background: none;
+			border: none;
+			font-size: 18px;
+			color: #94a3b8;
+			cursor: pointer;
+		}
+
+			.ppc-dialog__close:hover {
+				color: #ef4444;
+			}
+
+		.ppc-dialog__body {
+			padding: 20px;
+			overflow-y: auto;
+			max-height: calc(100vh - 200px);
+		}
+
+		.ppc-dialog__foot {
+			display: flex;
+			gap: 8px;
+			justify-content: flex-end;
+			padding: 12px 20px;
+			border-top: 1px solid #e8ecf1;
+		}
+
+		/* ── Patient Print Card ── */
+		.ppc-card {
+			background: #ffffff;
+			border: 1.5px solid #c8d6cc;
+			border-radius: 16px;
+			overflow: hidden;
+			font-family: 'Roboto', 'Segoe UI', sans-serif;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.09);
+		}
+
+		.ppc-card__banner {
+			background: #1b4d2e !important;
+			padding: 14px 18px 13px;
+			display: flex;
+			align-items: center;
+			gap: 11px;
+		}
+
+		.ppc-card__org-logo {
+			width: 40px;
+			height: 40px;
+			object-fit: contain;
+			border-radius: 6px;
+			background: #fff;
+			padding: 5px;
+		}
+
+		.ppc-card__org-logo-placeholder {
+			width: 40px;
+			height: 40px;
+			border-radius: 6px;
+			background: #fff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			font-weight: 800;
+			color: #1b4d2e;
+		}
+
+		.ppc-card__org-name {
+			font-size: 16px;
+			font-weight: 800;
+			color: #fff;
+			line-height: 1.1;
+		}
+
+		.ppc-card__org-sub {
+			font-size: 9.5px;
+			font-weight: 700;
+			color: #9fd4b0;
+			text-transform: uppercase;
+			letter-spacing: .6px;
+			margin-top: 2px;
+		}
+
+		.ppc-card__main {
+			display: flex;
+			align-items: flex-start;
+			padding: 18px;
+			background: #fff;
+		}
+
+		.ppc-card__photo {
+			width: 100px;
+			height: 118px;
+			min-width: 100px;
+			border-radius: 8px;
+			object-fit: cover;
+			border: 1px solid #d0dbd2;
+			margin-right: 18px;
+			background: #e2e8e4;
+		}
+
+		.ppc-card__details {
+			flex: 1;
+			min-width: 0;
+		}
+
+		.ppc-card__name {
+			font-size: 18px;
+			font-weight: 800;
+			color: #0d2216;
+			margin: 0 0 10px;
+			line-height: 1.1;
+			text-transform: uppercase;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.ppc-card__two-col {
+			display: flex;
+			align-items: stretch;
+		}
+
+		.ppc-card__col {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 9px;
+		}
+
+		.ppc-card__col-sep {
+			width: 1.5px;
+			background: #c8dace;
+			margin: 0 14px;
+		}
+
+		.ppc-card__field {
+			display: flex;
+			flex-direction: row;
+			align-items: flex-start;
+			gap: 8px;
+		}
+
+		.ppc-field-label {
+			font-size: 10.5px;
+			font-weight: 600;
+			color: #3a7a56;
+			line-height: 1.2;
+			padding-right:5px;
+		}
+
+		.ppc-field-val {
+			font-size: 13px;
+			font-weight: 700;
+			color: #0d2216;
+			line-height: 1.2;
+		}
+
+		.ppc-card__hdiv {
+			height: 1px;
+			background: #d6e4da;
+		}
+
+		.ppc-card__qr-section {
+			background: #f0f5f1;
+			border-top: 1.5px dashed #b8cebc;
+			padding: 12px 16px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.ppc-card__footer-left,
+		.ppc-card__footer-right {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.ppc-card__qr-box {
+			width: 56px;
+			height: 56px;
+			background: #fff;
+		}
+
+			.ppc-card__qr-box img,
+			.ppc-card__qr-box canvas {
+				width: 56px !important;
+				height: 56px !important;
+			}
+
+		.ppc-card__qr-label {
+			font-size: 10px;
+			font-weight: 700;
+			text-transform: uppercase;
+			color: #2e7050;
+			line-height: 1.3;
+		}
+
+			.ppc-card__qr-label strong {
+				display: block;
+				font-size: 14px;
+				font-weight: 800;
+				color: #0d2216;
+				margin-top: 3px;
+			}
+
+		.ppc-card__footer-sep {
+			width: 1.5px;
+			background: #c8dace;
+			height: 44px;
+			margin: 0 14px;
+		}
+
+		
+
+		/* ── Print-only styles ── */
+		@@media print {
+			body * {
+				visibility: hidden !important;
+			}
+
+			#ppPrintCardContent, #ppPrintCardContent * {
+				visibility: visible !important;
+			}
+
+			#ppPrintCardContent {
+				position: fixed;
+				left: 50%;
+				top: 10mm;
+				transform: translateX(-50%);
+				width: 86mm;
+				border: 2px solid #000 !important;
+				-webkit-print-color-adjust: exact !important;
+				print-color-adjust: exact !important;
+				box-shadow: none !important;
+			}
+
+			.ppc-card__banner {
+				background: #2d5f44 !important;
+				-webkit-print-color-adjust: exact !important;
+				print-color-adjust: exact !important;
+			}
+
+			#ppPrintCardModal .ppc-backdrop,
+			#ppPrintCardModal .ppc-dialog__head,
+			#ppPrintCardModal .ppc-dialog__foot {
+				display: none !important;
+			}
+
+			#ppPrintCardModal .ppc-dialog {
+				box-shadow: none !important;
+				border: none !important;
+				background: transparent !important;
+				margin: 0 !important;
+			}
+
+			#ppPrintCardModal .ppc-dialog__body {
+				padding: 0 !important;
+			}
+		}
+	</style>
+
+	<script>
+		(function () {
+			function buildViewUrl(patientProfileId) {
+				return buildPatientProfileQrUrl(patientProfileId);
+			}
+
+			function openPrintCard($btn) {
+				var pid       = $btn.data('pid')  || '';
+				var name      = $btn.data('name') || '-';
+				var regId     = $btn.data('regid') || '-';
+				var gender    = $btn.data('gender') || '-';
+				var dob       = $btn.data('dob') || '-';
+				var age       = $btn.data('age') || '-';
+				var ageMonths = $btn.data('agemonths') || '-';
+				var phone     = $btn.data('phone') || '-';
+					var photo = $btn.data('photo') || _defaultHumanImage;
+				var category  = $btn.data('category') || '-';
+				var nationality = $btn.data('nationality') || '-';
+				var bloodgroup  = $btn.data('bloodgroup') || '-';
+				var email = $btn.data('email') || '-';
+				var viewUrl = buildViewUrl(pid);
+
+						var html =
+		'<div class="ppc-card__banner">' +
+			(_tenantLogoUrl
+				? '<img class="ppc-card__org-logo" src="' + _tenantLogoUrl.replace(/"/g, '&quot;') + '" onerror="this.style.display=\'none\'" alt="Logo" />'
+				: '<div class="ppc-card__org-logo-placeholder">' + (_tenantName ? _tenantName.charAt(0) : 'H') + '</div>') +
+			'<div class="ppc-card__org-text">' +
+				'<div class="ppc-card__org-name">' + (_tenantName || 'NalamVazha').replace(/</g, '&lt;') + '</div>' +
+				'<div class="ppc-card__org-sub">Patient Identification Card</div>' +
+			'</div>' +
+			
+		'</div>' +
+
+		'<div class="ppc-card__main">' +
+			'<img class="ppc-card__photo" src="' + photo + '" onerror="this.onerror=null;this.src=\'' + _defaultHumanImage + '\';" alt="Photo" />' +
+			'<div class="ppc-card__details">' +
+				'<h5 class="ppc-card__name">' + name.replace(/</g, '&lt;') + '</h5>' +
+				'<div class="ppc-card__two-col">' +
+					'<div class="ppc-card__col">' +
+						'<div class="ppc-card__field"><span class="ppc-field-label">Gender</span><span class="ppc-field-val">' + gender + '</span></div>' +
+						'<div class="ppc-card__hdiv"></div>' +
+						'<div class="ppc-card__field"><span class="ppc-field-label">DOB</span><span class="ppc-field-val">' + dob + '</span></div>' +
+					'</div>' +
+					'<div class="ppc-card__col-sep"></div>' +
+					'<div class="ppc-card__col">' +
+								'<div class="ppc-card__field"><span class="pp-card__field-icon pp-icon-blood"></span><div><span class="ppc-field-label">Blood Group</span><span class="ppc-field-val">' + bloodgroup + '</span></div></div>' +
+		'<div class="ppc-card__field"><span class="pp-card__field-icon pp-icon-mail"></span><div><span class="ppc-field-label">Email</span><span class="ppc-field-val">' + email + '</span></div></div>' +
+		'<div class="ppc-card__field"><span class="pp-card__field-icon pp-icon-globe"></span><div><span class="ppc-field-label">Nationality</span><span class="ppc-field-val">' + nationality + '</span></div></div>' +
+					'</div>' +
+				'</div>' +
+			'</div>' +
+		'</div>' +
+
+		'<div class="ppc-card__qr-section">' +
+			'<div class="ppc-card__footer-left">' +
+				'<div class="ppc-card__qr-box" id="ppPrintQR"></div>' +
+				'<div class="ppc-card__qr-label">Scan for Profile<strong>' + regId + '</strong></div>' +
+			'</div>' +
+			'<div class="ppc-card__footer-sep"></div>' +
+			'<div class="ppc-card__footer-right">' +
+				'<svg viewBox="0 0 22 22" fill="none" style="width:18px;height:18px;flex-shrink:0;margin-top:2px"><path d="M4 2h4l2 4.5-2.5 2A10 10 0 0 0 13.5 14.5L16 12l4.5 2v4c0 1.1-.9 2-2 2C7.61 20 2 14.39 2 4a2 2 0 0 1 2-2Z" stroke="#1b4d2e" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+			'<div><div class="ppc-field-label">Mobile</div><div class="ppc-field-val">' + phone + '</div></div>' +
+			'</div>' +
+		'</div>';
+
+				$('#ppPrintCardContent').html(html);
+				$('#ppPrintCardModal').show();
+
+				// Generate QR code
+				$('#ppPrintQR').empty();
+				if (typeof QRCode !== 'undefined') {
+					new QRCode(document.getElementById('ppPrintQR'), {
+						text: viewUrl,
+						width: 62,
+							height: 62,
+						colorDark: '#1e293b',
+						colorLight: '#ffffff',
+						correctLevel: QRCode.CorrectLevel.M
+					});
+				}
+			}
+
+			// Delegated click handler for Print Card button
+			$(document).on('click', '.pp-print-card-btn', function (e) {
+				e.preventDefault();
+				openPrintCard($(this));
+			});
+
+			// Close modal
+			$(document).on('click', '#ppPrintCardClose, #ppPrintCardCancel, .ppc-backdrop', function () {
+				$('#ppPrintCardModal').hide();
+			});
+
+			// Print button
+			$(document).on('click', '#ppPrintCardPrint', function () {
+				window.print();
+			});
+
+			// ESC key to close
+			$(document).on('keydown', function (e) {
+				if (e.key === 'Escape' && $('#ppPrintCardModal').is(':visible')) {
+					$('#ppPrintCardModal').hide();
+				}
+			});
+		})();
+	</script>
+

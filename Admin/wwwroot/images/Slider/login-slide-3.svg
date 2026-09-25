@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#14533c;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1e7a52;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#12573e;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="sun3" cx="80%" cy="15%" r="35%">
+      <stop offset="0%" style="stop-color:#f0c27f;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#14533c;stop-opacity:0" />
+    </radialGradient>
+    <linearGradient id="leaf3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7ee8b5;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#4ecca3;stop-opacity:0.05" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bg3)"/>
+  <rect width="1200" height="800" fill="url(#sun3)"/>
+  <!-- Mountain silhouettes -->
+  <path d="M0,500 L200,300 L350,420 L500,250 L650,380 L800,280 L950,350 L1100,270 L1200,350 V800 H0 Z" fill="#0d4530" opacity="0.3"/>
+  <path d="M0,550 L150,400 L300,480 L450,350 L600,440 L750,360 L900,420 L1050,350 L1200,400 V800 H0 Z" fill="#0b3d2a" opacity="0.25"/>
+  <!-- Large lotus/leaf center -->
+  <g transform="translate(600, 350)" opacity="0.1">
+    <!-- Center circle -->
+    <circle cx="0" cy="0" r="60" fill="#7ee8b5"/>
+    <!-- Petals -->
+    <ellipse cx="0" cy="-100" rx="35" ry="60" fill="#5ce0a8" transform="rotate(0)"/>
+    <ellipse cx="0" cy="-100" rx="35" ry="60" fill="#5ce0a8" transform="rotate(45)"/>
+    <ellipse cx="0" cy="-100" rx="35" ry="60" fill="#5ce0a8" transform="rotate(90)"/>
+    <ellipse cx="0" cy="-100" rx="35" ry="60" fill="#5ce0a8" transform="rotate(135)"/>
+    <ellipse cx="0" cy="-100" rx="35" ry="60" fill="#5ce0a8" transform="rotate(180)"/>
+    <ellipse cx="0" cy="-100" rx="35" ry="60" fill="#5ce0a8" transform="rotate(225)"/>
+    <ellipse cx="0" cy="-100" rx="35" ry="60" fill="#5ce0a8" transform="rotate(270)"/>
+    <ellipse cx="0" cy="-100" rx="35" ry="60" fill="#5ce0a8" transform="rotate(315)"/>
+    <!-- Inner circle -->
+    <circle cx="0" cy="0" r="30" fill="#14533c"/>
+    <!-- Om-like symbol simplified -->
+    <text x="0" y="12" text-anchor="middle" fill="#7ee8b5" font-size="36" font-family="serif" opacity="0.8">&#x0950;</text>
+  </g>
+  <!-- Ayurveda mortar and pestle -->
+  <g transform="translate(180, 280)" opacity="0.08" fill="#fff">
+    <path d="M10,60 Q50,80 90,60 Q95,30 50,10 Q5,30 10,60Z"/>
+    <rect x="42" y="0" width="16" height="50" rx="8"/>
+    <ellipse cx="50" cy="65" rx="50" ry="15"/>
+  </g>
+  <!-- Yoga pose -->
+  <g transform="translate(900, 280)" opacity="0.08" fill="#fff">
+    <circle cx="40" cy="20" r="18"/>
+    <path d="M40,38 L40,90"/>
+    <path d="M40,55 L10,75"/>
+    <path d="M40,55 L70,75"/>
+    <path d="M40,90 L15,120"/>
+    <path d="M40,90 L65,120"/>
+    <path d="M40,38 L40,90 M40,55 L10,75 M40,55 L70,75 M40,90 L15,120 M40,90 L65,120"
+          fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <!-- Floating herb leaves -->
+  <g transform="translate(120, 500) rotate(15)" opacity="0.1">
+    <path d="M0,40 Q20,-5 50,0 Q20,20 0,40Z" fill="#7ee8b5"/>
+    <path d="M50,0 Q20,20 0,40" fill="none" stroke="#7ee8b5" stroke-width="1.5"/>
+  </g>
+  <g transform="translate(350, 180) rotate(-25)" opacity="0.08">
+    <path d="M0,35 Q18,-5 45,0 Q18,18 0,35Z" fill="#7ee8b5"/>
+  </g>
+  <g transform="translate(1050, 450) rotate(40)" opacity="0.08">
+    <path d="M0,45 Q22,-6 55,0 Q22,22 0,45Z" fill="#7ee8b5"/>
+  </g>
+  <g transform="translate(780, 150) rotate(-10)" opacity="0.06">
+    <path d="M0,55 Q28,-8 70,0 Q28,28 0,55Z" fill="#7ee8b5"/>
+  </g>
+  <!-- Dots decoration -->
+  <g opacity="0.06" fill="#fff">
+    <circle cx="500" cy="600" r="3"/><circle cx="530" cy="600" r="3"/><circle cx="560" cy="600" r="3"/><circle cx="590" cy="600" r="3"/><circle cx="620" cy="600" r="3"/><circle cx="650" cy="600" r="3"/><circle cx="680" cy="600" r="3"/>
+    <circle cx="500" cy="630" r="3"/><circle cx="530" cy="630" r="3"/><circle cx="560" cy="630" r="3"/><circle cx="590" cy="630" r="3"/><circle cx="620" cy="630" r="3"/><circle cx="650" cy="630" r="3"/><circle cx="680" cy="630" r="3"/>
+  </g>
+  <!-- Sparkle stars -->
+  <g fill="#f0c27f" opacity="0.12">
+    <polygon points="1050,100 1053,110 1063,110 1055,116 1058,126 1050,120 1042,126 1045,116 1037,110 1047,110"/>
+    <polygon points="200,150 202,157 210,157 204,161 206,168 200,164 194,168 196,161 190,157 198,157" transform="scale(0.8)"/>
+    <polygon points="700,80 702,87 710,87 704,91 706,98 700,94 694,98 696,91 690,87 698,87" transform="scale(0.7)"/>
+  </g>
+  <!-- Bottom wave -->
+  <path d="M0,750 Q300,720 600,745 T1200,730 V800 H0 Z" fill="#fff" opacity="0.04"/>
+  <path d="M0,775 Q250,755 500,770 T1000,758 T1200,770 V800 H0 Z" fill="#fff" opacity="0.03"/>
+</svg>

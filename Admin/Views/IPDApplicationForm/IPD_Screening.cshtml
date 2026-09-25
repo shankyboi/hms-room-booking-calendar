@@ -1,0 +1,627 @@
+@using System.Linq
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@model NalamVazha.Models.IPDScreeningViewModel
+@{
+	ViewData["Title"] = "IPD screening";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var ipd = Model.IpdForm;
+	var ipdId = ipd?.IPDApplicationFormid?.ToString() ?? "";
+	var userRole = Context.Session.GetString("NalamVazhauserrole") ?? "";
+	bool allowDoctorToAdmitPatients = false;
+	if (ViewBag.AllowDoctorToAdmitPatients != null)
+	{
+		bool.TryParse(ViewBag.AllowDoctorToAdmitPatients.ToString(), out allowDoctorToAdmitPatients);
+	}
+}
+
+<div class="card card-block contCard">
+	<div class="mobileHeader">
+		<div class="row">
+			<div class="col-sm-12">
+				<h4 class="formHdr"><i class="fa fa-stethoscope"></i> IPD screening &amp; admission confirmation</h4>
+				<p class="text-muted">Review the linked assessment (read-only). When satisfied, confirm admission to set booking status to <strong>Admission Confirmed</strong>.</p>
+			</div>
+		</div>
+	</div>
+
+	<style>
+		/* Theme global .btn-danger uses transparent bg + white text — restore solid actions here */
+		.ipd-screening-actions .btn.btn-success {
+			color: #fff !important;
+			background-color: #5cb85c !important;
+			border-color: #4cae4c !important;
+		}
+		.ipd-screening-actions .btn.btn-success:hover,
+		.ipd-screening-actions .btn.btn-success:focus {
+			background-color: #449d44 !important;
+			border-color: #398439 !important;
+			color: #fff !important;
+		}
+		.ipd-screening-actions .btn.btn-danger {
+			color: #fff !important;
+			background-color: #d9534f !important;
+			border-color: #d43f3a !important;
+		}
+		.ipd-screening-actions .btn.btn-danger:hover,
+		.ipd-screening-actions .btn.btn-danger:focus {
+			background-color: #c9302c !important;
+			border-color: #ac2925 !important;
+			color: #fff !important;
+		}
+		.ipd-screening-actions .btn + .btn { margin-left: 8px; }
+		.ipd-screening-actions .ipd-screening-status { margin-left: 12px; display: inline-block; vertical-align: middle; max-width: 40%; text-align: left; }
+		.ipd-screening-actions .ipd-screening-back { margin-left: 12px; }
+	</style>
+
+	<div class="card-block">
+		@if (TempData["errMessage"] != null)
+		{
+			<div class="alert alert-danger">@TempData["errMessage"]</div>
+		}
+
+		<div class="row">
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label class="control-label">Booking reference</label>
+					<p class="form-control-static"><strong>@(ipd?.bookingreferencenumber ?? "—")</strong></p>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label class="control-label">Patient</label>
+					<p class="form-control-static"><strong>@(ipd?.firstname ?? "") @(ipd?.lastname ?? "")</strong></p>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label class="control-label">Booking status</label>
+					<p class="form-control-static">
+						<span class="label label-info">@(ipd?.bookingstatus ?? "—")</span>
+					</p>
+				</div>
+			</div>
+			<div class="col-sm-3">
+				<div class="form-group">
+					<label class="control-label">Mobile</label>
+					<p class="form-control-static">@(ipd?.mobilenumber ?? "—")</p>
+				</div>
+			</div>
+		</div>
+
+		<hr />
+
+		<h5><i class="fa fa-clipboard"></i> Assessment (read-only)</h5>
+
+		@if (!string.IsNullOrEmpty(Model.InfoMessage))
+		{
+			<div class="alert alert-warning">@Model.InfoMessage</div>
+		}
+
+		@if (Model.HasAssessment && Model.Assessment != null)
+		{
+			<div class="row" style="margin-bottom:12px;">
+				<div class="col-sm-4">
+					<label class="control-label">Assessment date</label>
+					<p class="form-control-static">@Model.Assessment.assessmentdate.ToString("dd/MM/yyyy HH:mm")</p>
+				</div>
+				<div class="col-sm-8">
+					<label class="control-label">Notes</label>
+					<p class="form-control-static">@(string.IsNullOrWhiteSpace(Model.Assessment.assessmentnotes) ? "—" : Model.Assessment.assessmentnotes)</p>
+				</div>
+			</div>
+
+			<div id="qnrScreeningSpinner" style="text-align:center;padding:24px 0;color:#64748b;">
+				<i class="fa fa-spinner fa-spin" style="font-size:22px;"></i> Loading answers…
+			</div>
+			<div id="qnrScreeningContainer"></div>
+		}
+
+		<hr />
+
+		<div class="row">
+			<div class="col-sm-12">
+				@if (Model.CanConfirmAdmission)
+				{
+					<div class="text-right ipd-screening-actions" style="display:none;">
+						<button type="button" id="btnConfirmAdmission" class="btn btn-success">
+							<i class="fa fa-check"></i> Eligible for Admission
+						</button>
+						<button type="button" id="btnInEligibleAdmission" class="btn btn-danger">
+							<i class="fa fa-times-circle"></i> Not Eligible for Admission
+						</button>
+						<span id="confirmAdmissionStatus" class="text-muted ipd-screening-status"></span>
+						@if (Context.Session.GetString("NalamVazhauserrole") != "Health Seeker")
+						{
+							<a href="@Url.Action("IPD_Application_Forms_for_Review", "IPDApplicationForm")" class="btn btn-link ipd-screening-back">
+								Back to approved IPD list
+							</a>
+						}
+					</div>
+				}
+				else if (Model.HasAssessment && (ipd?.bookingstatus == "Admission Confirmed" || ipd?.bookingstatus == "Admitted"))
+				{
+					<div class="alert alert-success" style="margin:0;">This booking is already <strong>@(ipd?.bookingstatus)</strong>.</div>
+				}
+				else if (!Model.HasAssessment)
+				{
+					<div class="alert alert-info" style="margin:0;">Link an assessment to this IPD application before confirming admission.</div>
+				}
+				else
+				{
+					<div class="alert alert-warning" style="margin:0;">Admission confirmation is not available for the current booking status.</div>
+				}
+				@if (!Model.CanConfirmAdmission && Context.Session.GetString("NalamVazhauserrole") != "Health Seeker")
+				{
+					<div class="text-right" style="margin-top:10px;">
+						<a href="@Url.Action("IPD_Application_Forms_for_Review", "IPDApplicationForm")" class="btn btn-link">
+							Back to approved IPD list
+						</a>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+</div>
+
+@if (Model.HasAssessment && Model.Assessment != null)
+{
+<style>
+/* ===== Patient Questionnaire Styles – read-only (same as Update_Assessment) ===== */
+.qnr-section { font-family: inherit; }
+.qnr-cat-card {
+    border-radius: 10px; overflow: hidden;
+    box-shadow: var(--cardshadow, rgba(100,100,111,.2) 0 7px 29px 0);
+    margin-bottom: 24px;
+    border: 1px solid var(--card-head-header, #2F6B4F);
+}
+.qnr-cat-header {
+    background: var(--card-head-header, #2F6B4F);
+    color: var(--card-head-text, #fff) !important;
+    padding: 13px 20px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 15px; font-weight: 700 !important; letter-spacing: .4px;
+}
+.qnr-cat-icon {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,.22);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+}
+.qnr-cat-body { background: var(--cardcolor, #fff); padding: 18px 20px; }
+.qnr-sub-panel {
+    background: var(--cardcolor, #fff); border-radius: 8px;
+    border: 1px solid var(--card-head-header, #2F6B4F);
+    margin-bottom: 16px; overflow: hidden;
+    box-shadow: 0 1px 5px rgba(0,0,0,.05);
+}
+.qnr-sub-header {
+    background: var(--tab-card-bg, #F8FAFC);
+    border-left: 4px solid var(--card-head-header, #2F6B4F);
+    padding: 9px 16px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700 !important;
+    color: var(--card-head-header, #2F6B4F) !important; letter-spacing: .2px;
+}
+.qnr-sub-header i { color: var(--card-head-header, #2F6B4F) !important; font-size: 13px; }
+.qnr-sub-body { padding: 14px 18px; }
+.qnr-q-row {
+    margin-bottom: 18px; padding-bottom: 16px;
+    border-bottom: 1px dashed var(--input-border, #D5D5DE);
+}
+.qnr-q-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.qnr-q-label {
+    display: block; font-size: 13.5px; font-weight: 700 !important;
+    color: var(--card-head-header, #2F6B4F) !important;
+    margin-bottom: 10px; line-height: 1.4;
+}
+.qnr-q-label i { color: var(--card-head-header, #2F6B4F) !important; }
+.qnr-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.qnr-pill { position: relative; }
+.qnr-pill input { position: absolute; opacity: 0; width: 0; height: 0; }
+.qnr-pill label {
+    display: inline-flex !important; align-items: center; gap: 6px;
+    border: 1.5px solid var(--card-head-header, #2F6B4F);
+    border-radius: 22px; padding: 6px 16px;
+    font-size: 13px !important; font-weight: 500 !important;
+    color: var(--card-head-header, #2F6B4F) !important;
+    background: var(--cardcolor, #fff);
+    opacity: .85; margin-bottom: 0 !important; white-space: nowrap;
+}
+.qnr-pill input:checked + label {
+    background: var(--btnprimary, #2F6B4F) !important;
+    border-color: var(--btnprimary, #2F6B4F) !important;
+    color: var(--btncolor, #fff) !important;
+    opacity: 1 !important; box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.qnr-pill-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--card-head-header, #2F6B4F);
+    flex-shrink: 0; opacity: .5; display: inline-block;
+}
+.qnr-pill input:checked + label .qnr-pill-dot { background: var(--btncolor, #fff); opacity: 1; }
+.qnr-pill.qnr-bool-yes input:checked + label { background: #2e7d32 !important; border-color: #2e7d32 !important; color: #fff !important; }
+.qnr-pill.qnr-bool-no  input:checked + label { background: #c62828 !important; border-color: #c62828 !important; color: #fff !important; }
+.qnr-input-wrap { margin-top: 4px; }
+.qnr-input {
+    border: 1.5px solid var(--card-head-header, #2F6B4F) !important;
+    border-radius: 8px !important; padding: 9px 14px !important;
+    font-size: 13px !important; color: var(--colorblack, #000) !important;
+    background: var(--input-background, #fff) !important;
+    height: 42px; width: 100%; font-family: inherit;
+}
+.qnr-textarea-wrap { margin-top: 4px; }
+.qnr-textarea {
+    width: 100%;
+    border: 1.5px solid var(--card-head-header, #2F6B4F) !important;
+    border-radius: 8px !important; padding: 10px 14px !important;
+    font-size: 13px !important; color: var(--colorblack, #000) !important;
+    background: var(--input-background, #fff) !important;
+    resize: none; min-height: 90px; font-family: inherit;
+}
+.qnr-stepper-wrap {
+    display: inline-flex; align-items: center;
+    border: 1.5px solid var(--card-head-header, #2F6B4F);
+    border-radius: 10px; overflow: hidden;
+    background: var(--input-background, #fff); margin-top: 4px;
+}
+.qnr-stepper-input {
+    width: 100px; height: 42px; border: none !important;
+    text-align: center; font-size: 15px !important; font-weight: 700 !important;
+    color: var(--colorblack, #000) !important;
+    background: var(--input-background, #fff) !important;
+    -moz-appearance: textfield;
+}
+.qnr-stepper-input::-webkit-inner-spin-button,
+.qnr-stepper-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.qnr-scale-wrap {
+    background: var(--cardcolor, #fff);
+    border: 1.5px solid var(--card-head-header, #2F6B4F);
+    border-radius: 10px; padding: 14px 18px;
+}
+.qnr-scale-track { display: flex; align-items: center; gap: 12px; }
+.qnr-scale-track input[type=range] { flex: 1; accent-color: var(--btnprimary, #2F6B4F); height: 6px; }
+.qnr-scale-minmax {
+    font-size: 12px; font-weight: 600 !important;
+    color: var(--card-head-header, #2F6B4F) !important; min-width: 20px; text-align: center;
+}
+.qnr-scale-badge {
+    background: var(--btnprimary, #2F6B4F) !important; color: var(--btncolor, #fff) !important;
+    border-radius: 50%; width: 38px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700 !important; font-size: 15px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2); flex-shrink: 0;
+}
+.qnr-scale-ticks {
+    display: flex; justify-content: space-between;
+    padding: 2px 0 0; font-size: 11px;
+    color: var(--card-head-header, #2F6B4F) !important; opacity: .6;
+}
+/* Read-only: no pointer interaction on any control */
+#qnrScreeningContainer * { pointer-events: none !important; user-select: text; }
+#qnrScreeningContainer .qnr-pill label { cursor: default; }
+.qnr-unanswered { font-style: italic; color: #94a3b8; font-size: 13px; }
+</style>
+
+<script>
+(function () {
+    var _assessmentId = '@Model.Assessment.Assessmentid';
+    var _tenantId     = '@Model.Assessment.tenantid';
+
+    /* ── Lookup caches ─────────────────────────────────── */
+    var dataquestioncategory, dataquestionsub, dataquestion;
+
+    function fillCats() {
+        if (dataquestioncategory) return;
+        $.ajax({ url: '@Url.Action("get_all_QuestionCategory","Assessment")', dataType: 'json',
+            data: { tenantid: _tenantId }, async: false,
+            success: function (d) {
+                dataquestioncategory = (d || []).filter(function (x) { return x.questioncategoryname; });
+            }
+        });
+    }
+    function fillSubs() {
+        if (dataquestionsub) return;
+        $.ajax({ url: '@Url.Action("get_all_QuestionSubCategory","Assessment")', dataType: 'json',
+            data: { tenantid: _tenantId }, async: false,
+            success: function (d) {
+                dataquestionsub = (d || []).filter(function (x) { return x.questionsubcategoryname; });
+            }
+        });
+    }
+    function fillQs() {
+        if (dataquestion) return;
+        $.ajax({ url: '@Url.Action("get_all_AssessmentQuestion","Assessment")', dataType: 'json',
+            data: { tenantid: _tenantId }, async: false,
+            success: function (d) {
+                dataquestion = (d || []).filter(function (x) { return x.questiontext; });
+            }
+        });
+    }
+
+    function resolveLabel(arr, idField, nameField, guid) {
+        if (!arr || !guid) return guid || '';
+        var label = guid;
+        $.each(arr, function (_, item) {
+            if (item[idField] && item[idField].toUpperCase() === guid.toUpperCase()) {
+                label = item[nameField]; return false;
+            }
+        });
+        return label;
+    }
+
+    /* ── Read-only questionnaire renderer ─────────────── */
+    function renderReadOnly(questions, savedAnswers) {
+        fillCats(); fillSubs(); fillQs();
+
+        var container = $('#qnrScreeningContainer');
+        container.empty();
+
+        if (!questions || questions.length === 0) {
+            container.html('<div class="alert alert-info">No questionnaire rows found for this assessment.</div>');
+            return;
+        }
+
+        /* Build category → sub → questions hierarchy */
+        var cats = {}, catOrder = [];
+        $.each(questions, function (_, q) {
+            var cat = q.questioncategory || '__none__';
+            var sub = q.questionsub      || '__none__';
+            if (!cats[cat]) { cats[cat] = { subs: {}, subOrder: [] }; catOrder.push(cat); }
+            if (!cats[cat].subs[sub]) { cats[cat].subs[sub] = []; cats[cat].subOrder.push(sub); }
+            cats[cat].subs[sub].push(q);
+        });
+
+        $.each(catOrder, function (_, catKey) {
+            var catLabel = resolveLabel(dataquestioncategory, 'QuestionCategoryid', 'questioncategoryname', catKey);
+            var H = '<div class="qnr-section qnr-cat-card">';
+
+            if (catKey !== '__none__') {
+                H += '<div class="qnr-cat-header">'
+                   + '<div class="qnr-cat-icon"><i class="fa fa-stethoscope"></i></div>'
+                   + '<span>' + $('<div>').text(catLabel).html() + '</span></div>';
+            }
+            H += '<div class="qnr-cat-body">';
+
+            $.each(cats[catKey].subOrder, function (_, subKey) {
+                var subLabel = resolveLabel(dataquestionsub, 'QuestionSubCategoryid', 'questionsubcategoryname', subKey);
+
+                H += '<div class="qnr-sub-panel">';
+                if (subKey !== '__none__') {
+                    H += '<div class="qnr-sub-header"><i class="fa fa-list"></i>'
+                       + '<span>' + $('<div>').text(subLabel).html() + '</span></div>';
+                }
+                H += '<div class="qnr-sub-body">';
+
+                $.each(cats[catKey].subs[subKey], function (_, q) {
+                    var qLabel  = resolveLabel(dataquestion, 'AssessmentQuestionid', 'questiontext', q.question) || q.questions || '';
+                    var qref    = q.questions || q.Assessment_assessmentquestionsid || '';
+                    var saved   = savedAnswers[qref] || null;
+                    var fid     = 'qro_' + qref;
+
+                    H += '<div class="qnr-q-row">';
+                    H += '<span class="qnr-q-label">'
+                       + '<i class="fa fa-circle" style="font-size:7px;vertical-align:middle;margin-right:6px;"></i>'
+                       + $('<div>').text(qLabel).html() + '</span>';
+
+                    /* ── Scale ─────────────────────────────── */
+                    if (q.answertype === 'Scale') {
+                        var smin = parseInt(q.scalerangemin) || 0;
+                        var smax = parseInt(q.scalerangemax) || 10;
+                        var val  = (saved !== null ? saved : smin);
+                        var ticks = '';
+                        for (var t = smin; t <= smax; t++) ticks += '<span>' + t + '</span>';
+                        H += '<div class="qnr-scale-wrap">'
+                           + '<div class="qnr-scale-track">'
+                           + '<span class="qnr-scale-minmax">' + smin + '</span>'
+                           + '<input type="range" id="' + fid + '" min="' + smin + '" max="' + smax + '" value="' + val + '">'
+                           + '<span class="qnr-scale-minmax">' + smax + '</span>'
+                           + '<div class="qnr-scale-badge">' + val + '</div>'
+                           + '</div>';
+                        if ((smax - smin) <= 10) H += '<div class="qnr-scale-ticks">' + ticks + '</div>';
+                        H += '</div>';
+
+                    /* ── SingleSelect / MultiSelect ────────── */
+                    } else if (q.answertype === 'SingleSelect' || q.answertype === 'MultiSelect') {
+                        var itype    = q.answertype === 'MultiSelect' ? 'checkbox' : 'radio';
+                        var opts     = q.optiontext  ? q.optiontext.split(',')  : [];
+                        var optvals  = q.optionvalue ? q.optionvalue.split(',') : opts;
+                        var savedArr = saved ? saved.split(',') : [];
+                        H += '<div class="qnr-pills">';
+                        $.each(opts, function (k, opt) {
+                            var v  = (optvals[k] || opt).trim();
+                            var uid = fid + '_' + k;
+                            var chk = savedArr.indexOf(v) !== -1 ? ' checked' : '';
+                            H += '<div class="qnr-pill"><input type="' + itype + '" id="' + uid + '" name="' + fid + '" value="' + v + '"' + chk + '>'
+                               + '<label for="' + uid + '"><span class="qnr-pill-dot"></span>' + $('<div>').text(opt.trim()).html() + '</label></div>';
+                        });
+                        if (!opts.length && saved) H += '<span class="qnr-unanswered">' + $('<div>').text(saved).html() + '</span>';
+                        H += '</div>';
+
+                    /* ── Boolean ───────────────────────────── */
+                    } else if (q.answertype === 'Boolean') {
+                        var ckY = (saved === 'true'  || saved === 'Yes') ? ' checked' : '';
+                        var ckN = (saved === 'false' || saved === 'No')  ? ' checked' : '';
+                        H += '<div class="qnr-pills">'
+                           + '<div class="qnr-pill qnr-bool-yes"><input type="radio" id="' + fid + '_y" name="' + fid + '" value="true"' + ckY + '>'
+                           + '<label for="' + fid + '_y"><span class="qnr-pill-dot"></span><i class="fa fa-check" style="font-size:11px;margin-right:3px;"></i>Yes</label></div>'
+                           + '<div class="qnr-pill qnr-bool-no"><input type="radio" id="' + fid + '_n" name="' + fid + '" value="false"' + ckN + '>'
+                           + '<label for="' + fid + '_n"><span class="qnr-pill-dot"></span><i class="fa fa-times" style="font-size:11px;margin-right:3px;"></i>No</label></div>'
+                           + '</div>';
+
+                    /* ── Text ──────────────────────────────── */
+                    } else if (q.answertype === 'Text') {
+                        H += '<div class="qnr-input-wrap"><input type="text" class="qnr-input" value="' + $('<div>').text(saved || '').html() + '"></div>';
+
+                    /* ── MultilineText ──────────────────────── */
+                    } else if (q.answertype === 'MultilineText') {
+                        H += '<div class="qnr-textarea-wrap"><textarea class="qnr-textarea" rows="4">' + $('<div>').text(saved || '').html() + '</textarea></div>';
+
+                    /* ── Number / Decimal ──────────────────── */
+                    } else if (q.answertype === 'Number' || q.answertype === 'Decimal') {
+                        H += '<div class="qnr-stepper-wrap">'
+                           + '<input type="number" class="qnr-stepper-input" value="' + (saved || '0') + '"></div>';
+
+                    /* ── Fallback (plain text) ──────────────── */
+                    } else {
+                        H += '<div style="margin-top:4px;font-size:13px;color:var(--colorblack,#000);">'
+                           + (saved ? $('<div>').text(saved).html() : '<span class="qnr-unanswered">—</span>')
+                           + '</div>';
+                    }
+
+                    H += '</div>'; /* .qnr-q-row */
+                });
+
+                H += '</div></div>'; /* .qnr-sub-body / .qnr-sub-panel */
+            });
+
+            H += '</div></div>'; /* .qnr-cat-body / .qnr-cat-card */
+            container.append(H);
+        });
+    }
+
+    /* ── Boot: load questions then answers, then render ── */
+    $(document).ready(function () {
+        $.ajax({
+            url: '@Url.Action("getById_assessmentquestions", "Assessment")',
+            dataType: 'json',
+            data: { Assessmentid: _assessmentId },
+            success: function (questions) {
+                $.ajax({
+                    url: '@Url.Action("getById_patientanswers", "Assessment")',
+                    dataType: 'json',
+                    data: { Assessmentid: _assessmentId },
+                    success: function (answers) {
+                        /* Build key → value map from patientanswers */
+                        var savedAnswers = {};
+                        $.each(answers || [], function (_, a) {
+                            var k = a.questionsref || a.Questionsref;
+                            var v = a.answervalue  || a.Answervalue;
+                            if (k) savedAnswers[k] = (v !== null && v !== undefined) ? String(v) : '';
+                        });
+                        $('#qnrScreeningSpinner').hide();
+                        renderReadOnly(questions, savedAnswers);
+                    },
+                    error: function () {
+                        $('#qnrScreeningSpinner').hide();
+                        renderReadOnly(questions, {});
+                    }
+                });
+            },
+            error: function () {
+                $('#qnrScreeningSpinner').hide();
+                $('#qnrScreeningContainer').html('<div class="alert alert-warning">Could not load questionnaire data.</div>');
+            }
+        });
+    });
+}());
+</script>
+}
+
+@if (Model.CanConfirmAdmission)
+{
+	<script type="text/javascript">
+		$(function () {
+			var allowDoctorDirectAdmission = @((allowDoctorToAdmitPatients && userRole == "Doctor").ToString().ToLowerInvariant());
+			function submitAdmissionStatus($btn, bookingstatus) {
+				var $status = $('#confirmAdmissionStatus');
+				$btn.prop('disabled', true);
+				$status.text('Saving...');
+				$.ajax({
+					url: '@Url.Action("Mark_IPD_Admission_Confirmed", "IPDApplicationForm")',
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify({
+						IPDApplicationFormid: '@ipdId',
+						bookingstatus: bookingstatus,
+						modifieduser: ''
+					}),
+					success: function (res) {
+						if (res && res.success) {
+							var savedStatus = (res.bookingstatus || bookingstatus);
+							$status.text('Saved.');
+							swal({ title: 'Done', text: 'Booking status updated to ' + savedStatus + '.', type: 'success' }).then(function () {
+								//window.location.reload();
+								window.location= "@Url.Action("Index", "DoctorDashboard")";
+							});
+						} else {
+							$status.text('');
+							$btn.prop('disabled', false);
+							swal({ title: 'Failed', text: (res && res.message) ? res.message : 'Update failed', type: 'error' });
+						}
+					},
+					error: function (xhr) {
+						$status.text('');
+						$btn.prop('disabled', false);
+						swal({ title: 'Error', text: xhr.responseText || 'Request failed', type: 'error' });
+					}
+				});
+			}
+
+			$('#btnConfirmAdmission').on('click', function () {
+				var $btn = $(this);
+				if (allowDoctorDirectAdmission) {
+					swal({
+						title: 'Do you want to Allow patient to admit directly ?',
+						type: 'warning',
+						showCancelButton: true,
+						confirmButtonText: 'Yes',
+						cancelButtonText: 'No',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function (result) {
+						var isConfirmed = result === true || (result && (result.value || result.isConfirmed));
+						submitAdmissionStatus($btn, isConfirmed ? 'Admitted' : 'Admission Approved');
+					}, function () {
+						submitAdmissionStatus($btn, 'Admission Approved');
+					});
+					return;
+				}
+
+				if (!confirm('Set booking status to Admission Confirmed for this patient?')) return;
+				submitAdmissionStatus($btn, 'Admission Approved');
+			});
+		});
+	</script>
+    <script type="text/javascript">
+        $(function () {
+            $('#btnInEligibleAdmission').on('click', function () {
+                var $btn = $(this);
+                var $status = $('#confirmAdmissionStatus');
+                if (!confirm('Mark this IPD application as Rejected and trigger refund eligibility for this patient?')) return;
+                $btn.prop('disabled', true);
+                $status.text('Saving...');
+                $.ajax({
+                    url: '@Url.Action("Mark_IPD_Admission_InEligible", "IPDApplicationForm")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        IPDApplicationFormid: '@ipdId',
+                        bookingstatus: 'Rejected',
+                        modifieduser: ''
+                    }),
+                    success: function (res) {
+                        if (res && res.success) {
+                            $status.text('Saved.');
+                            swal({ title: 'Done', text: 'Booking status updated to Rejected.', type: 'success' }).then(function () {
+                               // window.location.reload();
+
+                                window.location= "@Url.Action("Index", "DoctorDashboard")";
+                            });
+                        } else {
+                            $status.text('');
+                            $btn.prop('disabled', false);
+                            swal({ title: 'Failed', text: (res && res.message) ? res.message : 'Update failed', type: 'error' });
+                        }
+                    },
+                    error: function (xhr) {
+                        $status.text('');
+                        $btn.prop('disabled', false);
+                        swal({ title: 'Error', text: xhr.responseText || 'Request failed', type: 'error' });
+                    }
+                });
+            });
+        });
+    </script>
+}

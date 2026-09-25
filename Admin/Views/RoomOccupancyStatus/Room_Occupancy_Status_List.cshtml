@@ -1,0 +1,3676 @@
+<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 02/02/2026 04:03:30 -->
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@model NalamVazha.Models.RoomOccupancyStatusModel
+@{
+	ViewData["Title"] = "Room Occupancy Status";
+	var _isEmbed = Context.Request.Query.ContainsKey("embed") && Context.Request.Query["embed"] == "1";
+	var _embedClass = _isEmbed ? " room-occupancy-list-card--embed" : "";
+	Layout = _isEmbed ? "~/Views/Shared/_EmbedLayout.cshtml" : "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="https://javascript.daypilot.org/demo/lite/js/daypilot-all.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+(function() {
+	window.getRoomTypeIcon = function(roomTypeName) {
+		if (!roomTypeName || typeof roomTypeName !== 'string') return 'fa-door-open';
+		var t = roomTypeName.toLowerCase().trim();
+		if (t.indexOf('consultation') !== -1 || t.indexOf('opd') !== -1) return 'fa-stethoscope';
+		if (t.indexOf('ot') !== -1 || t.indexOf('operation') !== -1 || t.indexOf('theatre') !== -1 || t.indexOf('surgery') !== -1) return 'fa-procedures';
+		if (t.indexOf('ward') !== -1 || t.indexOf('bed') !== -1) return 'fa-bed';
+		if (t.indexOf('icu') !== -1 || t.indexOf('critical') !== -1) return 'fa-ambulance';
+		if (t.indexOf('lab') !== -1) return 'fa-flask';
+		if (t.indexOf('pharmacy') !== -1) return 'fa-pills';
+		return 'fa-door-open';
+	};
+	window.getRoomTypeIconHtml = function(roomTypeName, roomName) {
+		var icon = window.getRoomTypeIcon(roomTypeName);
+		var safe = (roomName || '').toString().replace(/</g, '&lt;').replace(/>/g, '&gt;');
+		return '<span class="room-with-type-icon"><i class="fa ' + icon + '" title="' + (roomTypeName || 'Room') + '"></i> ' + safe + '</span>';
+	};
+})();
+</script>
+<link href="~/css/room-occupancy-status-list.css" rel="stylesheet" />
+<div class="room-occupancy-list-card@_embedClass">
+	<div class="mobileHeader">
+		<!--form_card_header-->
+		<div class="row">
+			<div class="col-sm-12 col-xs-12">
+				<h3 class="formHdr">Room Occupancy Status</h3>
+			</div>
+		</div>
+	</div><!--form_card_header-->
+	<div class="card-body">
+
+		@if (TempData["errMessage"] != null)
+		{
+			<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">x</span>
+						</button>
+						Info :  @TempData["errMessage"]
+					</div>
+				</div>
+			</div>
+		}
+
+		@if (TempData["message"] != null)
+		{
+			<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+							<span aria-hidden="true">x</span>
+						</button>
+						Info :  @TempData["message"]
+					</div>
+				</div>
+			</div>
+		}
+
+		<input type="hidden" id="RoomOccupancyStatusid" name="RoomOccupancyStatusid" />
+		@if (!_isEmbed) {
+		<div class="row align-items-end">
+			<div class="col-sm-2 col-xs-12 p-1">
+				<div>
+					<div class="form-group form-group--float-above my-1">
+						<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control">
+						</select>
+						<i class="form-group__bar"></i>
+					</div>
+					<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+				</div>
+			</div>
+			<div class="col-sm-2 col-xs-12 p-1 block_craftmyapp_container">
+				<div>
+					<div class="form-group form-group--float-above my-1">
+						<label for="block">@Resource.roomoccupancystatus_block</label>
+						<select name="block" id="block" class="form-control"></select>
+					</div>
+					@Html.ValidationMessageFor(model => model.block)
+					<div id="block-error" class="help-block" style="display: none" role="alert"></div>
+				</div>
+			</div>
+			<div class="col-sm-2 col-xs-12 p-1 building_craftmyapp_container">
+				<div>
+					<div class="form-group form-group--float-above my-1">
+						<label for="building">@Resource.roomoccupancystatus_building</label>
+						<select name="building" id="building" class="form-control"></select>
+					</div>
+					@Html.ValidationMessageFor(model => model.building)
+					<div id="building-error" class="help-block" style="display: none" role="alert"></div>
+				</div>
+			</div>
+			<div class="col-sm-2 col-xs-12 p-1 floor_craftmyapp_container">
+				<div>
+					<div class="form-group form-group--float-above my-1">
+						<label for="floor">@Resource.roomoccupancystatus_floor</label>
+						<select name="floor" id="floor" class="form-control"></select>
+					</div>
+					@Html.ValidationMessageFor(model => model.floor)
+					<div id="floor-error" class="help-block" style="display: none" role="alert"></div>
+				</div>
+			</div>
+			<div class="col-sm-2 col-xs-12 p-1 room_craftmyapp_container">
+				<div>
+					<div class="form-group form-group--float-above my-1">
+						<label for="room">@Resource.roomoccupancystatus_room</label>
+						<select name="room" id="room" class="form-control"></select>
+					</div>
+					@Html.ValidationMessageFor(model => model.room)
+					<div id="room-error" class="help-block" style="display: none" role="alert"></div>
+				</div>
+			</div>
+			  <div class="col-sm-2 col-xs-12 p-1">
+				<div>
+					<div class="form-group form-group--float-above my-1">
+						<label>@Resource.roomoccupancystatus_bookeddate @Resource.from</label>
+						<input type="text" id="bookeddate_automatonfrom" placeholder="dd/mm/yyyy" autocomplete="off" class="form-control" />
+						<i class="form-group__bar"></i>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-2 col-xs-12 p-1">
+				<div>
+					<div class="form-group form-group--float-above my-1">
+						<label>@Resource.roomoccupancystatus_bookeddate @Resource.to</label>
+						<input type="text" id="bookeddate_automatonto" placeholder="dd/mm/yyyy" autocomplete="off" class="form-control" />
+						<i class="form-group__bar"></i>
+					</div>
+				</div>
+			</div>  
+			<div class="col-sm-2 p-1">
+				<button id="btnFilter" class="btn btn-secondary btn--icon-text mb-1"><i class="fa fa-filter"></i> Filter</button>
+			</div>
+		</div>
+			<div class="row mb-2 mt-1">
+			<div class="col-sm-12 text-left">
+				<div class="btn-group shadow-sm occ-view-toggle">
+					<button class="btn btn-sm occ-view-btn is-active" data-occ-view="calendar"><i class="fa fa-calendar"></i> Room Calendar</button>
+					<button class="btn btn-sm occ-view-btn" data-occ-view="roomgroup"><i class="fa fa-object-group"></i> Room Group</button>
+				</div>
+			</div>
+		</div>
+		<div id="listViewContainer" class="view-hidden">
+			<div class="row">
+				<div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+						<table id="tblRoomOccupancyStatus" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+							<thead class="thead-default">
+								<tr>
+
+									<th>@Resource.roomoccupancystatus_block</th>
+									<th>@Resource.roomoccupancystatus_building</th>
+									<th>@Resource.roomoccupancystatus_floor</th>
+									<th>@Resource.roomoccupancystatus_room</th>
+									<th>@Resource.roomoccupancystatus_bookeddate</th>
+									<th>@Resource.roomoccupancystatus_status</th>
+									<th>@Resource.roomoccupancystatus_patientname</th>
+									<th>@Resource.roomoccupancystatus_ipdno</th>
+									<th>@Resource.tenantdisplayname</th>
+
+									<th class="all">Action</th>
+
+
+								</tr>
+							</thead>
+							<tbody></tbody>
+
+						</table>
+					</div>
+
+				</div>
+
+
+			</div>
+		</div>
+
+		} @* end !_isEmbed filters/toggle block *@
+		<div id="calendarViewContainer" class="occupancy-calendar-fullpage">
+			<div class="occupancy-calendar-toolbar">
+				<div class="occupancy-calendar-toolbar__title">
+					<i class="fa fa-calendar-alt"></i>
+					<span>Occupancy Dashboard</span>
+				</div>
+				<div class="occupancy-calendar-toolbar__nav">
+					<button type="button" class="occupancy-calendar-btn occupancy-calendar-btn--icon" id="calPrevMonth" title="Previous month">
+						<i class="fa fa-chevron-left"></i>
+					</button>
+					<span style="position:relative; display:inline-block;">
+						<button type="button" class="occupancy-calendar-btn occupancy-calendar-btn--today" id="calTodayMonth" title="Pick a date to navigate">
+							<i class="fa fa-calendar-check-o"></i> Go to date
+						</button>
+						<input type="text" id="calNavigateDate" class="form-control form-control-sm occupancy-cal-nav-date" placeholder="Go to date" readonly="readonly" style="position:absolute; bottom:0; left:0; width:0; height:0; opacity:0; pointer-events:none; overflow:hidden;" />
+					</span>
+					<button type="button" class="occupancy-calendar-btn occupancy-calendar-btn--icon" id="calNextMonth" title="Next month">
+						<i class="fa fa-chevron-right"></i>
+					</button>
+				</div>
+			</div>
+			<div class="occ-status-bar">
+				<div class="occ-legend" aria-label="Occupancy status legend">
+					<span class="occ-legend__item"><span class="occ-legend__dot occ-legend__dot--booked"></span> Booked</span>
+					<span class="occ-legend__item"><span class="occ-legend__dot occ-legend__dot--occupied"></span> Occupied</span>
+					<span class="occ-legend__item"><span class="occ-legend__dot occ-legend__dot--blocked"></span> Blocked / Maintenance</span>
+					<span class="occ-legend__item"><span class="occ-legend__dot occ-legend__dot--vacant"></span> Vacant</span>
+				</div>
+				<div class="occ-status-filter" id="occStatusFilters" aria-label="Filter by status">
+					<button type="button" class="occ-status-filter__btn is-active" data-status-filter="">All</button>
+					<button type="button" class="occ-status-filter__btn" data-status-filter="booked">Booked</button>
+					<button type="button" class="occ-status-filter__btn" data-status-filter="occupied">Occupied</button>
+					<button type="button" class="occ-status-filter__btn" data-status-filter="blocked">Blocked / Maintenance</button>
+					<button type="button" class="occ-status-filter__btn" data-status-filter="vacant">Vacant</button>
+				</div>
+			</div>
+			<div class="occupancy-calendar-wrap" style="position:relative;">
+				<div id="occCalendarLoader" class="occ-calendar-loader">
+					<i class="fa fa-spinner fa-spin"></i>
+					<span>Loading occupancy...</span>
+				</div>
+				<div id="occEventTooltip" style="display:none;position:fixed;z-index:9999;pointer-events:none;"></div>
+				<div id="occupancyCalendar"></div>
+			</div>
+		</div>
+		<!-- ═══ Room Group Board View ═══ -->
+		<div id="roomGroupViewContainer" style="display:none;">
+			<div class="rgb-toolbar">
+				<div class="rgb-toolbar__left">
+					<button type="button" class="rgb-toolbar__btn" id="rgPrevDay" title="Previous day"><i class="fa fa-chevron-left"></i></button>
+					<input type="text" id="rgDatePicker" class="rgb-toolbar__date" placeholder="dd/mm/yyyy" autocomplete="off" readonly />
+					<button type="button" class="rgb-toolbar__btn" id="rgNextDay" title="Next day"><i class="fa fa-chevron-right"></i></button>
+					<button type="button" class="rgb-toolbar__btn rgb-toolbar__btn--today" id="rgToday">Today</button>
+				</div>
+				<div class="rgb-toolbar__right">
+					<div class="rgb-summary" id="rgSummary"></div>
+				</div>
+			</div>
+			<div class="rgb-legend">
+				<span class="rgb-legend__item"><span class="rgb-legend__dot rgb-dot--available"></span> Available</span>
+				<span class="rgb-legend__item"><span class="rgb-legend__dot rgb-dot--booked"></span> Booked</span>
+				<span class="rgb-legend__item"><span class="rgb-legend__dot rgb-dot--occupied"></span> Occupied</span>
+				<span class="rgb-legend__item"><span class="rgb-legend__dot rgb-dot--blocked"></span> Blocked</span>
+			</div>
+			<div class="rgb-board" id="rgBoard">
+				<div class="rgb-loading"><i class="fa fa-spinner fa-spin"></i> Loading rooms...</div>
+			</div>
+		</div>
+
+		<div id="blockViewContainer" class="view-hidden" style="display:none; background: #1a1d23; height: 75vh; border-radius: 8px; overflow: hidden;">
+			<div style="width: 220px; background: #252a33; padding: 20px; border-right: 1px solid #333; overflow-y: auto; display:none;">
+
+				<h3 style="font-size: 11px; text-transform: uppercase; color: yellowgreen;">Date Filter</h3>
+				<div class="mb-4">
+					<button id="blockDatePickerBtn" class="btn btn-sm btn-primary w-100" style="background: #009dff; border: none;">
+						<i class="fa fa-calendar"></i> Select Date
+					</button>
+					<input type="text" id="blockHiddenDate" style="display:none;">
+				</div>
+
+				<h3 style="font-size: 11px; text-transform: uppercase; color: yellowgreen;">Block View Data</h3>
+				<button class="btn btn-sm btn-secondary w-100 mb-4" onclick="randomizeSelection()">Randomize</button>
+
+				<h3 style="font-size: 11px; text-transform: uppercase; color: yellowgreen;">Zoom to Block</h3>
+				<div id="dynamicBlockBtns" class="mb-4">
+					<button class="btn btn-sm btn-secondary w-100 mb-1" onclick="resetBlockZoom()">All Blocks</button>
+				</div>
+
+				<h3 style="font-size: 11px; text-transform: uppercase; color: yellowgreen;">Seat Shapes</h3>
+				<div class="btn-group-vertical w-100">
+					<button class="btn btn-sm btn-secondary text-left" onclick="setBlockShape('circle')">Circle</button>
+					<button class="btn btn-sm btn-secondary text-left" onclick="setBlockShape('rect')">Rectangle</button>
+					<button class="btn btn-sm btn-secondary text-left" onclick="setBlockShape('rounded')">Rounded Rect</button>
+				</div>
+			</div>
+
+			<div id="canvasParent" style="flex-grow: 1; position: relative; background: #fff;">
+				<canvas id="blockCanvas"></canvas>
+			</div>
+
+			<div style="width: 280px; background: #252a33; padding: 20px; border-left: 1px solid #333; display: flex; flex-direction: column; display:none;">
+				<h3 style="font-size: 11px; text-transform: uppercase; color: yellowgreen;">Your Selection</h3>
+				<div id="blockSelectionSummary" style="font-weight: bold; margin-bottom: 10px;">0 Seats Selected</div>
+				<div id="blockSelectedList" style="flex-grow: 1; overflow-y: auto;"></div>
+				<button id="blockProceedBtn" class="btn btn-success w-100 mt-3" disabled onclick="blockCheckout()">Proceed to Checkout</button>
+			</div>
+		</div>
+
+
+
+	</div>
+</div>
+
+<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+
+<script src="~/js/dtpager.js"></script>
+
+<script type="text/javascript">
+
+						var arr_selected_for_verification = [];
+							 var calendarInstance = null;
+	var globalOccupancyData = []; // Centralized data store for both views
+	var occupancyStatusFilter = "";
+
+	function showOccupancyLoader() {
+		var loader = document.getElementById('occCalendarLoader');
+		if (loader) loader.classList.remove('is-hidden');
+	}
+
+	function hideOccupancyLoader() {
+		var loader = document.getElementById('occCalendarLoader');
+		if (loader) loader.classList.add('is-hidden');
+	}
+
+	function getFilteredOccupancyData() {
+		var data = globalOccupancyData || [];
+		if (!occupancyStatusFilter) return data;
+		return data.filter(function(item) {
+			return ((getOccupancyVal(item, 'status') || '') + '').toLowerCase().trim() === occupancyStatusFilter;
+		});
+	}
+
+						function fill_RoomOccupancyStatus()
+						{
+
+							pageSize=1000;
+
+							var sendFilterData = {
+									"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+									"block":$("#block").val(),
+	"building":$("#building").val(),
+	"floor":$("#floor").val(),
+	"room":$("#room").val(),
+	"bookeddate_automatonfrom":getSqlDate($("#bookeddate_automatonfrom").val()),"bookeddate_automatonto":getSqlDate($("#bookeddate_automatonto").val()),
+
+									"pagesize": pageSize,
+									"pagenumber": (currentPageNumber - 1)
+									}
+
+
+
+
+
+
+
+
+			 dataTableId="#tblRoomOccupancyStatus";
+			 reachedEOF = false;
+			 totalRecordsCount = 0;
+			 currentPageNumber = 1;
+			 fetchingDataFromApi = false;
+
+			var pagerControlsTemplate = "<div id='pager_container' class='dataTables_paginate'>"
+				+ "<button type='button' id='pager_btn_previous' onClick='pager_gotoPreviousPage(this);' class='paginate_button previous'>Previous</button>"
+				+ "<span>Page <input type='number' id='pager_txt_currentpage' min='1' max='^MAXPAGE^' maxlength='10' size='10' onFocus='this.oldValue=this.value;' onChange='pager_gotoPage(this);'/> of <span id='pager_lbl_pagecount'></span></span>"
+				+ "<select id='pager_ddl_pagesize' onChange='pager_pageSizeChanged(this);'>"
+				+ "<option value='50' selected>50 rows</option>"
+				+ "<option value='100'>100 rows</option>"
+				+ "<option value='200'>200 rows</option>"
+				+ "<option value='500'>500 rows</option>"
+				+ "<option value='^Everything^'>Everything</option>"
+				+ "</select>"
+				+ "<button type='button' id='pager_btn_next' onClick='pager_gotoNextPage(this);' class='paginate_button next'>Next</button>"
+				+ "</div>";
+
+		if (!$("#tblRoomOccupancyStatus").length) { return; } // embed mode: no table in DOM
+		var table=$("#tblRoomOccupancyStatus").DataTable({
+		columnDefs: [{
+		 targets: -1,
+		 title: '<i class="fa fa-pencil fa-lg"></i>'
+	  }],
+		paging:false,
+		destroy:true,
+		serverSide: true,
+		filter: true,
+		"orderMulti": false,
+		searchDelay: 2000,
+		autoWidth: false,
+		"order": [],"aaSorting": [],
+		autoWidth: !1,responsive:!0,
+		language: {
+		searchPlaceholder: "Search for records..."
+		},
+		 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+		dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+
+		buttons: [{
+		extend: "excelHtml5",
+		title: "List Of RoomOccupancyStatus Data"
+		}, {
+		extend: "csvHtml5",
+		title: "List Of RoomOccupancyStatus Data"
+		}, {
+		extend: "print",
+		title: "List Of RoomOccupancyStatus Data"
+		}],
+	 initComplete: function(a, b) {
+
+
+
+		  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+
+			if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+		 $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+			<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+		  `);
+			 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+				$("#cma_card_tab_action_container").prepend(`
+					<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+				`);
+			}
+	 }
+	// count_of_RoomOccupancyStatus_status(($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),sendFilterData)
+	var Actions=getAutho("RoomOccupancyStatus","create")
+			if(Actions != undefined){
+				var create_URL = "@Url.Action("entry.viewname", "RoomOccupancyStatus")"
+				create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+
+	if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+				$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+
+
+			<div class="dataTables_buttons actions">
+			<div class="input-group prefix">
+								<span class="input-group-addon">
+								<i class="material-icons">search</i>
+								</span>
+								<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+							</div>
+			  <div class="dropdown actions__item cma_top_icon">
+				<i data-toggle="dropdown" class="material-icons">share</i>
+				<ul class="dropdown-menu dropdown-menu-right">
+				  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+				  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+				</ul>
+			  </div>
+			 <div class="dropdown actions__item cma_top_icon">
+										<i data-toggle="dropdown" class="material-icons">settings</i>
+										<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+										<li>
+																	<label> @Resource.roomoccupancystatus_block
+	 <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_building
+	 <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_floor
+	 <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_room
+	 <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_bookeddate
+	 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_status
+	 <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_patientname
+	 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_ipdno
+	 <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.tenantdisplayname
+	 <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+																  </li>
+
+										</ul>
+										</div>
+
+			 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+			</div>
+		  `.replace("create_URL", create_URL))
+	}
+		$("#cma_card_tab_action_container .card-lst").remove();
+		$("#cma_card_tab_action_container_action_btn").empty()
+		$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+
+
+	if ($(this).hasClass('make-active')) {
+			$('tbody', $(this)).children('tr').first().addClass('active-row');
+			setTimeout(() => {
+			  $('.active-row td:visible:last').addClass('last-active-td');
+			}, 200);
+		  }
+		  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+			table.search(this.value).draw();
+		  });
+
+			}
+				else{
+	if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+				$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+
+
+			<div class="dataTables_buttons actions">
+			 <div class="input-group prefix">
+								<span class="input-group-addon">
+								<i class="material-icons">search</i>
+								</span>
+								<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+							</div>
+			  <div class="dropdown actions__item cma_top_icon">
+				<i data-toggle="dropdown" class="material-icons">share</i>
+				<ul class="dropdown-menu dropdown-menu-right">
+				  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+				  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+				</ul>
+			  </div>
+			 <div class="dropdown actions__item cma_top_icon">
+										<i data-toggle="dropdown" class="material-icons">settings</i>
+										<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+										<li>
+																	<label> @Resource.roomoccupancystatus_block
+	 <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_building
+	 <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_floor
+	 <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_room
+	 <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_bookeddate
+	 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_status
+	 <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_patientname
+	 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.roomoccupancystatus_ipdno
+	 <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+																  </li>
+	<li>
+																	<label> @Resource.tenantdisplayname
+	 <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+																  </li>
+
+										</ul>
+										</div>
+			</div>
+		  `)
+	}
+	if ($(this).hasClass('make-active')) {
+			$('tbody', $(this)).children('tr').first().addClass('active-row');
+			setTimeout(() => {
+			  $('.active-row td:visible:last').addClass('last-active-td');
+			}, 200);
+		  }
+		  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+			table.search(this.value).draw();
+		  });
+
+			}
+	if (!$(pagerContainerId).length) {
+			$(dataTableId + '_info').parent().append(
+						pagerControlsTemplate.replace('^Everything^', totalRecordsCount).replace('^MAXPAGE^', pager_getPageCount())
+					);
+	}
+					//$(dataTableId + '_info').hide();
+					$(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+					pager_setCurrentPageNumber(1);
+					pager_onPageChanged();
+
+
+
+		}
+		 ,columns: [
+
+			{data: 'block_master',
+	mRender: function (data, type, row) {
+	var Actions_=getAutho('Block','detail')
+	 if(row["block_master"]==null) {
+	 return '-'
+	}else {
+
+	if(Actions_ !=  undefined)
+	{
+	var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Block")?Blockid=" + row['block']
+	DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+	return '<a  href="' + DETAIL_URL  + '">'+ row["block_master"]+ '</a>'
+	}else {
+
+	return row['block_master']
+	}
+	}
+	}},
+	{data: 'building_master',
+	mRender: function (data, type, row) {
+	var Actions_=getAutho('Building','detail')
+	 if(row["building_master"]==null) {
+	 return '-'
+	}else {
+
+	if(Actions_ !=  undefined)
+	{
+	var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Building")?Buildingid=" + row['building']
+	DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+	return '<a  href="' + DETAIL_URL  + '">'+ row["building_master"]+ '</a>'
+	}else {
+
+	return row['building_master']
+	}
+	}
+	}},
+	{data: 'floor_master',
+	mRender: function (data, type, row) {
+	var Actions_=getAutho('Floor','detail')
+	 if(row["floor_master"]==null) {
+	 return '-'
+	}else {
+
+	if(Actions_ !=  undefined)
+	{
+	var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Floor")?Floorid=" + row['floor']
+	DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+	return '<a  href="' + DETAIL_URL  + '">'+ row["floor_master"]+ '</a>'
+	}else {
+
+	return row['floor_master']
+	}
+	}
+	}},
+	{data: 'room_master',
+	mRender: function (data, type, row) {
+	var Actions_=getAutho('Room','detail');
+	var roomType = row.room_type_name || row.roomtype || row.roomtypename || '';
+	var roomLabel = typeof getRoomTypeIconHtml === 'function' ? getRoomTypeIconHtml(roomType, row["room_master"]) : (row["room_master"] || '');
+	 if(row["room_master"]==null) {
+	 return '-'
+	}else {
+
+	if(Actions_ !=  undefined)
+	{
+	var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Room")?Roomid=" + row['room']
+	DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+	return '<a  href="' + DETAIL_URL  + '">'+ roomLabel + '</a>'
+	}else {
+
+	return roomLabel
+	}
+	}
+	}},
+	{data: 'bookeddate'},
+	{data: 'status',
+	mRender: function (data, type, row) {
+		if (!data) return '-';
+		var s = (data + '').toLowerCase().trim().replace(/\s+/g, '-');
+		var cls = 'status-badge status-badge--' + (s === 'booked' || s === 'occupied' || s === 'blocked' ? s : 'other');
+		var statusHtml = '<span class="' + cls + '">' + (data + '').replace(/</g, '&lt;') + '</span>';
+		var pname = (row.patientname_master && (row.patientname_master + '').trim()) ? (row.patientname_master + '').replace(/</g, '&lt;') : '';
+		if (pname) statusHtml += '<br><small class="text-muted">Patient Name: ' + pname + '</small>';
+		return statusHtml;
+	}},
+	{data: 'patientname_master',
+	mRender: function (data, type, row) {
+		return (data && (data + '').trim()) ? (data + '').replace(/</g, '&lt;') : '-';
+	}},
+	{data: 'ipdno_master'},
+	{data: '_tenantname'},
+
+			{
+						"sName": "roomoccupancystatusid",
+						"bSearchable": false,
+						"bSortable": false,
+						data: 'roomoccupancystatusid', "className": "dt-center",
+						mRender: function(data, type, row) {
+						var Actions=getAuthoController("RoomOccupancyStatus")
+						var appendMessage='';
+						if(Actions !=undefined)
+						{
+						for (var index = 0; index < Actions.length; ++index) {
+						var entry = Actions[index];
+
+						if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+						var URL = "@Url.Action("entry.viewname", "RoomOccupancyStatus")?RoomOccupancyStatusid=" + row["roomoccupancystatusid"]
+						URL = URL.replace("entry.viewname", entry.actionmethodname);
+
+						if(entry.viewname=="delete")
+						{
+
+							appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>'
+
+
+						}
+
+						else if(entry.viewname=="detail")
+						{
+							var DETAIL_URL = "@Url.Action("entry.actionmethodname", "RoomOccupancyStatus")?RoomOccupancyStatusid=" + row["roomoccupancystatusid"]
+							DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+							appendMessage+='<a href="' + DETAIL_URL + '" class="dropdown-item">View</a>'
+	 }
+						else
+						{
+
+							appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>'
+						}
+
+						}
+
+						}
+
+						if(appendMessage =="")
+						{
+						return '-'
+
+						}
+						else
+						{
+						return '<div class="dropdown actions__item">' +
+						'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+						'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+
+
+						'</div>' +
+						'</div>'
+						}
+
+
+
+						}
+						else
+						{
+						return '-'
+
+						}
+
+
+						}
+						}
+
+
+		 ],
+
+			ajax: function (data, callback, settings) {
+			fetchingDataFromApi = true;
+			sendFilterData.searchterm = data.search.value;
+			sendFilterData.pagesize = pageSize;
+			sendFilterData.pagenumber =  (currentPageNumber - 1);
+			var sortParams = [];
+			for (var i = 0; i < data.order.length; i++) {
+				var colIndex = data.order[i].column;
+				var sortDirection = data.order[i].dir;
+				var columnName = data.columns[colIndex].data;
+
+				var sortParam = {};
+				sortParam["col"] = columnName;
+				sortParam["dir"] = sortDirection;
+
+				sortParams.push(sortParam);
+			}
+			sendFilterData.sortFieldsJson =  JSON.stringify(sortParams);
+			$.ajax({
+			url: "@Url.Action("get_Room_Occupancy_Status_List", "RoomOccupancyStatus")",
+			type: 'GET',
+			dataType: 'json',
+
+			data: sendFilterData,
+
+			success: function(responsedata) {
+					var rawDetail = (responsedata.detail && responsedata.detail.length) ? responsedata.detail : [];
+					if (responsedata.detail == null) responsedata.detail = [];
+					globalOccupancyData = typeof normalizeOccupancyDetail === 'function' ? normalizeOccupancyDetail(rawDetail) : rawDetail;
+					 fetchingDataFromApi = false;
+					totalRecordsCount = responsedata.count;
+					if (globalOccupancyData.length < pageSize) {
+						reachedEOF = true;
+					}
+					// Refresh Room Group view if active
+					if (window._rgRoomsLoaded && $('#roomGroupViewContainer').is(':visible')) window.renderRoomGroupBoard();
+
+					setTimeout(function () {
+					callback({
+						data: globalOccupancyData,
+						recordsTotal: responsedata.count
+					  });
+					}, 50);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				fetchingDataFromApi = false;
+
+				if (JSON.stringify(jqXHR.responseText) == "API Authorization failed") {
+						swal({
+						title: 'Failed!',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						 allowOutsideClick: false,
+							allowEscapeKey: false,
+							allowEnterKey: false
+						}).then(function() {
+						window.location = "@Url.Action("AuthorizationFailed", "users")"
+						})
+				}
+				else
+				{
+						swal({
+						title: 'Contact Administrator !',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+							allowOutsideClick: false,
+							allowEscapeKey: false,
+							allowEnterKey: false
+						})
+				}
+			}
+			});
+			},
+			"infoCallback": function(settings, start, end, max, total, pre)
+			{
+					var startRowCount = (pageSize * currentPageNumber) - pageSize + 1;
+					var endRowCount = $(dataTableId).DataTable().rows().count() + startRowCount - 1;
+					var pagingInfo = 'Showing ' + startRowCount + ' to ' + endRowCount + ' of ' + totalRecordsCount + ' entries';
+
+					return pagingInfo;
+			}
+
+
+	})
+
+
+	 $('body').on('click', '.ColVis_collection li', function(a) {
+		a.stopPropagation();
+	});
+
+	 $('body').on('change', '.colvis_switch', function(a) {
+		var column = table.column($(this).attr('data-column'));
+		column.visible(!column.visible());
+	  });
+
+
+
+
+
+
+
+
+
+
+
+
+						}
+		  function fill_pagination(callback) {
+			if ((reachedEOF || fetchingDataFromApi) && currentPageNumber !=1) {
+				return;
+			}
+			fetchingDataFromApi = true;
+			 var order = $(dataTableId).DataTable().order();
+				var sortParams = [];
+
+				for (var i = 0; i < order.length; i++) {
+					var colIndex = order[i][0];
+					var sortDirection = order[i][1];
+					var columnName = $(dataTableId).DataTable().settings()[0].aoColumns[colIndex].data;
+
+					var sortParam = {
+						col: columnName,
+						dir: sortDirection
+					};
+
+					sortParams.push(sortParam);
+				}
+				var sendFilterData = {
+									"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+									"block":$("#block").val(),
+	"building":$("#building").val(),
+	"floor":$("#floor").val(),
+	"room":$("#room").val(),
+	"bookeddate_automatonfrom":getSqlDate($("#bookeddate_automatonfrom").val()),"bookeddate_automatonto":getSqlDate($("#bookeddate_automatonto").val()),
+
+									"pagesize": pageSize,
+									"pagenumber": (currentPageNumber - 1)
+									}
+				sendFilterData.searchterm = $(".dt-global-search").val();
+			sendFilterData.sortFieldsJson= JSON.stringify(sortParams);
+			var currentPage = $(dataTableId).DataTable().page();
+
+			$.ajax({
+				url: "@Url.Action("get_Room_Occupancy_Status_List", "RoomOccupancyStatus")",
+				type: 'GET',
+				dataType: 'json',
+				data: sendFilterData,
+				success: function (responsedata) {
+						var rawDetail = (responsedata != null && responsedata.detail && responsedata.detail.length) ? responsedata.detail : [];
+						globalOccupancyData = typeof normalizeOccupancyDetail === 'function' ? normalizeOccupancyDetail(rawDetail) : rawDetail;
+					if (globalOccupancyData.length > 0) {
+						if (globalOccupancyData.length < pageSize) {
+							reachedEOF = true;
+						}
+
+						api_response_data = globalOccupancyData;
+						if ($(dataTableId).length && $.fn.DataTable && $.fn.DataTable.isDataTable(dataTableId)) {
+							var table = $(dataTableId).DataTable();
+							table.rows().remove();
+							table.rows.add(globalOccupancyData).draw();
+						}
+					}
+					else {
+						reachedEOF = true;
+					}
+					fetchingDataFromApi = false;
+					if (callback != undefined) {
+						callback();
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					fetchingDataFromApi = false;
+					if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+						swal({
+							title: 'Failed!',
+							text: jqXHR.responseText,
+							type: 'error',
+							buttonsStyling: false,
+							confirmButtonClass: 'btn btn-primary',
+													allowOutsideClick: false,
+							allowEscapeKey: false,
+							allowEnterKey: false
+						}).then(function () {
+							window.location = "@Url.Action("AuthorizationFailed", "users")"
+						})
+					}
+					else {
+						swal({
+							title: 'Contact Administrator !',
+							text: jqXHR.responseText,
+							type: 'error',
+							buttonsStyling: false,
+							confirmButtonClass: 'btn btn-primary',
+							 allowOutsideClick: false,
+							allowEscapeKey: false,
+							allowEnterKey: false
+						})
+					}
+				}
+			});
+
+
+		}
+
+
+
+
+
+						$(document).ready(function () {
+						$('body').on('change', '.dt-global-search', function(event) {
+						  reachedEOF = false;
+
+						  pager_setCurrentPageNumber(1);
+						  fill_pagination(pager_onPageChanged);
+
+						  $(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+						});
+													var calendarInstance = null;
+	var globalOccupancyData = [];
+						fill_RoomOccupancyStatus()
+
+
+						var Actions=getAutho("RoomOccupancyStatus","list")
+						if(Actions == undefined){
+						window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+						}
+
+
+
+
+						});
+
+
+						$("body").on("click", "[data-table-action]", function(a) {
+						a.preventDefault();
+						var b = $(this).data("table-action");
+						console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+						if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+						var c = $(this).closest(".card");
+						c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+						}
+						});
+</script>
+<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+<style>
+	/* Shared horizontal detail rows for cards */
+	.block-card-details .detail-row,
+	.building-card-details .detail-row,
+	.floor-card-details .detail-row,
+	.roomtype-card-details .detail-row,
+	.room-card-details .detail-row {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		font-size: var(--fs-small, 12px);
+		margin-bottom: 2px;
+	}
+
+		.block-card-details .detail-row i,
+		.building-card-details .detail-row i,
+		.floor-card-details .detail-row i,
+		.roomtype-card-details .detail-row i,
+		.room-card-details .detail-row i {
+			font-size: 14px;
+			color: #6091C4;
+		}
+
+		.block-card-details .detail-row span,
+		.building-card-details .detail-row span,
+		.floor-card-details .detail-row span,
+		.roomtype-card-details .detail-row span,
+		.room-card-details .detail-row span {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+	/* Room Occupancy calendar � full page, stylish */
+	@if (_isEmbed)
+	{
+		<text>
+	html, body {
+		height: 100%;
+		overflow: hidden;
+	}
+		</text>
+	}
+	.occupancy-calendar-fullpage {
+		display: flex;
+		flex-direction: column;
+		height: calc(100vh - 18px);
+		min-height: 0;
+		background: linear-gradient(180deg, #f8fafc 0%, #fff 80px);
+		border-radius: 10px;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+		border: 1px solid rgba(0, 0, 0, 0.06);
+		overflow: hidden;
+	}
+	.room-occupancy-list-card--embed {
+		box-sizing: border-box;
+		height: 100vh;
+		padding: 6px 10px 8px;
+		overflow: hidden;
+	}
+	.room-occupancy-list-card--embed,
+	.room-occupancy-list-card--embed .card-body {
+		min-height: 0;
+	}
+	.room-occupancy-list-card--embed .card-body {
+		height: calc(100vh - 14px);
+		padding: 0 !important;
+		overflow: hidden;
+	}
+	.room-occupancy-list-card--embed .occupancy-calendar-fullpage {
+		height: 100%;
+		min-height: 0;
+	}
+
+	.occupancy-calendar-toolbar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-shrink: 0;
+		gap: 12px;
+		padding: 12px 16px 8px;
+		background: #fff;
+	}
+
+	.occupancy-calendar-toolbar__title {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-size: var(--fs-base, 14px);
+		font-weight: 600;
+		color: #1e293b;
+	}
+
+		.occupancy-calendar-toolbar__title i {
+			color: #5c9fd6;
+			font-size: 16px;
+		}
+
+	.occupancy-calendar-toolbar__nav {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		margin-left: auto;
+	}
+
+	.occupancy-calendar-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 5px 10px;
+		font-size: var(--fs-small, 12px);
+		font-weight: 500;
+		color: #475569;
+		background: #fff;
+		border: 1px solid #e2e8f0;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: background 0.2s, color 0.2s, border-color 0.2s;
+	}
+
+		.occupancy-calendar-btn:hover {
+			background: #f1f5f9;
+			color: #1e293b;
+			border-color: #cbd5e1;
+		}
+
+	.occupancy-calendar-btn--today {
+		min-width: 60px;
+		color: var(--btncolor);
+		border-color: #93c5fd;
+		background: var(--btnprimary);
+	}
+
+		.occupancy-calendar-btn--today:hover {
+			background: #dbeafe;
+			border-color: #60a5fa;
+		}
+
+	.occupancy-calendar-btn--icon {
+		padding: 5px 10px;
+	}
+
+	.occupancy-calendar-wrap {
+		flex: 1;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		padding: 8px;
+		position: relative;
+		overflow-x: hidden;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		overscroll-behavior: contain;
+	}
+
+	#occupancyCalendar {
+		flex: 0 0 auto;
+		min-height: 100%;
+		height: auto;
+		border-radius: 10px;
+		box-shadow: 0 10px 26px rgba(15,23,42,.07), 0 1px 2px rgba(15,23,42,.05);
+		overflow: hidden;
+		border: 1px solid #e2e8f0;
+		background: #f8fafc;
+	}
+	@@media (max-height: 760px) {
+		.room-occupancy-list-card--embed {
+			padding: 4px 8px 6px;
+		}
+		.room-occupancy-list-card--embed .card-body {
+			height: calc(100vh - 10px);
+		}
+	}
+	#occupancyCalendar .scheduler_default_scrollable,
+	#occupancyCalendar .scheduler_default_scroll,
+	#occupancyCalendar [class*="scrollable"] {
+		overscroll-behavior: contain;
+	}
+	#occupancyCalendar .scheduler_default_scrollable,
+	#occupancyCalendar .scheduler_default_scroll {
+		overflow-y: hidden !important;
+	}
+	.occupancy-calendar-wrap::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+	}
+	.occupancy-calendar-wrap::-webkit-scrollbar-track {
+		background: #eef4f8;
+		border-radius: 999px;
+	}
+	.occupancy-calendar-wrap::-webkit-scrollbar-thumb {
+		background: #94a3b8;
+		border: 2px solid #eef4f8;
+		border-radius: 999px;
+	}
+	.occupancy-calendar-wrap::-webkit-scrollbar-thumb:hover {
+		background: #64748b;
+	}
+	#occupancyCalendar .scheduler_default_scrollable::-webkit-scrollbar,
+	#occupancyCalendar .scheduler_default_scroll::-webkit-scrollbar,
+	#occupancyCalendar [class*="scrollable"]::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+	}
+	#occupancyCalendar .scheduler_default_scrollable::-webkit-scrollbar-track,
+	#occupancyCalendar .scheduler_default_scroll::-webkit-scrollbar-track,
+	#occupancyCalendar [class*="scrollable"]::-webkit-scrollbar-track {
+		background: #eef4f8;
+		border-radius: 999px;
+	}
+	#occupancyCalendar .scheduler_default_scrollable::-webkit-scrollbar-thumb,
+	#occupancyCalendar .scheduler_default_scroll::-webkit-scrollbar-thumb,
+	#occupancyCalendar [class*="scrollable"]::-webkit-scrollbar-thumb {
+		background: #94a3b8;
+		border: 2px solid #eef4f8;
+		border-radius: 999px;
+	}
+	#occupancyCalendar .scheduler_default_scrollable::-webkit-scrollbar-thumb:hover,
+	#occupancyCalendar .scheduler_default_scroll::-webkit-scrollbar-thumb:hover,
+	#occupancyCalendar [class*="scrollable"]::-webkit-scrollbar-thumb:hover {
+		background: #64748b;
+	}
+
+	/* ══════════════════════════════════════════════
+	   Room Occupancy Calendar — Redesigned Styling
+	   ══════════════════════════════════════════════ */
+
+	.scheduler_default_main {
+		font-family: var(--app-font, 'Roboto', 'Segoe UI', sans-serif);
+		font-size: var(--fs-small, 12px);
+		border: none !important;
+	}
+
+	/* ── Day / Month column headers ── */
+	.scheduler_default_colheader_inner {
+		background: #1f5a40 !important;
+		color: #dcfce7 !important;
+		font-weight: 700;
+		font-size: 12px;
+		letter-spacing: 0;
+	}
+	/* Month-level header */
+	.scheduler_default_timeheadergroup_inner {
+		background: linear-gradient(180deg, #174732 0%, #1f5a40 100%) !important;
+		color: #ecfdf5 !important;
+		font-weight: 800;
+		font-size: 12.5px;
+		letter-spacing: 0;
+		border-bottom: 1px solid rgba(255,255,255,0.16) !important;
+	}
+	/* Day-level header */
+	.scheduler_default_timeheadercol_inner {
+		background: #1f5a40 !important;
+		color: #d4f5e2 !important;
+		font-weight: 800;
+		font-size: 11px;
+		border-right: 1px solid rgba(255,255,255,.16) !important;
+	}
+	#occupancyCalendar .scheduler_default_timeheadergroup *,
+	#occupancyCalendar .scheduler_default_timeheadercol * {
+		color: #d4f5e2 !important;
+	}
+	#occupancyCalendar .scheduler_default_corner,
+	#occupancyCalendar .scheduler_default_corner_inner {
+		background: #f8fafc !important;
+		color: #0f172a !important;
+		border-right: 1px solid #dfe7ef !important;
+		border-bottom: 1px solid #dfe7ef !important;
+		box-sizing: border-box;
+	}
+	.occ-corner-header {
+		display: flex;
+		align-items: center;
+		height: 100%;
+		min-height: 58px;
+		padding: 0 14px;
+		gap: 8px;
+		font-size: 13px;
+		font-weight: 800;
+		color: #0f172a;
+		letter-spacing: 0;
+	}
+	.occ-corner-header i {
+		color: var(--btnprimary, #2d5f44);
+		font-size: 14px;
+	}
+	/* Today column highlight */
+	.scheduler_default_cell_today,
+	.scheduler_default_cell_today.scheduler_default_cell_business {
+		background: #f0fdf4 !important;
+	}
+	.scheduler_default_colheader_today .scheduler_default_colheader_inner {
+		background: linear-gradient(180deg, #15803d 0%, #16a34a 100%) !important;
+		color: #fff !important;
+		font-weight: 700;
+	}
+
+	/* ── Row headers (Room labels) ── */
+	#occupancyCalendar .scheduler_default_rowheader,
+	#occupancyCalendar .scheduler_default_rowheader_inner {
+		background: #174732 !important;
+		color: #ecfdf5 !important;
+		font-weight: 500;
+		min-height: 96px !important;
+		line-height: 1.4;
+		border-right: 1px solid #d9e8df !important;
+		border-bottom: 1px solid rgba(255,255,255,0.10) !important;
+	}
+	/* Odd rows: slightly lighter green */
+	#occupancyCalendar tr:nth-child(odd) .scheduler_default_rowheader,
+	#occupancyCalendar tr:nth-child(odd) .scheduler_default_rowheader_inner {
+		background: #1a5139 !important;
+		color: #e8fff2 !important;
+	}
+	/* Even rows: slightly deeper green */
+	#occupancyCalendar tr:nth-child(even) .scheduler_default_rowheader,
+	#occupancyCalendar tr:nth-child(even) .scheduler_default_rowheader_inner {
+		background: #143f2c !important;
+		color: #d0f0e0 !important;
+	}
+	/* Hover effect on row headers */
+	#occupancyCalendar .scheduler_default_rowheader:hover,
+	#occupancyCalendar .scheduler_default_rowheader_inner:hover {
+		background: #216446 !important;
+		color: #fff !important;
+	}
+	/* Custom room label inner layout */
+	.rh-cell {
+		display: flex;
+		align-items: center;
+		gap: 9px;
+		padding: 10px 10px 10px 12px;
+		width: 100%;
+		min-height: 56px;
+		box-sizing: border-box;
+	}
+	.rh-icon-wrap {
+		flex-shrink: 0;
+		width: 30px;
+		height: 30px;
+		border-radius: 8px;
+		background: rgba(255,255,255,0.13);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 12px;
+		color: #bae6fd;
+		box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+	}
+	.rh-text {
+		flex: 1;
+		min-width: 0;
+	}
+	.rh-name {
+		display: block;
+		font-size: 12px;
+		font-weight: 800;
+		color: #f8fafc;
+		/* allow wrapping so full room name is always visible */
+		white-space: normal;
+		word-break: break-word;
+		line-height: 1.35;
+		letter-spacing: 0.1px;
+	}
+	.rh-label {
+		display: block;
+		font-size: 9.5px;
+		color: #7dd3fc;
+		margin-top: 2px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0;
+	}
+
+	/* ── Calendar grid cells ── */
+	.scheduler_default_cell {
+		background: #f8fbff;
+		min-height: 96px !important;
+		border-color: #e6edf5 !important;
+	}
+	.scheduler_default_cell.scheduler_default_cell_business {
+		background: #f3f8ff;
+	}
+	.scheduler_default_cell_weekend {
+		background: #f8fafc !important;
+	}
+
+	/* ── Status legend bar ── */
+	.occ-legend {
+		display: flex;
+		align-items: center;
+		gap: 16px;
+		flex-wrap: wrap;
+	}
+	.occ-legend__item {
+		display: flex;
+		align-items: center;
+		gap: 5px;
+		font-size: 11px;
+		font-weight: 500;
+		color: #475569;
+	}
+	.occ-legend__dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 3px;
+		flex-shrink: 0;
+	}
+	.occ-legend__dot--booked   { background: #2563eb; }
+	.occ-legend__dot--occupied { background: #ef4444; }
+	.occ-legend__dot--blocked  { background: #9ca3af; }
+	.occ-legend__dot--vacant   { background: #7c3aed; }
+
+	.occ-status-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 8px 14px;
+		background: #f8fafc;
+		border-top: 1px solid #f1f5f9;
+		border-bottom: 1px solid #e8ecf1;
+		flex-wrap: wrap;
+	}
+	.occ-status-filter {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		flex-wrap: wrap;
+		margin-left: auto;
+	}
+	.occ-status-filter__btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 28px;
+		padding: 4px 10px;
+		border: 1px solid #dbe3ea;
+		border-radius: 6px;
+		background: #fff;
+		color: #475569;
+		font-size: 11px;
+		font-weight: 700;
+		cursor: pointer;
+		transition: background .16s, border-color .16s, color .16s;
+	}
+	.occ-status-filter__btn:hover {
+		border-color: var(--btnprimary, #2d5f44);
+		color: var(--btnprimary, #2d5f44);
+	}
+	.occ-status-filter__btn.is-active {
+		background: var(--btnprimary, #2d5f44);
+		border-color: var(--btnprimary, #2d5f44);
+		color: var(--btncolor, #fff);
+	}
+	.occ-calendar-loader {
+		position: absolute;
+		inset: 8px;
+		z-index: 20;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+		border-radius: 8px;
+		background: rgba(248,250,252,0.92);
+		color: #2d5f44;
+		font-size: 13px;
+		font-weight: 700;
+	}
+	.occ-calendar-loader.is-hidden { display: none; }
+
+	/* ── Event capsule ── */
+	.scheduler_default_event.event-capsule-style {
+		border-radius: 8px !important;
+		box-shadow: 0 7px 18px rgba(15,23,42,0.11), 0 1px 2px rgba(15,23,42,0.06);
+		overflow: hidden;
+		transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+	}
+	.scheduler_default_event.event-capsule-style:hover,
+	.scheduler_default_event.event-capsule-style:focus-within {
+		transform: none;
+		filter: saturate(1.04);
+		box-shadow: 0 11px 24px rgba(15,23,42,0.18), 0 1px 2px rgba(15,23,42,0.08);
+		z-index: 80 !important;
+	}
+	/* Per-status left-border accent + background */
+	.scheduler_default_event.event-status-booked {
+		border-left: 4px solid #2563eb !important;
+		border-top: 1px solid #c7ddff !important;
+		border-right: 1px solid #c7ddff !important;
+		border-bottom: 1px solid #c7ddff !important;
+	}
+	.scheduler_default_event.event-status-occupied {
+		border-left: 4px solid #16a34a !important;
+		border-top: 1px solid #bbf7d0 !important;
+		border-right: 1px solid #bbf7d0 !important;
+		border-bottom: 1px solid #bbf7d0 !important;
+	}
+	.scheduler_default_event.event-status-blocked {
+		border-left: 4px solid #ea580c !important;
+		border-top: 1px solid #fed7aa !important;
+		border-right: 1px solid #fed7aa !important;
+		border-bottom: 1px solid #fed7aa !important;
+	}
+	.scheduler_default_event.event-status-vacant {
+		border-left: 4px solid #7c3aed !important;
+		border-top: 1px solid #ddd6fe !important;
+		border-right: 1px solid #ddd6fe !important;
+		border-bottom: 1px solid #ddd6fe !important;
+	}
+
+	/* Event inner: no extra padding (we control via .evt-inner) */
+	.scheduler_default_event_inner {
+		padding: 0 !important;
+		overflow: hidden;
+		font-size: var(--fs-small, 12px);
+		line-height: 1.3;
+		border-radius: 8px;
+	}
+	/* ── Event card inner content ── */
+	.evt-inner {
+		padding: 8px 9px 7px 10px;
+		font-size: 11px;
+		line-height: 1.25;
+		height: 100%;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		gap: 5px;
+		background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.82));
+	}
+	/* Status badge (first line) */
+	.evt-status-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		max-width: 100%;
+		font-size: 9.5px;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0;
+		padding: 2px 7px;
+		border-radius: 999px;
+		align-self: flex-start;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.evt-status-badge--booked   { background: #dbeafe; color: #1e40af; }
+	.evt-status-badge--occupied { background: #fee2e2; color: #991b1b; }
+	.evt-status-badge--blocked  { background: #f3f4f6; color: #4b5563; }
+	.evt-status-badge--default  { background: #f5f3ff; color: #5b21b6; }
+	/* Patient name row */
+	.evt-patient {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		min-width: 0;
+		font-size: 11.2px;
+		font-weight: 800;
+		color: inherit;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.evt-patient i {
+		font-size: 10px;
+		opacity: 0.65;
+		flex-shrink: 0;
+	}
+	/* IPD / meta row */
+	.evt-meta {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		min-width: 0;
+		font-size: 9.8px;
+		font-weight: 700;
+		opacity: 0.82;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.evt-meta i {
+		font-size: 9px;
+		flex-shrink: 0;
+	}
+	/* Attendant badge */
+	.evt-attendant-badge {
+		display: inline-flex;
+		align-items: center;
+		gap: 3px;
+		font-size: 9.5px;
+		font-weight: 600;
+		color: #fff;
+		background: rgba(109, 40, 217, 0.70);
+		border-radius: 3px;
+		padding: 1px 5px;
+		align-self: flex-start;
+	}
+	/* Legacy compat */
+	.evt-row { display: inline; opacity: 0.92; }
+	.evt-ico  { margin-right: 3px; font-size: 0.9em; opacity: 0.7; width: 14px; text-align: center; }
+	.evt-row.evt-loc { display: block; font-size: 0.92em; opacity: 0.78; margin-top: 3px; }
+	.evt-loc-line { display: block; margin-top: 2px; }
+	.evt-loc-line:first-child { margin-top: 0; }
+
+	/* ── Event Hover Tooltip ─────────────────────── */
+	#occEventTooltip {
+		background: #fff;
+		border: 1px solid #e2e8f0;
+		border-radius: 10px;
+		box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+		padding: 10px 14px;
+		min-width: 210px;
+		max-width: 300px;
+		font-size: 12.5px;
+		color: #1e293b;
+		line-height: 1.5;
+	}
+	.occ-tip-status {
+		font-weight: 700; font-size: 12px; text-transform: uppercase;
+		letter-spacing: .5px; padding: 3px 8px; border-radius: 20px;
+		display: inline-flex; align-items: center; gap: 5px;
+		margin-bottom: 8px;
+	}
+	.occ-tip-status--booked   { background: #dbeafe; color: #1e40af; }
+	.occ-tip-status--occupied { background: #fee2e2; color: #991b1b; }
+	.occ-tip-status--blocked  { background: #f3f4f6; color: #4b5563; }
+	.occ-tip-row {
+		display: flex; align-items: flex-start; gap: 7px;
+		padding: 3px 0; border-bottom: 1px solid #f1f5f9;
+		word-break: break-word;
+	}
+	.occ-tip-row:last-child { border-bottom: none; }
+	.occ-tip-row i { color: #64748b; margin-top: 2px; min-width: 14px; text-align: center; }
+
+	/* ── View Toggle Buttons ─────────────────────── */
+	.occ-view-toggle { border-radius: 8px; overflow: hidden; }
+	.occ-view-btn {
+		padding: 6px 16px; font-size: 12.5px; font-weight: 600;
+		color: #475569; background: #f1f5f9; border: 1px solid #e2e8f0;
+		transition: all .2s;
+	}
+	.occ-view-btn:hover { background: #e2e8f0; color: #1e293b; }
+	.occ-view-btn.is-active {
+		background: linear-gradient(135deg, #1a3d2b, #1e4d35);
+		color: #fff; border-color: #1a3d2b;
+	}
+
+	/* (Old DayPilot roomGroupCalendar styles removed — replaced by .rgb-* board styles) */
+
+	/* ═══ Room Group Board (seatmap style) ═══════════ */
+	.rgb-toolbar {
+		display: flex; align-items: center; justify-content: space-between;
+		padding: 10px 16px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
+		border-radius: 8px 8px 0 0; flex-wrap: wrap; gap: 8px;
+	}
+	.rgb-toolbar__left { display: flex; align-items: center; gap: 6px; }
+	.rgb-toolbar__right { display: flex; align-items: center; }
+	.rgb-toolbar__btn {
+		display: inline-flex; align-items: center; justify-content: center;
+		width: 34px; height: 34px; border: 1px solid #cbd5e1; border-radius: 6px;
+		background: #fff; color: #475569; font-size: 13px; cursor: pointer;
+		transition: all .15s;
+	}
+	.rgb-toolbar__btn:hover { background: #e2e8f0; color: #1e293b; }
+	.rgb-toolbar__btn--today {
+		width: auto; padding: 0 14px; font-size: 12.5px; font-weight: 600;
+	}
+	.rgb-toolbar__date {
+		width: 130px; height: 34px; text-align: center; font-size: 13px;
+		font-weight: 600; border: 1px solid #cbd5e1; border-radius: 6px;
+		background: #fff; color: #1e293b; cursor: pointer;
+	}
+	.rgb-summary {
+		font-size: 12px; color: #64748b; display: flex; gap: 14px; flex-wrap: wrap;
+	}
+	.rgb-summary__item { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; }
+	.rgb-summary__num { font-size: 15px; font-weight: 700; }
+	.rgb-summary__num--available { color: #16a34a; }
+	.rgb-summary__num--booked    { color: #2563eb; }
+	.rgb-summary__num--occupied  { color: #dc2626; }
+	.rgb-summary__num--blocked   { color: #6b7280; }
+
+	.rgb-legend {
+		display: flex; gap: 18px; padding: 8px 16px; background: #fff;
+		border-bottom: 1px solid #f1f5f9; font-size: 12px; color: #64748b;
+	}
+	.rgb-legend__item { display: inline-flex; align-items: center; gap: 5px; }
+	.rgb-legend__dot {
+		width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+	}
+	.rgb-dot--available { background: #22c55e; }
+	.rgb-dot--booked    { background: #3b82f6; }
+	.rgb-dot--occupied  { background: #ef4444; }
+	.rgb-dot--blocked   { background: #9ca3af; }
+
+	.rgb-board {
+		padding: 16px; background: #fff; border-radius: 0 0 8px 8px;
+		min-height: 300px; max-height: 72vh; overflow-y: auto;
+	}
+	.rgb-loading {
+		text-align: center; padding: 60px 20px; color: #94a3b8; font-size: 14px;
+	}
+	.rgb-empty {
+		text-align: center; padding: 60px 20px; color: #94a3b8; font-size: 14px;
+	}
+	.rgb-empty i { font-size: 36px; display: block; margin-bottom: 12px; opacity: .5; }
+
+	/* Group section */
+	.rgb-group {
+		margin-bottom: 20px; border: 1px solid #e2e8f0; border-radius: 10px;
+		overflow: hidden; background: #fff;
+		box-shadow: 0 1px 3px rgba(0,0,0,.04);
+	}
+	.rgb-group__header {
+		display: flex; align-items: center; gap: 10px;
+		padding: 12px 16px;
+		background: linear-gradient(135deg, #1a3d2b, #1e4d35);
+		color: #fff; cursor: pointer; user-select: none;
+	}
+	.rgb-group__header:hover { background: linear-gradient(135deg, #1e5c3a, #1a4d30); }
+	.rgb-group__icon { font-size: 15px; color: #a78bfa; }
+	.rgb-group__name { font-size: 14px; font-weight: 600; flex: 1; }
+	.rgb-group__badge {
+		display: inline-flex; align-items: center; justify-content: center;
+		min-width: 22px; height: 22px; padding: 0 7px;
+		border-radius: 999px; background: rgba(255,255,255,.18);
+		color: #93c5fd; font-size: 11px; font-weight: 700;
+	}
+	.rgb-group__chevron { font-size: 12px; color: rgba(255,255,255,.6); transition: transform .2s; }
+	.rgb-group.is-collapsed .rgb-group__chevron { transform: rotate(-90deg); }
+	.rgb-group.is-collapsed .rgb-group__body { display: none; }
+	.rgb-group__body {
+		display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 16px;
+		background: #f8fafc;
+	}
+
+	/* Room tile */
+	.rgb-tile {
+		position: relative;
+		width: 140px; min-height: 96px;
+		border-radius: 10px; padding: 12px 14px;
+		cursor: pointer; transition: all .18s;
+		display: flex; flex-direction: column; gap: 4px;
+		border: 2px solid transparent;
+		box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	}
+	.rgb-tile:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+
+	.rgb-tile--available { background: #f0fdf4; border-color: #86efac; }
+	.rgb-tile--booked    { background: #eff6ff; border-color: #93c5fd; }
+	.rgb-tile--occupied  { background: #fef2f2; border-color: #fca5a5; }
+	.rgb-tile--blocked   { background: #f3f4f6; border-color: #d1d5db; }
+
+	.rgb-tile__status-dot {
+		position: absolute; top: 10px; right: 10px;
+		width: 10px; height: 10px; border-radius: 50%;
+	}
+	.rgb-tile--available .rgb-tile__status-dot { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,.5); }
+	.rgb-tile--booked    .rgb-tile__status-dot { background: #3b82f6; box-shadow: 0 0 6px rgba(59,130,246,.5); }
+	.rgb-tile--occupied  .rgb-tile__status-dot { background: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,.5); }
+	.rgb-tile--blocked   .rgb-tile__status-dot { background: #9ca3af; }
+
+	.rgb-tile__icon { font-size: 20px; margin-bottom: 2px; }
+	.rgb-tile--available .rgb-tile__icon { color: #16a34a; }
+	.rgb-tile--booked    .rgb-tile__icon { color: #2563eb; }
+	.rgb-tile--occupied  .rgb-tile__icon { color: #dc2626; }
+	.rgb-tile--blocked   .rgb-tile__icon { color: #6b7280; }
+
+	.rgb-tile__room {
+		font-size: 13px; font-weight: 700; color: #1e293b;
+		white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+	}
+	.rgb-tile__status {
+		font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
+	}
+	.rgb-tile--available .rgb-tile__status { color: #16a34a; }
+	.rgb-tile--booked    .rgb-tile__status { color: #2563eb; }
+	.rgb-tile--occupied  .rgb-tile__status { color: #dc2626; }
+	.rgb-tile--blocked   .rgb-tile__status { color: #6b7280; }
+
+	.rgb-tile__patient {
+		font-size: 11px; color: #475569; white-space: nowrap;
+		overflow: hidden; text-overflow: ellipsis; margin-top: 2px;
+	}
+	.rgb-tile__patient i { font-size: 10px; margin-right: 3px; opacity: .6; }
+</style>
+
+<script>
+	$(document).ready(function () {
+		$('#bookeddate_automatonfrom').datetimepicker({
+			 format: "d/m/Y",
+			 formatDate: "d/m/Y",
+			 timepicker: false,
+	});
+		$('#bookeddate_automatonto').datetimepicker({
+			 format: "d/m/Y",
+			 formatDate: "d/m/Y",
+			 timepicker: false,
+	});
+			$("#bookeddate_automatonfrom").datetimepicker('defaultDate', moment().add(-365, 'days'));
+			$("#bookeddate_automatonto").datetimepicker('defaultDate', moment());
+	})
+
+
+
+
+
+
+
+
+
+</script>
+<script>
+		var schedulerStartDate = DayPilot.Date.today().firstDayOfMonth();
+
+		// Room type -> Font Awesome icon for list and calendar
+		function getRoomTypeIcon(roomTypeName) {
+			if (!roomTypeName || typeof roomTypeName !== 'string') return 'fa-door-open';
+			var t = roomTypeName.toLowerCase().trim();
+			if (t.indexOf('consultation') !== -1 || t.indexOf('opd') !== -1) return 'fa-stethoscope';
+			if (t.indexOf('ot') !== -1 || t.indexOf('operation') !== -1 || t.indexOf('theatre') !== -1 || t.indexOf('surgery') !== -1) return 'fa-procedures';
+			if (t.indexOf('ward') !== -1 || t.indexOf('bed') !== -1) return 'fa-bed';
+			if (t.indexOf('icu') !== -1 || t.indexOf('critical') !== -1) return 'fa-ambulance';
+			if (t.indexOf('lab') !== -1) return 'fa-flask';
+			if (t.indexOf('pharmacy') !== -1) return 'fa-pills';
+			if (t.indexOf('cabin') !== -1 || t.indexOf('room') !== -1) return 'fa-door-open';
+			return 'fa-door-open';
+		}
+		function getRoomTypeIconHtml(roomTypeName, roomName) {
+			var icon = getRoomTypeIcon(roomTypeName);
+			return '<span class="room-with-type-icon"><i class="fa ' + icon + '" title="' + (roomTypeName || 'Room') + '"></i> ' + (roomName || '').replace(/</g, '&lt;') + '</span>';
+		}
+
+		// Normalize API response: support both snake_case (room_master) and camelCase (roomMaster) from JSON serialization
+		function getOccupancyVal(item, snakeKey) {
+			if (!item) return undefined;
+			var v = item[snakeKey];
+			if (v !== undefined && v !== null) return v;
+			var camelKey = snakeKey.replace(/_([a-z])/g, function(_, c) { return c.toUpperCase(); });
+			return item[camelKey];
+		}
+		function normalizeOccupancyDetail(detail) {
+			if (!detail || !Array.isArray(detail)) return [];
+			return detail.map(function(item) {
+				var o = {};
+				for (var k in item) { if (item.hasOwnProperty(k)) o[k] = item[k]; }
+				// ensure snake_case keys for calendar and table (API may return camelCase)
+				if (o.room_master === undefined && o.roomMaster !== undefined) o.room_master = o.roomMaster;
+				if (o.block_master === undefined && o.blockMaster !== undefined) o.block_master = o.blockMaster;
+				if (o.building_master === undefined && o.buildingMaster !== undefined) o.building_master = o.buildingMaster;
+				if (o.floor_master === undefined && o.floorMaster !== undefined) o.floor_master = o.floorMaster;
+				if (o.patientname_master === undefined && o.patientnameMaster !== undefined) o.patientname_master = o.patientnameMaster;
+				if (o.bookeddate === undefined && o.bookedDate !== undefined) o.bookeddate = o.bookedDate;
+				return o;
+			});
+		}
+		function applyOccupancyCornerHeader() {
+			var corner = document.querySelector('#occupancyCalendar .scheduler_default_corner_inner') ||
+				document.querySelector('#occupancyCalendar .scheduler_default_corner');
+			if (!corner) return;
+			corner.innerHTML = '<div class="occ-corner-header"><i class="fa fa-bed"></i><span>Room Details</span></div>';
+		}
+		function getOccupancyIpdKey(item) {
+			return (getOccupancyVal(item, 'ipdno') || getOccupancyVal(item, 'ipdno_master') || getOccupancyVal(item, 'floor_master') || '')
+				.toString()
+				.trim()
+				.toLowerCase();
+		}
+		function getOccupancyDisplayIpd(item) {
+			return (getOccupancyVal(item, 'ipdnumber') || '')
+				.toString()
+				.trim();
+		}
+		function getOccupancyMergeIdentity(item) {
+			var ipdKey = getOccupancyIpdKey(item);
+			if (ipdKey) return 'ipd:' + ipdKey;
+			return [
+				'fallback',
+				(getOccupancyVal(item, 'patientname') || getOccupancyVal(item, 'patientname_master') || '').toString().trim().toLowerCase(),
+				(getOccupancyVal(item, 'bookedfor') || '').toString().trim().toLowerCase()
+			].join('|');
+		}
+		function getOccupancySchedulerHeight() {
+			var wrapEl = document.querySelector('.occupancy-calendar-wrap');
+			if (wrapEl && wrapEl.clientHeight) return wrapEl.clientHeight;
+			var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 760;
+			return Math.max(460, Math.min(720, viewportHeight - 120));
+		}
+		function getOccupancySchedulerContentHeight(resourceCount) {
+			var visibleHeight = getOccupancySchedulerHeight();
+			var headerHeight = 68;
+			var rowHeight = 96;
+			var count = Math.max(resourceCount || 0, 1);
+			return Math.max(visibleHeight, headerHeight + (count * rowHeight) + 12);
+		}
+		function getOccupancyDays() {
+			var rowHeaderWidth = 190;
+			var minCellPx = 32;
+			// Use the wrap element: it has CSS-driven width from flexbox before DayPilot renders.
+			// #occupancyCalendar clientWidth is 0 on first load (DayPilot hasn't rendered yet).
+			var wrapEl = document.querySelector('.occupancy-calendar-wrap');
+			var availableWidth = (wrapEl && wrapEl.clientWidth > 0) ? wrapEl.clientWidth : (window.innerWidth || 1280);
+			availableWidth = Math.max(availableWidth - rowHeaderWidth - 20, 200);
+			var days = Math.floor(availableWidth / minCellPx);
+			if (days < 7) days = 7;
+			if (days > 90) days = 90;
+			return days;
+		}
+		function resizeOccupancyScheduler() {
+			if (!calendarInstance) return;
+			calendarInstance.heightSpec = "Fixed";
+			calendarInstance.height = getOccupancySchedulerContentHeight(window._occupancyResourceCount || 0);
+			var newDays = getOccupancyDays();
+			if (calendarInstance.days !== newDays) {
+				calendarInstance.days = newDays;
+			}
+			calendarInstance.update();
+			applyOccupancyCornerHeader();
+			// bindOccupancyWheelScroll is a no-op if already bound (data-wheel-bound guard)
+			bindOccupancyWheelScroll();
+		}
+		function getOccupancyScrollableElement() {
+			var wrap = document.querySelector('.occupancy-calendar-wrap');
+			if (wrap && wrap.scrollHeight > wrap.clientHeight + 2) return wrap;
+
+			var root = document.getElementById('occupancyCalendar');
+			if (!root) return null;
+			var best = null;
+			var bestDelta = 0;
+			var nodes = root.querySelectorAll('div');
+			for (var i = 0; i < nodes.length; i++) {
+				var el = nodes[i];
+				var vDelta = el.scrollHeight - el.clientHeight;
+				if (vDelta > bestDelta + 2) {
+					var style = window.getComputedStyle(el);
+					var oy = style.overflowY;
+					var cls = (el.className || '').toString();
+					if (oy === 'auto' || oy === 'scroll' || cls.indexOf('scroll') !== -1) {
+						best = el;
+						bestDelta = vDelta;
+					}
+				}
+			}
+			return best;
+		}
+		function bindOccupancyWheelScroll() {
+			var root = document.getElementById('occupancyCalendar');
+			if (!root || root.getAttribute('data-wheel-bound') === '1') return;
+			root.setAttribute('data-wheel-bound', '1');
+			root.addEventListener('wheel', function (ev) {
+				var scroller = getOccupancyScrollableElement();
+				if (!scroller) return;
+				// Always prevent the iframe/page from scrolling when a scroller is found
+				ev.preventDefault();
+				ev.stopPropagation();
+				var multiplier = ev.deltaMode === 1 ? 16 : ev.deltaMode === 2 ? scroller.clientHeight : 1;
+				scroller.scrollTop += (ev.deltaY * multiplier);
+			}, { passive: false, capture: true });
+		}
+		function renderOccupancyCalendar() {
+		var calendarEl = document.getElementById('occupancyCalendar');
+		if (!calendarEl) return;
+		var occupancyData = getFilteredOccupancyData();
+		// 1. Setup Resources (Y-Axis: Rooms) – use normalized room_master so API returning roomMaster works
+		const allRooms = [...new Set((occupancyData || []).map(function(item) { return getOccupancyVal(item, 'room_master'); }).filter(Boolean))];
+		const resources = allRooms.length > 0
+			? allRooms.map(room => {
+				var first = (occupancyData || []).find(function(item) { return getOccupancyVal(item, 'room_master') === room; });
+				var roomType = (first && (getOccupancyVal(first, 'room_type_name') || first.roomtype || first.roomtypename)) || '';
+				var icon = getRoomTypeIcon(roomType);
+				return { name:   room, id: room };
+			})
+			: [{ id: "_placeholder", name: "No rooms in selection" }];
+		window._occupancyResourceCount = resources.length;
+
+		// Height: fill container so bottom is never blank (full page)
+		var fillHeight = getOccupancySchedulerContentHeight(resources.length);
+
+		// 2. Setup the Scheduler Instance
+		if (!calendarInstance) {
+			calendarInstance = new DayPilot.Scheduler("occupancyCalendar", {
+				cellWidthType: "Auto",
+				timeHeaders: [{ groupBy: "Month" }, { groupBy: "Day", format: "d" }],
+				scale: "Day",
+				days: getOccupancyDays(),
+				startDate: schedulerStartDate,
+				treeEnabled: true,
+				resources: resources,
+				heightSpec: "Fixed",
+				height: fillHeight,
+				rowHeaderWidth: 190,
+				eventHeight: 78,
+				rowMinHeight: 96,
+				// Read-only: no drag, resize, or time-range selection (validations needed before enabling)
+				eventMoveHandling: "Disabled",
+				eventResizeHandling: "Disabled",
+				timeRangeSelectedHandling: "Disabled",
+
+				// Row header: custom HTML so room name is always white & readable
+				onBeforeRowHeaderRender: (args) => {
+					const name = (args.row && args.row.name) ? args.row.name : '';
+					const esc = (s) => (s + '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+					args.row.html =
+						'<div class="rh-cell">' +
+							'<div class="rh-icon-wrap"><i class="fa fa-bed"></i></div>' +
+							'<div class="rh-text">' +
+								'<span class="rh-name">' + esc(name) + '</span>' +
+								'<span class="rh-label">Room</span>' +
+							'</div>' +
+						'</div>';
+				},
+
+				// Event Click Logic
+				onEventClick: (args) => {
+					const e = args.e.data;
+					if (e.isRealRecord) {
+						openUpdateModal(e);
+					} else {
+						openAddModal(e);
+					}
+				},
+
+				onBeforeEventRender: (args) => {
+					const status = args.data.status ? args.data.status.toLowerCase().trim() : "";
+					const statusClass = status ? "event-capsule-style event-status-" + status.replace(/\s+/g, "-") : "event-capsule-style";
+					const esc = (s) => (s && (s + '').trim()) ? (s + '').replace(/</g, '&lt;').replace(/>/g, '&gt;') : '';
+					const escAttr = (s) => esc(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+					const pname = esc(args.data.patientname_master || args.data.patientnameMaster);
+					const bookedFor = (args.data.bookedfor || '').toString().trim().toLowerCase();
+					const isAttendant = bookedFor === 'attendant' || bookedFor.indexOf('attendant') !== -1;
+					const floorM = esc(args.data.floor_master || args.data.floorMaster);
+					const statusText = esc(args.data.status) || esc(args.data.text) || '';
+
+					// Status icons
+					const statusIcon = status === 'booked' ? 'fa-calendar-check-o' : status === 'occupied' ? 'fa-user' : status === 'blocked' ? 'fa-lock' : 'fa-circle';
+					const badgeClass = 'evt-status-badge evt-status-badge--' + (status || 'default');
+
+					// Colors
+					args.data.backColor = getStatusBackColor(status);
+					args.data.fontColor = getStatusFontColor(status);
+					args.data.barVisible = true;
+					args.data.barHeight = 4;
+					args.data.barColor = getStatusBarColor(status);
+					args.data.barPosition = "Top";
+					args.data.cssClass = statusClass;
+
+					// Store event data for tooltip lookup
+					window._occEventMap = window._occEventMap || {};
+					window._occEventMap[args.data.id] = args.data;
+
+					// Build cleaner event card HTML — wrap with data-occ-id for hover delegation
+					var parts = ['<div class="evt-inner occ-hoverable" data-occ-id="' + escAttr(args.data.id) + '">'];
+					// Status badge
+					parts.push('<span class="' + badgeClass + '"><i class="fa ' + statusIcon + '"></i> ' + statusText + '</span>');
+					// Patient name
+					if (pname) parts.push('<div class="evt-patient"><i class="fa fa-user-o"></i>' + pname + '</div>');
+					// Attendant badge
+					if (isAttendant) parts.push('<span class="evt-attendant-badge"><i class="fa fa-wheelchair"></i> Attendant</span>');
+					// IPD number
+					if (floorM) parts.push('<div class="evt-meta"><i class="fa fa-hashtag"></i>IPD: ' + floorM + '</div>');
+					parts.push('</div>');
+					args.data.html = parts.join('');
+				},
+
+			});
+			calendarInstance.init();
+			bindOccupancyWheelScroll();
+			// Recalculate days/height after layout settles (double-rAF ensures a paint has occurred)
+			requestAnimationFrame(function() {
+				requestAnimationFrame(resizeOccupancyScheduler);
+			});
+
+			/* ── Tooltip via DOM delegation (works in DayPilot Lite) ── */
+			(function() {
+				var tip = document.getElementById('occEventTooltip');
+
+				function showTip(e, evData) {
+					var esc = function(s) { return (s && (s+'').trim()) ? (s+'').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; };
+					var status   = (evData.status || '').trim();
+					var pname    = esc(evData.patientname_master || evData.patientnameMaster);
+					var ipdno    = esc(evData.floor_master || evData.floorMaster);
+					var room     = esc(evData.resource);
+					var bookedFor= (evData.bookedfor || '').toString().trim();
+					var from     = esc(evData.bookeddate_from || '');
+					var to       = esc(evData.bookeddate_to   || '');
+
+					var icon = status.toLowerCase() === 'booked'   ? 'fa-calendar-check-o'
+					         : status.toLowerCase() === 'occupied'  ? 'fa-user'
+					         : status.toLowerCase() === 'blocked'   ? 'fa-lock'
+					         : 'fa-circle';
+
+					var rows = [];
+					rows.push('<div class="occ-tip-status occ-tip-status--' + status.toLowerCase().replace(/\s+/g,'-') + '"><i class="fa ' + icon + '"></i> ' + esc(status) + '</div>');
+					if (pname)    rows.push('<div class="occ-tip-row"><i class="fa fa-user-o"></i><span>' + pname + '</span></div>');
+					if (ipdno)    rows.push('<div class="occ-tip-row"><i class="fa fa-hashtag"></i><span>IPD: ' + ipdno + '</span></div>');
+					if (room)     rows.push('<div class="occ-tip-row"><i class="fa fa-bed"></i><span>' + room + '</span></div>');
+					if (bookedFor)rows.push('<div class="occ-tip-row"><i class="fa fa-tag"></i><span>' + esc(bookedFor) + '</span></div>');
+					if (from)     rows.push('<div class="occ-tip-row"><i class="fa fa-calendar"></i><span>' + from + (to ? ' → ' + to : '') + '</span></div>');
+
+					tip.innerHTML = rows.join('');
+					tip.style.display = 'block';
+					positionTip(e);
+				}
+
+				function positionTip(ev) {
+					var x = ev.clientX + 16, y = ev.clientY + 16;
+					if (x + tip.offsetWidth  > window.innerWidth  - 8) x = ev.clientX - tip.offsetWidth  - 12;
+					if (y + tip.offsetHeight > window.innerHeight - 8) y = ev.clientY - tip.offsetHeight - 12;
+					tip.style.left = x + 'px';
+					tip.style.top  = y + 'px';
+				}
+
+				/* Mouseover: find nearest [data-occ-id] ancestor */
+				document.getElementById('occupancyCalendar').addEventListener('mouseover', function(ev) {
+					var el = ev.target;
+					while (el && el !== this) {
+						if (el.getAttribute && el.getAttribute('data-occ-id')) {
+							var id = el.getAttribute('data-occ-id');
+							var evData = (window._occEventMap || {})[id];
+							if (evData) { showTip(ev, evData); return; }
+						}
+						el = el.parentElement;
+					}
+					tip.style.display = 'none';
+				});
+
+				/* Hide when leaving the calendar */
+				document.getElementById('occupancyCalendar').addEventListener('mouseleave', function() {
+					tip.style.display = 'none';
+				});
+			})();
+
+			/* Track cursor so tooltip follows the mouse */
+			document.addEventListener('mousemove', function(ev) {
+				var tip = document.getElementById('occEventTooltip');
+				if (!tip || tip.style.display === 'none') return;
+				var x = ev.clientX + 16;
+				var y = ev.clientY + 16;
+				/* Keep tooltip inside viewport */
+				if (x + tip.offsetWidth  > window.innerWidth  - 8) x = ev.clientX - tip.offsetWidth  - 12;
+				if (y + tip.offsetHeight > window.innerHeight - 8) y = ev.clientY - tip.offsetHeight - 12;
+				tip.style.left = x + 'px';
+				tip.style.top  = y + 'px';
+			});
+		}
+
+		// 3. Process Events (Merge logic)
+		const calendarEvents = [];
+
+		allRooms.forEach(roomName => {
+			const roomData = (occupancyData || [])
+				.filter(function(item) { return getOccupancyVal(item, 'room_master') === roomName; })
+				.sort((a, b) => {
+					var bd1 = getOccupancyVal(a, 'bookeddate') || '';
+					var bd2 = getOccupancyVal(b, 'bookeddate') || '';
+					const [d1, m1, y1] = bd1.split('/');
+					const [d2, m2, y2] = bd2.split('/');
+					if (!d1 || !d2) return 0;
+					var dateDiff = new Date(y1, m1 - 1, d1) - new Date(y2, m2 - 1, d2);
+					if (dateDiff !== 0) return dateDiff;
+					var key1 = [
+						(getOccupancyVal(a, 'status') || '').toString().trim().toLowerCase(),
+						getOccupancyMergeIdentity(a)
+					].join('|');
+					var key2 = [
+						(getOccupancyVal(b, 'status') || '').toString().trim().toLowerCase(),
+						getOccupancyMergeIdentity(b)
+					].join('|');
+					return key1.localeCompare(key2);
+				});
+
+			var activeEntries = {};
+
+			roomData.forEach((item, index) => {
+				var bookedDateStr = getOccupancyVal(item, 'bookeddate') || '';
+				const [d, m, y] = bookedDateStr.split('/');
+				if (!d || !m || !y) return;
+				const thisDate = new Date(y, m - 1, d); // used only for difference calculation
+				const dpDate = new DayPilot.Date(
+					y + '-' + String(m).padStart(2, '0') + '-' + String(d).padStart(2, '0')
+				); // timezone-safe DayPilot date
+				const status = (item.status && (item.status + '').trim()) ? item.status.trim().toLowerCase() : '';
+				const mergeIdentity = getOccupancyMergeIdentity(item);
+				const isMergeable = !!(status && mergeIdentity);
+
+				var blockMaster = (getOccupancyVal(item, 'block_master') && (getOccupancyVal(item, 'block_master') + '').trim()) ? (getOccupancyVal(item, 'block_master') + '').trim() : '';
+				var buildingMaster = (getOccupancyVal(item, 'building_master') && (getOccupancyVal(item, 'building_master') + '').trim()) ? (getOccupancyVal(item, 'building_master') + '').trim() : '';
+				var floorMaster = getOccupancyDisplayIpd(item);
+				var roomMaster = (getOccupancyVal(item, 'room_master') && (getOccupancyVal(item, 'room_master') + '').trim()) ? (getOccupancyVal(item, 'room_master') + '').trim() : '';
+				var resourceVal = getOccupancyVal(item, 'room_master');
+				var mergeKey = [
+					resourceVal,
+					status,
+					mergeIdentity
+				].join('|');
+				var currentEntry = activeEntries[mergeKey];
+
+				if (!currentEntry) {
+					activeEntries[mergeKey] = {
+						id: item.roomoccupancystatusid,
+						resource: resourceVal,
+						status: item.status,
+						patientname_master: (getOccupancyVal(item, 'patientname_master') && (getOccupancyVal(item, 'patientname_master') + '').trim()) ? (getOccupancyVal(item, 'patientname_master') + '').trim() : '',
+						block_master: blockMaster,
+						building_master: buildingMaster,
+						floor_master: floorMaster,
+						room_master: roomMaster,
+						bookedfor: (getOccupancyVal(item, "bookedfor") && (getOccupancyVal(item, "bookedfor") + '').trim()) ? (getOccupancyVal(item, "bookedfor") + '').trim() : '',
+						start: dpDate,
+						end: dpDate.addDays(1)
+					};
+				} else {
+					const prevDate = new Date(currentEntry.end.addDays(-1));
+					const diffDays = Math.ceil(Math.abs(thisDate - prevDate) / (1000 * 60 * 60 * 24));
+
+					if (diffDays <= 1 && status === (currentEntry.status || '').toString().trim().toLowerCase() && isMergeable) {
+						var nextEnd = dpDate.addDays(1);
+						if (new Date(nextEnd) > new Date(currentEntry.end)) currentEntry.end = nextEnd;
+						if (!currentEntry.patientname_master && getOccupancyVal(item, 'patientname_master')) currentEntry.patientname_master = (getOccupancyVal(item, 'patientname_master') + '').trim();
+						if (!currentEntry.block_master && blockMaster) currentEntry.block_master = blockMaster;
+						if (!currentEntry.building_master && buildingMaster) currentEntry.building_master = buildingMaster;
+						if (floorMaster) currentEntry.floor_master = floorMaster;
+						if (!currentEntry.room_master && roomMaster) currentEntry.room_master = roomMaster;
+						if (!currentEntry.bookedfor && getOccupancyVal(item, "bookedfor")) currentEntry.bookedfor = (getOccupancyVal(item, "bookedfor") + '').trim();
+					} else {
+						calendarEvents.push(formatForDayPilot(currentEntry));
+						activeEntries[mergeKey] = {
+							id: item.roomoccupancystatusid,
+							resource: resourceVal,
+							status: item.status,
+							patientname_master: (getOccupancyVal(item, 'patientname_master') && (getOccupancyVal(item, 'patientname_master') + '').trim()) ? (getOccupancyVal(item, 'patientname_master') + '').trim() : '',
+							block_master: blockMaster,
+							building_master: buildingMaster,
+							floor_master: floorMaster,
+							room_master: roomMaster,
+							bookedfor: (getOccupancyVal(item, "bookedfor") && (getOccupancyVal(item, "bookedfor") + '').trim()) ? (getOccupancyVal(item, "bookedfor") + '').trim() : '',
+							start: dpDate,
+							end: dpDate.addDays(1)
+						};
+					}
+				}
+			});
+			Object.keys(activeEntries).forEach(function(key) {
+				if (activeEntries[key]) calendarEvents.push(formatForDayPilot(activeEntries[key]));
+			});
+		});
+
+		function formatForDayPilot(entry) {
+			var pname = (entry.patientname_master && (entry.patientname_master + '').trim()) ? (entry.patientname_master + '').trim() : '';
+			var blockM = (entry.block_master && (entry.block_master + '').trim()) ? (entry.block_master + '').trim() : '';
+			var buildingM = (entry.building_master && (entry.building_master + '').trim()) ? (entry.building_master + '').trim() : '';
+			var floorM = (entry.floor_master && (entry.floor_master + '').trim()) ? (entry.floor_master + '').trim() : '';
+			return {
+				id: entry.id || DayPilot.guid(),
+				resource: entry.resource,
+				start: entry.start,
+				end: entry.end,
+				text: entry.status,
+				status: entry.status,
+				patientname_master: pname,
+				block_master: blockM,
+				building_master: buildingM,
+				floor_master: floorM,
+				bookedfor: (entry.bookedfor || ''),
+				isRealRecord: true
+			};
+		}
+
+		// 4. Load Data for current window (recalc height so full page even with no rooms)
+		var fillHeight2 = getOccupancySchedulerContentHeight(resources.length);
+		calendarInstance.startDate = schedulerStartDate;
+		calendarInstance.days = 90;
+		calendarInstance.height = fillHeight2;
+		calendarInstance.update({
+			resources: resources,
+			events: calendarEvents
+		});
+		applyOccupancyCornerHeader();
+		setTimeout(applyOccupancyCornerHeader, 0);
+		bindOccupancyWheelScroll();
+		hideOccupancyLoader();
+
+		// Note: DayPilot doesn't require manual "Gap Filling" with events
+		// because the background is clickable. However, to keep your visual
+		// logic, you can style the cells or use the onBeforeCellRender event.
+	}
+
+		function getStatusColor(status) {
+		if (!status) return '#5a9b5a';
+		if (status.trim().toLowerCase() === 'vacant') return '#7c3aed';
+		const statusKey = status.trim().toLowerCase();
+		switch (statusKey) {
+			case 'booked': return '#2e7d32';   // Green � booked
+			case 'occupied': return '#2e7d32'; // Red � occupied
+			case 'blocked': return '#ef6c00';  // Orange � blocked
+			default: return '#5a9b5a';
+		}
+		}
+		function getStatusBackColor(status) {
+		if (!status) return '#f1f8f4';
+		if (status.trim().toLowerCase() === 'vacant') return '#f5f3ff';
+		switch (status.trim().toLowerCase()) {
+			case 'booked':   return '#dbeafe'; // Blue   - reserved/planned
+			case 'occupied': return '#dcfce7'; // Green  - actively occupied
+			case 'blocked':  return '#fff3e0'; // Orange - maintenance/blocked
+			default:         return '#f5f3ff'; // Violet - unknown
+		}
+	}
+
+	function getStatusBarColor(status) {
+		if (!status) return '#64748b';
+		if (status.trim().toLowerCase() === 'vacant') return '#7c3aed';
+		switch (status.trim().toLowerCase()) {
+			case 'booked':   return '#2563eb'; // Blue
+			case 'occupied': return '#16a34a'; // Green
+			case 'blocked':  return '#ea580c'; // Orange
+			default:         return '#7c3aed'; // Violet
+		}
+	}
+
+	function getStatusFontColor(status) {
+		if (!status) return '#334155';
+		if (status.trim().toLowerCase() === 'vacant') return '#5b21b6';
+		switch (status.trim().toLowerCase()) {
+			case 'booked':   return '#1e40af'; // Blue-dark
+			case 'occupied': return '#166534'; // Green-dark
+			case 'blocked':  return '#9a3412'; // Orange-dark
+			default:         return '#5b21b6'; // Violet-dark
+		}
+	}
+	// 		let selectedBlockSeats = [];
+
+
+	// let blockTransform = d3.zoomIdentity;
+	// let blockCanvas, blockCtx, blockZoom;
+
+	// let blockShape = 'circle';
+
+	// let roomHitAreas = [];
+	// let hoveredRoom = null;
+	// 	function parsebookeddate(d) {
+	//   const [dd, mm, yyyy] = d.split('/');
+	//   return new Date(yyyy, mm - 1, dd);
+	// }
+	// 	function normalizeOccupancy(apiData) {
+	//   const dateMap = {};
+
+	//   apiData.forEach(item => {
+	// 	const dateKey = item.bookeddate;
+
+	// 	if (!dateMap[dateKey]) {
+	// 	  dateMap[dateKey] = [];
+	// 	}
+
+	// 	dateMap[dateKey].push({
+	// 	  block: item.block_master,
+	// 	  room: item.room_master,
+	// 	  status: item.status,
+	// 	  date: item.bookeddate
+	// 	});
+	//   });
+
+	//   return Object.entries(dateMap)
+	// 	.sort((a, b) => parsebookeddate(a[0]) - parsebookeddate(b[0]))
+	// 	.map(([date, rooms]) => ({
+	// 	  date,
+	// 	  rooms
+	// 	}));
+	// }
+
+	// 		function initBlockView() {
+	//   if (!globalOccupancyData || globalOccupancyData.length === 0) return;
+
+	//   globalOccupancyData = normalizeOccupancy(globalOccupancyData);
+
+	//   blockCanvas = d3.select("#blockCanvas");
+	//   blockCtx = blockCanvas.node().getContext("2d");
+
+	//   const container = $("#canvasParent");
+	//   blockCanvas
+	// 	.attr("width", container.width())
+	// 	.attr("height", container.height());
+
+	//   blockTransform = d3.zoomIdentity;
+
+	//   blockZoom = d3.zoom()
+	// 	.scaleExtent([0.5, 6])
+	// 	.on("zoom", (e) => {
+	// 	  blockTransform = e.transform;
+	// 	  drawBlockMap();
+	// 	});
+
+	//   blockCanvas.call(blockZoom);
+
+	//   drawBlockMap();
+	// }
+
+	// 	function generateBlockButtons() {
+	//   if (!globalOccupancyData || globalOccupancyData.length === 0) return;
+
+	//   const rooms = [...new Set(globalOccupancyData.map(d => d.room_master))];
+	//   const btnContainer = $("#dynamicBlockBtns").empty();
+
+	//   btnContainer.append(
+	// 	'<button class="btn btn-sm btn-secondary w-100 mb-1" onclick="resetBlockZoom()">All Blocks</button>'
+	//   );
+
+	//   rooms.forEach(name => {
+	// 	if (name) {
+	// 	  btnContainer.append(`
+	// 		<button class="btn btn-sm btn-secondary w-100 mb-1 text-left"
+	// 		  onclick="focusRoom('${name}')">
+	// 		  <i class="fa fa-search"></i> Zoom ${name}
+	// 		</button>
+	// 	  `);
+	// 	}
+	//   });
+	// }
+
+	// 	function drawBlockMap() {
+	//   if (!blockCtx) return;
+
+	//   roomHitAreas = [];
+
+	//   blockCtx.save();
+	//   blockCtx.clearRect(
+	// 	0,
+	// 	0,
+	// 	blockCanvas.attr("width"),
+	// 	blockCanvas.attr("height")
+	//   );
+
+	//   blockCtx.translate(blockTransform.x, blockTransform.y);
+	//   blockCtx.scale(blockTransform.k, blockTransform.k);
+
+	//   const seatSize = 8;
+	//   const gap = 6;
+
+	//   const dateCardWidth = 500;
+	//   const dateCardHeight = 260;
+	//   const cardsPerRow = 3;
+
+	//   const startX = 60;
+	//   const startY = 60;
+	//   const hGap = 40;
+	//   const vGap = 40;
+
+	//   globalOccupancyData.forEach((dateGroup, dateIndex) => {
+
+	// 	/* GRID POSITION */
+	// 	const col = dateIndex % cardsPerRow;
+	// 	const row = Math.floor(dateIndex / cardsPerRow);
+
+	// 	const xBase = startX + col * (dateCardWidth + hGap);
+	// 	const yBase = startY + row * (dateCardHeight + vGap);
+
+	// 	/* DATE CARD */
+	// 	blockCtx.fillStyle = "#10ae62";
+	// 	blockCtx.strokeStyle = "rgba(255,255,255,0.15)";
+	// 	blockCtx.beginPath();
+	// 	blockCtx.roundRect(
+	// 	  xBase,
+	// 	  yBase,
+	// 	  dateCardWidth,
+	// 	  dateCardHeight,
+	// 	  14
+	// 	);
+	// 	blockCtx.fill();
+	// 	blockCtx.stroke();
+
+	// 	/* DATE TITLE */
+	// 	blockCtx.fillStyle = "#00e5ff";
+	// 	blockCtx.font = "bold 14px Segoe UI";
+	// 	blockCtx.fillText(
+	// 	  `DATE : ${dateGroup.date}`,
+	// 	  xBase + 20,
+	// 	  yBase + 25
+	// 	);
+
+	// 	/* GROUP BY BLOCK */
+	// 	const blocks = d3.group(dateGroup.rooms, d => d.block);
+
+	// 	let blockIndex = 0;
+
+	// 	blocks.forEach((rooms, blockName) => {
+
+	// 	  const blockX = xBase + 20 + blockIndex * 320;
+	// 	  const blockY = yBase + 50;
+
+	// 	  /* BLOCK TITLE */
+	// 	  blockCtx.fillStyle = "#fff";
+	// 	  blockCtx.font = "bold 12px Segoe UI";
+	// 	  blockCtx.fillText(
+	// 		blockName.toUpperCase(),
+	// 		blockX,
+	// 		blockY
+	// 	  );
+
+	// 	  rooms.forEach((item, iIdx) => {
+
+	// 		const col = iIdx % 8;
+	// 		const row = Math.floor(iIdx / 8);
+
+	// 		const x = blockX + col * (seatSize * 2 + gap);
+	// 		const y = blockY + 20 + row * (seatSize * 2 + gap);
+
+	// 		blockCtx.beginPath();
+	// 		blockCtx.fillStyle = getStatusColor(item.status);
+	// 		blockCtx.arc(x, y, seatSize, 0, Math.PI * 2);
+	// 		blockCtx.fill();
+
+	// 		roomHitAreas.push({
+	// 		  x,
+	// 		  y,
+	// 		  radius: seatSize,
+	// 		  name: item.room,
+	// 		  date: item.date,
+	// 		  status: item.status
+	// 		});
+	// 	  });
+
+	// 	  blockIndex++;
+	// 	});
+	//   });
+
+	//   blockCtx.restore();
+
+	//   if (hoveredRoom) drawTooltip(hoveredRoom);
+	// }
+
+
+	// 	function drawTooltip(room) {
+	//   const padding = 6;
+	//   const lineHeight = 14;
+
+	//   blockCtx.font = "11px Segoe UI";
+
+	//   const lines = [
+	// 	room.name,
+	// 	`${room.date} � ${room.status}`
+	//   ];
+
+	//   const maxWidth = Math.max(...lines.map(l => blockCtx.measureText(l).width));
+	//   const boxWidth = maxWidth + padding * 2;
+	//   const boxHeight = lines.length * lineHeight + padding * 2;
+
+	//   let x = room.screenX + 10;
+	//   let y = room.screenY - boxHeight - 8;
+
+	//   if (y < 0) y = room.screenY + 10;
+
+	//   blockCtx.fillStyle = "rgba(0,0,0,0.85)";
+	//   blockCtx.beginPath();
+	//   blockCtx.roundRect(x, y, boxWidth, boxHeight, 4);
+	//   blockCtx.fill();
+
+	//   blockCtx.fillStyle = "#fff";
+	//   lines.forEach((text, i) => {
+	// 	blockCtx.fillText(text, x + padding, y + padding + (i + 1) * lineHeight);
+	//   });
+	// }
+
+	//   d3.select("#blockCanvas")
+	// .on("mousemove", function (event) {
+
+	//   const [mx, my] = d3.pointer(event);
+
+	//   const x = (mx - blockTransform.x) / blockTransform.k;
+	//   const y = (my - blockTransform.y) / blockTransform.k;
+
+	//   hoveredRoom = null;
+
+	//   for (const r of roomHitAreas) {
+	// 	const dx = x - r.x;
+	// 	const dy = y - r.y;
+
+	// 	if (Math.sqrt(dx * dx + dy * dy) <= r.radius) {
+	// 	  hoveredRoom = {
+	// 		...r,
+	// 		screenX: mx,
+	// 		screenY: my
+	// 	  };
+	// 	  break;
+	// 	}
+	//   }
+
+	//   drawBlockMap();
+	// })
+	// .on("mouseleave", function () {
+	//   hoveredRoom = null;
+	//   drawBlockMap();
+	// });
+
+
+
+</script>
+
+
+
+<script>
+	$(document).ready(function () {
+	$("#tenantid").change(function(){
+	fill_RoomOccupancyStatus();
+	})
+
+	$("#btnFilter").click(function(){
+	fill_RoomOccupancyStatus();
+	})
+	});
+
+
+</script>
+
+<script>
+
+
+	// Function to create the option elements
+	function createOptionElement(value, label, className) {
+		var option = document.createElement("option");
+		option.value = value;
+		option.textContent = label;
+		option.className = className;
+		return option;
+	}
+
+	// Function to populate the dropdown
+	function populateDropdown(data) {
+		var dropdown = document.getElementById("tenantid");
+		dropdown.innerHTML = '<option value=""> Choose </option>';
+
+		// Create a dictionary to store child options grouped by parentid
+		var groupedOptions = { };
+
+					// Filter out duplicate entries with the same businessname
+					var filteredData = [];
+					var uniqueNames = new Set();
+
+					data.forEach(function(item) {
+						if (!uniqueNames.has(item.businessname))
+						{
+							filteredData.push(item);
+							uniqueNames.add(item.businessname);
+						}
+					});
+
+					// Group child options under corresponding parent options
+					filteredData.forEach(function(item) {
+						if (!item.parentid)
+						{
+							dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+						}
+						else
+						{
+							if (!groupedOptions[item.parentid])
+							{
+								groupedOptions[item.parentid] = [];
+							}
+							groupedOptions[item.parentid].push(item);
+						}
+					});
+
+					// Add child options to their corresponding parent options
+					Object.keys(groupedOptions).forEach(function(parentid) {
+						var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+						groupedOptions[parentid].forEach(function(childOption) {
+							parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+						});
+					});
+
+					filteredData.forEach(function (item) {
+						if (!item.parentid && !groupedOptions[item.tenantid]) {
+							var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+							if(item.natureofbusiness?.indexOf("Lead") !== -1)
+							parentOption.classList.add("optionNoChildLead");
+							else
+							parentOption.classList.add("optionNoChild");
+						}
+					});
+
+					$("#tenantid").val(str_tenantid);
+					$("#tenantid").select2()
+					var space = '&nbsp;&nbsp;&nbsp;'
+					$("#tenantid").find('.optionChild').prepend(space);
+
+
+				}
+	$(document).ready(function () {
+	 if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+	 {
+	$.ajax({
+	url: '@Url.Action("get_project_tenant", "tenant")',
+	dataType: 'json',
+	data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+	success: function(data) {
+
+		populateDropdown(data);
+
+
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+	}else
+	{
+
+		$(".tenant_display").hide()
+	}
+	});
+</script>
+
+
+
+
+
+
+
+<script>
+	var strblock;
+</script>
+@if (Model != null)
+{
+	if (Model.block != null && Model.block.ToString() != "")
+	{
+		<script>
+			strblock="@Model.block"
+		</script>
+	}
+}
+<script>
+	function lookup_RoomOccupancyStatus_block(tenantid) {
+
+	var sendFilterData = {
+		"tenantid":tenantid
+	}
+
+	$.ajax({
+	url: '@Url.Action("lookup_RoomOccupancyStatus_block")',
+	dataType: 'json',
+	data: sendFilterData,
+	success: function(data) {
+
+			if (data.length > 0) {
+				data = data.filter(item => item.blockname !== null);
+				data.sort((a, b) =>
+					String(a.blockname).toLowerCase().localeCompare(String(b.blockname).toLowerCase())
+				);
+			}
+		   var ddltarget_block="#block"
+			$(ddltarget_block).empty();
+
+			$(ddltarget_block).append("<option value=''>Choose</option>");
+
+
+
+
+			$.each(data, function(index, optionDataInner) {
+
+						if(strblock== optionDataInner.Blockid){
+						$(ddltarget_block).append('<option selected value="' + optionDataInner.Blockid + '">' + optionDataInner.blockname+ '</option>')
+
+					   }
+						else
+						$(ddltarget_block).append('<option  value="' + optionDataInner.Blockid+ '">' + optionDataInner.blockname+ '</option>')
+
+
+			});
+
+
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+
+	}
+</script>
+<script>
+	$(document).ready(function(){
+
+		lookup_RoomOccupancyStatus_block(str_tenantid)
+
+
+
+	})
+
+</script>
+
+
+<script>
+	var strbuilding;
+</script>
+@if (Model != null)
+{
+	if (Model.building != null && Model.building.ToString() != "")
+	{
+		<script>
+			strbuilding="@Model.building"
+		</script>
+	}
+}
+<script>
+	function lookup_RoomOccupancyStatus_building(tenantid,block) {
+
+	var sendFilterData = {
+		"tenantid":tenantid,
+	"block":block
+	}
+
+	$.ajax({
+	url: '@Url.Action("lookup_RoomOccupancyStatus_building")',
+	dataType: 'json',
+	data: sendFilterData,
+	success: function(data) {
+
+			if (data.length > 0) {
+				data = data.filter(item => item.buildingname !== null);
+				data.sort((a, b) =>
+					String(a.buildingname).toLowerCase().localeCompare(String(b.buildingname).toLowerCase())
+				);
+			}
+		   var ddltarget_building="#building"
+			$(ddltarget_building).empty();
+
+			$(ddltarget_building).append("<option value=''>Choose</option>");
+
+
+
+
+			$.each(data, function(index, optionDataInner) {
+
+						if(strbuilding== optionDataInner.Buildingid){
+						$(ddltarget_building).append('<option selected value="' + optionDataInner.Buildingid + '">' + optionDataInner.buildingname+ '</option>')
+
+					   }
+						else
+						$(ddltarget_building).append('<option  value="' + optionDataInner.Buildingid+ '">' + optionDataInner.buildingname+ '</option>')
+
+
+			});
+
+
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+
+	}
+</script>
+<script>
+	$(document).ready(function(){
+
+		lookup_RoomOccupancyStatus_building(str_tenantid,strblock)
+		$("#block").change(function(){
+
+
+
+
+					lookup_RoomOccupancyStatus_building($("#tenantid").val(),$("#block").val())
+
+
+
+
+				})
+
+
+	})
+
+</script>
+
+
+<script>
+	var strfloor;
+</script>
+@if (Model != null)
+{
+	if (Model.floor != null && Model.floor.ToString() != "")
+	{
+		<script>
+			strfloor="@Model.floor"
+		</script>
+	}
+}
+<script>
+	function lookup_RoomOccupancyStatus_floor(tenantid,block,building) {
+
+	var sendFilterData = {
+		"tenantid":tenantid,
+	"block":block,
+	"building":building
+	}
+
+	$.ajax({
+	url: '@Url.Action("lookup_RoomOccupancyStatus_floor")',
+	dataType: 'json',
+	data: sendFilterData,
+	success: function(data) {
+
+			if (data.length > 0) {
+				data = data.filter(item => item.floorname !== null);
+				data.sort((a, b) =>
+					String(a.floorname).toLowerCase().localeCompare(String(b.floorname).toLowerCase())
+				);
+			}
+		   var ddltarget_floor="#floor"
+			$(ddltarget_floor).empty();
+
+			$(ddltarget_floor).append("<option value=''>Choose</option>");
+
+
+
+
+			$.each(data, function(index, optionDataInner) {
+
+						if(strfloor== optionDataInner.Floorid){
+						$(ddltarget_floor).append('<option selected value="' + optionDataInner.Floorid + '">' + optionDataInner.floorname+ '</option>')
+
+					   }
+						else
+						$(ddltarget_floor).append('<option  value="' + optionDataInner.Floorid+ '">' + optionDataInner.floorname+ '</option>')
+
+
+			});
+
+
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+
+	}
+</script>
+<script>
+	$(document).ready(function(){
+
+		lookup_RoomOccupancyStatus_floor(str_tenantid,strblock,strbuilding)
+		$("#block,#building").change(function(){
+
+
+
+
+					lookup_RoomOccupancyStatus_floor($("#tenantid").val(),$("#block").val(),$("#building").val())
+
+
+
+
+				})
+
+
+	})
+
+</script>
+
+
+<script>
+	var strroom;
+</script>
+@if (Model != null)
+{
+	if (Model.room != null && Model.room.ToString() != "")
+	{
+		<script>
+			strroom="@Model.room"
+		</script>
+	}
+}
+<script>
+	function lookup_RoomOccupancyStatus_room(tenantid,block,building,floor) {
+
+	var sendFilterData = {
+		"tenantid":tenantid,
+	"block":block,
+	"building":building,
+	"floor":floor
+	}
+
+	$.ajax({
+	url: '@Url.Action("lookup_RoomOccupancyStatus_room")',
+	dataType: 'json',
+	data: sendFilterData,
+	success: function(data) {
+
+			if (data.length > 0) {
+				data = data.filter(item => item.roomnumber !== null);
+				data.sort((a, b) =>
+					String(a.roomnumber).toLowerCase().localeCompare(String(b.roomnumber).toLowerCase())
+				);
+			}
+		   var ddltarget_room="#room"
+			$(ddltarget_room).empty();
+
+			$(ddltarget_room).append("<option value=''>Choose</option>");
+
+
+
+
+			$.each(data, function(index, optionDataInner) {
+
+						if(strroom== optionDataInner.Roomid){
+						$(ddltarget_room).append('<option selected value="' + optionDataInner.Roomid + '">' + optionDataInner.roomnumber+ '</option>')
+
+					   }
+						else
+						$(ddltarget_room).append('<option  value="' + optionDataInner.Roomid+ '">' + optionDataInner.roomnumber+ '</option>')
+
+
+			});
+
+
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+
+	}
+</script>
+<script>
+	$(document).ready(function(){
+
+		lookup_RoomOccupancyStatus_room(str_tenantid,strblock,strbuilding,strfloor)
+		$("#block,#building,#floor").change(function(){
+
+
+
+
+					lookup_RoomOccupancyStatus_room($("#tenantid").val(),$("#block").val(),$("#building").val(),$("#floor").val())
+
+
+
+
+				})
+
+	})
+
+</script>
+
+<script>
+						$(document).ready(function () {
+
+							$("#tenantid").change(function(){
+									 lookup_RoomOccupancyStatus_block($("#tenantid").val())
+	lookup_RoomOccupancyStatus_building($("#tenantid").val(),$("#block").val())
+	lookup_RoomOccupancyStatus_floor($("#tenantid").val(),$("#block").val(),$("#building").val())
+	lookup_RoomOccupancyStatus_room($("#tenantid").val(),$("#block").val(),$("#building").val(),$("#floor").val())
+
+							})
+
+
+						});
+</script>
+<script>
+		$(document).ready(function () {
+
+						fill_RoomOccupancyStatus();
+						showOccupancyLoader();
+
+						var sendFilterData = {
+									"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+									"block":null,
+	"building":null,
+	"floor":null,
+	"room":null,
+	"bookeddate_automatonfrom":getSqlDate($("#bookeddate_automatonfrom").val()),"bookeddate_automatonto":getSqlDate($("#bookeddate_automatonto").val()),
+											"searchterm":null,"sortFieldsJson":null,
+
+										"pagesize": 5000,
+									"pagenumber": 0,
+									"returnAllRecords": true
+									}
+			var currentPage = ($(dataTableId).length && $.fn.DataTable.isDataTable(dataTableId))
+				? $(dataTableId).DataTable().page() : 0;
+
+			$.ajax({
+				url: "@Url.Action("get_Room_Occupancy_Status_List", "RoomOccupancyStatus")",
+				type: 'GET',
+				dataType: 'json',
+				data: sendFilterData,
+				success: function (responsedata) {
+					var rawDetail = (responsedata && responsedata.detail && responsedata.detail.length) ? responsedata.detail : [];
+					globalOccupancyData = typeof normalizeOccupancyDetail === 'function' ? normalizeOccupancyDetail(rawDetail) : rawDetail;
+					renderOccupancyCalendar();
+					if (window._rgRoomsLoaded && $('#roomGroupViewContainer').is(':visible')) window.renderRoomGroupBoard();
+				},
+				error: function () {
+					hideOccupancyLoader();
+					$('#occupancyCalendar').html('<div style="text-align:center;padding:48px 16px;color:#94a3b8;"><i class="fa fa-exclamation-triangle" style="display:block;font-size:28px;margin-bottom:10px;"></i>Unable to load occupancy data.</div>');
+				}
+			});
+
+		// 2. Handle the view switching logic
+
+		$("#btnShowCalendar, #btnShowList, #btnShowBlock").click(function () {
+
+			const clickedId = $(this).attr('id');
+
+			// Manage Button CSS Classes
+
+			$("#btnShowCalendar, #btnShowList, #btnShowBlock")
+
+				.removeClass("view-btn-active")
+
+				.addClass("view-btn-inactive");
+
+			$(this).addClass("view-btn-active").removeClass("view-btn-inactive");
+
+			// Hide All Containers
+
+			$("#calendarViewContainer, #listViewContainer, #blockViewContainer").addClass("view-hidden");
+
+			// Show the specific container and trigger its render function
+
+			if (clickedId === "btnShowCalendar") {
+
+				$("#calendarViewContainer").removeClass("view-hidden");
+
+				if (typeof renderOccupancyCalendar === 'function') {
+
+					renderOccupancyCalendar();
+
+				}
+
+			}
+
+			else if (clickedId === "btnShowList") {
+
+				$("#listViewContainer").removeClass("view-hidden");
+
+			}
+
+			else if (clickedId === "btnShowBlock") {
+
+				$("#blockViewContainer").removeClass("view-hidden");
+
+				// Initialize the D3 Block Map when shown
+
+				if (typeof initBlockView === 'function') {
+
+					initBlockView();
+
+				}
+
+			}
+
+		});
+
+		// Month navigation for calendar (can look 3+ months ahead)
+		$("#calPrevMonth").on("click", function () {
+			schedulerStartDate = schedulerStartDate.addMonths(-1);
+			renderOccupancyCalendar();
+		});
+
+		$("#calNextMonth").on("click", function () {
+			schedulerStartDate = schedulerStartDate.addMonths(1);
+			renderOccupancyCalendar();
+		});
+
+		// Calendar date navigator: "Go to date" opens date picker to navigate
+		$("#calNavigateDate").datetimepicker({
+			format: "d/m/Y",
+			formatDate: "d/m/Y",
+			timepicker: false,
+			scrollInput: false,
+			onSelectDate: function(ct) {
+				/* Build ISO string YYYY-MM-DD for DayPilot.Date (1st of selected month) */
+				var y = ct.getFullYear();
+				var m = ct.getMonth() + 1;              /* JS months are 0-based, ISO needs 1-based */
+				var iso = y + '-' + (m < 10 ? '0' + m : m) + '-01';
+				schedulerStartDate = new DayPilot.Date(iso);
+				renderOccupancyCalendar();
+				$("#calNavigateDate").datetimepicker('hide');
+			}
+		});
+		$("#calTodayMonth").on("click", function () {
+			$("#calNavigateDate").datetimepicker('show');
+		});
+
+		$("#occStatusFilters").on("click", ".occ-status-filter__btn", function () {
+			$("#occStatusFilters .occ-status-filter__btn").removeClass("is-active");
+			$(this).addClass("is-active");
+			occupancyStatusFilter = (($(this).data("status-filter") || "") + "").toLowerCase().trim();
+			showOccupancyLoader();
+			renderOccupancyCalendar();
+			if (window._rgRoomsLoaded && $('#roomGroupViewContainer').is(':visible')) window.renderRoomGroupBoard();
+		});
+
+		var occResizeTimer = null;
+		$(window).on("resize", function () {
+			clearTimeout(occResizeTimer);
+			occResizeTimer = setTimeout(resizeOccupancyScheduler, 120);
+		});
+
+
+
+			$('body').on('click', '.list_status', function(a) {
+		$("#status").val($(this).attr('id'))
+
+		fill_RoomOccupancyStatus()
+	});
+
+	/* ═══════════════════════════════════════════════════
+	   VIEW TOGGLE: Calendar ↔ Room Group
+	   ═══════════════════════════════════════════════════ */
+	$('.occ-view-toggle').on('click', '.occ-view-btn', function () {
+		var view = $(this).data('occ-view');
+		$('.occ-view-btn').removeClass('is-active');
+		$(this).addClass('is-active');
+		$('#calendarViewContainer').toggle(view === 'calendar');
+		$('#roomGroupViewContainer').toggle(view === 'roomgroup');
+		if (view === 'roomgroup') {
+			if (!_rgRoomsLoaded) {
+				loadRoomGroupData();
+			} else {
+				renderRoomGroupBoard();
+			}
+		}
+	});
+
+	/* ═══════════════════════════════════════════════════
+	   ROOM GROUP VIEW
+	   ═══════════════════════════════════════════════════ */
+	/* ── Room Group Board state ── */
+	window._rgRoomGroups = [];   // [{id, name}]
+	window._rgRooms = [];        // [{id, number, groupId, groupName, typeName}]
+	window._rgRoomsLoaded = false;
+	window._rgSelectedDate = new Date();  // today by default
+	_rgSelectedDate.setHours(0, 0, 0, 0);
+
+	/* Format date as dd/mm/yyyy for display */
+	function rgFormatDate(d) {
+		var dd = String(d.getDate()).padStart(2, '0');
+		var mm = String(d.getMonth() + 1).padStart(2, '0');
+		return dd + '/' + mm + '/' + d.getFullYear();
+	}
+
+	/* Update the date picker display */
+	function rgUpdateDateDisplay() {
+		$('#rgDatePicker').val(rgFormatDate(_rgSelectedDate));
+	}
+
+	/* ── Load room groups + rooms ── */
+	function loadRoomGroupData() {
+		var tid = ($("#tenantid").val() ? $("#tenantid").val() : str_tenantid);
+		var groupUrl = '@Url.Action("get_all_RoomGroup", "Room")' + '?tenantid=' + tid;
+		var roomUrl  = '@Url.Action("get_Room_List", "Room")' + '?tenantid=' + tid + '&block=&building=&floor=&roomtype=&roomnumber=';
+
+		$('#rgBoard').html('<div class="rgb-loading"><i class="fa fa-spinner fa-spin"></i> Loading rooms...</div>');
+
+		$.when(
+			$.ajax({ url: groupUrl, dataType: 'json' }),
+			$.ajax({ url: roomUrl,  dataType: 'json' })
+		).done(function (gRes, rRes) {
+			var groups = (gRes[0] && Array.isArray(gRes[0])) ? gRes[0] : (Array.isArray(gRes) ? gRes : []);
+			var rooms  = (rRes[0] && Array.isArray(rRes[0])) ? rRes[0] : (Array.isArray(rRes) ? rRes : []);
+
+			_rgRoomGroups = groups.map(function (g) {
+				return {
+					id:   (g.RoomGroupid || g.roomgroupid || '').toString(),
+					name: g.groupname || g.Groupname || g.groupnumber || 'Unnamed'
+				};
+			});
+
+			_rgRooms = rooms.map(function (r) {
+				var rgId = (r.roomgroup || r.Roomgroup || r.RoomGroup || '').toString();
+				return {
+					id:        (r.Roomid || r.roomid || '').toString(),
+					number:    r.roomnumber || r.Roomnumber || r.roomcode || '',
+					groupId:   rgId,
+					groupName: '',
+					typeName:  r.roomtype_name || r.roomtypename || r.roomtype_master || ''
+				};
+			});
+
+			// Resolve group names
+			var groupMap = {};
+			_rgRoomGroups.forEach(function (g) { groupMap[g.id.toUpperCase()] = g.name; });
+			_rgRooms.forEach(function (r) {
+				r.groupName = groupMap[(r.groupId || '').toUpperCase()] || 'Ungrouped';
+			});
+
+			_rgRoomsLoaded = true;
+			renderRoomGroupBoard();
+		}).fail(function () {
+			$('#rgBoard').html('<div class="rgb-empty"><i class="fa fa-exclamation-triangle"></i>Failed to load room data. Please try again.</div>');
+			console.warn('Room Group data load failed');
+		});
+	}
+
+	/* ═══════════════════════════════════════════════════
+	   renderRoomGroupBoard()  — seatmap-style tile view
+	   ═══════════════════════════════════════════════════ */
+	window.renderRoomGroupBoard = function () {
+		var boardEl = document.getElementById('rgBoard');
+		if (!boardEl) return;
+
+		rgUpdateDateDisplay();
+
+		var esc = function (s) { return (s + '').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+
+		// ── Build lookup: roomId (upper) → occupancy record for selected date ──
+		var selectedDateStr = rgFormatDate(_rgSelectedDate);  // dd/mm/yyyy
+		var occupancy = getFilteredOccupancyData();
+
+		// Build roomId → room object
+		var roomIdToObj = {};
+		_rgRooms.forEach(function (r) { roomIdToObj[r.id.toUpperCase()] = r; });
+
+		// Build roomName → room object (fallback matching)
+		var roomNameToObj = {};
+		_rgRooms.forEach(function (r) { roomNameToObj[(r.number || '').toLowerCase()] = r; });
+
+		// For each occupancy record on the selected date, map to room ID
+		var roomStatusMap = {};  // roomId(upper) → { status, patientname, bookedfor, ipdno, recordId }
+		occupancy.forEach(function (item) {
+			var bookedDateStr = getOccupancyVal(item, 'bookeddate') || '';
+			if (bookedDateStr !== selectedDateStr) return;
+
+			// Find room ID — try room GUID first, then room_master name lookup
+			var roomGuid = (getOccupancyVal(item, 'room') || '').toString().toUpperCase();
+			var roomKey = '';
+			if (roomGuid && roomIdToObj[roomGuid]) {
+				roomKey = roomGuid;
+			} else {
+				var roomName = getOccupancyVal(item, 'room_master') || '';
+				var rObj = roomNameToObj[(roomName || '').toLowerCase()];
+				if (rObj) roomKey = rObj.id.toUpperCase();
+			}
+			if (!roomKey) return;
+
+			var status = (getOccupancyVal(item, 'status') || '').toString().trim().toLowerCase();
+			// Only keep the "strongest" status if multiple records exist
+			var existing = roomStatusMap[roomKey];
+			var priority = { 'occupied': 3, 'blocked': 2, 'booked': 1 };
+			if (!existing || (priority[status] || 0) > (priority[existing.status] || 0)) {
+				roomStatusMap[roomKey] = {
+					status: status,
+					patientname: (getOccupancyVal(item, 'patientname_master') || '').toString().trim(),
+					bookedfor: (getOccupancyVal(item, 'bookedfor') || '').toString().trim(),
+					ipdno: (getOccupancyVal(item, 'ipdno_master') || '').toString().trim(),
+					recordId: item.roomoccupancystatusid || item.RoomOccupancyStatusid || ''
+				};
+			}
+		});
+
+		// ── Group rooms by Room Group ──
+		var usedGroups = {};
+		_rgRooms.forEach(function (r) {
+			var gKey = (r.groupId || '').toUpperCase();
+			if (!usedGroups[gKey]) usedGroups[gKey] = [];
+			usedGroups[gKey].push(r);
+		});
+
+		var sortedGroupKeys = Object.keys(usedGroups).sort(function (a, b) {
+			var na = (usedGroups[a][0] || {}).groupName || '';
+			var nb = (usedGroups[b][0] || {}).groupName || '';
+			return na.localeCompare(nb);
+		});
+
+		if (sortedGroupKeys.length === 0) {
+			boardEl.innerHTML = '<div class="rgb-empty"><i class="fa fa-inbox"></i>No room groups found.<br/>Please add rooms and assign them to groups.</div>';
+			$('#rgSummary').empty();
+			return;
+		}
+
+		// ── Build summary counts ──
+		var counts = { available: 0, booked: 0, occupied: 0, blocked: 0 };
+		_rgRooms.forEach(function (r) {
+			var info = roomStatusMap[r.id.toUpperCase()];
+			var st = info ? info.status : 'available';
+			if (st === 'occupied') counts.occupied++;
+			else if (st === 'booked') counts.booked++;
+			else if (st === 'blocked') counts.blocked++;
+			else counts.available++;
+		});
+
+		$('#rgSummary').html(
+			'<span class="rgb-summary__item"><span class="rgb-summary__num rgb-summary__num--available">' + counts.available + '</span> Available</span>' +
+			'<span class="rgb-summary__item"><span class="rgb-summary__num rgb-summary__num--booked">' + counts.booked + '</span> Booked</span>' +
+			'<span class="rgb-summary__item"><span class="rgb-summary__num rgb-summary__num--occupied">' + counts.occupied + '</span> Occupied</span>' +
+			'<span class="rgb-summary__item"><span class="rgb-summary__num rgb-summary__num--blocked">' + counts.blocked + '</span> Blocked</span>'
+		);
+
+		// ── Render group sections with room tiles ──
+		var html = [];
+		sortedGroupKeys.forEach(function (gKey) {
+			var roomsInGroup = usedGroups[gKey].sort(function (a, b) {
+				return (a.number || '').localeCompare(b.number || '', undefined, { numeric: true });
+			});
+			var groupName = roomsInGroup[0].groupName || 'Ungrouped';
+
+			html.push('<div class="rgb-group" data-group-id="' + esc(gKey) + '">');
+			html.push(
+				'<div class="rgb-group__header">' +
+					'<i class="fa fa-object-group rgb-group__icon"></i>' +
+					'<span class="rgb-group__name">' + esc(groupName) + '</span>' +
+					'<span class="rgb-group__badge">' + roomsInGroup.length + '</span>' +
+					'<i class="fa fa-chevron-down rgb-group__chevron"></i>' +
+				'</div>'
+			);
+			html.push('<div class="rgb-group__body">');
+
+			roomsInGroup.forEach(function (room) {
+				var info = roomStatusMap[room.id.toUpperCase()];
+				var status = info ? info.status : 'available';
+				var statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+				var tileClass = 'rgb-tile rgb-tile--' + status;
+				var icon = getRoomTypeIcon(room.typeName);
+
+				html.push('<div class="' + tileClass + '" data-room-id="' + esc(room.id) + '" title="' + esc(room.number) + ' — ' + esc(statusLabel) + '">');
+				html.push('<span class="rgb-tile__status-dot"></span>');
+				html.push('<i class="fa ' + icon + ' rgb-tile__icon"></i>');
+				html.push('<div class="rgb-tile__room">' + esc(room.number) + '</div>');
+				html.push('<div class="rgb-tile__status">' + esc(statusLabel) + '</div>');
+
+				if (info && info.patientname) {
+					html.push('<div class="rgb-tile__patient"><i class="fa fa-user-o"></i>' + esc(info.patientname) + '</div>');
+				}
+				if (info && info.ipdno) {
+					html.push('<div class="rgb-tile__patient"><i class="fa fa-hashtag"></i>' + esc(info.ipdno) + '</div>');
+				}
+
+				html.push('</div>');
+			});
+
+			html.push('</div></div>');
+		});
+
+		boardEl.innerHTML = html.join('');
+	};
+
+	/* ── Group collapse/expand toggle ── */
+	$('#rgBoard').on('click', '.rgb-group__header', function () {
+		$(this).closest('.rgb-group').toggleClass('is-collapsed');
+	});
+
+	/* ── Tile click → open detail ── */
+	$('#rgBoard').on('click', '.rgb-tile', function (e) {
+		e.stopPropagation();
+		var roomId = $(this).data('room-id');
+		var status = '';
+		var $tile = $(this);
+		if ($tile.hasClass('rgb-tile--occupied')) status = 'occupied';
+		else if ($tile.hasClass('rgb-tile--booked')) status = 'booked';
+		else if ($tile.hasClass('rgb-tile--blocked')) status = 'blocked';
+		else status = 'available';
+
+		// Find the occupancy record for this room on the selected date
+		var selectedDateStr = rgFormatDate(_rgSelectedDate);
+		var record = (globalOccupancyData || []).find(function (item) {
+			var bd = getOccupancyVal(item, 'bookeddate') || '';
+			var rGuid = (getOccupancyVal(item, 'room') || '').toString().toUpperCase();
+			return bd === selectedDateStr && rGuid === roomId.toString().toUpperCase();
+		});
+		// Also try matching by room name
+		if (!record) {
+			var roomObj = _rgRooms.find(function (r) { return r.id === roomId.toString(); });
+			if (roomObj) {
+				record = (globalOccupancyData || []).find(function (item) {
+					var bd = getOccupancyVal(item, 'bookeddate') || '';
+					var rName = getOccupancyVal(item, 'room_master') || '';
+					return bd === selectedDateStr && rName.toLowerCase() === (roomObj.number || '').toLowerCase();
+				});
+			}
+		}
+
+		if (record && (status === 'occupied' || status === 'booked' || status === 'blocked')) {
+			if (typeof openUpdateModal === 'function') openUpdateModal(record);
+		} else {
+			if (typeof openAddModal === 'function') openAddModal({ room: roomId, date: selectedDateStr });
+		}
+	});
+
+	/* ── Date Navigation ── */
+	$('#rgDatePicker').datetimepicker({
+		format: 'd/m/Y', formatDate: 'd/m/Y', timepicker: false, scrollInput: false,
+		onSelectDate: function (ct) {
+			_rgSelectedDate = new Date(ct.getFullYear(), ct.getMonth(), ct.getDate());
+			renderRoomGroupBoard();
+		}
+	});
+	$('#rgDatePicker').on('click', function () { $(this).datetimepicker('show'); });
+
+	$('#rgPrevDay').on('click', function () {
+		_rgSelectedDate = new Date(_rgSelectedDate.getTime() - 86400000);
+		renderRoomGroupBoard();
+	});
+	$('#rgNextDay').on('click', function () {
+		_rgSelectedDate = new Date(_rgSelectedDate.getTime() + 86400000);
+		renderRoomGroupBoard();
+	});
+	$('#rgToday').on('click', function () {
+		_rgSelectedDate = new Date();
+		_rgSelectedDate.setHours(0, 0, 0, 0);
+		renderRoomGroupBoard();
+	});
+
+	/* Init date display */
+	rgUpdateDateDisplay();
+
+	});</script>

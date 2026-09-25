@@ -1,0 +1,1944 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    Layout = Context.Request.Query["embed"] == "1"
+        ? "~/Views/Shared/_EmbedLayout.cshtml"
+        : "~/Views/Shared/_Layout.cshtml";
+    var firstName = Context.Session.GetString("firstname") ?? "Health Seeker";
+    ViewBag.Title = "Hi " + firstName + "!";
+}
+
+ 
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   Health Seeker Dashboard
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Stat cards */
+.hs-stats { display:none; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px; }
+@@media(max-width:900px){ .hs-stats{grid-template-columns:repeat(2,1fr);} }
+@@media(max-width:520px){ .hs-stats{grid-template-columns:1fr;} }
+.hs-stat {
+    background:#fff; border-radius:12px; padding:18px 20px;
+    border:1.5px solid #e2e8f0; display:flex; align-items:center; gap:14px;
+    transition:box-shadow .15s;
+}
+.hs-stat:hover { box-shadow:0 4px 16px rgba(0,0,0,.08); }
+.hs-stat__icon {
+    width:46px; height:46px; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:20px; flex-shrink:0;
+}
+.hs-stat__icon--ipd     { background:#ede9fe; color:#6d28d9; }
+.hs-stat__icon--opd     { background:#dbeafe; color:#1d4ed8; }
+.hs-stat__icon--paid    { background:#dcfce7; color:#15803d; }
+.hs-stat__icon--refund  { background:#fee2e2; color:#b91c1c; }
+.hs-stat__val  { font-size:26px; font-weight:800; color:#1e293b; line-height:1; }
+.hs-stat__lbl  { font-size:12px; color:#64748b; margin-top:3px; }
+
+/* Section card */
+.hs-section {
+    background:#fff; border-radius:14px; border:1.5px solid #e2e8f0;
+    margin-bottom:20px; overflow:hidden;
+}
+.hs-section__head {
+    padding:16px 20px; display:flex; align-items:center; justify-content:space-between;
+    border-bottom:1px solid #f1f5f9;
+}
+.hs-section__title {
+    font-size:15px; font-weight:700; color:#1e293b;
+    display:flex; align-items:center; gap:8px;
+}
+.hs-section__title i { font-size:16px; }
+.hs-section__count {
+    background:#f1f5f9; color:#64748b; font-size:11px; font-weight:700;
+    padding:2px 8px; border-radius:999px;
+}
+.hs-section__link {
+    font-size:12.5px; color:#2563eb; font-weight:600; text-decoration:none;
+    display:flex; align-items:center; gap:4px;
+}
+.hs-section__link:hover { text-decoration:underline; color:#1d4ed8; }
+.hs-section__body { padding:0; }
+
+/* Data tables */
+.hs-table { width:100%; border-collapse:collapse; font-size:13px; }
+.hs-table th {
+    padding:10px 16px; font-size:11px; font-weight:700; color:#64748b;
+    text-transform:uppercase; letter-spacing:.5px;
+    background:#f8fafc; border-bottom:1px solid #e2e8f0; text-align:left;
+}
+.hs-table td { padding:12px 16px; border-bottom:1px solid #f1f5f9; color:#334155; vertical-align:middle; }
+.hs-table tbody tr:last-child td { border-bottom:none; }
+.hs-table tbody tr:hover { background:#f8fafc; }
+
+/* IPD screening appointment column */
+#ipdTable .hs-screening-col { width:250px; min-width:220px; }
+.hs-screening {
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+    max-width:100%;
+    padding:2px 0;
+    line-height:1.3;
+    color:#334155;
+}
+.hs-screening__slot,
+.hs-screening__doctor {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    min-width:0;
+}
+.hs-screening__slot {
+    color:#183b2a;
+    white-space:nowrap;
+}
+.hs-screening__date {
+    color:#334155;
+    font-weight:700;
+}
+.hs-screening__time {
+    color:#64748b;
+    font-size:12px;
+    font-weight:600;
+}
+.hs-screening__time::before {
+    content:"•";
+    margin-right:7px;
+    color:#94a3b8;
+}
+.hs-screening__doctor {
+    color:#64748b;
+    font-size:12px;
+    font-weight:500;
+}
+.hs-screening__slot i,
+.hs-screening__doctor i {
+    width:14px;
+    flex:0 0 14px;
+    color:#2d6b4b;
+    text-align:center;
+}
+.hs-screening__doctor span {
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.hs-screening-empty {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 10px;
+    border-radius:999px;
+    background:#f1f5f9;
+    color:#64748b;
+    font-size:11px;
+    font-weight:600;
+    white-space:nowrap;
+}
+
+/* OPD appointment summary */
+.hs-opd-appointment {
+    display:flex;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:6px;
+    min-width:190px;
+}
+.hs-opd-appointment__doctor {
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:#1e293b;
+    font-size:12.5px;
+    font-weight:700;
+    line-height:1.25;
+}
+.hs-opd-appointment__doctor-icon {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:24px;
+    height:24px;
+    flex:0 0 24px;
+    border-radius:7px;
+    background:#e8f3ed;
+    color:#2d6b4b;
+    font-size:11px;
+}
+.hs-opd-appointment__meta {
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:6px;
+    padding-left:31px;
+}
+.hs-opd-appointment__chip {
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    padding:3px 8px;
+    border-radius:999px;
+    background:#f1f5f9;
+    color:#475569;
+    font-size:11px;
+    font-weight:600;
+    line-height:1.25;
+    white-space:nowrap;
+}
+.hs-opd-appointment__empty {
+    padding-left:31px;
+    color:#94a3b8;
+    font-size:11px;
+    font-weight:600;
+}
+.hs-opd-appointment-pending {
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:4px 10px;
+    border-radius:999px;
+    background:#fef3c7;
+    color:#92400e;
+    font-size:11px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+/* Status pills */
+.hs-pill {
+    display:inline-flex; align-items:center; gap:4px;
+    padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700;
+    white-space:nowrap;
+}
+.hs-pill--green  { background:#dcfce7; color:#15803d; }
+.hs-pill--blue   { background:#dbeafe; color:#1d4ed8; }
+.hs-pill--amber  { background:#fef3c7; color:#92400e; }
+.hs-pill--red    { background:#fee2e2; color:#b91c1c; }
+.hs-pill--purple { background:#ede9fe; color:#6d28d9; }
+.hs-pill--gray   { background:#f1f5f9; color:#475569; }
+
+/* Action link */
+.hs-act {
+    display:inline-flex; align-items:center; gap:4px;
+    padding:4px 10px; border-radius:6px; font-size:11.5px; font-weight:600;
+    text-decoration:none; transition:background .15s;
+}
+.hs-act:hover { text-decoration:none; }
+.hs-act--view   { background:#f0fdf4; color:#15803d; }
+.hs-act--view:hover { background:#dcfce7; }
+.hs-act--pay    { background:#ede9fe; color:#6d28d9; }
+.hs-act--pay:hover { background:#ddd6fe; }
+
+.hs-opdact-wrap { display:inline-flex; position:relative; min-width:130px; }
+.hs-opdact-trigger {
+    width:100%; display:inline-flex; align-items:center; justify-content:space-between; gap:8px;
+    padding:5px 11px; border:1px solid #cbd5e1; border-radius:6px;
+    background:#f1f5f9; color:#334155; font-size:11.5px; font-weight:600;
+    cursor:pointer; white-space:nowrap;
+}
+.hs-opdact-trigger:hover { background:#e2e8f0; }
+.hs-opdact-trigger .hs-opdact-chevron { font-size:10px; transition:transform .2s; }
+.hs-opdact-trigger.open .hs-opdact-chevron { transform:rotate(180deg); }
+.hs-opdact-menu {
+    display:none; position:fixed; z-index:1055; min-width:190px; padding:4px;
+    flex-direction:column; gap:2px; background:#fff; border:1px solid #e2e8f0;
+    border-radius:8px; box-shadow:0 6px 24px rgba(0,0,0,.13);
+}
+.hs-opdact-menu.open { display:flex; }
+.hs-table td:last-child .hs-opdact-menu .hs-act {
+    width:100%; margin:0; box-sizing:border-box; border-radius:5px;
+}
+
+/* Clickable rows */
+.hs-table tbody tr[data-href] { cursor:pointer; }
+
+/* Action column: space between multiple links */
+.hs-table td:last-child {
+    line-height:1.65;
+}
+.hs-table td:last-child .hs-act {
+    margin:4px 10px 4px 0;
+    vertical-align:middle;
+}
+.hs-table td:last-child .hs-act:last-child { margin-right:0; }
+
+/* Add Assessment — theme green (same as tabs / links), slightly stronger than View */
+.hs-act--assess {
+    gap:7px;
+    padding:7px 14px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.01em;
+    color:#166534;
+    background:linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%);
+    border:1px solid rgba(45, 95, 68, 0.28);
+    box-shadow:0 1px 2px rgba(22, 101, 52, 0.06);
+    transition:background .18s ease, color .18s ease, border-color .18s ease,
+        box-shadow .18s ease, transform .18s ease;
+}
+.hs-act--assess i { font-size:13px; opacity:.95; color:#2d5f44; }
+.hs-act--assess:hover {
+    color:#fff;
+    background:linear-gradient(180deg, #2f6f4f 0%, #2d5f44 100%);
+    border-color:#1a4d32;
+    box-shadow:0 4px 14px rgba(45, 95, 68, 0.28);
+    transform:translateY(-1px);
+}
+.hs-act--assess:hover i { color:#fff; }
+.hs-act--assess:focus-visible {
+    outline:2px solid #4ade80;
+    outline-offset:2px;
+}
+
+/* Complete Draft — amber theme */
+.hs-act--complete {
+    gap:7px;
+    padding:7px 14px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.01em;
+    color:#92400e;
+    background:linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+    border:1px solid rgba(180, 130, 20, 0.30);
+    box-shadow:0 1px 2px rgba(146, 64, 14, 0.06);
+    transition:background .18s ease, color .18s ease, border-color .18s ease,
+        box-shadow .18s ease, transform .18s ease;
+}
+.hs-act--complete i { font-size:13px; opacity:.95; color:#b45309; }
+.hs-act--complete:hover {
+    color:#fff;
+    background:linear-gradient(180deg, #d97706 0%, #b45309 100%);
+    border-color:#92400e;
+    box-shadow:0 4px 14px rgba(146, 64, 14, 0.28);
+    transform:translateY(-1px);
+}
+.hs-act--complete:hover i { color:#fff; }
+.hs-act--complete:focus-visible {
+    outline:2px solid #fbbf24;
+    outline-offset:2px;
+}
+
+/* Empty state */
+.hs-empty { text-align:center; padding:40px 20px; color:#94a3b8; }
+.hs-empty i { font-size:36px; display:block; margin-bottom:10px; }
+.hs-empty span { font-size:13px; }
+.hs-empty a { color:#1f6f50; font-size:13px; font-weight:700; text-decoration:none; }
+.hs-empty a:hover { text-decoration:underline; }
+
+/* ── Responsive ── */
+@@media(max-width:768px){
+    .hs-stat { padding:12px 14px; gap:10px; }
+    .hs-stat__icon { width:38px; height:38px; font-size:17px; }
+    .hs-stat__val { font-size:22px; }
+    .hs-stat__lbl { font-size:11px; }
+    .hs-section__head { padding:12px 14px; }
+    .hs-section__title { font-size:14px; }
+    .hs-table th { padding:8px 12px; font-size:10.5px; }
+    .hs-table td { padding:10px 12px; font-size:12.5px; }
+    .hs-section { border-radius:10px; margin-bottom:14px; }
+    .hs-stats { gap:10px; margin-bottom:16px; }
+}
+@@media(max-width:576px){
+    .hs-stats { grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:12px; }
+    .hs-stat { padding:10px 10px; gap:8px; border-radius:10px; }
+    .hs-stat__icon { width:32px; height:32px; font-size:14px; border-radius:8px; }
+    .hs-stat__val { font-size:18px; }
+    .hs-stat__lbl { font-size:10px; }
+    .hs-section__head { padding:10px 12px; flex-wrap:wrap; gap:6px; }
+    .hs-section__title { font-size:13px; }
+    .hs-table th { padding:7px 8px; font-size:10px; }
+    .hs-table td { padding:8px 8px; font-size:12px; }
+    .hs-act { padding:3px 7px; font-size:10.5px; }
+    .hs-table td:last-child .hs-act { margin:3px 8px 3px 0; }
+    .hs-act--assess { padding:6px 11px; font-size:11px; gap:5px; }
+    .hs-pill { padding:2px 8px; font-size:10.5px; }
+    .hs-empty { padding:28px 12px; }
+    .hs-empty i { font-size:28px; }
+}
+
+/* Main tabs (IPD / OPD / Payments) */
+.hs-section--tabs { padding:0; }
+.hs-tabs {
+    display:flex; flex-wrap:wrap; gap:4px;
+    padding:12px 12px 0;
+    background:linear-gradient(180deg,#f8fafc 0%,#fff 100%);
+    border-bottom:1px solid #e2e8f0;
+}
+.hs-tab {
+    display:inline-flex; align-items:center; gap:8px;
+    padding:12px 18px;
+    font-size:14px; font-weight:700;
+    color:#64748b;
+    border:none; border-bottom:3px solid transparent;
+    background:transparent;
+    border-radius:10px 10px 0 0;
+    cursor:pointer;
+    transition:color .15s, background .15s, border-color .15s;
+    margin-bottom:-1px;
+}
+.hs-tab i { font-size:15px; opacity:.9; }
+.hs-tab:hover { color:#334155; background:rgba(255,255,255,.7); }
+.hs-tab.is-active {
+    color:#2d5f44;
+    background:#fff;
+    border-bottom-color:#2d5f44;
+    box-shadow:0 -1px 0 #fff;
+}
+.hs-tab .hs-section__count { font-size:11px; }
+.hs-tab-tools {
+    display:flex; align-items:flex-end; gap:10px;
+    margin-left:auto; padding:0 4px 8px 12px;
+}
+.hs-tab-tools .reportrange { margin:0; }
+.hs-tab-tools .reportrange > div > .control-label,
+.hs-booking-search label {
+    display:block; margin:0 0 4px;
+    color:#64748b; font-size:10px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.45px;
+}
+.hs-tab-tools .reportrange .form-group { margin:0 !important; }
+.hs-tab-panels { padding:0; }
+.hs-tab-panel { display:none; }
+.hs-tab-panel.is-active { display:block; }
+.hs-tab-panel .hs-section__body { border-top:none; }
+.hs-booking-search {
+    display:block; margin:0; min-width:270px;
+}
+.hs-booking-search__control { position:relative; }
+.hs-booking-search i {
+    position:absolute; left:11px; top:50%; transform:translateY(-50%);
+    color:#64748b; pointer-events:none;
+}
+.hs-booking-search input {
+    width:100%; height:40px; padding:7px 34px;
+    border:1px solid #cbd5e1; border-radius:8px;
+    background:#fff; color:#334155; font-size:12px;
+}
+.hs-booking-search input:focus {
+    border-color:#2d5f44; outline:none;
+    box-shadow:0 0 0 3px rgba(45,95,68,.12);
+}
+@@media(max-width:900px){
+    .hs-tab-tools{width:100%; margin-left:0; padding:8px 0; flex-wrap:wrap;}
+    .hs-booking-search{flex:1 1 250px;}
+}
+
+/* Loading spinner */
+.hs-loading { text-align:center; padding:32px; color:#94a3b8; font-size:13px; }
+
+/* Amount colours */
+.amt-positive { color:#15803d; font-weight:700; }
+.amt-negative  { color:#b91c1c; font-weight:700; }
+
+/* ── Hide left sidebar for patient dashboard ── */
+#menubar                   { display:none !important; }
+#base                      { padding-left:0 !important; margin-left:0 !important; }
+#content                   { margin-left:0 !important; padding-left:0 !important; }
+#header                    { left:0 !important; }
+.page-header-box           { padding-left:16px !important; }
+#leftPanelToggle           { display:none !important; }
+
+.ipd-cancel-swal { width:520px !important; padding:28px 30px 24px !important; border-radius:16px !important; box-shadow:0 24px 70px rgba(16,45,36,.24) !important; }
+.ipd-cancel-swal .swal2-icon, .ipd-cancel-swal .swal2-title { display:none !important; }
+.ipd-cancel-swal .swal2-content { margin:0 !important; padding:0 !important; }
+.ipd-cancel-confirm { color:#263b34; text-align:left; }
+.ipd-cancel-confirm__header { margin-bottom:20px; text-align:center; }
+.ipd-cancel-confirm__icon { display:inline-flex; width:52px; height:52px; margin-bottom:12px; align-items:center; justify-content:center; border-radius:50%; background:#fff1f0; color:#b42318; font-size:23px; box-shadow:inset 0 0 0 1px #ffd1cc; }
+.ipd-cancel-confirm__eyebrow { margin-bottom:4px; color:#b42318; font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; }
+.ipd-cancel-confirm__title { margin:0; color:#183e32; font-size:22px; font-weight:700; line-height:1.25; }
+.ipd-cancel-confirm__intro { margin:7px 0 0; color:#66756f; font-size:14px; }
+.ipd-cancel-confirm__summary { overflow:hidden; border:1px solid #dbe7e2; border-radius:12px; background:#fbfdfc; box-shadow:0 4px 14px rgba(27,82,65,.05); }
+.ipd-cancel-confirm__row { display:flex; justify-content:space-between; gap:20px; padding:12px 15px; border-bottom:1px solid #e6eeeb; }
+.ipd-cancel-confirm__row:last-child { border-bottom:0; }
+.ipd-cancel-confirm__label { color:#71807a; font-size:13px; font-weight:500; }
+.ipd-cancel-confirm__value { color:#174c3b; font-size:14px; font-weight:700; text-align:right; }
+.ipd-cancel-confirm__amount { color:#b42318; font-size:18px; }
+.ipd-cancel-confirm__note { display:flex; gap:9px; margin:14px 0 0; padding:11px 13px; align-items:flex-start; border:1px solid #f4dfb3; border-radius:10px; background:#fffaf0; color:#795000; font-size:12.5px; line-height:1.45; text-align:left; }
+.ipd-cancel-confirm__note i { margin-top:2px; color:#b7791f; }
+.ipd-cancel-swal .swal2-buttonswrapper { display:flex !important; gap:10px; margin-top:22px !important; justify-content:center; }
+.ipd-cancel-swal .ipd-cancel-stay, .ipd-cancel-swal .ipd-cancel-proceed { min-width:180px; margin:0 !important; padding:11px 18px !important; border-radius:9px !important; font-size:14px; font-weight:700; box-shadow:none !important; }
+.ipd-cancel-swal .ipd-cancel-stay { border:1px solid #b9cbc4 !important; background:#fff !important; color:#275d4c !important; }
+.ipd-cancel-swal .ipd-cancel-proceed { border:1px solid #b42318 !important; background:#b42318 !important; color:#fff !important; }
+@@media(max-width:520px){
+    .ipd-cancel-swal { width:calc(100% - 24px) !important; padding:24px 18px 20px !important; }
+    .ipd-cancel-confirm__row { display:block; }
+    .ipd-cancel-confirm__value { display:block; margin-top:3px; text-align:left; }
+    .ipd-cancel-swal .swal2-buttonswrapper { flex-direction:column-reverse; }
+    .ipd-cancel-swal .ipd-cancel-stay, .ipd-cancel-swal .ipd-cancel-proceed { width:100%; min-width:0; }
+}
+</style>
+ 
+
+@{
+    var patientId = Context.Session.GetString("NalamVazhaloginUserID") ?? "";
+    var tenantId  = Context.Session.GetString("NalamVazhachoosedtenantid") ?? "";
+    var uname     = Context.Session.GetString("NalamVazhausername") ?? "Health Seeker";
+}
+
+<!-- ── Stat Cards + Booking Action ── -->
+<div class="hs-stats">
+    <div class="hs-stat">
+        <div class="hs-stat__icon hs-stat__icon--ipd"><i class="fa fa-bed"></i></div>
+        <div>
+            <div class="hs-stat__val" id="statIPDs">—</div>
+            <div class="hs-stat__lbl">Total IPD Bookings</div>
+        </div>
+    </div>
+    <div class="hs-stat">
+        <div class="hs-stat__icon hs-stat__icon--opd"><i class="fa fa-stethoscope"></i></div>
+        <div>
+            <div class="hs-stat__val" id="statOPDs">—</div>
+            <div class="hs-stat__lbl">OPD Consultations</div>
+        </div>
+    </div>
+    <div class="hs-stat">
+        <div class="hs-stat__icon hs-stat__icon--paid"><i class="fa fa-inr"></i></div>
+        <div>
+            <div class="hs-stat__val" id="statPaid">—</div>
+            <div class="hs-stat__lbl">Total Paid</div>
+        </div>
+    </div>
+    <div class="hs-stat">
+        <div class="hs-stat__icon hs-stat__icon--refund"><i class="fa fa-undo"></i></div>
+        <div>
+            <div class="hs-stat__val" id="statRefund">—</div>
+            <div class="hs-stat__lbl">Refunds</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ── IPD / OPD / Payments (tabs) ── -->
+<div class="hs-section hs-section--tabs">
+    <div class="hs-tabs" role="tablist" aria-label="Health records">
+        <button type="button" class="hs-tab is-active" role="tab" id="hsTabIpd" aria-selected="true" aria-controls="hsPanelIpd" data-hs-tab="ipd">
+            <i class="fa fa-bed" style="color:#2d5f44;"></i> IPD Bookings
+            <span class="hs-section__count" id="ipdCount">…</span>
+        </button>
+        <button type="button" class="hs-tab" role="tab" id="hsTabOpd" aria-selected="false" aria-controls="hsPanelOpd" data-hs-tab="opd">
+            <i class="fa fa-stethoscope" style="color:#2d5f44;"></i> OPD Consultations
+            <span class="hs-section__count" id="opdCount">…</span>
+        </button>
+            <button type="button" class="hs-tab" role="tab" id="hsTabGroup" aria-selected="false"
+        aria-controls="hsPanelGroup" data-hs-tab="groupbooking">
+    <i class="fa fa-users" style="color:#2d5f44;"></i> Group Booking
+    <span class="hs-section__count" id="groupCount">…</span>
+</button>
+        <button type="button" class="hs-tab" role="tab" id="hsTabPay" aria-selected="false" aria-controls="hsPanelPay" data-hs-tab="payments">
+            <i class="fa fa-inr" style="color:#2d5f44;"></i> Payments
+            <span class="hs-section__count" id="payCount">…</span>
+        </button>
+        <div class="hs-tab-tools">
+            <div id="reportrange" class="reportrange">
+                <div>
+                    <label for="period" class="control-label">Period</label>
+
+                    <div class="form-group form-group--float-above">
+                        <div id="period">
+                            <img src="~/images/calender_ico.png"> <span>May 7, 2026 - Jun 5, 2026</span> <i class="fa fa-caret-down"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hs-booking-search" id="hsBookingSearch">
+                <div class="hs-booking-search__control">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                    <input id="hsBookingNumber" type="search" placeholder="Search IPD number" aria-label="Search IPD number">
+                </div>
+            </div>
+        </div>
+    </div>
+     <div class="hs-tab-panel" role="tabpanel" id="hsPanelGroup" 
+     aria-labelledby="hsTabGroup" data-hs-panel="groupbooking">
+    <div class="hs-section__body">
+        <div class="hs-loading" id="groupLoading">
+            <i class="fa fa-spinner fa-spin"></i> Loading…
+        </div>
+        <table class="hs-table" id="groupTable" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Group Code</th>
+                    <th>Group Name</th>
+                    <th>Members</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="groupBody"></tbody>
+        </table>
+        <div class="hs-empty" id="groupEmpty" style="display:none;">
+            <i class="fa fa-users"></i>
+            <span>No group bookings found.</span>
+        </div>
+    </div>
+</div>
+    <div class="hs-tab-panels">
+        <div class="hs-tab-panel is-active" role="tabpanel" id="hsPanelIpd" aria-labelledby="hsTabIpd" data-hs-panel="ipd">
+            <div class="hs-section__body">
+                <div class="hs-loading" id="ipdLoading"><i class="fa fa-spinner fa-spin"></i> Loading…</div>
+                <table class="hs-table" id="ipdTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>Booking Ref</th>
+                          
+                            <th>Check-In</th>
+                            <th>Check-Out</th>
+                            <th>Booking Status</th>
+                            <th class="hs-screening-col">Screening Appointment</th>
+                            <th>Room Status</th>
+                            <th>Financial Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ipdBody"></tbody>
+                </table>
+                <div class="hs-empty" id="ipdEmpty" style="display:none;">
+                    <i class="fa fa-bed"></i>
+                    <span>No IPD bookings yet.<br>
+                        <a href="@Url.Action("Add_IPD_Application_Form","IPDApplicationForm")" style="color:#2563eb;font-weight:600;">
+                            Start your first booking →
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="hs-tab-panel" role="tabpanel" id="hsPanelOpd" aria-labelledby="hsTabOpd" data-hs-panel="opd">
+            <div class="hs-section__body">
+                <div class="hs-loading" id="opdLoading"><i class="fa fa-spinner fa-spin"></i> Loading…</div>
+                <table class="hs-table" id="opdTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>OPD Form No.</th>
+                            <th>Date</th>
+                            <th>Appointment</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="opdBody"></tbody>
+                </table>
+                <div class="hs-empty" id="opdEmpty" style="display:none;">
+                    <i class="fa fa-stethoscope"></i>
+                    <a id="startOpdAppointment" href="javascript:void(0);">Start Your Appointment</a>
+                </div>
+            </div>
+        </div>
+        <div class="hs-tab-panel" role="tabpanel" id="hsPanelPay" aria-labelledby="hsTabPay" data-hs-panel="payments">
+            <div class="hs-section__body">
+                <div class="hs-loading" id="payLoading"><i class="fa fa-spinner fa-spin"></i> Loading…</div>
+                <table class="hs-table" id="payTable" style="display:none;">
+                    <thead>
+                        <tr>
+                            <th>Receipt No.</th>
+                            <th>Purpose</th>
+                            <th>Amount</th>
+                            <th>Mode</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payBody"></tbody>
+                </table>
+                <div class="hs-empty" id="payEmpty" style="display:none;">
+                    <i class="fa fa-inr"></i>
+                    <span>No payment records found.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var url = new URL(window.location.href);
+    if (url.searchParams.get('credentialsSent') === 'true') {
+        swal({
+            title: 'Success!',
+            text: '@Html.Raw(System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(Admin.Resource.patientprofilecredentialssent))',
+            type: 'success',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false
+        });
+        url.searchParams.delete('credentialsSent');
+        window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+    }
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   Health Seeker Dashboard JS
+   ═══════════════════════════════════════════════════════════════ */
+var HS_IPD_URL     = '@Url.Action("GetMyIPDs",     "PatientDashboard")';
+var HS_OPD_URL     = '@Url.Action("GetMyOPDs",     "PatientDashboard")';
+var HS_PAY_URL     = '@Url.Action("GetMyPayments", "PatientDashboard")';
+var HS_PROFILE_URL = '@Url.Action("GetMyProfile",  "PatientDashboard")';
+var HS_ASSESS_URL  = '@Url.Action("GetMyAssessments", "PatientDashboard")';
+var HS_OPD_ASSESS_STATE_URL = '@Url.Action("GetMyOPDAssessmentStates", "PatientDashboard")';
+var HS_FEEDBACK_STATE_URL = '@Url.Action("GetMyFeedbackState", "PatientDashboard")';
+var HS_SUGGESTED_TEMPLATES_URL = '@Url.Action("GetAssessmentSuggestedTemplates", "PatientDashboard")';
+var HS_USER_ROLE = '@Context.Session.GetString("NalamVazhauserrole")';
+var HS_TENANT_ID  = '@(Context.Session.GetString("NalamVazhachoosedtenantid") ?? "")';
+var ADD_IPD_URL    = '@Url.Action("Add_IPD_Application_Form", "IPDApplicationForm")';
+var ADD_OPD_URL    = '@Url.Action("Add_OPD_Form", "OPDForm")';
+var VIEW_IPD_URL   = '@Url.Action("View_IPD_Application_Form","IPDApplicationForm")';
+var VIEW_OPD_URL   = '@Url.Action("View_OPD_Form", "OPDForm")';
+var PAY_IPD_URL    = '@Url.Action("Initiate_Payment","IPDApplicationForm")';
+var IPD_BILLING_URL = '@Url.Action("Billing_Dashboard", "IPDApplicationForm")';
+var IPD_BILLING_STATUS_URL = '@Url.Action("GetIPDBillingStatus", "PatientDashboard")';
+var CANCEL_IPD_URL = '@Url.Action("Cancel_IPD", "IPDApplicationForm")';
+var IPD_REFUND_DETAILS_URL = '@Url.Action("Get_IPD_Refund_Details_Data", "IPDApplicationForm")';
+var IPD_FINAL_BILL_URL = '@Url.Action("IPD_Billing_Summary_PDF","IPDApplicationForm")';
+var PAY_OPD_URL    = '@Url.Action("OPD_Consultation_Fee", "OPDForm")';
+var OPD_BILLING_STATUS_URL = '@Url.Action("GetOPDBillingStatus", "PatientDashboard")';
+var UPD_IPD_URL    = '@Url.Action("Update_IPD_Application_Form", "IPDApplicationForm")';
+                        var OPD_URL = '@Url.Action("Update_OPD_Form", "OPDForm")';
+function healthSeekerFilterQuery() {
+    return '&bookingnumber=' + encodeURIComponent($('#hsBookingNumber').val() || '') +
+        '&workflowstatus=&financialstatus=&paymentmethod=';
+}
+$(document).on('click', '#startOpdAppointment', function () {
+    window.location = ADD_OPD_URL;
+});
+/* ── Helpers ── */
+function esc(s) {
+    return (s||'').toString()
+        .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+        .replace(/"/g,'&quot;');
+}
+function num(n) {
+    var v = parseFloat(n) || 0;
+    return v.toLocaleString('en-IN', {maximumFractionDigits:2});
+}
+function fmtDate(s) {
+    if (!s) return '—';
+    if (typeof s === 'string') {
+        var dm = s.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
+        if (dm) {
+            var parsed = new Date(
+                parseInt(dm[3], 10),
+                parseInt(dm[2], 10) - 1,
+                parseInt(dm[1], 10),
+                parseInt(dm[4] || '0', 10),
+                parseInt(dm[5] || '0', 10)
+            );
+            return parsed.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'});
+        }
+    }
+    var d = new Date(s);
+    if (isNaN(d.getTime())) return s;
+    return d.toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'});
+}
+function fmtTimeSlot(fromTime, toTime) {
+    function shortTime(value) {
+        var match = (value || '').toString().trim().match(/^(\d{1,2}):(\d{2})/);
+        return match ? ('0' + match[1]).slice(-2) + ':' + match[2] : '';
+    }
+    var from = shortTime(fromTime);
+    var to = shortTime(toTime);
+    return from ? from + (to ? ' - ' + to : '') : to;
+}
+function formatDateYMD(date) {
+    var y = date.getFullYear();
+    var m = ('0' + (date.getMonth() + 1)).slice(-2);
+    var d = ('0' + date.getDate()).slice(-2);
+    return y + '-' + m + '-' + d;
+}
+function parseDashboardDate(s) {
+    if (!s) return null;
+    if (s instanceof Date) return isNaN(s.getTime()) ? null : s;
+    var str = s.toString().trim();
+    var dm = str.match(/^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?$/);
+    if (dm) {
+        return new Date(
+            parseInt(dm[3], 10),
+            parseInt(dm[2], 10) - 1,
+            parseInt(dm[1], 10),
+            parseInt(dm[4] || '0', 10),
+            parseInt(dm[5] || '0', 10)
+        );
+    }
+    var d = new Date(str);
+    return isNaN(d.getTime()) ? null : d;
+}
+function pick(obj, keys, def) {
+    if (!obj) return def !== undefined ? def : '';
+    for (var i=0;i<keys.length;i++) {
+        if (obj[keys[i]] !== undefined && obj[keys[i]] !== null && obj[keys[i]] !== '')
+            return obj[keys[i]];
+    }
+    var lowerMap = {};
+    for (var k in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, k)) {
+            lowerMap[k.toLowerCase()] = obj[k];
+        }
+    }
+    for (var j=0;j<keys.length;j++) {
+        var val = lowerMap[keys[j].toLowerCase()];
+        if (val !== undefined && val !== null && val !== '')
+            return val;
+    }
+    return def !== undefined ? def : '';
+}
+function stripPhone(s) {
+    return (s||'').replace(/\s+\+?\d[\d\s\-]{7,}$/, '').trim();
+}
+function asList(value) {
+    if (Array.isArray(value)) return value;
+    if (typeof value === 'string' && value.trim()) {
+        try {
+            var parsed = JSON.parse(value);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+            return [];
+        }
+    }
+    return [];
+}
+function parseApiRows(value) {
+    try {
+        var data = typeof value === 'string' ? JSON.parse(value) : value;
+        if (Array.isArray(data)) return data;
+        if (data && Array.isArray(data.detail)) return data.detail;
+        if (data && Array.isArray(data.Detail)) return data.Detail;
+        if (data && Array.isArray(data.data)) return data.data;
+    } catch (e) { }
+    return [];
+}
+function getHealthSeekerIpdAssessmentTaskName(bookingStatus, verifiedStatus) {
+    var status = (bookingStatus || '').toString().trim().toLowerCase();
+    var verified = (verifiedStatus || '').toString().trim().toLowerCase();
+    var isDirectAdmission = verified === 'direct admission';
+    var isDirectAssessmentStage = [
+        'arrival confirmed',
+        'consultation scheduled',
+        'awaiting consultation'
+    ].indexOf(status) !== -1;
+
+    return (status === 'provisional confirmed'
+        || status === 'provisional confimed'
+        || (isDirectAdmission && isDirectAssessmentStage)) ? 'IP Screening' : '';
+}
+function canHealthSeekerAddIpdAssessment(bookingStatus, verifiedStatus) {
+    return getHealthSeekerIpdAssessmentTaskName(bookingStatus, verifiedStatus) === 'IP Screening';
+}
+function loadHealthSeekerTemplateAvailability(list, assessmentMap) {
+    var seen = {};
+    var requests = [];
+    (list || []).forEach(function(row) {
+        var id = pick(row, ['ipdapplicationformid','IPDApplicationFormid'], '');
+        var bs = pick(row, ['bookingstatus','BookingStatus'], '');
+        var vs = pick(row, ['verifiedstatus','VerifiedStatus'], '');
+        var entry = assessmentMap[(id || '').toString().toLowerCase()] || null;
+        var hasAssessment = !!(entry && entry.id && entry.id !== '00000000-0000-0000-0000-000000000000');
+        var key = (id || '').toString().toLowerCase();
+        if (canHealthSeekerAddIpdAssessment(bs, vs) && !hasAssessment && key && !seen[key]) {
+            seen[key] = true;
+            requests.push({ id: id, taskname: getHealthSeekerIpdAssessmentTaskName(bs, vs) });
+        }
+    });
+    if (!requests.length) return Promise.resolve({});
+    var map = {};
+    return Promise.all(requests.map(function(item) {
+        var id = item.id;
+        var key = id.toLowerCase();
+        var url = HS_SUGGESTED_TEMPLATES_URL +
+            '?ipdapplicationformid=' + encodeURIComponent(id) +
+            '&userrole=' + encodeURIComponent(HS_USER_ROLE || '') +
+            '&taskname=' + encodeURIComponent(item.taskname || '');
+        return fetch(url)
+            .then(function(r){ return r.text(); })
+            .then(function(txt){ map[key] = parseApiRows(txt).length > 0; })
+            .catch(function(){ map[key] = true; });
+    })).then(function(){ return map; });
+}
+function loadFeedbackTemplateAvailability(list, feedbackMap) {
+    var requests = [];
+    (list || []).forEach(function(row) {
+        var id = pick(row, ['ipdapplicationformid','IPDApplicationFormid'], '').toString();
+        var key = id.toLowerCase();
+        var feedback = feedbackMap[key];
+        var isComplete = !!(feedback && feedback.id && feedback.eligibility === 'patient');
+        var status = pick(row, ['bookingstatus','BookingStatus'], '').toString().trim().toLowerCase();
+        if (id && status === 'discharge initiated' && !isComplete) requests.push(id);
+    });
+    var map = {};
+    return Promise.all(requests.map(function(id) {
+        var key = id.toLowerCase();
+        var url = HS_SUGGESTED_TEMPLATES_URL + '?ipdapplicationformid=' + encodeURIComponent(id)
+            + '&userrole=' + encodeURIComponent(HS_USER_ROLE || '')
+            + '&taskname=' + encodeURIComponent('Feedbackform');
+        return fetch(url).then(function(r){ return r.text(); })
+            .then(function(txt){ map[key] = parseApiRows(txt).length > 0; })
+            .catch(function(){ map[key] = false; });
+    })).then(function(){ return map; });
+}
+function loadFeedbackStateMap(list) {
+    var map = {};
+    return Promise.all((list || []).map(function(row) {
+        var id = pick(row, ['ipdapplicationformid','IPDApplicationFormid'], '').toString();
+        if (!id) return Promise.resolve();
+        return fetch(HS_FEEDBACK_STATE_URL + '?ipdapplicationformid=' + encodeURIComponent(id))
+            .then(function(r){ return r.json(); })
+            .then(function(state) {
+                if (state && state.assessmentId) {
+                    map[id.toLowerCase()] = {
+                        id: state.assessmentId,
+                        eligibility: state.submitted ? 'patient' : 'patient-saveasdraft'
+                    };
+                }
+            }).catch(function(){});
+    })).then(function(){ return map; });
+}
+function firstNonEmptyFromList(list, keys) {
+    for (var i = 0; i < list.length; i++) {
+        var val = pick(list[i] || {}, keys, '');
+        if (val) return val;
+    }
+    return '';
+}
+function getAllowedEstimatedArrivalDates(row) {
+    var preferredDates = asList(pick(row, ['automaton_IPDApplicationForm_preferreddatesofadmission', 'Automaton_IPDApplicationForm_preferreddatesofadmission'], ''));
+    var allowed = [];
+    var seen = {};
+    function addAllowedDate(dateValue) {
+        var key = formatDateYMD(dateValue);
+        if (!seen[key]) {
+            seen[key] = true;
+            allowed.push(key);
+        }
+    }
+    preferredDates.forEach(function(pd) {
+        var rawArrival = pick(pd || {}, ['Date of Arrival', 'dateofarrival'], '');
+        var arrival = parseDashboardDate(rawArrival);
+        if (!arrival) return;
+        var previousDay = new Date(arrival);
+        previousDay.setDate(previousDay.getDate() - 1);
+        var nextDay = new Date(arrival);
+        nextDay.setDate(nextDay.getDate() + 1);
+        addAllowedDate(previousDay);
+        addAllowedDate(arrival);
+        addAllowedDate(nextDay);
+    });
+    return allowed;
+}
+function canShowConfirmArrivalAction(row) {
+    var allowed = getAllowedEstimatedArrivalDates(row);
+    if (!allowed.length) return true;
+    return allowed.indexOf(formatDateYMD(new Date())) !== -1;
+}
+function getIpdRoomType(row) {
+    var direct = pick(row, ['roomtype_name','roomtype_master','roompreference_master','accommodationtype'], '');
+    if (direct) return direct;
+    var prefs = asList(pick(row, ['automaton_IPDApplicationForm_roompreference', 'Automaton_IPDApplicationForm_roompreference'], ''));
+    return firstNonEmptyFromList(prefs, ['Room Type','roomtype','roomtype_name']) || '—';
+}
+function getIpdDate(row, kind) {
+    var directKeys = kind === 'in'
+        ? ['checkindate','expectedarrivaldate','arrivaldate','fromdate','estimatedarrival']
+        : ['checkoutdate','expectedcheckoutdate','expecteddischargedate','dischargedate','todate'];
+    var direct = pick(row, directKeys, '');
+    if (direct) return direct;
+
+    var roomDates = asList(pick(row, ['automaton_IPDApplicationForm_room', 'Automaton_IPDApplicationForm_room'], ''));
+    var roomVal = firstNonEmptyFromList(roomDates, kind === 'in' ? ['From Date','fromdate'] : ['To Date','todate']);
+    if (roomVal) return roomVal;
+
+    var preferredDates = asList(pick(row, ['automaton_IPDApplicationForm_preferreddatesofadmission', 'Automaton_IPDApplicationForm_preferreddatesofadmission'], ''));
+    return firstNonEmptyFromList(preferredDates, kind === 'in' ? ['Date of Arrival','dateofarrival'] : ['Date of Departure','dateofdeparture']);
+}
+function getIpdRoomStatus(row) {
+    var direct = pick(row, ['ipdroomstatus', 'ipdRoomStatus', 'IPDRoomStatus'], '').toString().trim();
+    if (direct && direct !== '-') return direct;
+
+    var bookingStatus = pick(row, ['bookingstatus','BookingStatus'], '').toString().trim().toLowerCase();
+    if (bookingStatus === 'provisional booking') return 'Room Blocked';
+    if (['provisional confirmed', 'assessment form - in draft',
+         'assessment form - review pending', 'assessment form reviewed',
+         'screening scheduled', 'admission approved', 'arrival confirmed',
+         'consultation scheduled', 'admission confirmed'].indexOf(bookingStatus) !== -1) return 'Room Booked';
+    if (bookingStatus === 'admitted') return 'Room Occupied';
+    if (bookingStatus === 'discharged') return 'Checked Out';
+    if (['cancelled - refunded', 'cancellation requested',
+         'cancellation approved - refunded', 'cancelled',
+         'cancelled - initiated'].indexOf(bookingStatus) !== -1) return 'Released';
+    return direct || '-';
+}
+function loadIPDBillingStatusMap(list) {
+    var map = {};
+    return Promise.all((list || []).map(function(row) {
+        var id = pick(row, ['ipdapplicationformid','IPDApplicationFormid'], '').toString();
+        if (!id) return Promise.resolve();
+        var key = id.toLowerCase();
+        var pendingValue = pick(row, ['totalpendingamount', 'TotalPendingAmount', 'requiredpendingpayment'], 0);
+        var fallbackBalance = parseFloat((pendingValue == null ? '0' : pendingValue.toString()).replace(/[^0-9.-]/g, '')) || 0;
+        return fetch(IPD_BILLING_STATUS_URL + '?IPDApplicationFormid=' + encodeURIComponent(id))
+            .then(function(r){ return r.json(); })
+            .then(function(status){
+                var rawApiBalance = status && (status.balance !== undefined ? status.balance : status.Balance);
+                var parsedApiBalance = parseFloat(rawApiBalance);
+                var hasApiBalance = rawApiBalance !== undefined && rawApiBalance !== null && !isNaN(parsedApiBalance);
+                var effectiveBalance = hasApiBalance
+                    ? Math.max(parsedApiBalance, fallbackBalance)
+                    : fallbackBalance;
+                map[key] = {
+                    hasBalance: effectiveBalance > 0.009,
+                    balance: effectiveBalance
+                };
+            })
+            .catch(function(){
+                map[key] = { hasBalance: fallbackBalance > 0.009, balance: fallbackBalance };
+            });
+    })).then(function(){ return map; });
+}
+
+function loadOpdBillingStatusMap(list) {
+    var seen = {};
+    var ids = [];
+    (list || []).forEach(function(row) {
+        var id = pick(row, ['opdformid','OPDFormid'], '');
+        var key = (id || '').toString().toLowerCase();
+        if (id && !seen[key]) {
+            seen[key] = true;
+            ids.push(id);
+        }
+    });
+    if (!ids.length) return Promise.resolve({});
+    var map = {};
+    return Promise.all(ids.map(function(id) {
+        var key = id.toString().toLowerCase();
+        return fetch(OPD_BILLING_STATUS_URL + '?OPDFormid=' + encodeURIComponent(id))
+            .then(function(r){ return r.json(); })
+            .then(function(status){
+                map[key] = {
+                    hasFee: !!(status && (status.hasFee || status.HasFee)),
+                    balance: parseFloat(status && (status.balance !== undefined ? status.balance : status.Balance)) || 0,
+                    totalPaid: parseFloat(status && (status.totalPaid !== undefined ? status.totalPaid : status.TotalPaid)) || 0
+                };
+            })
+            .catch(function(){ map[key] = { hasFee: false, balance: 0, totalPaid: 0 }; });
+    })).then(function(){ return map; });
+}
+function canHealthSeekerCancelIpd(bookingStatus) {
+    var status = (bookingStatus || '').toString().trim().toLowerCase();
+    return [
+        'provisional confirmed',
+        'screening completed by the patient',
+        'screening completed by the patient - in draft',
+        'assessment form - in draft',
+        'screening completed by the patient - intern doctor review pending',
+        'awaiting doctor screening',
+        'admission approved',
+        'approved for admission',
+        'arrival confirmed',
+        'confirmed for arrival',
+        'pre-admission initiated',
+        'consultation scheduled',
+        'awaiting consultation',
+        'patient arrived',
+        'admitted',
+        'admission confirmed',
+        'eligible for admission'
+    ].indexOf(status) !== -1;
+}
+
+function cancelHealthSeekerIpd(ipdApplicationFormId) {
+    if (!ipdApplicationFormId) return false;
+
+    fetch(IPD_REFUND_DETAILS_URL
+        + '?IPDApplicationFormid=' + encodeURIComponent(ipdApplicationFormId)
+        + '&cancellationby=Patient')
+        .then(function(response) {
+            if (response.status === 404) return [];
+            if (!response.ok) throw new Error('Unable to load refund details.');
+            return response.json();
+        })
+        .then(function(data) {
+            var rows = Array.isArray(data) ? data : (data ? [data] : []);
+            var totalRefund = 0;
+            rows.forEach(function(row) {
+                totalRefund += parseFloat(row.refund_amount != null ? row.refund_amount : row.final_refund_amount) || 0;
+            });
+            if (!totalRefund && rows.length && rows[0].total_refund_amount != null) {
+                totalRefund = parseFloat(rows[0].total_refund_amount) || 0;
+            }
+            // Display the percentage selected by the refund policy. Do not derive it
+            // from total booking payments, because the policy may apply only to a
+            // specific refundable amount (for example, the booking deposit).
+            var refundPercentage = 0;
+            rows.some(function(row) {
+                var appliedPercentage = parseFloat(
+                    row.refund_percentage_applied != null
+                        ? row.refund_percentage_applied
+                        : row.refundpercentage
+                );
+                var refundAmount = parseFloat(
+                    row.refund_amount != null ? row.refund_amount : row.final_refund_amount
+                ) || 0;
+                if (!isNaN(appliedPercentage) && refundAmount > 0) {
+                    refundPercentage = appliedPercentage;
+                    return true;
+                }
+                return false;
+            });
+            function refundNumber(value) {
+                return (parseFloat(value) || 0).toLocaleString('en-IN', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+            var html = '<div class="ipd-cancel-confirm">' +
+                '<div class="ipd-cancel-confirm__header">' +
+                    '<span class="ipd-cancel-confirm__icon"><i class="fa fa-exclamation-triangle"></i></span>' +
+                    '<div class="ipd-cancel-confirm__eyebrow">Confirmation required</div>' +
+                    '<h3 class="ipd-cancel-confirm__title">Cancel this IPD booking?</h3>' +
+                    '<p class="ipd-cancel-confirm__intro">Please review the refund details before continuing.</p>' +
+                '</div>' +
+                '<div class="ipd-cancel-confirm__summary">' +
+                    '<div class="ipd-cancel-confirm__row"><span class="ipd-cancel-confirm__label">Refund eligibility</span><span class="ipd-cancel-confirm__value">' + refundNumber(refundPercentage) + '%</span></div>' +
+                    '<div class="ipd-cancel-confirm__row"><span class="ipd-cancel-confirm__label">Estimated refund</span><span class="ipd-cancel-confirm__value ipd-cancel-confirm__amount">&#8377; ' + refundNumber(totalRefund) + '</span></div>' +
+                    '<div class="ipd-cancel-confirm__row"><span class="ipd-cancel-confirm__label">Cancellation by</span><span class="ipd-cancel-confirm__value">Health Seeker</span></div>' +
+                '</div>' +
+                '<div class="ipd-cancel-confirm__note"><i class="fa fa-info-circle"></i><span>This action cannot be undone. Stay on this page if you want to review the booking before cancelling.</span></div>' +
+            '</div>';
+
+            return swal({
+                title: '',
+                html: html,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Cancel Booking',
+                cancelButtonText: 'Stay Here',
+                buttonsStyling: false,
+                customClass: 'ipd-cancel-swal',
+                confirmButtonClass: 'btn ipd-cancel-proceed',
+                cancelButtonClass: 'btn ipd-cancel-stay',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(function(result) {
+                return result;
+            }, function() {
+                return false;
+            });
+        })
+        .then(function(result) {
+            if (result && (result.value === true || result === true)) {
+                window.location.href = CANCEL_IPD_URL
+                    + '?IPDApplicationFormid=' + encodeURIComponent(ipdApplicationFormId)
+                    + '&cancellationby=Patient';
+            }
+        })
+        .catch(function() {
+            swal({
+                title: 'Unable to Continue',
+                text: 'Refund details could not be loaded. Please try again.',
+                type: 'error',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary'
+            });
+        });
+
+    return false;
+}
+
+/* ── Status pill logic ── */
+function ipdStatusPill(bs) {
+    bs = (bs||'').trim();
+    var bsl = bs.toLowerCase();
+    //var cls = bsl.includes('admit') || bsl.includes('confirmed for arrival') ? 'hs-pill--green'
+            var cls = bsl.includes('admit') || bsl.includes('arrival confirmed') ? 'hs-pill--green'
+            : bsl.includes('intern doctor review pending') ? 'hs-pill--blue'
+            : bsl.includes('in draft') ? 'hs-pill--amber'
+            : bsl.includes('provisional') ? 'hs-pill--amber'
+            : bsl.includes('cancel') || bsl.includes('reject') ? 'hs-pill--red'
+            : bsl.includes('arrived') ? 'hs-pill--blue'
+            : 'hs-pill--gray';
+    return '<span class="hs-pill ' + cls + '">' + esc(bs||'—') + '</span>';
+}
+function verifiedPill(vs) {
+   
+    vs = (vs||'').trim();
+    var vsl = vs.toLowerCase();
+    var cls = vsl.includes('approved') || vsl.includes('cleared') ? 'hs-pill--green'
+            : vsl.includes('review') ? 'hs-pill--blue'
+            : vsl.includes('rework') ? 'hs-pill--amber'
+            : vsl.includes('reject') ? 'hs-pill--red'
+            : 'hs-pill--gray';
+    return '<span class="hs-pill ' + cls + '">' + esc(vs||'—') + '</span>';
+}
+function payStatusPill(ps) {
+    ps = (ps||'').trim();
+    var cls = ps.toLowerCase()==='refunded' ? 'hs-pill--red'
+            : (ps.toLowerCase()==='paid'||ps.toLowerCase()==='success') ? 'hs-pill--green'
+            : 'hs-pill--amber';
+    return '<span class="hs-pill ' + cls + '">' + esc(ps) + '</span>';
+}
+
+/* ── Load Profile for greeting ── */
+function loadProfile() {
+    fetch(HS_PROFILE_URL)
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+            var list = Array.isArray(data) ? data : (data && Array.isArray(data.detail) ? data.detail : []);
+            if (list.length > 0) {
+                var p = list[0];
+                var fn = ((p.firstname||'') + ' ' + (p.lastname||'')).trim();
+                if (fn) document.getElementById('hsFullName').textContent = fn;
+            }
+        }).catch(function(){});
+}
+
+/* ── Load IPDs ── */
+function loadIPDs() {
+    Promise.all([
+                fetch(
+            HS_IPD_URL +
+            '?createddate_automatonfrom=' + encodeURIComponent(getPeriodFromDate()) +
+            '&createddate_automatonto=' + encodeURIComponent(getPeriodToDate()) + healthSeekerFilterQuery()
+        ).then(function(r){ return r.json(); }).catch(function(){ return []; }),
+        fetch(HS_ASSESS_URL).then(function(r){ return r.text(); }).catch(function(){ return '[]'; })
+    ]).then(function(results) {
+        /* Build a map: ipdFormId (lowercase) → { id, eligibility } */
+        var HS_IPD_ASSESS_MAP = {};
+        var HS_IPD_FEEDBACK_MAP = {};
+        var assessData;
+        try { assessData = JSON.parse(results[1]); } catch(e) { assessData = []; }
+        var assessList = Array.isArray(assessData) ? assessData
+                       : (assessData && Array.isArray(assessData.detail) ? assessData.detail : []);
+        assessList.forEach(function(a) {
+            var ipdId  = (a.ipdform || a.IPDForm || a.ipdformid || '').toString().toLowerCase();
+            var aId    = (a.Assessmentid || a.assessmentid || '').toString();
+            var eligib = (a.eligibleforfinaladmission || a.Eligibleforfinaladmission || '').toString().toLowerCase();
+            var task = (a.taskname || a.TaskName || '').toString().trim().toLowerCase();
+            if (ipdId && ipdId !== '00000000-0000-0000-0000-000000000000') {
+                if (task === 'feedbackform')
+                    HS_IPD_FEEDBACK_MAP[ipdId] = { id: aId, eligibility: eligib };
+                else if (task === 'ip screening' || !HS_IPD_ASSESS_MAP[ipdId])
+                    HS_IPD_ASSESS_MAP[ipdId] = { id: aId, eligibility: eligib };
+            }
+        });
+
+        var data = results[0];
+        var list = Array.isArray(data) ? data : (data && Array.isArray(data.detail) ? data.detail : []);
+        list.sort(function(a, b) {
+            var aDate = parseDashboardDate(pick(a, ['createddate', 'CreatedDate'], ''));
+            var bDate = parseDashboardDate(pick(b, ['createddate', 'CreatedDate'], ''));
+            var dateDifference = (bDate ? bDate.getTime() : 0) - (aDate ? aDate.getTime() : 0);
+            if (dateDifference !== 0) return dateDifference;
+            var aRef = pick(a, ['bookingreferencenumber', 'bookingreferenceno'], '').toString();
+            var bRef = pick(b, ['bookingreferencenumber', 'bookingreferenceno'], '').toString();
+            return bRef.localeCompare(aRef, undefined, { numeric: true });
+        });
+        document.getElementById('ipdLoading').style.display = 'none';
+        document.getElementById('ipdCount').textContent = list.length;
+        document.getElementById('statIPDs').textContent = list.length;
+
+        if (list.length === 0) { document.getElementById('ipdEmpty').style.display = 'block'; return; }
+        document.getElementById('ipdTable').style.display = 'table';
+
+        Promise.all([loadFeedbackStateMap(list), loadIPDBillingStatusMap(list)]).then(function(context) {
+        HS_IPD_FEEDBACK_MAP = context[0] || {};
+        var HS_IPD_BILLING_MAP = context[1] || {};
+        return Promise.all([
+            loadHealthSeekerTemplateAvailability(list, HS_IPD_ASSESS_MAP),
+            loadFeedbackTemplateAvailability(list, HS_IPD_FEEDBACK_MAP)
+        ]).then(function(maps) {
+        var HS_IPD_TEMPLATE_MAP = maps[0] || {};
+        var HS_IPD_FEEDBACK_TEMPLATE_MAP = maps[1] || {};
+        var tbody = document.getElementById('ipdBody');
+        tbody.innerHTML = '';
+        list.forEach(function(row) {
+            var id  = pick(row, ['ipdapplicationformid','IPDApplicationFormid'], '');
+            var brn = pick(row, ['bookingreferencenumber'], '—');
+            var rt  = getIpdRoomType(row);
+            var cin = fmtDate(getIpdDate(row, 'in'));
+            var cout= fmtDate(getIpdDate(row, 'out'));
+            var bs  = pick(row, ['bookingstatus','BookingStatus'], '');
+            var vs  = pick(row, ['verifiedstatus','VerifiedStatus'], '');
+            var screeningAppointmentHtml = '—';
+            var screeningDateRaw = pick(row, ['screeningappointmentdate', 'ScreeningAppointmentDate'], '');
+            var screeningStart = pick(row, ['screeningstarttime', 'ScreeningStartTime'], '');
+            var screeningEnd = pick(row, ['screeningendtime', 'ScreeningEndTime'], '');
+            var screeningDoctor = pick(row, ['screeningdoctor', 'ScreeningDoctor'], '');
+            var screeningTime = fmtTimeSlot(screeningStart, screeningEnd);
+
+            if (screeningDateRaw || screeningTime || screeningDoctor) {
+                var screeningDateText = screeningDateRaw ? fmtDate(screeningDateRaw) : 'Date unavailable';
+                var screeningTimeText = screeningTime || 'Time unavailable';
+                screeningAppointmentHtml =
+                    '<div class="hs-screening">' +
+                        '<div class="hs-screening__slot">' +
+                            '<i class="fa fa-calendar" aria-hidden="true"></i>' +
+                            '<span class="hs-screening__date">' + esc(screeningDateText) + '</span>' +
+                            '<span class="hs-screening__time">' + esc(screeningTimeText) + '</span>' +
+                        '</div>' +
+                        '<div class="hs-screening__doctor" title="' + esc(screeningDoctor || 'Doctor not assigned') + '">' +
+                            '<i class="fa fa-user-md" aria-hidden="true"></i>' +
+                            '<span>' + esc(screeningDoctor || 'Doctor not assigned') + '</span>' +
+                        '</div>' +
+                    '</div>';
+            } else {
+                screeningAppointmentHtml =
+                    '<span class="hs-screening-empty"><i class="fa fa-calendar-times-o" aria-hidden="true"></i> Not scheduled</span>';
+            }
+                    var ipdRoomStatus = getIpdRoomStatus(row);
+        var ipdFinancialStatus = pick(row, ['ipdfinancialstatus', 'ipdFinancialStatus', 'IPDFinancialStatus'], '');
+            var rc  = '';
+            if (vs == "Rework" || vs == "Rejected") {
+                rc = "/" + pick(row, ['reviewcomments'], '');
+            }
+
+            /* Check if an assessment exists for this specific IPD form */
+            var _ipdKey       = id.toLowerCase();
+            var _assessEntry  = HS_IPD_ASSESS_MAP[_ipdKey] || null;
+            var _assessmentId = _assessEntry ? _assessEntry.id : '';
+            var _eligibility  = _assessEntry ? _assessEntry.eligibility : '';
+            /* "patient"           → patient fully completed & submitted
+               "patient-saveasdraft" → saved as draft
+               "" / anything else  → treat as draft (SP may not return field yet) */
+            var _hasAssessment  = !!_assessmentId && _assessmentId !== '00000000-0000-0000-0000-000000000000';
+            var _assessComplete = _hasAssessment && _eligibility === 'patient';
+            /* Draft = assessment exists AND not yet marked complete.
+               Covers "patient-saveasdraft", empty string (SP not updated), or any other value. */
+            var _assessDraft    = _hasAssessment && !_assessComplete;
+            var _feedbackEntry = HS_IPD_FEEDBACK_MAP[_ipdKey] || null;
+            var _feedbackComplete = !!(_feedbackEntry && _feedbackEntry.id && _feedbackEntry.eligibility === 'patient');
+            var _feedbackDue = bs.toString().trim().toLowerCase() === 'discharge initiated';
+
+            /* Actions: deposits remain payable before admission; the final bill appears only after discharge. */
+            var acts = '';
+            if (id) {
+                acts += '<a href="' + VIEW_IPD_URL + '?IPDApplicationFormid=' + id + '" class="hs-act hs-act--view" title="View Details"><i class="fa fa-eye"></i> View</a> ';
+                if (bs === 'Provisional Booking') {
+                            acts += '<a href="' + PAY_IPD_URL + '?IPDApplicationFormid=' + id + '" class="hs-act hs-act--pay" title="Pay Deposit"><i class="fa fa-credit-card"></i> Pay</a>';
+                        }
+                else if ((HS_IPD_BILLING_MAP[_ipdKey] || {}).hasBalance) {
+                    acts += '<a href="' + IPD_BILLING_URL + '?IPDApplicationFormid=' + encodeURIComponent(id) + '" class="hs-act hs-act--pay" title="Pay Outstanding Balance"><i class="fa fa-credit-card"></i> Pay</a>';
+                }
+                if ((bs || '').toString().trim().toLowerCase() === 'discharged') {
+                    acts += '<a href="' + IPD_FINAL_BILL_URL + '?IPDApplicationFormid=' + encodeURIComponent(id) + '" class="hs-act hs-act--view" title="View Final Bill"><i class="fa fa-file-text-o"></i> View Final Bill</a>';
+                }
+                if (canHealthSeekerCancelIpd(bs)) {
+                    acts += '<a href="javascript:void(0)" onclick="return cancelHealthSeekerIpd(\'' + esc(id) + '\')" class="hs-act hs-act--pay" title="Cancel Application"><i class="fa fa-close"></i> Cancel</a>';
+                }
+                /* The patient may modify any Draft, including a Direct Admission draft
+                   initially created for them by Front Desk. */
+                if (bs.toString().trim().toLowerCase() === "draft" || vs == "Rework" || vs == "Ready For Review" || vs == "Ready For Frontdesk Review" || vs == "Draft") {
+                    acts += '<a href="' + UPD_IPD_URL + '?IPDApplicationFormid=' + id + '" class="hs-act hs-act--pay" title="Edit"><i class="fa fa-pencil"></i> Modify</a>';
+                }
+
+                /* Show the IP Screening assessment for both the regular provisional
+                   workflow and Direct Admission after arrival/consultation scheduling. */
+                if (canHealthSeekerAddIpdAssessment(bs, vs) && !_hasAssessment) {
+                    if (HS_IPD_TEMPLATE_MAP[_ipdKey] !== false) {
+                        var addAssessmentURL = "@Url.Action("Add_Assessment", "Assessment")?ipdform=" + id
+                            + "&patientname=" + pick(row, ['patientname'], '')
+                            + "&ipdformnumber=" + encodeURIComponent(brn !== '—' ? brn : '')
+                            + "&taskname=" + encodeURIComponent(getHealthSeekerIpdAssessmentTaskName(bs, vs));
+                        acts += '<a href="' + addAssessmentURL + '" class="hs-act hs-act--assess" title="Fill and submit your health assessment"><i class="fa fa-stethoscope" aria-hidden="true"></i> Add Assessment</a> ';
+                    }
+                }
+
+                /* ── Booking status contains "In Draft": Show Edit Draft + Complete Draft ── */
+                if (bs.toLowerCase().indexOf('in draft') !== -1) {
+                    var _encodedPt  = encodeURIComponent(pick(row, ['patientname'], ''));
+                    var _encodedBrn = encodeURIComponent(brn !== '—' ? brn : '');
+                    var editDraftURL, completeDraftURL;
+                    if (_hasAssessment) {
+                        editDraftURL     = "@Url.Action("Update_Assessment", "Assessment")?Assessmentid=" + _assessmentId;
+                        completeDraftURL = "@Url.Action("Update_Assessment", "Assessment")?Assessmentid=" + _assessmentId + "&completedraft=1";
+                    } else {
+                        /* Assessment not in local map — use Add_Assessment (controller loads existing by ipdform) */
+                        var _baseAssessURL = "@Url.Action("Add_Assessment", "Assessment")?ipdform=" + id + "&patientname=" + _encodedPt + "&ipdformnumber=" + _encodedBrn;
+                        editDraftURL     = _baseAssessURL;
+                        completeDraftURL = _baseAssessURL + "&completedraft=true";
+                    }
+                 //   acts += '<a href="' + editDraftURL + '" class="hs-act hs-act--assess" title="Edit your saved draft"><i class="fa fa-pencil" aria-hidden="true"></i> Edit Draft</a> ';
+                    acts += '<a href="' + completeDraftURL + '" class="hs-act hs-act--complete" title="Complete and submit your draft assessment"><i class="fa fa-check-circle" aria-hidden="true"></i> Complete Draft</a> ';
+                }
+
+                if (_feedbackDue && !_feedbackComplete && (_feedbackEntry || HS_IPD_FEEDBACK_TEMPLATE_MAP[_ipdKey])) {
+                    var feedbackURL = _feedbackEntry && _feedbackEntry.id
+                        ? "@Url.Action("Update_Assessment", "Assessment")?Assessmentid=" + _feedbackEntry.id + "&completedraft=1"
+                        : "@Url.Action("Add_Assessment", "Assessment")?ipdform=" + id
+                            + "&patientname=" + encodeURIComponent(pick(row, ['patientname'], ''))
+                            + "&ipdformnumber=" + encodeURIComponent(brn !== '—' ? brn : '')
+                            + "&taskname=" + encodeURIComponent('Feedbackform');
+                    acts += '<a href="' + feedbackURL + '" class="hs-act hs-act--complete" title="Submit feedback before discharge"><i class="fa fa-commenting" aria-hidden="true"></i> Submit Feedback</a> ';
+                } else if (_feedbackDue && _feedbackComplete) {
+                    acts += '<span class="hs-pill hs-pill--green"><i class="fa fa-check"></i> Feedback submitted</span> ';
+                }
+
+                /* ── Assessment complete (eligibleforfinaladmission = "patient"):
+                   _assessComplete = true → no assessment buttons shown (patient is done) ── */
+
+                        if ((bs === 'Approved for Admission' || bs === 'Admission Approved') && canShowConfirmArrivalAction(row)) {
+                    var confirmArrivalURL = "@Url.Action("Confirm_Arrival", "IPDApplicationForm")?IPDApplicationFormid=" + id;
+                    acts += '<a href="' + confirmArrivalURL + '" class="hs-act hs-act--view" title="Confirm arrival details"><i class="fa fa-plane"></i> Confirm arrival</a>';
+                }
+            }
+
+            var tr = document.createElement('tr');
+            if (id) tr.dataset.href = VIEW_IPD_URL + '?IPDApplicationFormid=' + id;
+            tr.innerHTML =
+                '<td><strong>' + esc(brn) + '</strong></td>' +
+                // '<td>' + esc(rt) + '</td>' +
+                '<td>' + cin + '</td>' +
+                '<td>' + cout + '</td>' +
+                '<td>' + ipdStatusPill(bs) + '</td>' +
+                '<td class="hs-screening-col">' + screeningAppointmentHtml + '</td>' +
+                        '<td>' + ipdRoomStatusPill(ipdRoomStatus) + '</td>' +
+            '<td>' + ipdFinancialStatusPill(ipdFinancialStatus) + '</td>' +
+                '<td>' + (acts || '—') + '</td>';
+            tbody.appendChild(tr);
+        });
+        }); });
+    }).catch(function() {
+        document.getElementById('ipdLoading').style.display = 'none';
+        document.getElementById('ipdEmpty').style.display = 'block';
+    });
+}
+
+var HS_GROUP_URL = '@Url.Action("get_Group_Booking_List", "GroupBooking")';
+
+function loadGroupBookings() {
+    fetch(HS_GROUP_URL + '?tenantid=' + encodeURIComponent(HS_TENANT_ID) + '&pagesize=50&pagenumber=0')
+        .then(function(r) { return r.json(); })
+        .catch(function() { return { detail: [], count: 0 }; })
+        .then(function(data) {
+            var list = Array.isArray(data) ? data
+                     : (data && Array.isArray(data.detail) ? data.detail : []);
+
+            document.getElementById('groupLoading').style.display = 'none';
+            document.getElementById('groupCount').textContent = list.length;
+
+            if (list.length === 0) {
+                document.getElementById('groupEmpty').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('groupTable').style.display = 'table';
+            var tbody = document.getElementById('groupBody');
+            tbody.innerHTML = '';
+
+            list.forEach(function(row) {
+                var id        = row.groupbookingid || '';
+                var code      = row.groupcode      || '—';
+                var name      = row.groupname      || '—';
+                var members   = row.countofmembers || '—';
+
+                var viewURL   = '@Url.Action("Detail_Group_Booking", "GroupBooking")'
+                                + '?GroupBookingid=' + encodeURIComponent(id);
+
+                var acts = id
+                    ? '<a href="' + viewURL + '" class="hs-act hs-act--view">'
+                      + '<i class="fa fa-eye"></i> View</a>'
+                    : '—';
+
+                var tr = document.createElement('tr');
+                if (id) tr.dataset.href = viewURL;
+                tr.innerHTML =
+                    '<td><strong>' + esc(code) + '</strong></td>' +
+                    '<td>' + esc(name) + '</td>' +
+                    '<td>' + esc(String(members)) + '</td>' +
+                    '<td>' + acts + '</td>';
+                tbody.appendChild(tr);
+            });
+        })
+        .catch(function() {
+            document.getElementById('groupLoading').style.display = 'none';
+            document.getElementById('groupEmpty').style.display = 'block';
+        });
+}
+
+function hsBuildOpdActionDropdown(links) {
+    if (!links || links === '—') return '<span style="color:#94a3b8;font-size:11px;">—</span>';
+    return '<div class="hs-opdact-wrap">' +
+        '<button type="button" class="hs-opdact-trigger" onclick="hsToggleOpdActMenu(this,event)">' +
+        '<span><i class="fa fa-bolt"></i> Actions</span><i class="fa fa-chevron-down hs-opdact-chevron"></i>' +
+        '</button>' +
+        '<div class="hs-opdact-menu">' + links + '</div>' +
+        '</div>';
+}
+
+function hsCloseOpdActMenus() {
+    document.querySelectorAll('.hs-opdact-menu.open').forEach(function(menu) {
+        menu.classList.remove('open');
+        if (menu.previousElementSibling) menu.previousElementSibling.classList.remove('open');
+    });
+}
+
+function hsToggleOpdActMenu(button, event) {
+    event.stopPropagation();
+    var menu = button.nextElementSibling;
+    var shouldOpen = !menu.classList.contains('open');
+    hsCloseOpdActMenus();
+    if (!shouldOpen) return;
+
+    menu.classList.add('open');
+    button.classList.add('open');
+    var rect = button.getBoundingClientRect();
+    var menuWidth = 190;
+    menu.style.top = (rect.bottom + 4) + 'px';
+    menu.style.left = (rect.left + menuWidth > window.innerWidth ? rect.right - menuWidth : rect.left) + 'px';
+}
+
+document.addEventListener('click', hsCloseOpdActMenus);
+document.addEventListener('scroll', hsCloseOpdActMenus, true);
+window.hsToggleOpdActMenu = hsToggleOpdActMenu;
+/* ── Load OPDs ── */
+function loadOPDs() {
+    Promise.all([
+                fetch(
+            HS_OPD_URL +
+                    '?createddate_automatonfrom=' + encodeURIComponent(getPeriodFromDate()) +
+                    '&createddate_automatonto=' + encodeURIComponent(getPeriodToDate()) + healthSeekerFilterQuery()
+        ).then(function(r){ return r.json(); }).catch(function(){ return []; }),
+        fetch(HS_ASSESS_URL).then(function(r){ return r.text(); }).catch(function(){ return '[]'; })
+    ]).then(function(results) {
+        /* Build Set of assessed opdform UUIDs */
+        var HS_ASSESSED_OPD_SET = new Set();
+        var assessData;
+        try { assessData = JSON.parse(results[1]); } catch(e) { assessData = []; }
+        var assessList = Array.isArray(assessData) ? assessData : (assessData && Array.isArray(assessData.detail) ? assessData.detail : []);
+        assessList.forEach(function(a) {
+            var oId = a.opdform || a.OPDFormid || a.opdformid || '';
+            if (oId && oId !== '00000000-0000-0000-0000-000000000000') HS_ASSESSED_OPD_SET.add(oId.toLowerCase());
+        });
+
+        var data = results[0];
+        var list = Array.isArray(data) ? data : (data && Array.isArray(data.detail) ? data.detail : []);
+        list.sort(function(a, b) {
+            function opdAppointmentTime(row) {
+                var appointmentDate = parseDashboardDate(pick(row, ['appointmentdate', 'appointment_date'], ''));
+                var fallbackDate = parseDashboardDate(pick(row, ['createddate', 'visitdate'], ''));
+                var date = appointmentDate || fallbackDate;
+                if (!date) return 0;
+
+                date = new Date(date.getTime());
+                var fromTime = pick(row, ['durationfrom', 'durationFrom', 'fromtime'], '');
+                var timeMatch = (fromTime || '').toString().trim().match(/^(\d{1,2}):(\d{2})/);
+                if (timeMatch) {
+                    date.setHours(Number(timeMatch[1]), Number(timeMatch[2]), 0, 0);
+                }
+                return date.getTime();
+            }
+
+            var appointmentDifference = opdAppointmentTime(b) - opdAppointmentTime(a);
+            if (appointmentDifference !== 0) return appointmentDifference;
+
+            var aRef = pick(a, ['bookingreferencenumber', 'bookingreferenceno', 'opdformref'], '').toString();
+            var bRef = pick(b, ['bookingreferencenumber', 'bookingreferenceno', 'opdformref'], '').toString();
+            return bRef.localeCompare(aRef, undefined, { numeric: true });
+        });
+        document.getElementById('opdLoading').style.display = 'none';
+        document.getElementById('opdCount').textContent = list.length;
+        document.getElementById('statOPDs').textContent = list.length;
+
+        if (list.length === 0) { document.getElementById('opdEmpty').style.display = 'block'; return; }
+        document.getElementById('opdTable').style.display = 'table';
+
+        var opdIds = list.map(function(row) {
+            return pick(row, ['opdformid', 'OPDFormid'], '');
+        }).filter(function(id) { return !!id; });
+        var assessmentStatePromise = opdIds.length
+            ? fetch(HS_OPD_ASSESS_STATE_URL + '?opdformids=' + encodeURIComponent(opdIds.join(',')))
+                .then(function(r) { return r.ok ? r.json() : []; })
+                .catch(function() { return []; })
+            : Promise.resolve([]);
+
+        Promise.all([loadOpdBillingStatusMap(list), assessmentStatePromise]).then(function(context) {
+        var OPD_BILLING_STATUS_MAP = context[0] || {};
+		var OPD_ASSESSMENT_STATE_MAP = {};
+        (context[1] || []).forEach(function(state) {
+            var opdId = (state.opdformid || state.OPDFormid || '').toString().toLowerCase();
+            var assessmentId = (state.assessmentid || state.Assessmentid || '').toString();
+			if (opdId && assessmentId) {
+				HS_ASSESSED_OPD_SET.add(opdId);
+				OPD_ASSESSMENT_STATE_MAP[opdId] = {
+					id: assessmentId,
+					isDraft: state.isDraft === true || state.isdraft === true,
+					submitted: state.submitted === true
+				};
+			}
+        });
+        var tbody = document.getElementById('opdBody');
+        tbody.innerHTML = '';
+        list.forEach(function(row) {
+            var id   = pick(row, ['opdformid','OPDFormid'], '');
+            var ref  = pick(row, ['bookingreferencenumber','bookingreferenceno','opdformref','opdformnumber','OPDFormNumber'], '—');
+            var date = fmtDate(pick(row, ['createddate','visitdate'], ''));
+            var doctorName = pick(row, ['preferreddoctor_master', 'doctor_master', 'doctorname'], '—');
+            var vs   = pick(row, ['verifiedstatus','VerifiedStatus'], '');
+            var vsText = (vs || '').toString().trim();
+            var vsKey = vsText.toLowerCase();
+            var appointmentDateRaw = pick(row, ['appointmentdate', 'appointment_date'], '');
+            var appointmentDate = appointmentDateRaw ? fmtDate(appointmentDateRaw) : '';
+            var appointmentFrom = pick(row, ['durationfrom', 'durationFrom', 'fromtime'], '');
+            var appointmentTo = pick(row, ['durationto', 'durationTo', 'totime'], '');
+            var hasApprovedSlot = vsKey === 'approved'
+                || vsKey === 'opd approved'
+                || vsKey === 'assessment intern review pending'
+                || vsKey === 'assessment doctor review pending'
+                || vsKey === 'assessment approved';
+            var appointmentSlot = fmtTimeSlot(appointmentFrom, hasApprovedSlot ? '' : appointmentTo);
+
+                    var patientUid = pick(row, ['patientname'], '');
+                    var doctorUid  = pick(row, ['preferreddoctor'], '');
+                    var taskMaster = pick(row, ['task_master', 'taskname'], '');
+					var assessmentState = OPD_ASSESSMENT_STATE_MAP[(id || '').toString().toLowerCase()] || null;
+                    var ADD_ASSESS = '@Url.Action("Add_Assessment", "Assessment")';
+                    var CANCEL_OPD_URL = '@Url.Action("Cancel_OPD", "OPDForm")';
+                    var totalPaid     = parseFloat(pick(row, ['total_paid'], '0')) || 0;
+                    var billingStatus = OPD_BILLING_STATUS_MAP[(id || '').toString().toLowerCase()] || { hasFee: false, balance: 0, totalPaid: totalPaid };
+                    var cancelStatusKey = vsKey.replace(/[\s_-]+/g, '');
+                    var isCancelledOpd = cancelStatusKey === 'cancelled' || cancelStatusKey === 'canceled'
+                        || cancelStatusKey.indexOf('cancelledby') === 0 || cancelStatusKey.indexOf('canceledby') === 0;
+                    var isCompletedOpd = cancelStatusKey === 'opdcompleted'
+                        || cancelStatusKey === 'assessmentapproved';
+                           
+                    var acts = id ? '<a href="' + VIEW_OPD_URL + '?OPDFormid=' + encodeURIComponent(id) + '" class="hs-act hs-act--view"><i class="fa fa-eye"></i> View</a>' : '—';
+
+                                if (id && (vsKey === 'rework' || vsKey === 'ready for review' || vsKey === 'ready for frontdesk review' || vsKey === 'ready for opd review' || vsKey === 'opd rework')) {
+                        acts += ' <a href="' + OPD_URL + '?OPDFormid=' + encodeURIComponent(id) + '" class="hs-act hs-act--pay" title="Edit"><i class="fa fa-pencil"></i> Modify</a>';
+                    }
+                    
+                    
+                    /* Billing starts only after Front Desk has appointed a doctor and slot. */
+                    var hasDoctorAppointment = !!doctorUid && !!appointmentDateRaw && !!appointmentFrom;
+                    if (id && hasDoctorAppointment && !isCancelledOpd) {
+                        var billingActionClass = ((vsKey === 'approved' || vsKey === 'opd approved')
+                            && billingStatus.hasFee && billingStatus.balance > 0)
+                            ? 'hs-act--pay'
+                            : 'hs-act--view';
+                        acts += ' <a href="' + PAY_OPD_URL + '?OPDFormid=' + encodeURIComponent(id) + '" class="hs-act ' + billingActionClass + '" title="View bill or make a payment"><i class="fa fa-credit-card"></i> Billing &amp; Payment</a>';
+                    }
+                            if (id && (vsKey === 'approved' || vsKey === 'opd approved') && !HS_ASSESSED_OPD_SET.has(id.toLowerCase())) {
+                        acts += ' <a href="' + ADD_ASSESS + '?opdform=' + encodeURIComponent(id) + '&patientname=' + encodeURIComponent(patientUid) + '&preferreddoctor=' + encodeURIComponent(doctorUid) + '&taskname=' + encodeURIComponent(taskMaster || '') + '" class="hs-act" style="background:#ede9fe;color:#6d28d9;"><i class="fa fa-clipboard"></i> Assessment</a>';
+                    }
+					if (id && assessmentState && assessmentState.isDraft) {
+						var completeOpdDraftUrl = '@Url.Action("Update_Assessment", "Assessment")'
+							+ '?Assessmentid=' + encodeURIComponent(assessmentState.id)
+							+ '&completedraft=1';
+						acts += ' <a href="' + completeOpdDraftUrl + '" class="hs-act hs-act--complete" title="Complete and submit your draft assessment"><i class="fa fa-check-circle"></i> Complete Draft</a>';
+					}
+
+                    /* Completed OPDs are terminal and can no longer be cancelled. */
+                    if (id && !isCancelledOpd && !isCompletedOpd) {
+                        acts += ' <a href="' + CANCEL_OPD_URL + '?OPDFormid=' + encodeURIComponent(id) + '" class="hs-act" style="background:#fee2e2;color:#b91c1c;" title="Cancel OPD"><i class="fa fa-times-circle"></i> Cancel</a>';
+                    }
+                    acts = hsBuildOpdActionDropdown(acts);
+                    var tr = document.createElement('tr');
+            if (id) tr.dataset.href = VIEW_OPD_URL + '?OPDFormid=' + encodeURIComponent(id);
+            var appointmentMetaParts = [];
+            if (appointmentDate) appointmentMetaParts.push(appointmentDate);
+            if (appointmentSlot) appointmentMetaParts.push(appointmentSlot);
+            var appointmentMetaHtml = appointmentMetaParts.length
+                ? '<span class="hs-opd-appointment__chip">' + esc(appointmentMetaParts.join(' - ')) + '</span>'
+                : '';
+            var isAppointmentPendingReview = vsKey.replace(/[\s_-]+/g, '') === 'readyforopdreview';
+            var appointmentHtml = isAppointmentPendingReview
+                ? '<span class="hs-opd-appointment-pending"><i class="fa fa-clock-o"></i> Pending</span>'
+                : '<div class="hs-opd-appointment">' +
+                    '<div class="hs-opd-appointment__doctor">' +
+                        '<span class="hs-opd-appointment__doctor-icon"><i class="fa fa-user-md"></i></span>' +
+                        '<span>' + esc(doctorName || '—') + '</span>' +
+                    '</div>' +
+                    (appointmentMetaHtml
+                        ? '<div class="hs-opd-appointment__meta">' + appointmentMetaHtml + '</div>'
+                        : '<div class="hs-opd-appointment__empty">No slot scheduled</div>') +
+                '</div>';
+            tr.innerHTML =
+                '<td><strong>' + esc(ref) + '</strong></td>' +
+                '<td>' + date + '</td>' +
+                '<td>' + appointmentHtml + '</td>' +
+                '<td>' + verifiedPill(vs) + '</td>' +
+                '<td>' + acts + '</td>';
+            tbody.appendChild(tr);
+        });
+        });
+    }).catch(function() {
+        document.getElementById('opdLoading').style.display = 'none';
+        document.getElementById('opdEmpty').style.display = 'block';
+    });
+}
+
+/* ── Load Payments ── */
+function loadPayments() {
+            fetch(
+            HS_PAY_URL +
+            '?paymentdate_automatonfrom=' + encodeURIComponent(getPeriodFromDate()) +
+            '&paymentdate_automatonto=' + encodeURIComponent(getPeriodToDate())
+        )
+        .then(function(r){ return r.json(); })
+        .then(function(data) {
+            var list = Array.isArray(data) ? data : (data && Array.isArray(data.detail) ? data.detail : []);
+            document.getElementById('payLoading').style.display = 'none';
+            document.getElementById('payCount').textContent = list.length;
+
+            var totalPaid = 0, totalRefund = 0;
+            list.forEach(function(p) {
+                var ps = (p.paymentstatus||'').toLowerCase();
+                var amt = Math.abs(parseFloat(p.amount)||0);
+                if (ps === 'refunded') totalRefund += (parseFloat(p.refundedamount)||amt);
+                else totalPaid += amt;
+            });
+            document.getElementById('statPaid').textContent   = '₹' + num(totalPaid);
+            document.getElementById('statRefund').textContent = totalRefund > 0 ? '₹' + num(totalRefund) : '0';
+
+            if (list.length === 0) { document.getElementById('payEmpty').style.display = 'block'; return; }
+            document.getElementById('payTable').style.display = 'table';
+
+            var tbody = document.getElementById('payBody');
+            tbody.innerHTML = '';
+            list.forEach(function(row) {
+                var isRefund  = (row.paymentstatus||'').toLowerCase() === 'refunded';
+                var receiptNo = pick(row, ['receiptno','ReceiptNo','receipt_no','receiptnumber','ReceiptNumber'], '—');
+                var dispAmt   = isRefund
+                    ? (parseFloat(row.refundedamount)||Math.abs(parseFloat(row.amount)||0))
+                    : Math.abs(parseFloat(row.amount)||0);
+                if (isRefund && dispAmt === 0) return;
+                var amtHtml = isRefund
+                    ? '<span class="amt-negative">− ₹' + num(dispAmt) + '</span>'
+                    : '<span class="amt-positive">₹' + num(dispAmt) + '</span>';
+
+                var rawName = (row.patientname_master||'').replace(/\s+\+?\d[\d\s\-]{7,}$/, '').trim();
+                var purpose = row.receivablefor || (rawName ? 'Payment by ' + rawName : '—');
+                var visitType = '';
+
+if (row['ipdnumber_master'] != null && row['ipdnumber_master'] !== '') {
+    visitType = 'IPD - ' + esc(row['ipdnumber_master']);
+} else {
+    visitType = 'OPD - ' + esc(row['opdnumber_master']);
+}
+
+                var tr = document.createElement('tr');
+                if (isRefund) tr.style.background = '#fff8f8';
+                tr.innerHTML =
+                    '<td><strong>' + esc(receiptNo) + '</strong><br/>' + visitType + '</td>' +
+                    '<td>' + esc(purpose) + '</td>' +
+                    '<td>' + amtHtml + '</td>' +
+                    '<td>' + esc(row.paymentmode||'—') + '</td>' +
+                    '<td>' + fmtDate(row.createddate) + '</td>' +
+                    '<td>' + payStatusPill(row.paymentstatus||'—') + '</td>';
+                tbody.appendChild(tr);
+            });
+        }).catch(function() {
+            document.getElementById('payLoading').style.display = 'none';
+            document.getElementById('payEmpty').style.display = 'block';
+        });
+}
+
+/* ── Row click → navigate to view page (ignores clicks on action buttons) ── */
+document.addEventListener('click', function(e) {
+    if (e.target.closest('a, button')) return;
+    var tr = e.target.closest('tr[data-href]');
+    if (tr) window.location.href = tr.dataset.href;
+});
+
+/* ── Tab switching (IPD / OPD / Payments) ── */
+function hsSwitchTab(name) {
+    $('.hs-tab').each(function () {
+        var on = $(this).attr('data-hs-tab') === name;
+        $(this).toggleClass('is-active', on).attr('aria-selected', on ? 'true' : 'false');
+    });
+    $('.hs-tab-panel').each(function () {
+        var on = $(this).attr('data-hs-panel') === name;
+        $(this).toggleClass('is-active', on);
+    });
+    $('#hsBookingSearch').toggle(name === 'ipd' || name === 'opd');
+    if (name === 'ipd' || name === 'opd') {
+        var bookingSearchLabel = name === 'opd' ? 'Search OPD number' : 'Search IPD number';
+        $('#hsBookingNumber').attr({
+            placeholder: bookingSearchLabel,
+            'aria-label': bookingSearchLabel
+        });
+    }
+}
+
+/* ── Bootstrap all ── */
+$(document).ready(function() {
+    /* Collapse left sidebar for patient-facing view */
+    $('body').addClass('left-panel-hidden');
+    $('#base').css('padding-left', '0');
+
+    $('.hs-tab').on('click', function () {
+        var name = $(this).attr('data-hs-tab');
+        if (name) hsSwitchTab(name);
+    });
+
+    /* Preserve the requested workflow when returning from an OPD form. */
+    var requestedTab = new URLSearchParams(window.location.search).get('activeTab');
+    if (requestedTab && $('.hs-tab[data-hs-tab="' + requestedTab + '"]').length) {
+        hsSwitchTab(requestedTab);
+    }
+
+    var hsFilterTimer;
+    $('#hsBookingNumber').on('input', function () {
+        clearTimeout(hsFilterTimer);
+        hsFilterTimer = setTimeout(function () {
+            resetPatientDashboardLists();
+            loadIPDs();
+            loadOPDs();
+        }, 350);
+    });
+    loadProfile();
+    loadIPDs();
+    loadOPDs();
+    loadPayments();
+       loadGroupBookings();
+});
+
+        setInterval(function () {
+            if (!document.hidden) {
+
+                resetPatientDashboardLists();
+                       loadGroupBookings();
+                loadIPDs();
+                loadOPDs();
+                loadPayments();
+            }
+        }, 60000);
+
+</script>
+}
+<script>
+
+        function resetPatientDashboardLists() {
+        $('#ipdBody').empty();
+        $('#opdBody').empty();
+        $('#payBody').empty();
+
+        $('#ipdTable, #opdTable, #payTable').hide();
+        $('#ipdEmpty, #opdEmpty, #payEmpty').hide();
+
+        $('#ipdLoading, #opdLoading, #payLoading').show();
+
+        $('#ipdCount').text('0');
+        $('#opdCount').text('0');
+        $('#payCount').text('0');
+
+        $('#statIPDs').text('0');
+        $('#statOPDs').text('0');
+        $('#statPaid').text('₹0');
+        $('#statRefund').text('0');
+         $('#groupBody').empty();
+$('#groupTable').hide();
+$('#groupEmpty').hide();
+$('#groupLoading').show();
+$('#groupCount').text('0');
+    }
+               $(function () {
+
+        // Default to all history; Health Seekers can choose a date range when needed.
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+
+        periodstart = '';
+        periodend = '';
+
+        function cb(start, end) {
+            $('#period span')
+                .removeClass('placeholder')
+                .html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+        }
+
+        $('#period').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [
+                    moment().subtract(1, 'month').startOf('month'),
+                    moment().subtract(1, 'month').endOf('month')
+                ],
+                'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+                'Last 365 Days': [moment().subtract(364, 'days'), moment()]
+            },
+            autoUpdateInput: false
+        }, cb);
+
+        $('#period span').removeClass('placeholder').text('All');
+
+        $('#period').on('apply.daterangepicker', function (ev, picker) {
+
+            periodstart = picker.startDate.format('YYYY-MM-DD');
+            periodend = picker.endDate.clone().add(1, 'days').format('YYYY-MM-DD');
+
+            $('#period span').removeClass('placeholder');
+            resetPatientDashboardLists();
+
+        loadIPDs();
+        loadOPDs();
+        loadPayments()
+        });
+
+    });
+</script>
+
+<script>
+
+                var periodstart = null;
+    var periodend = null;
+
+           function formatDateYMD(date) {
+        var y = date.getFullYear();
+        var m = ('0' + (date.getMonth() + 1)).slice(-2);
+        var d = ('0' + date.getDate()).slice(-2);
+        return y + '-' + m + '-' + d;
+    }
+
+    function getPeriodFromDate() {
+        return periodstart || '';
+    }
+
+    function getPeriodToDate() {
+        return periodend || '';
+    }
+</script>
+
+        <script>
+                function ipdRoomStatusPill(status) {
+        var s = (status || '').toString().trim();
+
+        if (!s || s === '-') {
+            return '<span style="color:#94a3b8;font-size:11px;">—</span>';
+        }
+
+        return '<span class="hs-pill hs-pill--red">' + esc(s) + '</span>';
+    }
+
+    function ipdFinancialStatusPill(status) {
+        var s = (status || '').toString().trim();
+
+        if (!s || s === '-') {
+            return '<span style="color:#94a3b8;font-size:11px;">—</span>';
+        }
+
+        return '<span class="hs-pill hs-pill--green">' + esc(s) + '</span>';
+    }
+        </script>
+@if (Context.Request.Query["demo"] == "1")
+{
+<script>
+    (function () {
+        function applyPatientDemo() {
+            if (window.Swal) Swal.close();
+            $('#statIPDs').text('3'); $('#statOPDs').text('5'); $('#statPaid').text('₹ 48,600'); $('#statRefund').text('₹ 1,200');
+            $('#ipdCount').text('3'); $('#opdCount').text('5'); $('#groupCount').text('1'); $('#payCount').text('7');
+            $('#ipdLoading,#ipdEmpty').hide(); $('#ipdTable').show();
+            $('#ipdBody').html(
+                '<tr><td><strong>IP-260984</strong><div style="font-size:11px;color:#64748b">Naturopathy Rejuvenation</div></td><td>03 Sep 2026</td><td>10 Sep 2026</td><td><span class="hs-pill hs-pill--green">Admitted</span></td><td><div class="hs-screening"><div class="hs-screening__slot"><i class="fa fa-calendar"></i><span class="hs-screening__date">03 Sep</span><span class="hs-screening__time">09:30 AM</span></div><div class="hs-screening__doctor"><i class="fa fa-user-md"></i><span>Dr. Priya Sharma</span></div></div></td><td><span class="hs-pill hs-pill--green">Room Occupied</span></td><td><span class="hs-pill hs-pill--green">Partially Paid</span></td><td><button class="btn btn-sm cma_secondary_button">View</button></td></tr>' +
+                '<tr><td><strong>IP-260761</strong><div style="font-size:11px;color:#64748b">Wellness Detox Programme</div></td><td>12 Jun 2026</td><td>19 Jun 2026</td><td><span class="hs-pill hs-pill--green">Completed</span></td><td><span class="hs-screening-empty"><i class="fa fa-check-circle"></i> Completed</span></td><td><span class="hs-pill hs-pill--green">Released</span></td><td><span class="hs-pill hs-pill--green">Paid</span></td><td><button class="btn btn-sm cma_secondary_button">Summary</button></td></tr>' +
+                '<tr><td><strong>IP-260413</strong><div style="font-size:11px;color:#64748b">Stress Recovery Retreat</div></td><td>08 Mar 2026</td><td>13 Mar 2026</td><td><span class="hs-pill hs-pill--green">Completed</span></td><td><span class="hs-screening-empty"><i class="fa fa-check-circle"></i> Completed</span></td><td><span class="hs-pill hs-pill--green">Released</span></td><td><span class="hs-pill hs-pill--green">Paid</span></td><td><button class="btn btn-sm cma_secondary_button">Summary</button></td></tr>');
+        }
+        setTimeout(applyPatientDemo, 1800); setTimeout(applyPatientDemo, 3800);
+    })();
+</script>
+}

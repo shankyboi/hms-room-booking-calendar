@@ -1,0 +1,62 @@
+#nlmRoot .nlm-direct-selection-bar {
+    margin: 10px 14px 0;
+    padding: 10px 12px;
+    border: 1px solid #86efac;
+    border-radius: 12px;
+    background: #f0fdf4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#nlmRoot .nlm-direct-selection-bar.hidden { display: none; }
+#nlmRoot .nlm-direct-selection-title { font-size: 12px; font-weight: 800; color: #166534; }
+#nlmRoot .nlm-direct-selection-list { display: flex; gap: 6px; flex: 1; flex-wrap: wrap; }
+
+#nlmRoot .nlm-direct-selection-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 8px;
+    border: 1px solid #bbf7d0;
+    border-radius: 9px;
+    background: #fff;
+    color: #14532d;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+#nlmRoot .nlm-direct-selection-chip button {
+    border: 0;
+    padding: 0;
+    color: #b91c1c;
+    background: transparent;
+    cursor: pointer;
+}
+
+#nlmRoot .nlm-direct-modal {
+    width: min(1180px, 96vw);
+    height: 92vh;
+    max-width: none;
+    padding: 0;
+    overflow: hidden;
+}
+
+#nlmRoot .nlm-direct-modal iframe { width: 100%; height: 100%; border: 0; background: #fff; }
+
+/* DayPilot applies event colours inline. The important declarations ensure the
+   accepted selection keeps the requested outline after the drag selection is cleared. */
+#nlmRoot .scheduler_default_event.nlm-direct-selection-event {
+    box-sizing: border-box !important;
+    background: rgba(34, 197, 94, .14) !important;
+    border: 2px dotted #16a34a !important;
+    color: #166534 !important;
+}
+
+#nlmRoot .scheduler_default_event.nlm-direct-selection-event > div {
+    background: transparent !important;
+    border: 0 !important;
+    color: #166534 !important;
+    font-weight: 800 !important;
+}

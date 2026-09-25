@@ -1,0 +1,438 @@
+@*
+  ═══════════════════════════════════════════════════════════════
+  Reusable Room Search Control  (partial view)
+  ───────────────────────────────────────────────────────────────
+  Outlook-style search panel with room filters,
+  inline type-ahead results.
+
+  Usage in any form:
+      @await Html.PartialAsync("_RoomSearchControl")
+
+  JavaScript hooks (fire after a room is selected):
+      $(document).on('rsc:roomSelected', function(e, data) {
+          // data = full room object from getById_allinfo_Room
+      });
+      $(document).on('rsc:roomCleared', function(e) { ... });
+
+  Public API:
+      RoomSearchControl.getSelectedRoom()
+      RoomSearchControl.getSelectedId()
+      RoomSearchControl.clear()
+      RoomSearchControl.setRoom(roomId)
+  ═══════════════════════════════════════════════════════════════
+*@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IConfiguration Configuration
+
+<link rel="stylesheet" href="~/css/room-search-control.css" />
+
+<!-- ══════════ MAIN CONTROL ══════════ -->
+<div class="rsc-container" id="rscContainer">
+
+    <!-- ── Selected room chip (shown after pick) ── -->
+    <div class="rsc-selected-chip" id="rscSelectedChip">
+        <div class="rsc-result-avatar" id="rscChipAvatar"><i class="fa fa-door-open"></i></div>
+        <div style="flex:1;min-width:0;">
+            <div class="rsc-selected-name" id="rscChipName">—</div>
+            <div class="rsc-selected-meta" id="rscChipMeta"></div>
+        </div>
+        <button type="button" class="rsc-selected-clear" id="rscChipClear" title="Clear selection"><i class="fa fa-times"></i></button>
+    </div>
+
+    <!-- ── Search bar (hidden when a room is selected) ── -->
+    <div class="rsc-wrap" id="rscWrap">
+        <div class="rsc-search-bar">
+            <input type="text" class="rsc-input" id="rscInput" placeholder="Search room by number, code..." autocomplete="off" />
+            <button type="button" class="rsc-search-btn" id="rscSearchBtn" title="Search"><i class="fa fa-search"></i></button>
+            <button type="button" class="rsc-filter-toggle" id="rscFilterToggle" title="Advanced filters">
+                <i class="fa fa-sliders-h"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Outlook-style Filter Panel ── -->
+    <div class="rsc-filter-panel" id="rscFilterPanel">
+        <div class="rsc-filter-header">
+            <span class="rsc-filter-title"><i class="fa fa-filter"></i> Room Search</span>
+            <button type="button" class="rsc-filter-close" id="rscFilterClose" title="Close filters"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="rsc-filter-body">
+            <div class="rsc-filter-grid">
+                <input type="text" class="form-control rsc-filter-input" id="rscFltRoomNumber" placeholder="Room Number" autocomplete="off" />
+                <input type="text" class="form-control rsc-filter-input" id="rscFltRoomCode" placeholder="Room Code" autocomplete="off" />
+                <select class="form-control rsc-filter-input" id="rscFltRoomType">
+                    <option value="">Room Type</option>
+                </select>
+                <select class="form-control rsc-filter-input" id="rscFltOccupancyStatus">
+                    <option value="">Occupancy Status</option>
+                </select>
+            </div>
+        </div>
+        <div class="rsc-filter-footer">
+            <button type="button" class="btn btn-sm cma_primary_button" id="rscFilterSearch"><i class="fa fa-search"></i> Search</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="rscFilterClear">Clear filters</button>
+        </div>
+    </div>
+
+    <!-- ── Inline dropdown results ── -->
+    <div class="rsc-results-dropdown" id="rscResultsDropdown">
+        <div class="rsc-results-loading" id="rscLoading" style="display:none;"><i class="fa fa-spinner fa-spin"></i> Searching&hellip;</div>
+        <div class="rsc-results-empty" id="rscEmpty" style="display:none;">No rooms found.</div>
+        <div id="rscResultsList"></div>
+    </div>
+</div>
+
+<!-- ══════════ HIDDEN FIELD (binds to parent form) ══════════ -->
+<input type="hidden" name="room" id="room" />
+
+<script>
+/*  ═══════════════════════════════════════════════════════
+    Room Search Control – self-contained JS
+    ═══════════════════════════════════════════════════════ */
+(function ($) {
+    'use strict';
+
+    /* ── Config / URLs ── */
+    var LIST_URL      = '@Url.Action("get_Room_List", "Room")';
+    var DETAIL_URL    = '@Url.Action("getById_allinfo_Room", "Room")';
+    var LOOKUPS_URL   = '@Url.Action("get_lookups_by_entity", "lookups")';
+    var ROOMTYPE_URL  = '@Url.Action("lookup_Room_roomtype", "Room")';
+    var DEBOUNCE_MS   = 400;
+
+    /* ── DOM refs ── */
+    var $wrap         = $('#rscWrap');
+    var $chip         = $('#rscSelectedChip');
+    var $input        = $('#rscInput');
+    var $searchBtn    = $('#rscSearchBtn');
+    var $filterToggle = $('#rscFilterToggle');
+    var $filterPanel  = $('#rscFilterPanel');
+    var $dropdown     = $('#rscResultsDropdown');
+    var $resultsList  = $('#rscResultsList');
+    var $loading      = $('#rscLoading');
+    var $empty        = $('#rscEmpty');
+    var $hidden       = $('#room');
+
+    /* ── State ── */
+    var _searchTimer         = null;
+    var _selectedRoom        = null;
+    var _filterLookupsLoaded = false;
+
+    /* ══════════════════════════════════════
+       Helpers
+       ══════════════════════════════════════ */
+    function getTenantId() {
+        return (typeof str_tenantid !== 'undefined' && str_tenantid) ? str_tenantid : ($('#tenantid').val() || '');
+    }
+
+    function getParentBlock()    { return $('#block').val()    || ''; }
+    function getParentBuilding() { return $('#building').val() || ''; }
+    function getParentFloor()    { return $('#floor').val()    || ''; }
+
+    function esc(s) { return $('<span>').text(s || '').html(); }
+
+    /* ══════════════════════════════════════
+       Filter panel toggle
+       ══════════════════════════════════════ */
+    function openFilterPanel() {
+        loadFilterLookups();
+        $filterPanel.addClass('is-open');
+        $filterToggle.addClass('active');
+        closeDropdown();
+    }
+
+    function closeFilterPanel() {
+        $filterPanel.removeClass('is-open');
+        $filterToggle.removeClass('active');
+    }
+
+    function toggleFilterPanel() {
+        $filterPanel.hasClass('is-open') ? closeFilterPanel() : openFilterPanel();
+    }
+
+    /* ══════════════════════════════════════
+       Load lookup values for filter dropdowns
+       ══════════════════════════════════════ */
+    function loadFilterLookups() {
+        if (_filterLookupsLoaded) return;
+        _filterLookupsLoaded = true;
+
+        /* Room type from dedicated lookup */
+        $.ajax({
+            url: ROOMTYPE_URL,
+            dataType: 'json',
+            data: { tenantid: getTenantId() },
+            success: function (data) {
+                var $sel = $('#rscFltRoomType');
+                $sel.find('option:not(:first)').remove();
+                if (data && data.length) {
+                    data.sort(function (a, b) { return String(a.roomtypename || '').localeCompare(String(b.roomtypename || '')); });
+                    data.forEach(function (d) {
+                        if (d.roomtypename) {
+                            $sel.append('<option value="' + esc(d.roomtypename) + '">' + esc(d.roomtypename) + '</option>');
+                        }
+                    });
+                }
+            }
+        });
+
+        /* Occupancy status from entity lookups */
+        $.ajax({
+            url: LOOKUPS_URL,
+            dataType: 'json',
+            data: { id: 'Room' },
+            success: function (data) {
+                $.each(data, function (_, item) {
+                    if (item.fieldname === 'occupancystatus') {
+                        var $sel = $('#rscFltOccupancyStatus');
+                        $sel.find('option:not(:first)').remove();
+                        var opts = item.fielddesc.split(',').sort();
+                        opts.forEach(function (o) {
+                            var v = o.trim();
+                            if (v) $sel.append('<option value="' + v + '">' + v + '</option>');
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    /* ══════════════════════════════════════
+       Inline type-ahead search
+       ══════════════════════════════════════ */
+    function doInlineSearch() {
+        var term = $.trim($input.val()).toLowerCase();
+        if (term.length < 1) { closeDropdown(); return; }
+        closeFilterPanel();
+        fetchRooms(term, '', '', '', '');
+    }
+
+    /* ══════════════════════════════════════
+       Filtered search (from filter panel)
+       ══════════════════════════════════════ */
+    function doFilteredSearch() {
+        var roomNumber = $.trim($('#rscFltRoomNumber').val());
+        var roomCode   = $.trim($('#rscFltRoomCode').val());
+        var roomType   = $('#rscFltRoomType').val();
+        var occStatus  = $('#rscFltOccupancyStatus').val();
+
+        if (!roomNumber && !roomCode && !roomType && !occStatus) {
+            showDropdown(); showEmpty('Please enter at least one search filter.');
+            return;
+        }
+
+        fetchRooms('', roomNumber, roomCode, roomType, occStatus);
+    }
+
+    /* ══════════════════════════════════════
+       Fetch rooms from API and filter
+       ══════════════════════════════════════ */
+    function fetchRooms(searchTerm, roomNumber, roomCode, roomType, occStatus) {
+        showDropdown(); showLoading();
+
+        $.ajax({
+            url: LIST_URL,
+            dataType: 'json',
+            data: {
+                tenantid: getTenantId(),
+                block: getParentBlock(),
+                building: getParentBuilding(),
+                floor: getParentFloor(),
+                roomtype: roomType || '',
+                occupancystatus: occStatus || ''
+            },
+            success: function (data) {
+                /* Normalise: handle both flat array and { detail: [...] } wrapper */
+                var rows = (data && data.detail) ? data.detail : (Array.isArray(data) ? data : []);
+                if (!rows || rows.length === 0) { showEmpty(); return; }
+
+                /* Client-side filter by search term */
+                if (searchTerm) {
+                    rows = rows.filter(function (d) {
+                        var rn = (d.roomnumber || '').toLowerCase();
+                        var rc = (d.roomcode || '').toLowerCase();
+                        var rt = (d.roomtype || '').toLowerCase();
+                        return rn.indexOf(searchTerm) !== -1 || rc.indexOf(searchTerm) !== -1 || rt.indexOf(searchTerm) !== -1;
+                    });
+                }
+
+                /* Client-side filter by room number / room code from filter panel */
+                if (roomNumber) {
+                    rows = rows.filter(function (d) {
+                        return (d.roomnumber || '').toLowerCase().indexOf(roomNumber.toLowerCase()) !== -1;
+                    });
+                }
+                if (roomCode) {
+                    rows = rows.filter(function (d) {
+                        return (d.roomcode || '').toLowerCase().indexOf(roomCode.toLowerCase()) !== -1;
+                    });
+                }
+
+                rows.sort(function (a, b) {
+                    return String(a.roomnumber || '').toLowerCase().localeCompare(String(b.roomnumber || '').toLowerCase());
+                });
+
+                if (rows.length === 0) { showEmpty(); return; }
+
+                /* Hide filter panel so results are visible */
+                closeFilterPanel();
+                renderResults(rows.map(function (d) {
+                    return {
+                        id: d.Roomid || d.roomid,
+                        roomnumber: d.roomnumber || '',
+                        roomcode: d.roomcode || '',
+                        roomtype: d.roomtype || '',
+                        block: d.block || '',
+                        building: d.building || '',
+                        floor: d.floor || '',
+                        occupancystatus: d.occupancystatus || ''
+                    };
+                }));
+            },
+            error: function () { showEmpty('Search failed. Please try again.'); }
+        });
+    }
+
+    function clearFilters() {
+        $('#rscFltRoomNumber, #rscFltRoomCode').val('');
+        $('#rscFltRoomType, #rscFltOccupancyStatus').val('');
+        closeDropdown();
+    }
+
+    /* ══════════════════════════════════════
+       Render inline result rows
+       ══════════════════════════════════════ */
+    function renderResults(items) {
+        $loading.hide(); $empty.hide();
+        $resultsList.empty();
+        if (!items || items.length === 0) { showEmpty(); return; }
+
+        items.forEach(function (r) {
+            var label = r.roomnumber || '—';
+            var meta = [];
+            if (r.roomcode) meta.push('<span><i class="fa fa-barcode"></i> ' + esc(r.roomcode) + '</span>');
+            if (r.roomtype) meta.push('<span><i class="fa fa-bed"></i> ' + esc(r.roomtype) + '</span>');
+            if (r.floor) meta.push('<span><i class="fa fa-layer-group"></i> ' + esc(r.floor) + '</span>');
+            if (r.occupancystatus) meta.push('<span><i class="fa fa-circle" style="font-size:8px;"></i> ' + esc(r.occupancystatus) + '</span>');
+
+            var html = '<div class="rsc-result-item" data-id="' + esc(r.id) + '">' +
+                '<div class="rsc-result-avatar"><i class="fa fa-door-open"></i></div>' +
+                '<div class="rsc-result-info">' +
+                    '<div class="rsc-result-name">Room ' + esc(label) + '</div>' +
+                    '<div class="rsc-result-meta">' + meta.join('') + '</div>' +
+                '</div>' +
+                '<span class="rsc-result-select-hint">Select</span>' +
+            '</div>';
+            $resultsList.append(html);
+        });
+    }
+
+    /* ══════════════════════════════════════
+       Select a room (from any source)
+       ══════════════════════════════════════ */
+    function selectRoom(roomId) {
+        closeDropdown();
+        closeFilterPanel();
+        $.ajax({
+            url: DETAIL_URL,
+            data: { Roomid: roomId },
+            dataType: 'json',
+            success: function (data) {
+                if (!data || data.length === 0) return;
+                var r = data[0];
+                _selectedRoom = r;
+                $hidden.val(roomId);
+
+                /* Show chip */
+                $('#rscChipAvatar').html('<i class="fa fa-door-open"></i>');
+                $('#rscChipName').text('Room ' + (r.roomnumber || '—'));
+                var metaParts = [];
+                if (r.roomcode) metaParts.push(r.roomcode);
+                if (r.roomtype) metaParts.push(r.roomtype);
+                if (r.floor) metaParts.push('Floor: ' + r.floor);
+                $('#rscChipMeta').text(metaParts.join(' · '));
+                $chip.addClass('is-visible');
+                $wrap.hide();
+
+                /* Fire event so the parent form can auto-populate fields */
+                $(document).trigger('rsc:roomSelected', [r]);
+            }
+        });
+    }
+
+    function clearSelection() {
+        _selectedRoom = null;
+        $hidden.val('');
+        $chip.removeClass('is-visible');
+        $wrap.show();
+        $input.val('').focus();
+        $(document).trigger('rsc:roomCleared');
+    }
+
+    /* ══════════════════════════════════════
+       Dropdown helpers
+       ══════════════════════════════════════ */
+    function showDropdown()  { $dropdown.addClass('is-open'); }
+    function closeDropdown() { $dropdown.removeClass('is-open'); $resultsList.empty(); $loading.hide(); $empty.hide(); }
+    function showLoading()   { $resultsList.empty(); $loading.show(); $empty.hide(); }
+    function showEmpty(msg)  { $loading.hide(); $resultsList.empty(); $empty.text(msg || 'No rooms found.').show(); }
+
+    /* ══════════════════════════════════════
+       Event bindings – inline search
+       ══════════════════════════════════════ */
+    $input.on('input', function () {
+        clearTimeout(_searchTimer);
+        _searchTimer = setTimeout(doInlineSearch, DEBOUNCE_MS);
+    });
+    $input.on('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); clearTimeout(_searchTimer); doInlineSearch(); }
+        if (e.key === 'Escape') { closeDropdown(); }
+    });
+    $searchBtn.on('click', function () { clearTimeout(_searchTimer); doInlineSearch(); });
+
+    /* ── Filter panel bindings ── */
+    $filterToggle.on('click', toggleFilterPanel);
+    $('#rscFilterClose').on('click', function () { clearFilters(); closeFilterPanel(); });
+    $('#rscFilterSearch').on('click', doFilteredSearch);
+    $('#rscFilterClear').on('click', clearFilters);
+
+    /* Enter key in filter fields triggers search */
+    $('#rscFilterPanel').on('keydown', 'input', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); doFilteredSearch(); }
+    });
+
+    /* Click an inline result row */
+    $(document).on('click', '.rsc-result-item', function () {
+        selectRoom($(this).data('id'));
+    });
+
+    /* Clear selection chip */
+    $('#rscChipClear').on('click', clearSelection);
+
+    /* Close dropdown on outside click */
+    $(document).on('mousedown', function (e) {
+        if (!$(e.target).closest('#rscContainer').length) {
+            closeDropdown();
+        }
+    });
+
+    /* ── When parent block/building/floor changes, clear room selection ── */
+    $('#block, #building, #floor').on('change', function () {
+        if (_selectedRoom) {
+            clearSelection();
+        }
+    });
+
+    /* ══════════════════════════════════════
+       Public API
+       ══════════════════════════════════════ */
+    window.RoomSearchControl = {
+        getSelectedRoom: function () { return _selectedRoom; },
+        getSelectedId: function () { return $hidden.val(); },
+        clear: clearSelection,
+        setRoom: function (roomId) { if (roomId) selectRoom(roomId); }
+    };
+
+})(jQuery);
+</script>

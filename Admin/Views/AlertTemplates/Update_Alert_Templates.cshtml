@@ -1,0 +1,864 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/14/2026 05:24:36 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.AlertTemplatesModel
+			@{
+			ViewData["Title"] = @Resource.updatealerttemplates;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_Alert_Templates", "AlertTemplates", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updatealerttemplates</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.AlertTemplatesid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 entityname_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="entityname">@Resource.alerttemplates_entityname <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.entityname, new {@type="text",@maxlength="128", @class = "form-control form-control-lg mahat_transliterate required" })
+
+								 @Html.ValidationMessageFor(model => model.entityname)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 entityaction_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="entityaction">@Resource.alerttemplates_entityaction</label>
+								@Html.TextBoxFor(m => m.entityaction, new {@type="text",@maxlength="128", @class = "form-control form-control-lg mahat_transliterate " })
+
+								 @Html.ValidationMessageFor(model => model.entityaction)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-4 sendasbatch_craftmyapp_container">
+							<div>
+
+							<label for="sendasbatch">@Resource.alerttemplates_sendasbatch</label><br>
+							<div class="form-group">
+														<div>
+														  <label class="switch" for="sendasbatch">
+														  @Html.CheckBoxFor(m => m.sendasbatch,new {@class = "" })
+														   
+														  <span class="slider round"></span>
+														</label>
+														</div>
+													  </div>
+
+							</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 alerttype_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="alerttype">@Resource.alerttemplates_alerttype</label>
+										<select name="alerttype" id="alerttype" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.alerttype)
+									<div id="alerttype-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 alertsubject_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="alertsubject">@Resource.alerttemplates_alertsubject</label>
+								@Html.TextBoxFor(m => m.alertsubject, new {@type="text",@maxlength="256", @class = "form-control form-control-lg mahat_transliterate " })
+
+								 @Html.ValidationMessageFor(model => model.alertsubject)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 alertcopyto_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="alertcopyto">@Resource.alerttemplates_alertcopyto</label>
+								@Html.TextBoxFor(m => m.alertcopyto, new {@type="email",@maxlength="50", @class = "form-control form-control-lg " })
+
+								 @Html.ValidationMessageFor(model => model.alertcopyto)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 alertcarboncopyto_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="alertcarboncopyto">@Resource.alerttemplates_alertcarboncopyto</label>
+								@Html.TextBoxFor(m => m.alertcarboncopyto, new {@type="email",@maxlength="50", @class = "form-control form-control-lg " })
+
+								 @Html.ValidationMessageFor(model => model.alertcarboncopyto)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-12 col-xs-12 p-2 alertcontent_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="alertcontent">@Resource.alerttemplates_alertcontent</label>
+															@Html.TextAreaFor(m => m.alertcontent, new {@class = "form-control mahat_transliterate wysiwyg-editor " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.alertcontent)
+									<div id="alertcontent-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updatealerttemplates</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+	@if (Model != null)
+	{
+		@await Html.PartialAsync("~/Views/Shared/_Chatbot.cshtml")
+
+	}	
+	
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("AlertTemplates","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<script>
+var stralerttype;
+</script>
+@if (Model != null)
+{
+if (Model.alerttype != null && Model.alerttype.ToString() != "")
+{
+<script>
+stralerttype = "@Model.alerttype";
+</script>
+}
+}
+
+			<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'AlertTemplates' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="alerttype"){
+												var ddltarget_alerttype = "#alerttype"
+												$(ddltarget_alerttype).empty();
+												$(ddltarget_alerttype).append("<option value=''>Choose</option>")
+												var options_alerttype = optionDataInner.fielddesc.split(',');
+												options_alerttype.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_alerttype.forEach(function(option_alerttype){
+													if(stralerttype== option_alerttype){
+													$(ddltarget_alerttype).append('<option selected value="' + option_alerttype + '">' + option_alerttype+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_alerttype).append('<option  value="' + option_alerttype + '">' + option_alerttype+ '</option>')
+													  
+												})  
+ 
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+			
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			
+			<script>
+			
+			
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Create_Alert_Templates")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Alert_Templates")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updatealerttemplates;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updatealerttemplates")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ 
+
+ 
+ 
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ 
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("AlertTemplates","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "AlertTemplates")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+	
+	@if (Model != null)
+{
+	<script>
+			 $(document).ready(function () {
+			var chatBody = $('#chatMessages'); // Adjust selector based on your actual DOM
+
+				 if (chatBody.length) {
+				var welcomeMsg = `<div class="receiversection">
+							 <div class="profile"><img src="${vBaseurl}/images/chatbot.jpg" alt=""></div>
+								 <div>
+							<div class="sender_name"><span>Mahat.ai</span><span>02:53 PM</span></div>
+							<div class="receiver"><p>Hello! How can I assist you today?</p></div>
+				</div></div>
+					 `;
+					 chatBody.append(welcomeMsg);
+				 }
+			 });
+	</script>
+
+		<script>
+		$('.contCard').addClass('col-sm-8');
+	let conversationHistory = [];
+	$(document).ready(function () {
+		conversationHistory.forEach(item => {
+			appendChatMessage(item.role === 'user' ? 'You' : 'Mahat.ai', item.content);
+		});
+	});
+
+	function generateAlertContent() {
+		
+		const entityType = $('#entityname').val();
+		const entityAction = $('#entityaction').val();
+		const sendAsBatch = $('#sendasbatch').is(':checked') ? "Yes" : "No";
+		const alertType = $('#alerttype :selected').val();
+		const alertSubject = $('#alertsubject').val();
+		const alertCopyTo = $('#alertcopyto').val();
+		const alertCarbonCopyTo = $('#alertcarboncopyto').val();
+		const userPrompt = $('#UserPrompt').val();
+			const alertcontent = $('#alertcontent').val();
+
+		appendChatMessage('You', userPrompt);
+		conversationHistory.push({ role: 'user', content: userPrompt });
+
+		const finalPrompt = `
+	Generate an alert content email with the following metadata:
+
+	- Entity Type: ${entityType}
+	- Entity Action: ${entityAction}
+	- Send as Batch: ${sendAsBatch}
+	- Alert Type: ${alertType}
+	- Alert Subject: ${alertSubject}
+	- Alert Copy To: ${alertCopyTo}
+	- Alert Carbon Copy To: ${alertCarbonCopyTo}
+	- Existing Content: ${alertcontent}
+		Please strictly retain words withing curly brackets in the Existing Content . Also dont want email subject just body enough.
+	User's instructions:
+	${userPrompt}
+	`;
+
+		$.ajax({
+			url: '@Url.Action("GenerateAlertContent", "OpenAI")' ,
+			data:{ prompt : finalPrompt.toString()},
+			success: function (response) {
+				const reply = response;
+				appendChatMessage('Mahat.ai', reply);
+				conversationHistory.push({ role: 'assistant', content: reply });
+			},
+			error: function (err) {
+				appendChatMessage('Mahat.ai', "Sorry, something went wrong.");
+			},
+			complete: function () {
+				$('#UserPrompt').val('');
+			}
+		});
+	}
+		if (!window.messageStore) window.messageStore = [];
+	function appendChatMessage(sender, message, time = new Date()) {
+		const timeStr = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+		const sectionClass = sender === 'You' ? 'sendersection' : 'receiversection';
+		const contentClass = sender === 'You' ? 'sender' : 'receiver';
+		const profileImg = sender === 'You' ? '' : `<div class="profile"><img src="${vBaseurl}/images/chatbot.jpg" alt=""></div>`;
+// Escape HTML (optional, for safety)
+			const messageIndex = window.messageStore.push(message) - 1;
+			const escapedMessage = sender === 'You' ? $('<div>').text(message).html() : message;
+
+			const applyButton = sender !== 'You'
+				? `<button type="button" class="apply-btn btn cma_primary_button  cma_save_button waves-effect m-10px" onclick="applyToAlertContentByIndex(${messageIndex})">Apply</button>`
+				: '';
+
+
+		const html = `
+			<div class="${sectionClass}">
+				${profileImg}
+				<div>
+					<div class="sender_name"><span>${sender}</span><span>${timeStr}</span></div>
+					<div class="${contentClass}">${message}</div>
+						${applyButton}
+				</div>
+			</div>
+		`;
+		$('#chatMessages').append(html);
+		if ($('#chatBox').length) {
+			$('#chatBox').scrollTop($('#chatBox')[0].scrollHeight);
+		}
+	}
+		function applyToAlertContentByIndex(index) {
+			const content = window.messageStore[index];
+		$('#alertcontent').val(content);
+		$('#alertcontent').code(content).val(content);
+
+	}
+	</script>
+	}
+
+		
+	
+
+			
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 
+						})
+					
+
+					});
+					</script>

@@ -1,0 +1,979 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:41:43 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.TherapyItemModel
+			@{
+			ViewData["Title"] = @Resource.addtherapyitem;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Add_Therapy_Item", "TherapyItem", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.addtherapyitem</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.TherapyItemid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 therapyitemcategory_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapyitemcategory">@Resource.therapyitem_therapyitemcategory <b class="iconRed">*</b></label>
+										<select name="therapyitemcategory" id="therapyitemcategory"  class="form-control select2 select2-list  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.therapyitemcategory)
+									<div id="therapyitemcategory-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyitemname_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="therapyitemname">@Resource.therapyitem_therapyitemname <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.therapyitemname, new {@type="text",@maxlength="128", @class = "form-control form-control-lg mahat_transliterate required" })
+
+								 @Html.ValidationMessageFor(model => model.therapyitemname)
+							</div>
+						</div>
+					</div>
+
+								<div class="col-sm-3 col-xs-12 p-2 my-2 price_craftmyapp_container">
+									<div class="form-group">
+									<label for="price">@Resource.therapyitem_price <b class="iconRed">*</b></label><br>
+									<div class="input-group prefix">
+										<span class="input-group-addon">&#8377;</span>
+										@Html.TextBoxFor(m => m.price, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg required" })
+
+									</div>
+								@Html.ValidationMessageFor(model => model.price)
+								</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyitemimage_craftmyapp_container list_card_section list_card_tablet">
+											<div>
+											   
+												<div class="form-group form-group--float-above my-3">
+												 <label for="therapyitemimage">@Resource.therapyitem_therapyitemimage</label>
+													<div class="input-file">
+														<input type="hidden"  id="therapyitemimage_existing" name="therapyitemimage_existing">
+														<div id="dropZonetherapyitemimage" class="drop-zone">
+														<input type="file" multiple accept="image/*"  id="therapyitemimage" name="therapyitemimage" class="attachments file-browse" >
+														<label for="therapyitemimage">Browse</label>
+														<span class="therapyitemimagefilebtn filebtn"></span>
+													
+													
+													</div>
+														<div id="attachmentDisp" href="" >
+															<span id = "therapyitemimageshowFiles" class="btn-sm btn-default showFiles" data-toggle="modal" data-target="#therapyitemimageModalotherdocuments"></span>
+														</div>
+													</div>                                                   
+													<!--uploaded files-->
+													<!-- Modal content-->
+													<div class="modal-content uploaded_files" id="therapyitemimageModalotherdocuments">
+														<div class="modal-header">
+															<h4 class="modal-title"><img src = "~/images/upload-file.png" alt="file"/><span>Uploaded Files</span></h4>
+															<button type = "button" class="close" data-dismiss="modal">&times;</button>
+														</div>
+														<div class="modal-body">
+															<div id = "therapyitemimageAttachedFiles">
+																<table id = "therapyitemimagefilesTab" class="table table-striped"></table>
+															</div>
+														</div>
+														<div class="modal-footer">
+															<button type = "button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										 </div>
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.addtherapyitem</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("TherapyItem","create")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<script>
+$(document).ready(function () {
+$("#price").autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+})
+</script>
+<script>
+	var therapyitemimageuploaded_attachments=[];
+	 
+</script>
+	@if (Model != null)
+	{
+		if(Model.therapyitemimage != null && Model.therapyitemimage.ToString() != "")
+		{
+		<script>
+			 therapyitemimageuploaded_attachments= "@Model.therapyitemimage".split('|').filter(Boolean);
+			$("#therapyitemimage_existing").val("@Model.therapyitemimage")
+		</script>
+		}
+	}
+ 
+<script>
+	
+   
+	var fileInputtherapyitemimage = document.getElementById('therapyitemimage');
+	
+	var filesTabtherapyitemimage = $('#therapyitemimagefilesTab');
+	var uploadernametherapyitemimage = document.querySelector(".therapyitemimagefilebtn");
+	var therapyitemimageselectedFiles = [];
+	var therapyitemimageexistingFiles = therapyitemimageuploaded_attachments;
+	renderExistingFileListOftherapyitemimage();
+	updateFileCountoftherapyitemimage();
+	var lastActiveDropZone = null;
+
+	fileInputtherapyitemimage.addEventListener('change', function (e) {
+		var files = e.target.files;
+
+		// Append the newly selected files to the existing therapyitemimageselectedFiles array
+		therapyitemimageselectedFiles.push(...files);
+
+
+		// Render the file list
+		renderFileListoftherapyitemimage();
+
+		 
+
+		// Update the file count
+		updateFileCountoftherapyitemimage();
+	});
+
+	// Drag & Drop and Paste functionality
+	var dropZone = document.getElementById('dropZonetherapyitemimage');
+
+	// Click to paste functionality
+	dropZone.addEventListener('click', function () {
+		lastActiveDropZone = 'therapyitemimage';
+		// Try to read from clipboard
+		if (navigator.clipboard && navigator.clipboard.read) {
+			navigator.clipboard.read().then(items => {
+				items.forEach(item => {
+					if (item.types.includes('image/png') || item.types.includes('image/jpeg')) {
+						item.getType(item.types[0]).then(blob => {
+							var file = new File([blob], "pasted_image.png", { type: blob.type });
+							therapyitemimageselectedFiles.push(file);
+							renderFileListoftherapyitemimage();
+							updateFileCountoftherapyitemimage();
+							clearClipboard();  
+						});
+					}
+				});
+			}).catch(err => {
+				console.error('Failed to read clipboard contents: ', err);
+			});
+		}
+	});
+
+	// Drag over event
+	dropZone.addEventListener('dragover', function (event) {
+		event.preventDefault();
+		dropZone.classList.add('dragover');
+		lastActiveDropZone = 'therapyitemimage';
+	});
+
+	// Drag leave event
+	dropZone.addEventListener('dragleave', function (event) {
+		event.preventDefault();
+		dropZone.classList.remove('dragover');
+	});
+
+	// Drop event
+	dropZone.addEventListener('drop', function (event) {
+		event.preventDefault();
+		dropZone.classList.remove('dragover');
+		var files = event.dataTransfer.files;
+		therapyitemimageselectedFiles.push(...files);
+		renderFileListoftherapyitemimage();
+		updateFileCountoftherapyitemimage();
+	});
+
+	// Global paste event
+	document.addEventListener('paste', function (event) {
+		if (lastActiveDropZone === 'therapyitemimage') {
+			var items = event.clipboardData.items;
+			for (var i = 0; i < items.length; i++) {
+				if (items[i].kind === 'file') {
+					var file = items[i].getAsFile();
+					therapyitemimageselectedFiles.push(file);
+					renderFileListoftherapyitemimage();
+					updateFileCountoftherapyitemimage();
+					clearClipboard(); 
+				} else if (items[i].kind === 'string') {
+					items[i].getAsString(function (text) {
+						// Check if it's an image URL
+						if (text.match(/\.(jpeg|jpg|gif|png)$/) != null) {
+							var img = new Image();
+							img.onload = function () {
+								var canvas = document.createElement('canvas');
+								canvas.width = img.width;
+								canvas.height = img.height;
+								var ctx = canvas.getContext('2d');
+								ctx.drawImage(img, 0, 0);
+								canvas.toBlob(function (blob) {
+									var file = new File([blob], "pasted_image.png", { type: blob.type });
+									therapyitemimageselectedFiles.push(file);
+									renderFileListoftherapyitemimage();
+									updateFileCountoftherapyitemimage();
+									clearClipboard();  // Clear the clipboard after processing the image
+								}, 'image/png');
+							};
+							img.src = text;
+						}
+					});
+				}
+			}
+		}
+		});
+	 
+	function renderExistingFileListOftherapyitemimage() {
+		// Remove all <tr> elements with the class name existingFile
+		filesTabtherapyitemimage.find('tr.existingFile').remove();
+
+
+		// Render the updated file list
+		for (var i = 0; i < therapyitemimageexistingFiles.length; i++) {
+			var file = therapyitemimageexistingFiles[i];
+
+			var fileName = file;
+			var icon_Class = getIconClass(fileName);
+			  var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + fileName + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																				 
+			var row = $('<tr>').attr('id', 'filetherapyitemimage' + i).attr('class', 'existingFile');
+			row.append($('<td>').addClass('ico_lst').html('<img src="' + vBaseurl + '' + icon_Class + '" alt="icon"/>'));
+			row.append($('<td>').addClass('cont_lst').html('<a href="' + filepath + '" target="_blank" id="' + fileName + '" class="filedisplay" title="' + fileName + '"><span>' + fileName + '</span></a>'));
+			row.append($('<td>').addClass('delete_lst').html('<span class="btn btn-sm deleteAttach delexistingtherapyitemimage' + i + '"><img src="' + vBaseurl + '/images/delete.png" alt="icon"></span>'));
+
+			filesTabtherapyitemimage.append(row);
+
+			// Bind the click event for the delete button using a function
+			bindDeleteExistingEventtherapyitemimage(i);
+		}
+	}
+
+	function renderFileListoftherapyitemimage() {
+		// Remove all <tr> elements with the class name newFile
+		filesTabtherapyitemimage.find('tr.newFile').remove();
+
+		// Render the updated file list
+		for (var i = 0; i < therapyitemimageselectedFiles.length; i++) {
+			var file = therapyitemimageselectedFiles[i];
+
+			var fileName = file.name;
+			var icon_Class = getIconClass(fileName);
+
+			var row = $('<tr>').attr('id', 'filetherapyitemimage' + i).attr('class', 'newFile');
+			row.append($('<td>').addClass('ico_lst').html('<img src="' + vBaseurl + '' + icon_Class + '" alt="icon"/>'));
+			row.append($('<td>').addClass('cont_lst').html('<a href="' + URL.createObjectURL(file) + '" target="_blank" id="' + fileName + '" class="filedisplay" title="' + fileName + '"><span>' + fileName + '</span></a>'));
+			row.append($('<td>').addClass('delete_lst').html('<span class="btn btn-sm deleteAttach deltherapyitemimage' + i + '"><img src="' + vBaseurl + '/images/delete.png" alt="icon"></span>'));
+
+			filesTabtherapyitemimage.append(row);
+
+			// Bind the click event for the delete button using a function
+			bindDeleteEventtherapyitemimage(i);
+		}
+	}
+
+	function bindDeleteEventtherapyitemimage(index) {
+		$(".deltherapyitemimage" + index).click(function () {
+			// Remove the file from the selected files array
+			therapyitemimageselectedFiles.splice(index, 1);
+
+			// Re-render the file list
+			renderFileListoftherapyitemimage();
+
+			// Update the file count
+			updateFileCountoftherapyitemimage();
+		});
+	}
+	function bindDeleteExistingEventtherapyitemimage(index) {
+		$(".delexistingtherapyitemimage" + index).click(function () {
+			// Remove the file from the selected files array
+			therapyitemimageexistingFiles.splice(index, 1);
+			
+			$("#therapyitemimage_existing").val(therapyitemimageexistingFiles.join('|'))
+			
+			// Re-render the file list
+			renderExistingFileListOftherapyitemimage();
+
+			// Update the file count
+			updateFileCountoftherapyitemimage();
+		});
+	}
+	function updateFileCountoftherapyitemimage() {
+		// Display the file count
+		uploadernametherapyitemimage.innerHTML = therapyitemimageselectedFiles.length + therapyitemimageexistingFiles.length + ' files selected';
+		 
+	}
+	function clearClipboard() {
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard.writeText('').then(function () {
+				console.log('Clipboard cleared');
+			}, function (err) {
+				console.error('Could not clear clipboard: ', err);
+			});
+		}
+	}
+
+
+</script>
+<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+								<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script> 
+
+			
+			
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			
+			<script>
+			
+			
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Therapy_Item")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Therapy_Item")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updatetherapyitem;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updatetherapyitem")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ 
+
+ 
+ 
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ 
+
+ 
+ formdata.delete('therapyitemimage');
+					 for (var i = 0; i < therapyitemimageselectedFiles.length; i++) {
+							 formdata.append('therapyitemimage', therapyitemimageselectedFiles[i]);
+						}
+
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("TherapyItem","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "TherapyItem")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+
+<script>
+var strtherapyitemcategory;
+</script>
+	@if (Model != null)
+	{
+		if(Model.therapyitemcategory != null && Model.therapyitemcategory.ToString() != "")
+		{
+		<script>
+			 strtherapyitemcategory="@Model.therapyitemcategory"
+		</script>
+		}
+	}
+<script>
+function lookup_TherapyItem_therapyitemcategory(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_TherapyItem_therapyitemcategory")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.itemcategory !== null);
+			data.sort((a, b) =>
+				String(a.itemcategory).toLowerCase().localeCompare(String(b.itemcategory).toLowerCase()) 
+			);
+		}
+	   var ddltarget_therapyitemcategory="#therapyitemcategory"
+		$(ddltarget_therapyitemcategory).empty();
+		
+		$(ddltarget_therapyitemcategory).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strtherapyitemcategory== optionDataInner.TherapyItemCategoryid){
+					$(ddltarget_therapyitemcategory).append('<option selected value="' + optionDataInner.TherapyItemCategoryid + '">' + optionDataInner.itemcategory+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_therapyitemcategory).append('<option  value="' + optionDataInner.TherapyItemCategoryid+ '">' + optionDataInner.itemcategory+ '</option>')
+
+
+		});
+
+		$(ddltarget_therapyitemcategory).select2()
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_TherapyItem_therapyitemcategory(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_TherapyItem_therapyitemcategory($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script>
+
+
+
+

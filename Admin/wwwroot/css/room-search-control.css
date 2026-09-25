@@ -1,0 +1,395 @@
+/* ============================================
+   Reusable Room Search Control
+   Outlook-style filter panel + inline results
+   ============================================ */
+
+/* ── Wrapper positioning for dropdown ── */
+.rsc-container {
+  position: relative;
+}
+
+/* ── Main wrapper ── */
+.rsc-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.rsc-search-bar {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #d2d6dc;
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+  min-height: 38px;
+  transition: border-color 0.2s;
+}
+
+.rsc-search-bar:focus-within {
+  border-color: var(--btnprimary, #2d5f44);
+  box-shadow: 0 0 0 2px rgba(45, 95, 68, 0.12);
+}
+
+/* ── Text input ── */
+.rsc-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  padding: 6px 12px;
+  min-width: 100px;
+  background: transparent;
+}
+
+.rsc-input::placeholder {
+  color: #94a3b8;
+}
+
+/* ── Search icon btn inside bar ── */
+.rsc-search-btn {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  padding: 0 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.rsc-search-btn:hover {
+  color: var(--btnprimary, #2d5f44);
+}
+
+/* ── Filter toggle button inside bar ── */
+.rsc-filter-toggle {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 14px;
+  padding: 0 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s, background 0.2s;
+  border-left: 1px solid #e5e7eb;
+}
+
+.rsc-filter-toggle:hover {
+  color: var(--btnprimary, #2d5f44);
+  background: #f0faf5;
+}
+
+.rsc-filter-toggle.active {
+  color: var(--btnprimary, #2d5f44);
+  background: #f0faf5;
+}
+
+/* ══════════════════════════════════════════════
+   Outlook-style Filter Panel
+   ══════════════════════════════════════════════ */
+.rsc-filter-panel {
+  display: none;
+  position: absolute;
+  z-index: 1055;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  margin-top: 4px;
+  overflow: hidden;
+  animation: rsc-panel-in 0.15s ease;
+}
+
+.rsc-filter-panel.is-open {
+  display: block;
+}
+
+@keyframes rsc-panel-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Filter header ── */
+.rsc-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.rsc-filter-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.rsc-filter-title i {
+  color: var(--btnprimary, #2d5f44);
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+.rsc-filter-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.rsc-filter-close:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* ── Filter body ── */
+.rsc-filter-body {
+  padding: 10px 14px 6px;
+}
+
+/* ── Grid layout – side by side ── */
+.rsc-filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.rsc-filter-input {
+  font-size: 13px !important;
+  padding: 6px 10px !important;
+  height: 34px !important;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #fff;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.rsc-filter-input:focus {
+  border-color: var(--btnprimary, #2d5f44);
+  box-shadow: 0 0 0 2px rgba(45, 95, 68, 0.1);
+  outline: none;
+}
+
+/* ── Filter footer ── */
+.rsc-filter-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 16px;
+  border-top: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.rsc-filter-footer .btn {
+  font-size: 13px;
+  padding: 5px 18px;
+}
+
+/* ══════════════════════════════════════════════
+   Dropdown results
+   ══════════════════════════════════════════════ */
+.rsc-results-dropdown {
+  position: absolute;
+  z-index: 1060;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  max-height: 360px;
+  overflow-y: auto;
+  display: none;
+}
+
+.rsc-results-dropdown.is-open {
+  display: block;
+}
+
+/* Single result item */
+.rsc-result-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+
+.rsc-result-item:last-child {
+  border-bottom: none;
+}
+
+.rsc-result-item:hover,
+.rsc-result-item.is-focused {
+  background: #f0faf5;
+}
+
+.rsc-result-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--btnprimary, #2d5f44), #198754);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+.rsc-result-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.rsc-result-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rsc-result-meta {
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 1px;
+}
+
+.rsc-result-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.rsc-result-meta i {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* "Select" indicator on right */
+.rsc-result-select-hint {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #94a3b8;
+  padding: 2px 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
+.rsc-result-item:hover .rsc-result-select-hint {
+  color: var(--btnprimary, #2d5f44);
+  border-color: var(--btnprimary, #2d5f44);
+  background: #f0faf5;
+}
+
+/* Loading / empty states */
+.rsc-results-loading,
+.rsc-results-empty {
+  text-align: center;
+  padding: 18px 14px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.rsc-results-loading i {
+  margin-right: 6px;
+}
+
+/* ══════════════════════════════════════════════
+   Selected room chip
+   ══════════════════════════════════════════════ */
+.rsc-selected-chip {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: #f0faf5;
+  border: 1px solid #d1e8dc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  width: 100%;
+}
+
+.rsc-selected-chip.is-visible {
+  display: flex;
+}
+
+.rsc-selected-chip .rsc-result-avatar {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  font-size: 13px;
+}
+
+.rsc-selected-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rsc-selected-meta {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.rsc-selected-clear {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.rsc-selected-clear:hover {
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+/* ══════════════════════════════════════════════
+   Responsive
+   ══════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .rsc-filter-grid {
+    grid-template-columns: 1fr;
+  }
+}

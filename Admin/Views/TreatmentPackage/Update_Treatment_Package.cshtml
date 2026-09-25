@@ -1,0 +1,4060 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/14/2026 05:00:21 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.TreatmentPackageModel
+			@{
+			ViewData["Title"] = @Resource.updatetreatmentpackage;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_Treatment_Package", "TreatmentPackage", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updatetreatmentpackage</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.TreatmentPackageid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 packagename_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="packagename">@Resource.treatmentpackage_packagename <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.packagename, new {@type="text",@maxlength="128", @class = "form-control form-control-lg mahat_transliterate required" })
+
+								 @Html.ValidationMessageFor(model => model.packagename)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 noofdays_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="noofdays">@Resource.treatmentpackage_noofdays <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.noofdays, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg required" })
+
+								 @Html.ValidationMessageFor(model => model.noofdays)
+							</div>
+						</div>
+					</div>
+ <div class="col-sm-12 col-xs-12 mt-3 roomtypes_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Room Types Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.roomtypes
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-roomtypes pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="roomtypesContainer" class="roomtypesContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Room Types Containder Block-->
+					
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 therapy_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Therapy Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.therapy
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-therapy pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="therapyContainer" class="therapyContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Therapy Containder Block-->
+					
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 therapykits_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Therapy Kits Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.therapykits
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-therapykits pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="therapykitsContainer" class="therapykitsContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Therapy Kits Containder Block-->
+					
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 therapyitems_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Therapy Items Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.therapyitems
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-therapyitems pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="therapyitemsContainer" class="therapyitemsContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Therapy Items Containder Block-->
+					
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 medicines_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Medicines Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.medicines
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-medicines pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="medicinesContainer" class="medicinesContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Medicines Containder Block-->
+					
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 PricingSummary_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.pricingsummary</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 roomtypeamountaverage_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-2" > 
+										<label for="roomtypeamountaverage">@Resource.treatmentpackage_roomtypeamountaverage</label><br>
+										@Html.TextBoxFor(m => m.roomtypeamountaverage, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.roomtypeamountaverage)
+									<div id="roomtypeamountaverage-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyamount_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-2" > 
+										<label for="therapyamount">@Resource.treatmentpackage_therapyamount</label><br>
+										@Html.TextBoxFor(m => m.therapyamount, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.therapyamount)
+									<div id="therapyamount-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapykitamount_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-2" > 
+										<label for="therapykitamount">@Resource.treatmentpackage_therapykitamount</label><br>
+										@Html.TextBoxFor(m => m.therapykitamount, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.therapykitamount)
+									<div id="therapykitamount-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 therapyitemamount_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-2" > 
+										<label for="therapyitemamount">@Resource.treatmentpackage_therapyitemamount</label><br>
+										@Html.TextBoxFor(m => m.therapyitemamount, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.therapyitemamount)
+									<div id="therapyitemamount-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 medicineamount_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-2" > 
+										<label for="medicineamount">@Resource.treatmentpackage_medicineamount</label><br>
+										@Html.TextBoxFor(m => m.medicineamount, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.medicineamount)
+									<div id="medicineamount-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 calculatedpackagecost_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-2" > 
+										<label for="calculatedpackagecost">@Resource.treatmentpackage_calculatedpackagecost <b class="iconRed">*</b></label><br>
+										@Html.TextBoxFor(m => m.calculatedpackagecost, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg required" })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.calculatedpackagecost)
+									<div id="calculatedpackagecost-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+								<div class="col-sm-3 col-xs-12 p-2 my-2 packagecost_craftmyapp_container">
+									<div class="form-group">
+									<label for="packagecost">@Resource.treatmentpackage_packagecost <b class="iconRed">*</b></label><br>
+									<div class="input-group prefix">
+										<span class="input-group-addon">&#8377;</span>
+										@Html.TextBoxFor(m => m.packagecost, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg required" })
+
+									</div>
+								@Html.ValidationMessageFor(model => model.packagecost)
+								</div>
+								</div>
+
+								<div class="col-sm-3 col-xs-12 p-2 my-2 packagebookingadvance_craftmyapp_container">
+									<div class="form-group">
+									<label for="packagebookingadvance">@Resource.treatmentpackage_packagebookingadvance <b class="iconRed">*</b></label><br>
+									<div class="input-group prefix">
+										<span class="input-group-addon">&#8377;</span>
+										@Html.TextBoxFor(m => m.packagebookingadvance, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg required" })
+
+									</div>
+								@Html.ValidationMessageFor(model => model.packagebookingadvance)
+								</div>
+								</div>
+
+								<div class="col-sm-3 col-xs-12 p-2 my-2 packagebookingdeposit_craftmyapp_container">
+									<div class="form-group">
+									<label for="packagebookingdeposit">@Resource.treatmentpackage_packagebookingdeposit <b class="iconRed">*</b></label><br>
+									<div class="input-group prefix">
+										<span class="input-group-addon">&#8377;</span>
+										@Html.TextBoxFor(m => m.packagebookingdeposit, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg required" })
+
+									</div>
+								@Html.ValidationMessageFor(model => model.packagebookingdeposit)
+								</div>
+								</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 refundpolicy_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Refund Policy Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.refundpolicy
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-refundpolicy pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="refundpolicyContainer" class="refundpolicyContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Refund Policy Containder Block-->
+					
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 BillingPolicy_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.billingpolicy</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 billingwaiverfordelayedstart_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="billingwaiverfordelayedstart">@Resource.treatmentpackage_billingwaiverfordelayedstart <b class="iconRed">*</b></label>
+										<select name="billingwaiverfordelayedstart" id="billingwaiverfordelayedstart" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.billingwaiverfordelayedstart)
+									<div id="billingwaiverfordelayedstart-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 my-2 waiverpercentage_craftmyapp_container">
+									<div class="form-group">
+									<label for="waiverpercentage">@Resource.treatmentpackage_waiverpercentage</label><br>
+									<div class="input-group">
+									 
+									@Html.TextBoxFor(m => m.waiverpercentage, new {@type="text",@min="0",@max="100", @class = "form-control form-control-lg " })
+
+									  <span class="input-group-addon">%</span>
+								 </div>
+								@Html.ValidationMessageFor(model => model.waiverpercentage)
+								</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 roomtransfercost_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="roomtransfercost">@Resource.treatmentpackage_roomtransfercost</label>
+										<select name="roomtransfercost" id="roomtransfercost" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.roomtransfercost)
+									<div id="roomtransfercost-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+<div class="col-sm-12 col-xs-12 p-2 packagedescription_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="packagedescription">@Resource.treatmentpackage_packagedescription</label>
+										@Html.TextAreaFor(m => m.packagedescription, new {@minlength="0",@maxlength="256", @class = "form-control form-control-lg mahat_transliterate " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.packagedescription)
+									<div id="packagedescription-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updatetreatmentpackage</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("TreatmentPackage","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<script>
+$(document).ready(function () {
+$("#noofdays").autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+})
+</script>
+<script>
+$(document).ready(function () {
+$('body').on('change', '.linetotal', function() {
+							var aggregatevalue = 0;
+							$('.linetotal').each(function(){
+												const iterationalaggregatevalue = parseFloat($(this).val().trim());
+												if(!isNaN(iterationalaggregatevalue)){
+													aggregatevalue += iterationalaggregatevalue; 
+												}							                
+											});
+							$("#kitprice").val(aggregatevalue.toFixed(2))
+							$("#kitprice").trigger('change')
+
+							})
+})
+</script>
+<script>
+$(document).ready(function () {
+$('body').on('change', '.roomcost', function() {
+							var aggregatevalue = 0;
+							let sum = 0;
+										let count = 0;
+										$('.roomcost').each(function() {
+											const iterationalaggregatevalue = parseFloat($(this).val().trim());
+											if(!isNaN(iterationalaggregatevalue)){
+											   sum += iterationalaggregatevalue; // Add to the sum
+											   count++;
+											}
+										});
+										aggregatevalue = count > 0 ? sum/count : 0; 
+							$("#roomtypeamountaverage").val(aggregatevalue.toFixed(2))
+							$("#roomtypeamountaverage").trigger('change')
+
+							})
+})
+</script>
+<script>
+$(document).ready(function () {
+$('body').on('change', '.therapyprice', function() {
+							var aggregatevalue = 0;
+							$('.therapyprice').each(function(){
+												const iterationalaggregatevalue = parseFloat($(this).val().trim());
+												if(!isNaN(iterationalaggregatevalue)){
+													aggregatevalue += iterationalaggregatevalue; 
+												}							                
+											});
+							$("#therapyamount").val(aggregatevalue.toFixed(2))
+							$("#therapyamount").trigger('change')
+
+							})
+})
+</script>
+<script>
+$(document).ready(function () {
+$('body').on('change', '.therapykitcost', function() {
+							var aggregatevalue = 0;
+							$('.therapykitcost').each(function(){
+												const iterationalaggregatevalue = parseFloat($(this).val().trim());
+												if(!isNaN(iterationalaggregatevalue)){
+													aggregatevalue += iterationalaggregatevalue; 
+												}							                
+											});
+							$("#therapykitamount").val(aggregatevalue.toFixed(2))
+							$("#therapykitamount").trigger('change')
+
+							})
+})
+</script>
+<script>
+$(document).ready(function () {
+$('body').on('change', '.therapyitemcost', function() {
+							var aggregatevalue = 0;
+							$('.therapyitemcost').each(function(){
+												const iterationalaggregatevalue = parseFloat($(this).val().trim());
+												if(!isNaN(iterationalaggregatevalue)){
+													aggregatevalue += iterationalaggregatevalue; 
+												}							                
+											});
+							$("#therapyitemamount").val(aggregatevalue.toFixed(2))
+							$("#therapyitemamount").trigger('change')
+
+							})
+})
+</script>
+<script>
+$(document).ready(function () {
+$('body').on('change', '.medicinecost', function() {
+							var aggregatevalue = 0;
+							$('.medicinecost').each(function(){
+												const iterationalaggregatevalue = parseFloat($(this).val().trim());
+												if(!isNaN(iterationalaggregatevalue)){
+													aggregatevalue += iterationalaggregatevalue; 
+												}							                
+											});
+							$("#medicineamount").val(aggregatevalue.toFixed(2))
+							$("#medicineamount").trigger('change')
+
+							})
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#roomtypeamountaverage").change(function(){
+									 $("#calculatedpackagecost").val(Number(Number($("#roomtypeamountaverage").val()) +Number($("#therapyamount").val()) +Number($("#therapykitamount").val()) +Number($("#therapyitemamount").val()) +Number($("#medicineamount").val()) ).toFixed(2)) 
+						   $("#calculatedpackagecost").trigger('change'); 
+										
+								 });
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#therapyamount").change(function(){
+									 $("#calculatedpackagecost").val(Number(Number($("#roomtypeamountaverage").val()) +Number($("#therapyamount").val()) +Number($("#therapykitamount").val()) +Number($("#therapyitemamount").val()) +Number($("#medicineamount").val()) ).toFixed(2)) 
+						   $("#calculatedpackagecost").trigger('change'); 
+										
+								 });
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#therapykitamount").change(function(){
+									 $("#calculatedpackagecost").val(Number(Number($("#roomtypeamountaverage").val()) +Number($("#therapyamount").val()) +Number($("#therapykitamount").val()) +Number($("#therapyitemamount").val()) +Number($("#medicineamount").val()) ).toFixed(2)) 
+						   $("#calculatedpackagecost").trigger('change'); 
+										
+								 });
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#therapyitemamount").change(function(){
+									 $("#calculatedpackagecost").val(Number(Number($("#roomtypeamountaverage").val()) +Number($("#therapyamount").val()) +Number($("#therapykitamount").val()) +Number($("#therapyitemamount").val()) +Number($("#medicineamount").val()) ).toFixed(2)) 
+						   $("#calculatedpackagecost").trigger('change'); 
+										
+								 });
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#medicineamount").change(function(){
+									 $("#calculatedpackagecost").val(Number(Number($("#roomtypeamountaverage").val()) +Number($("#therapyamount").val()) +Number($("#therapykitamount").val()) +Number($("#therapyitemamount").val()) +Number($("#medicineamount").val()) ).toFixed(2)) 
+						   $("#calculatedpackagecost").trigger('change'); 
+										
+								 });
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#packagecost").autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#packagebookingadvance").autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#packagebookingdeposit").autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+})
+</script>
+<script>
+var strbillingwaiverfordelayedstart;
+</script>
+@if (Model != null)
+{
+if (Model.billingwaiverfordelayedstart != null && Model.billingwaiverfordelayedstart.ToString() != "")
+{
+<script>
+strbillingwaiverfordelayedstart = "@Model.billingwaiverfordelayedstart";
+</script>
+}
+}
+<script>
+$(document).ready(function () {
+$("#waiverpercentage").autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '100.00'})
+})
+</script>
+<script>
+var strroomtransfercost;
+</script>
+@if (Model != null)
+{
+if (Model.roomtransfercost != null && Model.roomtransfercost.ToString() != "")
+{
+<script>
+strroomtransfercost = "@Model.roomtransfercost";
+</script>
+}
+}
+
+			<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'TreatmentPackage' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="billingwaiverfordelayedstart"){
+												var ddltarget_billingwaiverfordelayedstart = "#billingwaiverfordelayedstart"
+												$(ddltarget_billingwaiverfordelayedstart).empty();
+												$(ddltarget_billingwaiverfordelayedstart).append("<option value=''>Choose</option>")
+												var options_billingwaiverfordelayedstart = optionDataInner.fielddesc.split(',');
+												options_billingwaiverfordelayedstart.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_billingwaiverfordelayedstart.forEach(function(option_billingwaiverfordelayedstart){
+													if(strbillingwaiverfordelayedstart== option_billingwaiverfordelayedstart){
+													$(ddltarget_billingwaiverfordelayedstart).append('<option selected value="' + option_billingwaiverfordelayedstart + '">' + option_billingwaiverfordelayedstart+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_billingwaiverfordelayedstart).append('<option  value="' + option_billingwaiverfordelayedstart + '">' + option_billingwaiverfordelayedstart+ '</option>')
+													  
+												})  
+ 
+											}
+
+											if(optionDataInner.fieldname=="roomtransfercost"){
+												var ddltarget_roomtransfercost = "#roomtransfercost"
+												$(ddltarget_roomtransfercost).empty();
+												$(ddltarget_roomtransfercost).append("<option value=''>Choose</option>")
+												var options_roomtransfercost = optionDataInner.fielddesc.split(',');
+												options_roomtransfercost.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_roomtransfercost.forEach(function(option_roomtransfercost){
+													if(strroomtransfercost== option_roomtransfercost){
+													$(ddltarget_roomtransfercost).append('<option selected value="' + option_roomtransfercost + '">' + option_roomtransfercost+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_roomtransfercost).append('<option  value="' + option_roomtransfercost + '">' + option_roomtransfercost+ '</option>')
+													  
+												})  
+ 
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+			<script>
+var dataroomtype
+function fill_roomtype() {
+$.ajax({
+url: '@Url.Action("get_all_RoomType")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.name !== null);
+				data.sort((a, b) =>
+					String(a.name).toLowerCase().localeCompare(String(b.name).toLowerCase()) 
+				);
+dataroomtype=data
+}
+})
+}
+function buildselectroomtype(selected, index) {
+if (dataroomtype == undefined) fill_roomtype()
+var select = '<select name="roomtype' + index + '" id="roomtype' + index + '"  class="roomtype form-control  required" >'
+select = select + '<option value="">Choose</option>';
+if (dataroomtype != null && dataroomtype.length > 0)
+{
+$.each(dataroomtype, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.RoomTypeid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.RoomTypeid  + '">' + optionDataInner.name  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.RoomTypeid+ '">' + optionDataInner.name + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.RoomTypeid + '">' + optionDataInner.name+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+<script>
+var datatherapyname
+function fill_therapyname() {
+$.ajax({
+url: '@Url.Action("get_all_Therapies")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.therapyname !== null);
+				data.sort((a, b) =>
+					String(a.therapyname).toLowerCase().localeCompare(String(b.therapyname).toLowerCase()) 
+				);
+datatherapyname=data
+}
+})
+}
+function buildselecttherapyname(selected, index) {
+if (datatherapyname == undefined) fill_therapyname()
+var select = '<select name="therapyname' + index + '" id="therapyname' + index + '"  class="therapyname form-control  required" >'
+select = select + '<option value="">Choose</option>';
+if (datatherapyname != null && datatherapyname.length > 0)
+{
+$.each(datatherapyname, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.Therapiesid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.Therapiesid  + '">' + optionDataInner.therapyname  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.Therapiesid+ '">' + optionDataInner.therapyname + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.Therapiesid + '">' + optionDataInner.therapyname+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+<script>
+var datatherapykitname
+function fill_therapykitname() {
+$.ajax({
+url: '@Url.Action("get_all_TherapyKit")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.therapykitname !== null);
+				data.sort((a, b) =>
+					String(a.therapykitname).toLowerCase().localeCompare(String(b.therapykitname).toLowerCase()) 
+				);
+datatherapykitname=data
+}
+})
+}
+function buildselecttherapykitname(selected, index) {
+if (datatherapykitname == undefined) fill_therapykitname()
+var select = '<select name="therapykitname' + index + '" id="therapykitname' + index + '"  class="therapykitname form-control  required" >'
+select = select + '<option value="">Choose</option>';
+if (datatherapykitname != null && datatherapykitname.length > 0)
+{
+$.each(datatherapykitname, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.TherapyKitid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.TherapyKitid  + '">' + optionDataInner.therapykitname  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.TherapyKitid+ '">' + optionDataInner.therapykitname + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.TherapyKitid + '">' + optionDataInner.therapykitname+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+<script>
+var datatherapyitem
+function fill_therapyitem() {
+$.ajax({
+url: '@Url.Action("get_all_TherapyItem")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.therapyitemname !== null);
+				data.sort((a, b) =>
+					String(a.therapyitemname).toLowerCase().localeCompare(String(b.therapyitemname).toLowerCase()) 
+				);
+datatherapyitem=data
+}
+})
+}
+// When a Therapy Kit is picked in the Therapy Kits grid, pull its Kit Items
+// (Therapy Item + Price + Count, defined on the Add Therapy Kit page) and add
+// each one as a row in the Therapy Items grid below, so the user doesn't have
+// to re-enter items that are already part of the kit.
+function isTherapyItemAlreadyAdded(therapyItemId) {
+	var found = false;
+	$('.therapyitem').each(function() {
+		if (($(this).val() || '').toString().toUpperCase() === (therapyItemId || '').toString().toUpperCase()) {
+			found = true;
+		}
+	});
+	return found;
+}
+function prefillTherapyItemsFromKit(TherapyKitid) {
+	if (!TherapyKitid) return;
+	$.ajax({
+		url: '@Url.Action("getById_kititems","TherapyKit")',
+		dataType: 'json',
+		data: { TherapyKitid: TherapyKitid },
+		success: function(items) {
+			if (!items || !items.length) return;
+			items.forEach(function(kitItem) {
+				var therapyItemId = kitItem.therapyitem;
+				if (!therapyItemId) return;
+				if (isTherapyItemAlreadyAdded(therapyItemId)) return;
+
+				$(".btn-add-therapyitems").trigger('click');
+				var $newRow = $('#therapyitemsContainer').children().first();
+				var newIndex = $newRow.attr('id').replace('therapyitems', '');
+
+				$('#therapyitem' + newIndex).val(therapyItemId).trigger('change');
+
+				var priceVal = (kitItem.price != null ? kitItem.price : 0);
+				if ($('#price' + newIndex).data('autoNumeric') != undefined) {
+					$('#price' + newIndex).autoNumeric('set', priceVal);
+				} else {
+					$('#price' + newIndex).val(priceVal);
+				}
+
+				var countVal = (kitItem.count != null ? kitItem.count : 1);
+				if ($('#therapyitemcount' + newIndex).data('autoNumeric') != undefined) {
+					$('#therapyitemcount' + newIndex).autoNumeric('set', countVal);
+				} else {
+					$('#therapyitemcount' + newIndex).val(countVal);
+				}
+
+				$('#price' + newIndex).trigger('change');
+				$('#therapyitemcount' + newIndex).trigger('change');
+			});
+		}
+	});
+}
+function buildselecttherapyitem(selected, index) {
+if (datatherapyitem == undefined) fill_therapyitem()
+var select = '<select name="therapyitem' + index + '" id="therapyitem' + index + '"  class="therapyitem form-control  required" >'
+select = select + '<option value="">Choose</option>';
+if (datatherapyitem != null && datatherapyitem.length > 0)
+{
+$.each(datatherapyitem, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.TherapyItemid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.TherapyItemid  + '">' + optionDataInner.therapyitemname  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.TherapyItemid+ '">' + optionDataInner.therapyitemname + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.TherapyItemid + '">' + optionDataInner.therapyitemname+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+<script>
+
+					function buildselectmedicinename(strmedicinename,index) {
+
+					var ddltarget_medicinename = $('#medicinename'+index);
+					ddltarget_medicinename.empty();
+					ddltarget_medicinename.select2({
+						ajax: {
+							url: '@Url.Action("get_all_Medicine")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									'tenantid':$("#tenantid").val()
+									,'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.medicinename !== null);
+									data.sort((a, b) =>
+										String(a.medicinename).toLowerCase().localeCompare(String(b.medicinename).toLowerCase()) 
+									);                                
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id = data[i].Medicineid;
+									data[i].name = data[i].medicinename;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_medicinename,
+						 templateSelection: formatSelectSelected_medicinename
+
+					});
+
+							  var sendFilterData = {
+									'tenantid':$("#tenantid").val()
+									,'searchterm': strmedicinename || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("get_all_Medicine")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].Medicineid == strmedicinename) {
+											var option = new Option(data[i].medicinename, data[i].Medicineid, true, true);
+											ddltarget_medicinename.append(option).trigger('update');
+
+											ddltarget_medicinename.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_medicinename(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.medicinename) {
+						var textValue = item.medicinename
+					} 
+					return textValue;
+				}
+				function formatSelectOption_medicinename(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.medicinename;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+
+
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-roomtypes", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".roomtypes").removeClass('showthelables');
+			   $(".btn-remove-row-roomtypes").removeClass('btn-remove-row');
+				$("#roomtypesContainer").prepend(
+				'<div class="row m-t-10 roomtypes dependentContainerBorder" id="roomtypes' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 roomtype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="roomtype">@Resource.treatmentpackage_roomtypes_roomtype <b class="iconRed">*</b></label>'+
+										buildselectroomtype('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="roomtype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+								'<div class="col-sm-2 col-xs-12 p-2 my-2 costperday_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="costperday">@Resource.treatmentpackage_roomtypes_costperday</label>'+
+									'<div class="input-group prefix">'+
+									 '<span class="input-group-addon">&#8377;</span>'+
+									'<input  name="costperday' + index + '" id="costperday' + index + '"  type="text" min="0" max="99999999" class="costperday form-control--active form-control form-control-lg " />' +
+
+								'</div>'+
+								'<div id="costperday' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 my-2 percentagecovered_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="percentagecovered">@Resource.treatmentpackage_roomtypes_percentagecovered <b class="iconRed">*</b></label>'+
+									'<div class="input-group">'+
+									 
+									'<input  name="percentagecovered' + index + '" id="percentagecovered' + index + '"  type="text" min="0" max="100" class="form-control form-control-lg percentagecovered required" />' +
+
+									 '<span class="input-group-addon">%</span>'+
+								'</div>'+
+								'<div id="percentagecovered' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 roomcost_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="roomcost">@Resource.treatmentpackage_roomtypes_roomcost <b class="iconRed">*</b></label>'+
+										'<input   name="roomcost' + index + '" id="roomcost' + index + '"   class="roomcost form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="roomcost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-roomtypes"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#roomtypesContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('roomtypes', '')).addClass('btn-remove-row');
+				
+				
+				if ($("#costperday" + index).data('autoNumeric') == undefined)
+$("#costperday" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+if ($("#percentagecovered" + index).data('autoNumeric') == undefined)
+$("#percentagecovered" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '100.00'})
+
+									   
+										
+										 
+										$("#percentagecovered"  + index).change(function(){
+											$("#roomcost"  + index).val(Number(Number($("#percentagecovered"  +index).val()* 0.01) *Number($("#noofdays").val()) *Number($("#costperday"  +index).val()) ).toFixed(2))
+											$(".roomcost").trigger("change");
+										})
+										$(".roomcost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#noofdays"  + index).change(function(){
+											$("#roomcost"  + index).val(Number(Number($("#percentagecovered"  +index).val()* 0.01) *Number($("#noofdays").val()) *Number($("#costperday"  +index).val()) ).toFixed(2))
+											$(".roomcost").trigger("change");
+										})
+										$(".roomcost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#costperday"  + index).change(function(){
+											$("#roomcost"  + index).val(Number(Number($("#percentagecovered"  +index).val()* 0.01) *Number($("#noofdays").val()) *Number($("#costperday"  +index).val()) ).toFixed(2))
+											$(".roomcost").trigger("change");
+										})
+										$(".roomcost").prop('readonly', true);
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-roomtypes', function (e) {
+					 
+					 $('#kitprice').val('0')
+$('.kitprice').trigger('change')
+$('#kitprice').trigger('change')
+$('#linetotal').val('0')
+$('.linetotal').trigger('change')
+$('#linetotal').trigger('change')
+$('#roomtypeamountaverage').val('0')
+$('.roomtypeamountaverage').trigger('change')
+$('#roomtypeamountaverage').trigger('change')
+$('#roomcost').val('0')
+$('.roomcost').trigger('change')
+$('#roomcost').trigger('change')
+$('#therapyamount').val('0')
+$('.therapyamount').trigger('change')
+$('#therapyamount').trigger('change')
+$('#therapyprice').val('0')
+$('.therapyprice').trigger('change')
+$('#therapyprice').trigger('change')
+$('#therapykitamount').val('0')
+$('.therapykitamount').trigger('change')
+$('#therapykitamount').trigger('change')
+$('#therapykitcost').val('0')
+$('.therapykitcost').trigger('change')
+$('#therapykitcost').trigger('change')
+$('#therapyitemamount').val('0')
+$('.therapyitemamount').trigger('change')
+$('#therapyitemamount').trigger('change')
+$('#therapyitemcost').val('0')
+$('.therapyitemcost').trigger('change')
+$('#therapyitemcost').trigger('change')
+$('#medicineamount').val('0')
+$('.medicineamount').trigger('change')
+$('#medicineamount').trigger('change')
+$('#medicinecost').val('0')
+$('.medicinecost').trigger('change')
+$('#medicinecost').trigger('change')
+
+					
+					var roomtypesRow = $(this).closest(".roomtypes");
+					var index = roomtypesRow.attr("id").replace("roomtypes", "");
+					roomtypesRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.roomtypes" ? @Html.Raw(Json.Serialize(@Model.roomtypes)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".roomtypes").removeClass('showthelables');
+			   $(".btn-remove-row-roomtypes").removeClass('btn-remove-row');
+				$("#roomtypesContainer").prepend(
+				'<div class="row m-t-10 roomtypes dependentContainerBorder" id="roomtypes' + index + '">' +
+				'<input type="hidden" class="TreatmentPackage_roomtypesid" value="' + obj.TreatmentPackage_roomtypesid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 roomtype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="roomtype">@Resource.treatmentpackage_roomtypes_roomtype <b class="iconRed">*</b></label>'+
+										buildselectroomtype(obj.roomtype, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="roomtype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+								'<div class="col-sm-2 col-xs-12 p-2 my-2 costperday_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="costperday">@Resource.treatmentpackage_roomtypes_costperday</label>'+
+									'<div class="input-group prefix">'+
+									 '<span class="input-group-addon">&#8377;</span>'+
+									'<input value="'+(obj.costperday?obj.costperday:'')+'" name="costperday' + index + '" id="costperday' + index + '"  type="text" min="0" max="99999999" class="costperday form-control--active form-control form-control-lg " />' +
+
+								'</div>'+
+								'<div id="costperday' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 my-2 percentagecovered_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="percentagecovered">@Resource.treatmentpackage_roomtypes_percentagecovered <b class="iconRed">*</b></label>'+
+									'<div class="input-group">'+
+									 
+									'<input value="'+(obj.percentagecovered?obj.percentagecovered:'')+'" name="percentagecovered' + index + '" id="percentagecovered' + index + '"  type="text" min="0" max="100" class="form-control form-control-lg percentagecovered required" />' +
+
+									 '<span class="input-group-addon">%</span>'+
+								'</div>'+
+								'<div id="percentagecovered' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 roomcost_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="roomcost">@Resource.treatmentpackage_roomtypes_roomcost <b class="iconRed">*</b></label>'+
+										'<input  value="'+(obj.roomcost?obj.roomcost:'')+'" name="roomcost' + index + '" id="roomcost' + index + '"   class="roomcost form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="roomcost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-roomtypes"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.roomtypesContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('roomtypes', '')).addClass('btn-remove-row');
+
+				if ($("#costperday" + index).data('autoNumeric') == undefined)
+$("#costperday" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+if ($("#percentagecovered" + index).data('autoNumeric') == undefined)
+$("#percentagecovered" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '100.00'})
+
+									   
+										
+										 
+										$("#percentagecovered"  + index).change(function(){
+											$("#roomcost"  + index).val(Number(Number($("#percentagecovered"  +index).val()* 0.01) *Number($("#noofdays").val()) *Number($("#costperday"  +index).val()) ).toFixed(2))
+											$(".roomcost").trigger("change");
+										})
+										$(".roomcost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#noofdays"  + index).change(function(){
+											$("#roomcost"  + index).val(Number(Number($("#percentagecovered"  +index).val()* 0.01) *Number($("#noofdays").val()) *Number($("#costperday"  +index).val()) ).toFixed(2))
+											$(".roomcost").trigger("change");
+										})
+										$(".roomcost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#costperday"  + index).change(function(){
+											$("#roomcost"  + index).val(Number(Number($("#percentagecovered"  +index).val()* 0.01) *Number($("#noofdays").val()) *Number($("#costperday"  +index).val()) ).toFixed(2))
+											$(".roomcost").trigger("change");
+										})
+										$(".roomcost").prop('readonly', true);
+ 
+				
+				
+
+				  $("#roomtype" + index).prop('disabled', true);
+				  $(".costperday").prop('disabled', true)
+
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-therapy", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".therapy").removeClass('showthelables');
+			   $(".btn-remove-row-therapy").removeClass('btn-remove-row');
+				$("#therapyContainer").prepend(
+				'<div class="row m-t-10 therapy dependentContainerBorder" id="therapy' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 therapyname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="therapyname">@Resource.treatmentpackage_therapy_therapyname <b class="iconRed">*</b></label>'+
+										buildselecttherapyname('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapyname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+								'<div class="col-sm-2 col-xs-12 p-2 my-2 therapycost_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="therapycost">@Resource.treatmentpackage_therapy_therapycost</label>'+
+									'<div class="input-group prefix">'+
+									 '<span class="input-group-addon">&#8377;</span>'+
+									'<input  name="therapycost' + index + '" id="therapycost' + index + '"  type="text" min="0" max="99999999" class="therapycost form-control--active form-control form-control-lg " />' +
+
+								'</div>'+
+								'<div id="therapycost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 numberoftimes_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="numberoftimes">@Resource.treatmentpackage_therapy_numberoftimes <b class="iconRed">*</b></label>'+
+									'<input   name="numberoftimes' + index + '" id="numberoftimes' + index + '"  type="text" min="0" max="99999999" class="numberoftimes form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 therapyprice_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="therapyprice">@Resource.treatmentpackage_therapy_therapyprice <b class="iconRed">*</b></label>'+
+										'<input   name="therapyprice' + index + '" id="therapyprice' + index + '"   class="therapyprice form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapyprice' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-therapy"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#therapyContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('therapy', '')).addClass('btn-remove-row');
+				
+				
+				if ($("#therapycost" + index).data('autoNumeric') == undefined)
+$("#therapycost" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+if ($("#numberoftimes" + index).data('autoNumeric') == undefined)
+$("#numberoftimes" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+
+									   
+										
+										 
+										$("#therapycost"  + index).change(function(){
+											$("#therapyprice"  + index).val(Number(Number($("#therapycost"  +index).val()) *Number($("#numberoftimes"  +index).val()) ).toFixed(2))
+											$(".therapyprice").trigger("change");
+										})
+										$(".therapyprice").prop('readonly', true);
+
+									   
+										
+										 
+										$("#numberoftimes"  + index).change(function(){
+											$("#therapyprice"  + index).val(Number(Number($("#therapycost"  +index).val()) *Number($("#numberoftimes"  +index).val()) ).toFixed(2))
+											$(".therapyprice").trigger("change");
+										})
+										$(".therapyprice").prop('readonly', true);
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-therapy', function (e) {
+					 
+					 $('#kitprice').val('0')
+$('.kitprice').trigger('change')
+$('#kitprice').trigger('change')
+$('#linetotal').val('0')
+$('.linetotal').trigger('change')
+$('#linetotal').trigger('change')
+$('#roomtypeamountaverage').val('0')
+$('.roomtypeamountaverage').trigger('change')
+$('#roomtypeamountaverage').trigger('change')
+$('#roomcost').val('0')
+$('.roomcost').trigger('change')
+$('#roomcost').trigger('change')
+$('#therapyamount').val('0')
+$('.therapyamount').trigger('change')
+$('#therapyamount').trigger('change')
+$('#therapyprice').val('0')
+$('.therapyprice').trigger('change')
+$('#therapyprice').trigger('change')
+$('#therapykitamount').val('0')
+$('.therapykitamount').trigger('change')
+$('#therapykitamount').trigger('change')
+$('#therapykitcost').val('0')
+$('.therapykitcost').trigger('change')
+$('#therapykitcost').trigger('change')
+$('#therapyitemamount').val('0')
+$('.therapyitemamount').trigger('change')
+$('#therapyitemamount').trigger('change')
+$('#therapyitemcost').val('0')
+$('.therapyitemcost').trigger('change')
+$('#therapyitemcost').trigger('change')
+$('#medicineamount').val('0')
+$('.medicineamount').trigger('change')
+$('#medicineamount').trigger('change')
+$('#medicinecost').val('0')
+$('.medicinecost').trigger('change')
+$('#medicinecost').trigger('change')
+
+					
+					var therapyRow = $(this).closest(".therapy");
+					var index = therapyRow.attr("id").replace("therapy", "");
+					therapyRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.therapy" ? @Html.Raw(Json.Serialize(@Model.therapy)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".therapy").removeClass('showthelables');
+			   $(".btn-remove-row-therapy").removeClass('btn-remove-row');
+				$("#therapyContainer").prepend(
+				'<div class="row m-t-10 therapy dependentContainerBorder" id="therapy' + index + '">' +
+				'<input type="hidden" class="TreatmentPackage_therapyid" value="' + obj.TreatmentPackage_therapyid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 therapyname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="therapyname">@Resource.treatmentpackage_therapy_therapyname <b class="iconRed">*</b></label>'+
+										buildselecttherapyname(obj.therapyname, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapyname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+								'<div class="col-sm-2 col-xs-12 p-2 my-2 therapycost_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="therapycost">@Resource.treatmentpackage_therapy_therapycost</label>'+
+									'<div class="input-group prefix">'+
+									 '<span class="input-group-addon">&#8377;</span>'+
+									'<input value="'+(obj.therapycost?obj.therapycost:'')+'" name="therapycost' + index + '" id="therapycost' + index + '"  type="text" min="0" max="99999999" class="therapycost form-control--active form-control form-control-lg " />' +
+
+								'</div>'+
+								'<div id="therapycost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 numberoftimes_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="numberoftimes">@Resource.treatmentpackage_therapy_numberoftimes <b class="iconRed">*</b></label>'+
+									'<input  value="'+(obj.numberoftimes?obj.numberoftimes:'')+'" name="numberoftimes' + index + '" id="numberoftimes' + index + '"  type="text" min="0" max="99999999" class="numberoftimes form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 therapyprice_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="therapyprice">@Resource.treatmentpackage_therapy_therapyprice <b class="iconRed">*</b></label>'+
+										'<input  value="'+(obj.therapyprice?obj.therapyprice:'')+'" name="therapyprice' + index + '" id="therapyprice' + index + '"   class="therapyprice form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapyprice' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-therapy"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.therapyContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('therapy', '')).addClass('btn-remove-row');
+
+				if ($("#therapycost" + index).data('autoNumeric') == undefined)
+$("#therapycost" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+if ($("#numberoftimes" + index).data('autoNumeric') == undefined)
+$("#numberoftimes" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+
+									   
+										
+										 
+										$("#therapycost"  + index).change(function(){
+											$("#therapyprice"  + index).val(Number(Number($("#therapycost"  +index).val()) *Number($("#numberoftimes"  +index).val()) ).toFixed(2))
+											$(".therapyprice").trigger("change");
+										})
+										$(".therapyprice").prop('readonly', true);
+
+									   
+										
+										 
+										$("#numberoftimes"  + index).change(function(){
+											$("#therapyprice"  + index).val(Number(Number($("#therapycost"  +index).val()) *Number($("#numberoftimes"  +index).val()) ).toFixed(2))
+											$(".therapyprice").trigger("change");
+										})
+										$(".therapyprice").prop('readonly', true);
+ 
+				
+				
+
+				  $(".therapycost").prop('disabled', true)
+
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-therapykits", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".therapykits").removeClass('showthelables');
+			   $(".btn-remove-row-therapykits").removeClass('btn-remove-row');
+				$("#therapykitsContainer").prepend(
+				'<div class="row m-t-10 therapykits dependentContainerBorder" id="therapykits' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 therapykitname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="therapykitname">@Resource.treatmentpackage_therapykits_therapykitname <b class="iconRed">*</b></label>'+
+										buildselecttherapykitname('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapykitname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 kitprice_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="kitprice">@Resource.treatmentpackage_therapykits_kitprice</label>'+
+										'<input   name="kitprice' + index + '" id="kitprice' + index + '"   class="kitprice form-control--active form-control form-control-lg " />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="kitprice' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 numberofkits_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="numberofkits">@Resource.treatmentpackage_therapykits_numberofkits <b class="iconRed">*</b></label>'+
+									'<input   name="numberofkits' + index + '" id="numberofkits' + index + '"  type="text" min="0" max="99999999" class="numberofkits form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 therapykitcost_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="therapykitcost">@Resource.treatmentpackage_therapykits_therapykitcost <b class="iconRed">*</b></label>'+
+										'<input   name="therapykitcost' + index + '" id="therapykitcost' + index + '"   class="therapykitcost form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapykitcost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-therapykits"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#therapykitsContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('therapykits', '')).addClass('btn-remove-row');
+				
+				
+				if ($("#numberofkits" + index).data('autoNumeric') == undefined)
+$("#numberofkits" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+
+									   
+										
+										 
+										$("#numberofkits"  + index).change(function(){
+											$("#therapykitcost"  + index).val(Number(Number($("#numberofkits"  +index).val()) *Number($("#kitprice"  +index).val()) ).toFixed(2))
+											$(".therapykitcost").trigger("change");
+										})
+										$(".therapykitcost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#kitprice"  + index).change(function(){
+											$("#therapykitcost"  + index).val(Number(Number($("#numberofkits"  +index).val()) *Number($("#kitprice"  +index).val()) ).toFixed(2))
+											$(".therapykitcost").trigger("change");
+										})
+										$(".therapykitcost").prop('readonly', true);
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-therapykits', function (e) {
+					 
+					 $('#kitprice').val('0')
+$('.kitprice').trigger('change')
+$('#kitprice').trigger('change')
+$('#linetotal').val('0')
+$('.linetotal').trigger('change')
+$('#linetotal').trigger('change')
+$('#roomtypeamountaverage').val('0')
+$('.roomtypeamountaverage').trigger('change')
+$('#roomtypeamountaverage').trigger('change')
+$('#roomcost').val('0')
+$('.roomcost').trigger('change')
+$('#roomcost').trigger('change')
+$('#therapyamount').val('0')
+$('.therapyamount').trigger('change')
+$('#therapyamount').trigger('change')
+$('#therapyprice').val('0')
+$('.therapyprice').trigger('change')
+$('#therapyprice').trigger('change')
+$('#therapykitamount').val('0')
+$('.therapykitamount').trigger('change')
+$('#therapykitamount').trigger('change')
+$('#therapykitcost').val('0')
+$('.therapykitcost').trigger('change')
+$('#therapykitcost').trigger('change')
+$('#therapyitemamount').val('0')
+$('.therapyitemamount').trigger('change')
+$('#therapyitemamount').trigger('change')
+$('#therapyitemcost').val('0')
+$('.therapyitemcost').trigger('change')
+$('#therapyitemcost').trigger('change')
+$('#medicineamount').val('0')
+$('.medicineamount').trigger('change')
+$('#medicineamount').trigger('change')
+$('#medicinecost').val('0')
+$('.medicinecost').trigger('change')
+$('#medicinecost').trigger('change')
+
+					
+					var therapykitsRow = $(this).closest(".therapykits");
+					var index = therapykitsRow.attr("id").replace("therapykits", "");
+					therapykitsRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.therapykits" ? @Html.Raw(Json.Serialize(@Model.therapykits)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".therapykits").removeClass('showthelables');
+			   $(".btn-remove-row-therapykits").removeClass('btn-remove-row');
+				$("#therapykitsContainer").prepend(
+				'<div class="row m-t-10 therapykits dependentContainerBorder" id="therapykits' + index + '">' +
+				'<input type="hidden" class="TreatmentPackage_therapykitsid" value="' + obj.TreatmentPackage_therapykitsid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 therapykitname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="therapykitname">@Resource.treatmentpackage_therapykits_therapykitname <b class="iconRed">*</b></label>'+
+										buildselecttherapykitname(obj.therapykitname, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapykitname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 kitprice_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="kitprice">@Resource.treatmentpackage_therapykits_kitprice</label>'+
+										'<input  value="'+(obj.kitprice?obj.kitprice:'')+'" name="kitprice' + index + '" id="kitprice' + index + '"   class="kitprice form-control--active form-control form-control-lg " />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="kitprice' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 numberofkits_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="numberofkits">@Resource.treatmentpackage_therapykits_numberofkits <b class="iconRed">*</b></label>'+
+									'<input  value="'+(obj.numberofkits?obj.numberofkits:'')+'" name="numberofkits' + index + '" id="numberofkits' + index + '"  type="text" min="0" max="99999999" class="numberofkits form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 therapykitcost_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="therapykitcost">@Resource.treatmentpackage_therapykits_therapykitcost <b class="iconRed">*</b></label>'+
+										'<input  value="'+(obj.therapykitcost?obj.therapykitcost:'')+'" name="therapykitcost' + index + '" id="therapykitcost' + index + '"   class="therapykitcost form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapykitcost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-therapykits"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.therapykitsContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('therapykits', '')).addClass('btn-remove-row');
+
+				if ($("#numberofkits" + index).data('autoNumeric') == undefined)
+$("#numberofkits" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+
+									   
+										
+										 
+										$("#numberofkits"  + index).change(function(){
+											$("#therapykitcost"  + index).val(Number(Number($("#numberofkits"  +index).val()) *Number($("#kitprice"  +index).val()) ).toFixed(2))
+											$(".therapykitcost").trigger("change");
+										})
+										$(".therapykitcost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#kitprice"  + index).change(function(){
+											$("#therapykitcost"  + index).val(Number(Number($("#numberofkits"  +index).val()) *Number($("#kitprice"  +index).val()) ).toFixed(2))
+											$(".therapykitcost").trigger("change");
+										})
+										$(".therapykitcost").prop('readonly', true);
+ 
+				
+				
+
+				  $(".kitprice").prop('disabled', true)
+
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-therapyitems", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".therapyitems").removeClass('showthelables');
+			   $(".btn-remove-row-therapyitems").removeClass('btn-remove-row');
+				$("#therapyitemsContainer").prepend(
+				'<div class="row m-t-10 therapyitems dependentContainerBorder" id="therapyitems' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 therapyitem_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="therapyitem">@Resource.treatmentpackage_therapyitems_therapyitem <b class="iconRed">*</b></label>'+
+										buildselecttherapyitem('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapyitem' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+								'<div class="col-sm-2 col-xs-12 p-2 my-2 price_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="price">@Resource.treatmentpackage_therapyitems_price</label>'+
+									'<div class="input-group prefix">'+
+									 '<span class="input-group-addon">&#8377;</span>'+
+									'<input  name="price' + index + '" id="price' + index + '"  type="text" min="0" max="99999999" class="price form-control--active form-control form-control-lg " />' +
+
+								'</div>'+
+								'<div id="price' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 therapyitemcount_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="therapyitemcount">@Resource.treatmentpackage_therapyitems_therapyitemcount <b class="iconRed">*</b></label>'+
+									'<input   name="therapyitemcount' + index + '" id="therapyitemcount' + index + '"  type="text" min="0" max="99999999" class="therapyitemcount form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 therapyitemcost_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="therapyitemcost">@Resource.treatmentpackage_therapyitems_therapyitemcost <b class="iconRed">*</b></label>'+
+										'<input   name="therapyitemcost' + index + '" id="therapyitemcost' + index + '"   class="therapyitemcost form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapyitemcost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-therapyitems"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#therapyitemsContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('therapyitems', '')).addClass('btn-remove-row');
+				
+				
+				if ($("#price" + index).data('autoNumeric') == undefined)
+$("#price" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+if ($("#therapyitemcount" + index).data('autoNumeric') == undefined)
+$("#therapyitemcount" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+
+									   
+										
+										 
+										$("#price"  + index).change(function(){
+											$("#therapyitemcost"  + index).val(Number(Number($("#price"  +index).val()) *Number($("#therapyitemcount"  +index).val()) ).toFixed(2))
+											$(".therapyitemcost").trigger("change");
+										})
+										$(".therapyitemcost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#therapyitemcount"  + index).change(function(){
+											$("#therapyitemcost"  + index).val(Number(Number($("#price"  +index).val()) *Number($("#therapyitemcount"  +index).val()) ).toFixed(2))
+											$(".therapyitemcost").trigger("change");
+										})
+										$(".therapyitemcost").prop('readonly', true);
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-therapyitems', function (e) {
+					 
+					 $('#kitprice').val('0')
+$('.kitprice').trigger('change')
+$('#kitprice').trigger('change')
+$('#linetotal').val('0')
+$('.linetotal').trigger('change')
+$('#linetotal').trigger('change')
+$('#roomtypeamountaverage').val('0')
+$('.roomtypeamountaverage').trigger('change')
+$('#roomtypeamountaverage').trigger('change')
+$('#roomcost').val('0')
+$('.roomcost').trigger('change')
+$('#roomcost').trigger('change')
+$('#therapyamount').val('0')
+$('.therapyamount').trigger('change')
+$('#therapyamount').trigger('change')
+$('#therapyprice').val('0')
+$('.therapyprice').trigger('change')
+$('#therapyprice').trigger('change')
+$('#therapykitamount').val('0')
+$('.therapykitamount').trigger('change')
+$('#therapykitamount').trigger('change')
+$('#therapykitcost').val('0')
+$('.therapykitcost').trigger('change')
+$('#therapykitcost').trigger('change')
+$('#therapyitemamount').val('0')
+$('.therapyitemamount').trigger('change')
+$('#therapyitemamount').trigger('change')
+$('#therapyitemcost').val('0')
+$('.therapyitemcost').trigger('change')
+$('#therapyitemcost').trigger('change')
+$('#medicineamount').val('0')
+$('.medicineamount').trigger('change')
+$('#medicineamount').trigger('change')
+$('#medicinecost').val('0')
+$('.medicinecost').trigger('change')
+$('#medicinecost').trigger('change')
+
+					
+					var therapyitemsRow = $(this).closest(".therapyitems");
+					var index = therapyitemsRow.attr("id").replace("therapyitems", "");
+					therapyitemsRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.therapyitems" ? @Html.Raw(Json.Serialize(@Model.therapyitems)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".therapyitems").removeClass('showthelables');
+			   $(".btn-remove-row-therapyitems").removeClass('btn-remove-row');
+				$("#therapyitemsContainer").prepend(
+				'<div class="row m-t-10 therapyitems dependentContainerBorder" id="therapyitems' + index + '">' +
+				'<input type="hidden" class="TreatmentPackage_therapyitemsid" value="' + obj.TreatmentPackage_therapyitemsid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 therapyitem_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="therapyitem">@Resource.treatmentpackage_therapyitems_therapyitem <b class="iconRed">*</b></label>'+
+										buildselecttherapyitem(obj.therapyitem, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapyitem' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+								'<div class="col-sm-2 col-xs-12 p-2 my-2 price_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="price">@Resource.treatmentpackage_therapyitems_price</label>'+
+									'<div class="input-group prefix">'+
+									 '<span class="input-group-addon">&#8377;</span>'+
+									'<input value="'+(obj.price?obj.price:'')+'" name="price' + index + '" id="price' + index + '"  type="text" min="0" max="99999999" class="price form-control--active form-control form-control-lg " />' +
+
+								'</div>'+
+								'<div id="price' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 therapyitemcount_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="therapyitemcount">@Resource.treatmentpackage_therapyitems_therapyitemcount <b class="iconRed">*</b></label>'+
+									'<input  value="'+(obj.therapyitemcount?obj.therapyitemcount:'')+'" name="therapyitemcount' + index + '" id="therapyitemcount' + index + '"  type="text" min="0" max="99999999" class="therapyitemcount form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 therapyitemcost_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="therapyitemcost">@Resource.treatmentpackage_therapyitems_therapyitemcost <b class="iconRed">*</b></label>'+
+										'<input  value="'+(obj.therapyitemcost?obj.therapyitemcost:'')+'" name="therapyitemcost' + index + '" id="therapyitemcost' + index + '"   class="therapyitemcost form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="therapyitemcost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-therapyitems"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.therapyitemsContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('therapyitems', '')).addClass('btn-remove-row');
+
+				if ($("#price" + index).data('autoNumeric') == undefined)
+$("#price" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+if ($("#therapyitemcount" + index).data('autoNumeric') == undefined)
+$("#therapyitemcount" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+
+									   
+										
+										 
+										$("#price"  + index).change(function(){
+											$("#therapyitemcost"  + index).val(Number(Number($("#price"  +index).val()) *Number($("#therapyitemcount"  +index).val()) ).toFixed(2))
+											$(".therapyitemcost").trigger("change");
+										})
+										$(".therapyitemcost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#therapyitemcount"  + index).change(function(){
+											$("#therapyitemcost"  + index).val(Number(Number($("#price"  +index).val()) *Number($("#therapyitemcount"  +index).val()) ).toFixed(2))
+											$(".therapyitemcost").trigger("change");
+										})
+										$(".therapyitemcost").prop('readonly', true);
+ 
+				
+				
+
+				  $(".price").prop('disabled', true)
+
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-medicines", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".medicines").removeClass('showthelables');
+			   $(".btn-remove-row-medicines").removeClass('btn-remove-row');
+				$("#medicinesContainer").prepend(
+				'<div class="row m-t-10 medicines dependentContainerBorder" id="medicines' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 medicinename_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="medicinename">@Resource.treatmentpackage_medicines_medicinename <b class="iconRed">*</b></label>'+
+										'<select name="medicinename' + index + '" id="medicinename' + index + '"  class="medicinename form-control"></select>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicinename' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+								'<div class="col-sm-2 col-xs-12 p-2 my-2 price_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="price">@Resource.treatmentpackage_medicines_price</label>'+
+									'<div class="input-group prefix">'+
+									 '<span class="input-group-addon">&#8377;</span>'+
+									'<input  name="price' + index + '" id="price' + index + '"  type="text" min="0" max="99999999" class="price form-control--active form-control form-control-lg " />' +
+
+								'</div>'+
+								'<div id="price' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 medicinecount_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="medicinecount">@Resource.treatmentpackage_medicines_medicinecount <b class="iconRed">*</b></label>'+
+									'<input   name="medicinecount' + index + '" id="medicinecount' + index + '"  type="text" min="0" max="99999999" class="medicinecount form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 medicinecost_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="medicinecost">@Resource.treatmentpackage_medicines_medicinecost <b class="iconRed">*</b></label>'+
+										'<input   name="medicinecost' + index + '" id="medicinecost' + index + '"   class="medicinecost form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicinecost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-medicines"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#medicinesContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('medicines', '')).addClass('btn-remove-row');
+				
+				
+				if ($("#price" + index).data('autoNumeric') == undefined)
+$("#price" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+if ($("#medicinecount" + index).data('autoNumeric') == undefined)
+$("#medicinecount" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+
+									   
+										
+										 
+										$("#medicinecount"  + index).change(function(){
+											$("#medicinecost"  + index).val(Number(Number($("#medicinecount"  +index).val()) *Number($("#price"  +index).val()) ).toFixed(2))
+											$(".medicinecost").trigger("change");
+										})
+										$(".medicinecost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#price"  + index).change(function(){
+											$("#medicinecost"  + index).val(Number(Number($("#medicinecount"  +index).val()) *Number($("#price"  +index).val()) ).toFixed(2))
+											$(".medicinecost").trigger("change");
+										})
+										$(".medicinecost").prop('readonly', true);
+ 
+				buildselectmedicinename("",index)
+
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-medicines', function (e) {
+					 
+					 $('#kitprice').val('0')
+$('.kitprice').trigger('change')
+$('#kitprice').trigger('change')
+$('#linetotal').val('0')
+$('.linetotal').trigger('change')
+$('#linetotal').trigger('change')
+$('#roomtypeamountaverage').val('0')
+$('.roomtypeamountaverage').trigger('change')
+$('#roomtypeamountaverage').trigger('change')
+$('#roomcost').val('0')
+$('.roomcost').trigger('change')
+$('#roomcost').trigger('change')
+$('#therapyamount').val('0')
+$('.therapyamount').trigger('change')
+$('#therapyamount').trigger('change')
+$('#therapyprice').val('0')
+$('.therapyprice').trigger('change')
+$('#therapyprice').trigger('change')
+$('#therapykitamount').val('0')
+$('.therapykitamount').trigger('change')
+$('#therapykitamount').trigger('change')
+$('#therapykitcost').val('0')
+$('.therapykitcost').trigger('change')
+$('#therapykitcost').trigger('change')
+$('#therapyitemamount').val('0')
+$('.therapyitemamount').trigger('change')
+$('#therapyitemamount').trigger('change')
+$('#therapyitemcost').val('0')
+$('.therapyitemcost').trigger('change')
+$('#therapyitemcost').trigger('change')
+$('#medicineamount').val('0')
+$('.medicineamount').trigger('change')
+$('#medicineamount').trigger('change')
+$('#medicinecost').val('0')
+$('.medicinecost').trigger('change')
+$('#medicinecost').trigger('change')
+
+					
+					var medicinesRow = $(this).closest(".medicines");
+					var index = medicinesRow.attr("id").replace("medicines", "");
+					medicinesRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.medicines" ? @Html.Raw(Json.Serialize(@Model.medicines)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".medicines").removeClass('showthelables');
+			   $(".btn-remove-row-medicines").removeClass('btn-remove-row');
+				$("#medicinesContainer").prepend(
+				'<div class="row m-t-10 medicines dependentContainerBorder" id="medicines' + index + '">' +
+				'<input type="hidden" class="TreatmentPackage_medicinesid" value="' + obj.TreatmentPackage_medicinesid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 medicinename_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="medicinename">@Resource.treatmentpackage_medicines_medicinename <b class="iconRed">*</b></label>'+
+										'<select name="medicinename' + index + '" id="medicinename' + index + '"  class="medicinename form-control"></select>'+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicinename' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+
+								'<div class="col-sm-2 col-xs-12 p-2 my-2 price_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="price">@Resource.treatmentpackage_medicines_price</label>'+
+									'<div class="input-group prefix">'+
+									 '<span class="input-group-addon">&#8377;</span>'+
+									'<input value="'+(obj.price?obj.price:'')+'" name="price' + index + '" id="price' + index + '"  type="text" min="0" max="99999999" class="price form-control--active form-control form-control-lg " />' +
+
+								'</div>'+
+								'<div id="price' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 medicinecount_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="medicinecount">@Resource.treatmentpackage_medicines_medicinecount <b class="iconRed">*</b></label>'+
+									'<input  value="'+(obj.medicinecount?obj.medicinecount:'')+'" name="medicinecount' + index + '" id="medicinecount' + index + '"  type="text" min="0" max="99999999" class="medicinecount form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 medicinecost_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-2" >'+ 
+										'<label for="medicinecost">@Resource.treatmentpackage_medicines_medicinecost <b class="iconRed">*</b></label>'+
+										'<input  value="'+(obj.medicinecost?obj.medicinecost:'')+'" name="medicinecost' + index + '" id="medicinecost' + index + '"   class="medicinecost form-control--active form-control form-control-lg required" />' +
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="medicinecost' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-medicines"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.medicinesContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('medicines', '')).addClass('btn-remove-row');
+
+				if ($("#price" + index).data('autoNumeric') == undefined)
+$("#price" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+if ($("#medicinecount" + index).data('autoNumeric') == undefined)
+$("#medicinecount" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+
+									   
+										
+										 
+										$("#medicinecount"  + index).change(function(){
+											$("#medicinecost"  + index).val(Number(Number($("#medicinecount"  +index).val()) *Number($("#price"  +index).val()) ).toFixed(2))
+											$(".medicinecost").trigger("change");
+										})
+										$(".medicinecost").prop('readonly', true);
+
+									   
+										
+										 
+										$("#price"  + index).change(function(){
+											$("#medicinecost"  + index).val(Number(Number($("#medicinecount"  +index).val()) *Number($("#price"  +index).val()) ).toFixed(2))
+											$(".medicinecost").trigger("change");
+										})
+										$(".medicinecost").prop('readonly', true);
+ 
+				
+				
+
+				  $(".price").prop('disabled', true)
+
+				buildselectmedicinename(obj.medicinename,index)
+
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-refundpolicy", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".refundpolicy").removeClass('showthelables');
+			   $(".btn-remove-row-refundpolicy").removeClass('btn-remove-row');
+				$("#refundpolicyContainer").prepend(
+				'<div class="row m-t-10 refundpolicy dependentContainerBorder" id="refundpolicy' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 refundtype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="refundtype">@Resource.treatmentpackage_refundpolicy_refundtype <b class="iconRed">*</b></label>'+
+										buildselectTreatmentPackage('refundtype','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="refundtype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 cancellationby_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="cancellationby">@Resource.treatmentpackage_refundpolicy_cancellationby <b class="iconRed">*</b></label>'+
+										buildselectTreatmentPackage('cancellationby','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="cancellationby' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 cancellationwindowdays_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="cancellationwindowdays">@Resource.treatmentpackage_refundpolicy_cancellationwindowdays <b class="iconRed">*</b></label>'+
+									'<input   name="cancellationwindowdays' + index + '" id="cancellationwindowdays' + index + '"  type="text" min="0" max="99999999" class="cancellationwindowdays form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 my-2 refundpercentage_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="refundpercentage">@Resource.treatmentpackage_refundpolicy_refundpercentage <b class="iconRed">*</b></label>'+
+									'<div class="input-group">'+
+									 
+									'<input  name="refundpercentage' + index + '" id="refundpercentage' + index + '"  type="text" min="0" max="100" class="form-control form-control-lg refundpercentage required" />' +
+
+									 '<span class="input-group-addon">%</span>'+
+								'</div>'+
+								'<div id="refundpercentage' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-refundpolicy"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#refundpolicyContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('refundpolicy', '')).addClass('btn-remove-row');
+				
+				
+				if ($("#cancellationwindowdays" + index).data('autoNumeric') == undefined)
+$("#cancellationwindowdays" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+if ($("#refundpercentage" + index).data('autoNumeric') == undefined)
+$("#refundpercentage" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '100.00'})
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-refundpolicy', function (e) {
+					 
+					 $('#kitprice').val('0')
+$('.kitprice').trigger('change')
+$('#kitprice').trigger('change')
+$('#linetotal').val('0')
+$('.linetotal').trigger('change')
+$('#linetotal').trigger('change')
+$('#roomtypeamountaverage').val('0')
+$('.roomtypeamountaverage').trigger('change')
+$('#roomtypeamountaverage').trigger('change')
+$('#roomcost').val('0')
+$('.roomcost').trigger('change')
+$('#roomcost').trigger('change')
+$('#therapyamount').val('0')
+$('.therapyamount').trigger('change')
+$('#therapyamount').trigger('change')
+$('#therapyprice').val('0')
+$('.therapyprice').trigger('change')
+$('#therapyprice').trigger('change')
+$('#therapykitamount').val('0')
+$('.therapykitamount').trigger('change')
+$('#therapykitamount').trigger('change')
+$('#therapykitcost').val('0')
+$('.therapykitcost').trigger('change')
+$('#therapykitcost').trigger('change')
+$('#therapyitemamount').val('0')
+$('.therapyitemamount').trigger('change')
+$('#therapyitemamount').trigger('change')
+$('#therapyitemcost').val('0')
+$('.therapyitemcost').trigger('change')
+$('#therapyitemcost').trigger('change')
+$('#medicineamount').val('0')
+$('.medicineamount').trigger('change')
+$('#medicineamount').trigger('change')
+$('#medicinecost').val('0')
+$('.medicinecost').trigger('change')
+$('#medicinecost').trigger('change')
+
+					
+					var refundpolicyRow = $(this).closest(".refundpolicy");
+					var index = refundpolicyRow.attr("id").replace("refundpolicy", "");
+					refundpolicyRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.refundpolicy" ? @Html.Raw(Json.Serialize(@Model.refundpolicy)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".refundpolicy").removeClass('showthelables');
+			   $(".btn-remove-row-refundpolicy").removeClass('btn-remove-row');
+				$("#refundpolicyContainer").prepend(
+				'<div class="row m-t-10 refundpolicy dependentContainerBorder" id="refundpolicy' + index + '">' +
+				'<input type="hidden" class="TreatmentPackage_refundpolicyid" value="' + obj.TreatmentPackage_refundpolicyid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 refundtype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="refundtype">@Resource.treatmentpackage_refundpolicy_refundtype <b class="iconRed">*</b></label>'+
+										buildselectTreatmentPackage('refundtype',obj.refundtype, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="refundtype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 cancellationby_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="cancellationby">@Resource.treatmentpackage_refundpolicy_cancellationby <b class="iconRed">*</b></label>'+
+										buildselectTreatmentPackage('cancellationby',obj.cancellationby, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="cancellationby' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 cancellationwindowdays_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="cancellationwindowdays">@Resource.treatmentpackage_refundpolicy_cancellationwindowdays <b class="iconRed">*</b></label>'+
+									'<input  value="'+(obj.cancellationwindowdays?obj.cancellationwindowdays:'')+'" name="cancellationwindowdays' + index + '" id="cancellationwindowdays' + index + '"  type="text" min="0" max="99999999" class="cancellationwindowdays form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 my-2 refundpercentage_craftmyapp_container">'+
+									'<div class="form-group">'+
+									'<label for="refundpercentage">@Resource.treatmentpackage_refundpolicy_refundpercentage <b class="iconRed">*</b></label>'+
+									'<div class="input-group">'+
+									 
+									'<input value="'+(obj.refundpercentage?obj.refundpercentage:'')+'" name="refundpercentage' + index + '" id="refundpercentage' + index + '"  type="text" min="0" max="100" class="form-control form-control-lg refundpercentage required" />' +
+
+									 '<span class="input-group-addon">%</span>'+
+								'</div>'+
+								'<div id="refundpercentage' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+								'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-refundpolicy"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.refundpolicyContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('refundpolicy', '')).addClass('btn-remove-row');
+
+				if ($("#cancellationwindowdays" + index).data('autoNumeric') == undefined)
+$("#cancellationwindowdays" + index).autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+if ($("#refundpercentage" + index).data('autoNumeric') == undefined)
+$("#refundpercentage" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '100.00'})
+ 
+				
+				
+
+				
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+<script>
+var dataTreatmentPackage
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'TreatmentPackage' },
+async:false,
+success: function(data) {
+dataTreatmentPackage=data
+}
+})
+function buildselectTreatmentPackage(columnName,selected, index) {
+if(columnName=='refundtype')
+{
+var select;
+$.each(dataTreatmentPackage, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='refundtype')
+{
+select = '<select name="refundtype' + index + '" id="refundtype' + index + '" class="refundtype form-control--active form-control  required">'
+ select = select + '<option value="">Choose</option>';
+
+								
+										var options_refundtype = optionDataInner.fielddesc.split(',');
+										options_refundtype.sort(function (a, b) {
+										return a.localeCompare(b);
+										});
+										options_refundtype.forEach(function(option_refundtype){
+											if(selected== option_refundtype)
+											select = select + '<option selected value="' + option_refundtype + '">' + option_refundtype+ '</option>'
+											else
+											select = select + '<option  value="' + option_refundtype + '">' + option_refundtype+ '</option>'
+										
+										})  
+
+									
+select=select + '</select>';
+}
+})
+return select;
+}
+if(columnName=='cancellationby')
+{
+var select;
+$.each(dataTreatmentPackage, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='cancellationby')
+{
+select = '<select name="cancellationby' + index + '" id="cancellationby' + index + '" class="cancellationby form-control--active form-control  required">'
+ select = select + '<option value="">Choose</option>';
+
+								
+										var options_cancellationby = optionDataInner.fielddesc.split(',');
+										options_cancellationby.sort(function (a, b) {
+										return a.localeCompare(b);
+										});
+										options_cancellationby.forEach(function(option_cancellationby){
+											if(selected== option_cancellationby)
+											select = select + '<option selected value="' + option_cancellationby + '">' + option_cancellationby+ '</option>'
+											else
+											select = select + '<option  value="' + option_cancellationby + '">' + option_cancellationby+ '</option>'
+										
+										})  
+
+									
+select=select + '</select>';
+}
+})
+return select;
+}
+
+}
+</script>
+
+
+			<script>
+			
+			  function getroomtypes() {
+		 
+					$("#roomtypes").val("");
+					var roomtypesModel = [];
+
+				
+					
+					
+					var el = $('.roomtypesContainer .roomtypes');
+					
+					el.each(function (cnt) {
+					
+							roomtypesAttributes = {}
+							
+							 roomtypesAttributes['roomtype']=($(this).find('.roomtype').val() ? $(this).find('.roomtype').val().toString() :'')
+roomtypesAttributes['costperday']=$(this).find('.costperday').val() ? $(this).find('.costperday').val():0
+roomtypesAttributes['percentagecovered']=$(this).find('.percentagecovered').val() ? $(this).find('.percentagecovered').val():0
+roomtypesAttributes['roomcost']=($(this).find('.roomcost').val() ? $(this).find('.roomcost').val().toString() :'')
+roomtypesAttributes['TreatmentPackage_roomtypesid']=($(this).find('.TreatmentPackage_roomtypesid').val() != undefined ? $(this).find('.TreatmentPackage_roomtypesid').val().toString() : "00000000-0000-0000-0000-000000000000")
+roomtypesAttributes['craftmyapp_actionmethodname']='Update_Treatment_Package'
+roomtypesAttributes['record_order']=cnt
+roomtypesAttributes['cma_client_row_id']=$(this).attr("id").replace("roomtypes","")
+
+							
+							roomtypesModel.push(roomtypesAttributes);
+					
+					
+					
+					});
+					 
+					return roomtypesModel
+				
+				
+				}
+  function gettherapy() {
+		 
+					$("#therapy").val("");
+					var therapyModel = [];
+
+				
+					
+					
+					var el = $('.therapyContainer .therapy');
+					
+					el.each(function (cnt) {
+					
+							therapyAttributes = {}
+							
+							 therapyAttributes['therapyname']=($(this).find('.therapyname').val() ? $(this).find('.therapyname').val().toString() :'')
+therapyAttributes['therapycost']=$(this).find('.therapycost').val() ? $(this).find('.therapycost').val():0
+therapyAttributes['numberoftimes']=$(this).find('.numberoftimes').val() ? $(this).find('.numberoftimes').val():0
+therapyAttributes['therapyprice']=($(this).find('.therapyprice').val() ? $(this).find('.therapyprice').val().toString() :'')
+therapyAttributes['TreatmentPackage_therapyid']=($(this).find('.TreatmentPackage_therapyid').val() != undefined ? $(this).find('.TreatmentPackage_therapyid').val().toString() : "00000000-0000-0000-0000-000000000000")
+therapyAttributes['craftmyapp_actionmethodname']='Update_Treatment_Package'
+therapyAttributes['record_order']=cnt
+therapyAttributes['cma_client_row_id']=$(this).attr("id").replace("therapy","")
+
+							
+							therapyModel.push(therapyAttributes);
+					
+					
+					
+					});
+					 
+					return therapyModel
+				
+				
+				}
+  function gettherapykits() {
+		 
+					$("#therapykits").val("");
+					var therapykitsModel = [];
+
+				
+					
+					
+					var el = $('.therapykitsContainer .therapykits');
+					
+					el.each(function (cnt) {
+					
+							therapykitsAttributes = {}
+							
+							 therapykitsAttributes['therapykitname']=($(this).find('.therapykitname').val() ? $(this).find('.therapykitname').val().toString() :'')
+therapykitsAttributes['kitprice']=($(this).find('.kitprice').val() ? $(this).find('.kitprice').val().toString() :'')
+therapykitsAttributes['numberofkits']=$(this).find('.numberofkits').val() ? $(this).find('.numberofkits').val():0
+therapykitsAttributes['therapykitcost']=($(this).find('.therapykitcost').val() ? $(this).find('.therapykitcost').val().toString() :'')
+therapykitsAttributes['TreatmentPackage_therapykitsid']=($(this).find('.TreatmentPackage_therapykitsid').val() != undefined ? $(this).find('.TreatmentPackage_therapykitsid').val().toString() : "00000000-0000-0000-0000-000000000000")
+therapykitsAttributes['craftmyapp_actionmethodname']='Update_Treatment_Package'
+therapykitsAttributes['record_order']=cnt
+therapykitsAttributes['cma_client_row_id']=$(this).attr("id").replace("therapykits","")
+
+							
+							therapykitsModel.push(therapykitsAttributes);
+					
+					
+					
+					});
+					 
+					return therapykitsModel
+				
+				
+				}
+  function gettherapyitems() {
+		 
+					$("#therapyitems").val("");
+					var therapyitemsModel = [];
+
+				
+					
+					
+					var el = $('.therapyitemsContainer .therapyitems');
+					
+					el.each(function (cnt) {
+					
+							therapyitemsAttributes = {}
+							
+							 therapyitemsAttributes['therapyitem']=($(this).find('.therapyitem').val() ? $(this).find('.therapyitem').val().toString() :'')
+therapyitemsAttributes['price']=$(this).find('.price').val() ? $(this).find('.price').val():0
+therapyitemsAttributes['therapyitemcount']=$(this).find('.therapyitemcount').val() ? $(this).find('.therapyitemcount').val():0
+therapyitemsAttributes['therapyitemcost']=($(this).find('.therapyitemcost').val() ? $(this).find('.therapyitemcost').val().toString() :'')
+therapyitemsAttributes['TreatmentPackage_therapyitemsid']=($(this).find('.TreatmentPackage_therapyitemsid').val() != undefined ? $(this).find('.TreatmentPackage_therapyitemsid').val().toString() : "00000000-0000-0000-0000-000000000000")
+therapyitemsAttributes['craftmyapp_actionmethodname']='Update_Treatment_Package'
+therapyitemsAttributes['record_order']=cnt
+therapyitemsAttributes['cma_client_row_id']=$(this).attr("id").replace("therapyitems","")
+
+							
+							therapyitemsModel.push(therapyitemsAttributes);
+					
+					
+					
+					});
+					 
+					return therapyitemsModel
+				
+				
+				}
+  function getmedicines() {
+		 
+					$("#medicines").val("");
+					var medicinesModel = [];
+
+				
+					
+					
+					var el = $('.medicinesContainer .medicines');
+					
+					el.each(function (cnt) {
+					
+							medicinesAttributes = {}
+							
+							 medicinesAttributes['medicinename']=($(this).find('.medicinename').val() ? $(this).find('.medicinename').val().toString() :'')
+medicinesAttributes['price']=$(this).find('.price').val() ? $(this).find('.price').val():0
+medicinesAttributes['medicinecount']=$(this).find('.medicinecount').val() ? $(this).find('.medicinecount').val():0
+medicinesAttributes['medicinecost']=($(this).find('.medicinecost').val() ? $(this).find('.medicinecost').val().toString() :'')
+medicinesAttributes['TreatmentPackage_medicinesid']=($(this).find('.TreatmentPackage_medicinesid').val() != undefined ? $(this).find('.TreatmentPackage_medicinesid').val().toString() : "00000000-0000-0000-0000-000000000000")
+medicinesAttributes['craftmyapp_actionmethodname']='Update_Treatment_Package'
+medicinesAttributes['record_order']=cnt
+medicinesAttributes['cma_client_row_id']=$(this).attr("id").replace("medicines","")
+
+							
+							medicinesModel.push(medicinesAttributes);
+					
+					
+					
+					});
+					 
+					return medicinesModel
+				
+				
+				}
+  function getrefundpolicy() {
+		 
+					$("#refundpolicy").val("");
+					var refundpolicyModel = [];
+
+				
+					
+					
+					var el = $('.refundpolicyContainer .refundpolicy');
+					
+					el.each(function (cnt) {
+					
+							refundpolicyAttributes = {}
+							
+							 refundpolicyAttributes['refundtype']=($(this).find('.refundtype').val() ? $(this).find('.refundtype').val().toString() :'')
+refundpolicyAttributes['cancellationby']=($(this).find('.cancellationby').val() ? $(this).find('.cancellationby').val().toString() :'')
+refundpolicyAttributes['cancellationwindowdays']=$(this).find('.cancellationwindowdays').val() ? $(this).find('.cancellationwindowdays').val():0
+refundpolicyAttributes['refundpercentage']=$(this).find('.refundpercentage').val() ? $(this).find('.refundpercentage').val():0
+refundpolicyAttributes['TreatmentPackage_refundpolicyid']=($(this).find('.TreatmentPackage_refundpolicyid').val() != undefined ? $(this).find('.TreatmentPackage_refundpolicyid').val().toString() : "00000000-0000-0000-0000-000000000000")
+refundpolicyAttributes['craftmyapp_actionmethodname']='Update_Treatment_Package'
+refundpolicyAttributes['record_order']=cnt
+refundpolicyAttributes['cma_client_row_id']=$(this).attr("id").replace("refundpolicy","")
+
+							
+							refundpolicyModel.push(refundpolicyAttributes);
+					
+					
+					
+					});
+					 
+					return refundpolicyModel
+				
+				
+				}
+
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Treatment_Package")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Treatment_Package")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updatetreatmentpackage;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updatetreatmentpackage")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+
+
+let roomTypes = [];
+    let hasDuplicates = false;
+    $('.roomtype').each(function() {
+        let val = $(this).val();
+        if (val && val !== '') {
+            if (roomTypes.includes(val)) {
+                hasDuplicates = true;
+            }
+            roomTypes.push(val);
+        }
+    });
+    
+    if (hasDuplicates) {
+        swal({
+            title: 'Duplicate Room Type!',
+            text: 'You have selected the same Room Type more than once. Please remove duplicates.',
+            type: 'error',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-primary',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        return false;
+    }
+
+ let therapies = [];
+    let therapyDuplicates = false;
+    $('.therapyname').each(function() {
+        let val = $(this).val();
+        if (val && val !== '') {
+            if (therapies.includes(val)) {
+                therapyDuplicates = true;
+            }
+            therapies.push(val);
+        }
+    });
+    
+    if (therapyDuplicates) {
+        swal({
+            title: 'Duplicate Therapy!',
+            text: 'You have selected the same Therapy more than once. Please remove duplicates.',
+            type: 'error',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-primary',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        return false;
+    }
+
+    let therapyKits = [];
+    let kitsDuplicates = false;
+    $('.therapykitname').each(function() {
+        let val = $(this).val();
+        if (val && val !== '') {
+            if (therapyKits.includes(val)) {
+                kitsDuplicates = true;
+            }
+            therapyKits.push(val);
+        }
+    });
+    
+    if (kitsDuplicates) {
+        swal({
+            title: 'Duplicate Therapy Kit!',
+            text: 'You have selected the same Therapy Kit more than once. Please remove duplicates.',
+            type: 'error',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-primary',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        return false;
+    }
+
+    let therapyItems = [];
+    let itemsDuplicates = false;
+    $('.therapyitem').each(function() {
+        let val = $(this).val();
+        if (val && val !== '') {
+            if (therapyItems.includes(val)) {
+                itemsDuplicates = true;
+            }
+            therapyItems.push(val);
+        }
+    });
+    
+    if (itemsDuplicates) {
+        swal({
+            title: 'Duplicate Therapy Item!',
+            text: 'You have selected the same Therapy Item more than once. Please remove duplicates.',
+            type: 'error',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-primary',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        return false;
+    }
+
+    let medicines = [];
+    let medicinesDuplicates = false;
+    $('.medicinename').each(function() {
+        let val = $(this).val();
+        if (val && val !== '') {
+            if (medicines.includes(val)) {
+                medicinesDuplicates = true;
+            }
+            medicines.push(val);
+        }
+    });
+    
+    if (medicinesDuplicates) {
+        swal({
+            title: 'Duplicate Medicine!',
+            text: 'You have selected the same Medicine more than once. Please remove duplicates.',
+            type: 'error',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-primary',
+            confirmButtonText: 'OK',
+            allowOutsideClick: false,
+            allowEscapeKey: false
+        });
+        return false;
+    }
+    
+let refundPolicies = [];
+let refundDuplicates = false;
+
+$('.refundpolicyContainer .refundpolicy').each(function() {
+    let refundType = $(this).find('.refundtype').val() || '';
+    let cancellationBy = $(this).find('.cancellationby').val() || '';
+    let cancellationDays = $(this).find('.cancellationwindowdays').val() || '';
+    let refundPercentage = $(this).find('.refundpercentage').val() || '';
+    
+    // Create a unique combination key
+    let combinationKey = refundType + '|' + cancellationBy + '|' + cancellationDays + '|' + refundPercentage;
+    
+    // Only check if all 4 fields have values
+    if (refundType && cancellationBy && cancellationDays && refundPercentage) {
+        if (refundPolicies.includes(combinationKey)) {
+            refundDuplicates = true;
+        }
+        refundPolicies.push(combinationKey);
+    }
+});
+
+if (refundDuplicates) {
+    swal({
+        title: 'Duplicate Refund Policy!',
+        text: 'You have entered the same Refund Policy combination more than once. Each combination of Refund Type, Cancellation By, Cancellation Window Days, and Refund Percentage should be unique.',
+        type: 'error',
+        buttonsStyling: false,
+        confirmButtonClass: 'btn btn-primary',
+        confirmButtonText: 'OK',
+        allowOutsideClick: false,
+        allowEscapeKey: false
+    });
+    return false;
+}
+ 
+ var roomtypesModel=getroomtypes()
+var therapyModel=gettherapy()
+var therapykitsModel=gettherapykits()
+var therapyitemsModel=gettherapyitems()
+var medicinesModel=getmedicines()
+var refundpolicyModel=getrefundpolicy()
+
+
+ 
+ 
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ for (var i = 0; i < roomtypesModel.length; i++) {
+formdata.append("roomtypes[" + i + "].roomtype", roomtypesModel[i].roomtype)
+formdata.append("roomtypes[" + i + "].record_order", roomtypesModel[i].record_order)
+formdata.append("roomtypes[" + i + "].cma_client_row_id", roomtypesModel[i].cma_client_row_id)
+formdata.append("roomtypes[" + i + "].costperday", roomtypesModel[i].costperday)
+formdata.append("roomtypes[" + i + "].percentagecovered", roomtypesModel[i].percentagecovered)
+formdata.append("roomtypes[" + i + "].roomcost", roomtypesModel[i].roomcost)
+formdata.append("roomtypes[" + i + "].TreatmentPackage_roomtypesid", roomtypesModel[i].TreatmentPackage_roomtypesid)
+formdata.append("roomtypes[" + i + "].TreatmentPackageid", $("#TreatmentPackageid").val())
+
+formdata.append("roomtypes[" + i + "].craftmyapp_actionmethodname", 'Update_Treatment_Package')
+}
+for (var i = 0; i < therapyModel.length; i++) {
+formdata.append("therapy[" + i + "].therapyname", therapyModel[i].therapyname)
+formdata.append("therapy[" + i + "].record_order", therapyModel[i].record_order)
+formdata.append("therapy[" + i + "].cma_client_row_id", therapyModel[i].cma_client_row_id)
+formdata.append("therapy[" + i + "].therapycost", therapyModel[i].therapycost)
+formdata.append("therapy[" + i + "].numberoftimes", therapyModel[i].numberoftimes)
+formdata.append("therapy[" + i + "].therapyprice", therapyModel[i].therapyprice)
+formdata.append("therapy[" + i + "].TreatmentPackage_therapyid", therapyModel[i].TreatmentPackage_therapyid)
+formdata.append("therapy[" + i + "].TreatmentPackageid", $("#TreatmentPackageid").val())
+
+formdata.append("therapy[" + i + "].craftmyapp_actionmethodname", 'Update_Treatment_Package')
+}
+for (var i = 0; i < therapykitsModel.length; i++) {
+formdata.append("therapykits[" + i + "].therapykitname", therapykitsModel[i].therapykitname)
+formdata.append("therapykits[" + i + "].record_order", therapykitsModel[i].record_order)
+formdata.append("therapykits[" + i + "].cma_client_row_id", therapykitsModel[i].cma_client_row_id)
+formdata.append("therapykits[" + i + "].kitprice", therapykitsModel[i].kitprice)
+formdata.append("therapykits[" + i + "].numberofkits", therapykitsModel[i].numberofkits)
+formdata.append("therapykits[" + i + "].therapykitcost", therapykitsModel[i].therapykitcost)
+formdata.append("therapykits[" + i + "].TreatmentPackage_therapykitsid", therapykitsModel[i].TreatmentPackage_therapykitsid)
+formdata.append("therapykits[" + i + "].TreatmentPackageid", $("#TreatmentPackageid").val())
+
+formdata.append("therapykits[" + i + "].craftmyapp_actionmethodname", 'Update_Treatment_Package')
+}
+for (var i = 0; i < therapyitemsModel.length; i++) {
+formdata.append("therapyitems[" + i + "].therapyitem", therapyitemsModel[i].therapyitem)
+formdata.append("therapyitems[" + i + "].record_order", therapyitemsModel[i].record_order)
+formdata.append("therapyitems[" + i + "].cma_client_row_id", therapyitemsModel[i].cma_client_row_id)
+formdata.append("therapyitems[" + i + "].price", therapyitemsModel[i].price)
+formdata.append("therapyitems[" + i + "].therapyitemcount", therapyitemsModel[i].therapyitemcount)
+formdata.append("therapyitems[" + i + "].therapyitemcost", therapyitemsModel[i].therapyitemcost)
+formdata.append("therapyitems[" + i + "].TreatmentPackage_therapyitemsid", therapyitemsModel[i].TreatmentPackage_therapyitemsid)
+formdata.append("therapyitems[" + i + "].TreatmentPackageid", $("#TreatmentPackageid").val())
+
+formdata.append("therapyitems[" + i + "].craftmyapp_actionmethodname", 'Update_Treatment_Package')
+}
+for (var i = 0; i < medicinesModel.length; i++) {
+formdata.append("medicines[" + i + "].medicinename", medicinesModel[i].medicinename)
+formdata.append("medicines[" + i + "].record_order", medicinesModel[i].record_order)
+formdata.append("medicines[" + i + "].cma_client_row_id", medicinesModel[i].cma_client_row_id)
+formdata.append("medicines[" + i + "].price", medicinesModel[i].price)
+formdata.append("medicines[" + i + "].medicinecount", medicinesModel[i].medicinecount)
+formdata.append("medicines[" + i + "].medicinecost", medicinesModel[i].medicinecost)
+formdata.append("medicines[" + i + "].TreatmentPackage_medicinesid", medicinesModel[i].TreatmentPackage_medicinesid)
+formdata.append("medicines[" + i + "].TreatmentPackageid", $("#TreatmentPackageid").val())
+
+formdata.append("medicines[" + i + "].craftmyapp_actionmethodname", 'Update_Treatment_Package')
+}
+for (var i = 0; i < refundpolicyModel.length; i++) {
+formdata.append("refundpolicy[" + i + "].refundtype", refundpolicyModel[i].refundtype)
+formdata.append("refundpolicy[" + i + "].record_order", refundpolicyModel[i].record_order)
+formdata.append("refundpolicy[" + i + "].cma_client_row_id", refundpolicyModel[i].cma_client_row_id)
+formdata.append("refundpolicy[" + i + "].cancellationby", refundpolicyModel[i].cancellationby)
+formdata.append("refundpolicy[" + i + "].cancellationwindowdays", refundpolicyModel[i].cancellationwindowdays)
+formdata.append("refundpolicy[" + i + "].refundpercentage", refundpolicyModel[i].refundpercentage)
+formdata.append("refundpolicy[" + i + "].TreatmentPackage_refundpolicyid", refundpolicyModel[i].TreatmentPackage_refundpolicyid)
+formdata.append("refundpolicy[" + i + "].TreatmentPackageid", $("#TreatmentPackageid").val())
+
+formdata.append("refundpolicy[" + i + "].craftmyapp_actionmethodname", 'Update_Treatment_Package')
+}
+
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("TreatmentPackage","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "TreatmentPackage")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			<script>
+			$(document).ready(function () {
+				fill_roomtype()
+fill_therapyname()
+fill_therapykitname()
+fill_therapyitem()
+
+				$("#tenantid").change(function(){
+						$("#roomtypesContainer").empty()
+$("#therapyContainer").empty()
+$("#therapykitsContainer").empty()
+$("#therapyitemsContainer").empty()
+$("#medicinesContainer").empty()
+$("#refundpolicyContainer").empty()
+
+						fill_roomtype()
+fill_therapyname()
+fill_therapykitname()
+fill_therapyitem()
+
+				})
+
+$("#noofdays").change(function(){
+    let noOfDays = $("#noofdays").val() || 0;
+    
+    $('.roomtypes').each(function() {
+        let index = $(this).attr("id").replace("roomtypes", "");
+        
+        let percentageCovered = $("#percentagecovered" + index).val() || 0;
+        let costPerDay = $("#costperday" + index).val() || 0;
+        
+        let roomCost = (percentageCovered * 0.01) * noOfDays * costPerDay;
+        
+        $("#roomcost" + index).val(roomCost.toFixed(2));
+    });
+    
+    $(".roomcost").trigger("change");
+});
+			
+
+			});
+			</script>
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 
+						})
+					
+
+					});
+					</script>
+
+
+<script>
+
+function lookup_change_medicines_TreatmentPackage_medicinename(Medicineid,RowNumb)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_medicines_TreatmentPackage_medicinename")',
+dataType: 'json',
+data:{'Medicineid':Medicineid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#price"+RowNumb).val(data[0].price)
+$("#price"+RowNumb).addClass('form-control--active')
+
+				$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+
+		 }else{
+
+			 
+			$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+
+		 }
+ 
+		
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+ 
+	$('body').on('change', '.medicinename', function() {
+			var id=$(this).attr("id")
+		
+		id=id.replace("medicinename","")
+
+		lookup_change_medicines_TreatmentPackage_medicinename($(this).val(),id)	 
+
+		$(".price").prop('disabled', true)
+
+
+	});
+	
+
+})
+</script>
+<script>
+
+function lookup_change_therapyitems_TreatmentPackage_therapyitem(TherapyItemid,RowNumb)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_therapyitems_TreatmentPackage_therapyitem")',
+dataType: 'json',
+data:{'TherapyItemid':TherapyItemid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#price"+RowNumb).val(data[0].price)
+$("#price"+RowNumb).addClass('form-control--active')
+
+				$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+
+		 }else{
+
+			 
+			$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+
+		 }
+ 
+		
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+ 
+	$('body').on('change', '.therapyitem', function() {
+			var id=$(this).attr("id")
+		
+		id=id.replace("therapyitem","")
+
+		lookup_change_therapyitems_TreatmentPackage_therapyitem($(this).val(),id)	 
+
+		$(".price").prop('disabled', true)
+
+
+	});
+	
+
+})
+</script>
+<script>
+
+function lookup_change_therapykits_TreatmentPackage_therapykitname(TherapyKitid,RowNumb)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_therapykits_TreatmentPackage_therapykitname")',
+dataType: 'json',
+data:{'TherapyKitid':TherapyKitid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#kitprice"+RowNumb).val(data[0].kitprice)
+$("#kitprice"+RowNumb).addClass('form-control--active')
+
+				$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapykitcost").trigger("change");
+$("#kitprice"+RowNumb).trigger("change");
+
+		 }else{
+
+			 
+			$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapykitcost").trigger("change");
+$("#kitprice"+RowNumb).trigger("change");
+
+		 }
+ 
+		
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+ 
+	$('body').on('change', '.therapykitname', function() {
+			var id=$(this).attr("id")
+
+		id=id.replace("therapykitname","")
+
+		lookup_change_therapykits_TreatmentPackage_therapykitname($(this).val(),id)
+		prefillTherapyItemsFromKit($(this).val())
+
+		$(".kitprice").prop('disabled', true)
+
+
+	});
+	
+
+})
+</script>
+<script>
+
+function lookup_change_therapy_TreatmentPackage_therapyname(Therapiesid,RowNumb)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_therapy_TreatmentPackage_therapyname")',
+dataType: 'json',
+data:{'Therapiesid':Therapiesid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#therapycost"+RowNumb).val(data[0].therapycost)
+$("#therapycost"+RowNumb).addClass('form-control--active')
+
+				$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapykitcost").trigger("change");
+$("#kitprice"+RowNumb).trigger("change");
+$(".therapyprice").trigger("change");
+$("#therapycost"+RowNumb).trigger("change");
+
+		 }else{
+
+			 
+			$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapykitcost").trigger("change");
+$("#kitprice"+RowNumb).trigger("change");
+$(".therapyprice").trigger("change");
+$("#therapycost"+RowNumb).trigger("change");
+
+		 }
+ 
+		
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+ 
+	$('body').on('change', '.therapyname', function() {
+			var id=$(this).attr("id")
+		
+		id=id.replace("therapyname","")
+
+		lookup_change_therapy_TreatmentPackage_therapyname($(this).val(),id)	 
+
+		$(".therapycost").prop('disabled', true)
+
+
+	});
+	
+
+})
+</script>
+<script>
+
+function lookup_change_roomtypes_TreatmentPackage_roomtype(RoomTypeid,RowNumb)
+{
+$.ajax({
+url: '@Url.Action("lookup_change_roomtypes_TreatmentPackage_roomtype")',
+dataType: 'json',
+data:{'RoomTypeid':RoomTypeid },
+success: function(data) {
+ 
+		 if(data.length >0)
+		 {
+				$("#costperday"+RowNumb).val(data[0].costperday)
+$("#costperday"+RowNumb).addClass('form-control--active')
+
+				$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapykitcost").trigger("change");
+$("#kitprice"+RowNumb).trigger("change");
+$(".therapyprice").trigger("change");
+$("#therapycost"+RowNumb).trigger("change");
+$(".roomcost").trigger("change");
+$("#costperday"+RowNumb).trigger("change");
+
+		 }else{
+
+			 
+			$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".medicinecost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapyitemcost").trigger("change");
+$("#price"+RowNumb).trigger("change");
+$(".therapykitcost").trigger("change");
+$("#kitprice"+RowNumb).trigger("change");
+$(".therapyprice").trigger("change");
+$("#therapycost"+RowNumb).trigger("change");
+$(".roomcost").trigger("change");
+$("#costperday"+RowNumb).trigger("change");
+
+		 }
+ 
+		
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+			  }
+
+
+$(document).ready(function () {
+ 
+	$('body').on('change', '.roomtype', function() {
+			var id=$(this).attr("id")
+		
+		id=id.replace("roomtype","")
+
+		lookup_change_roomtypes_TreatmentPackage_roomtype($(this).val(),id)	 
+
+		$(this).prop('disabled', true)
+		$(".costperday").prop('disabled', true)
+
+
+	});
+	
+
+})
+</script>
+

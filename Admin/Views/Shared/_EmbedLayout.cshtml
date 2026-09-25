@@ -1,0 +1,121 @@
+@* Minimal layout for embedded iframe views — no sidebar, no header, just scripts *@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IConfiguration Configuration
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"]</title>
+
+    <!-- Core CSS -->
+    <link type="text/css" rel="stylesheet" href="~/css/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/materialadmin.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/all.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/fontawesome.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/Monochrome.css" />
+    <link rel="stylesheet" href="~/components/sweetalert2/sweetalert2.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" />
+
+    <!-- Core JS (must come before page scripts) -->
+    <script src="~/js/jquery-1.11.2.min.js"></script>
+    <script src="~/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="~/components/sweetalert2/sweetalert2.min.js"></script>
+    <script src="~/libs/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/libs/DataTables/dataTables.responsive.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="~/assets/css/theme-default/libs/DataTables/jquery.dataTables.css" />
+    <script src="~/components/jquery/jquery.validate.js"></script>
+    <script src="~/components/jquery/additional-methods.min.js"></script>
+    <script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+
+    <style>
+        html, body { margin: 0; padding: 0; background: #fff; }
+        .contCard, .card, .card-block { box-shadow: none !important; border: none !important; padding: 4px !important; margin: 0 !important; }
+        .mobileHeader { display: none !important; }
+    </style>
+</head>
+<body>
+<script>
+    /* ── Global variables expected by views ── */
+    var str_tenantid  = "@Context.Session.GetString("NalamVazhachoosedtenantid")";
+    var str_loginUserID = "@Context.Session.GetString("NalamVazhaloginUserID")";
+    var str_usersid   = "@Context.Session.GetString("NalamVazhausersid")";
+    var typeaheadpagesize = @(Configuration.GetSection("settings")["typeaheadpagesize"] ?? "20");
+    var vBaseurl = "@Configuration.GetSection("ApiSettings")["baseURL"]";
+
+    function getUrlVars() {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    function getAutho(controllername, viewname) {
+        try {
+            var a = eval("@Html.Raw((Context.Session.GetString("NalamVazharole_JSON") ?? "[]").Replace("\"", "&quot;"))".replace(/&quot;/g, '"'));
+            for (var i = 0; i < a.length; i++) {
+                if (a[i].controllername === controllername && a[i].viewname === viewname) return a[i];
+            }
+        } catch(e) {}
+        return null;
+    }
+
+    function getAuthoController(controllername) {
+        var found = [];
+        try {
+            var a = eval("@Html.Raw((Context.Session.GetString("NalamVazharole_JSON") ?? "[]").Replace("\"", "&quot;"))".replace(/&quot;/g, '"'));
+            var seenAuthoKeys = {};
+            for (var i = 0; i < a.length; i++) {
+                if (a[i].controllername === controllername) {
+                    // De-dupe duplicate permission rows so action dropdowns don't show
+                    // the same Update/Remove/View link twice.
+                    var authoKey = (a[i].viewname || '') + '|' + (a[i].actionmethodname || '');
+                    if (seenAuthoKeys[authoKey]) continue;
+                    seenAuthoKeys[authoKey] = true;
+                    found.push(a[i]);
+                }
+            }
+        } catch(e) {}
+        return found;
+    }
+
+    /* ── Date helpers (from _Layout.cshtml) ── */
+    function getSqlDate(dateString) {
+        if (!dateString || dateString === '') return '';
+        var res = dateString.split('/');
+        if (res.length < 3) return dateString;
+        return res[2] + '-' + res[1] + '-' + res[0];
+    }
+    function getSqlDateTime(dateString) {
+        if (!dateString || dateString === '') return '';
+        var str  = dateString.substring(0, 10);
+        var res  = str.split('/');
+        var time = dateString.substring(10, 16);
+        if (res.length < 3) return dateString;
+        return res[2] + '-' + res[1] + '-' + res[0] + time;
+    }
+    function getDisplayDate(sqlDate) {
+        if (!sqlDate || sqlDate === '') return '';
+        var res = sqlDate.split('-');
+        if (res.length < 3) return sqlDate;
+        return res[2] + '/' + res[1] + '/' + res[0];
+    }
+</script>
+
+    @RenderBody()
+
+    @RenderSection("Scripts", required: false)
+   @*  <script src="~/js/mobile-numeric-input.js"></script> *@
+</body>
+</html>

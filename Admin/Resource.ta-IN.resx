@@ -1,0 +1,4464 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="people_preferredlanguageinfo_ability" xml:space="preserve">
+    <value>திறன்</value>
+  </data>
+  <data name="opdform_medicalrecords_abnormalfindings" xml:space="preserve">
+    <value>அசாதாரண கண்டுபிடிப்புகள்</value>
+  </data>
+  <data name="ipdapplicationform_medicalrecords_abnormallabfindings" xml:space="preserve">
+    <value>அசாதாரண ஆய்வக கண்டுபிடிப்புகள்</value>
+  </data>
+  <data name="clinicalappointment_actualpractitioner" xml:space="preserve">
+    <value>உண்மையான பயிற்சியாளர்</value>
+  </data>
+  <data name="address" xml:space="preserve">
+    <value>முகவரி</value>
+  </data>
+  <data name="ipdapplicationform_caddressline1" xml:space="preserve">
+    <value>முகவரி வரி 1</value>
+  </data>
+  <data name="ipdapplicationform_paddressline1" xml:space="preserve">
+    <value>முகவரி வரி 1</value>
+  </data>
+  <data name="ipdapplicationform_caddressline2" xml:space="preserve">
+    <value>முகவரி வரி 2</value>
+  </data>
+  <data name="ipdapplicationform_paddressline2" xml:space="preserve">
+    <value>முகவரி வரி 2</value>
+  </data>
+  <data name="tenant_addressline1" xml:space="preserve">
+    <value>முகவரி வரி 1</value>
+  </data>
+  <data name="tenant_addressline2" xml:space="preserve">
+    <value>முகவரி வரி 2</value>
+  </data>
+  <data name="patientprofile_caddressline1" xml:space="preserve">
+    <value>முகவரிவரி 1</value>
+  </data>
+  <data name="patientprofile_paddressline1" xml:space="preserve">
+    <value>முகவரிவரி 1</value>
+  </data>
+  <data name="people_caddressline1" xml:space="preserve">
+    <value>முகவரிவரி 1</value>
+  </data>
+  <data name="people_paddressline1" xml:space="preserve">
+    <value>முகவரிவரி 1</value>
+  </data>
+  <data name="patientprofile_caddressline2" xml:space="preserve">
+    <value>முகவரிவரி 2</value>
+  </data>
+  <data name="patientprofile_paddressline2" xml:space="preserve">
+    <value>முகவரிவரி 2</value>
+  </data>
+  <data name="people_caddressline2" xml:space="preserve">
+    <value>முகவரிவரி 2</value>
+  </data>
+  <data name="people_paddressline2" xml:space="preserve">
+    <value>முகவரிவரி 2</value>
+  </data>
+  <data name="roomtype_admissionfee" xml:space="preserve">
+    <value>சேர்க்கை கட்டணம்</value>
+  </data>
+  <data name="treatmentpackage_admissionfee" xml:space="preserve">
+    <value>சேர்க்கை கட்டணம்</value>
+  </data>
+  <data name="ipdapplicationform_admissionreason" xml:space="preserve">
+    <value>சேர்க்கை காரணம்</value>
+  </data>
+  <data name="room_advanceperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு முன்பணம்</value>
+  </data>
+  <data name="room_attendantadvanceperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு முன்பணம்</value>
+  </data>
+  <data name="roomtype_advanceperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு முன்பணம்</value>
+  </data>
+  <data name="roomtype_attendantadvanceperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு முன்பணம்</value>
+  </data>
+  <data name="enquiryform_age" xml:space="preserve">
+    <value>வயது</value>
+  </data>
+  <data name="ipdapplicationform_attendantinfo_age" xml:space="preserve">
+    <value>வயது</value>
+  </data>
+  <data name="patientprofile_age" xml:space="preserve">
+    <value>வயது</value>
+  </data>
+  <data name="people_age" xml:space="preserve">
+    <value>வயது</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_agegroup" xml:space="preserve">
+    <value>வயது குழு</value>
+  </data>
+  <data name="ipdapplicationform_agreefortermsandconditions" xml:space="preserve">
+    <value>விதிமுறைகள் மற்றும் நிபந்தனைகளுக்கு உடன்படுங்கள்</value>
+  </data>
+  <data name="alerttemplates_alertcarboncopyto" xml:space="preserve">
+    <value>எச்சரிக்கை கார்பன் நகலுக்கு</value>
+  </data>
+  <data name="alerttemplates_alertcontent" xml:space="preserve">
+    <value>எச்சரிக்கை உள்ளடக்கம்</value>
+  </data>
+  <data name="alerttemplates_alertcopyto" xml:space="preserve">
+    <value>எச்சரிக்கை நகல்</value>
+  </data>
+  <data name="alerttemplates_alertsubject" xml:space="preserve">
+    <value>எச்சரிக்கை பொருள்</value>
+  </data>
+  <data name="alerttemplates_alerttype" xml:space="preserve">
+    <value>எச்சரிக்கை வகை</value>
+  </data>
+  <data name="ipdapplicationform_room_allottedto" xml:space="preserve">
+    <value>ஒதுக்கப்பட்டது</value>
+  </data>
+  <data name="task_allowpatienttoselectappointmentslot" xml:space="preserve">
+    <value>அப்பாயிண்ட்மெண்ட் ஸ்லாட்டைத் தேர்ந்தெடுக்க நோயாளியை அனுமதிக்கவா?</value>
+  </data>
+  <data name="paymentrequest_amount" xml:space="preserve">
+    <value>தொகை</value>
+  </data>
+  <data name="paymentresponse_amount" xml:space="preserve">
+    <value>தொகை</value>
+  </data>
+  <data name="billingpayment_amount" xml:space="preserve">
+    <value>தொகை INR</value>
+  </data>
+  <data name="receivable_amount" xml:space="preserve">
+    <value>தொகை INR</value>
+  </data>
+  <data name="screening_amountofexposuretochemicals" xml:space="preserve">
+    <value>இரசாயனங்கள் வெளிப்படும் அளவு</value>
+  </data>
+  <data name="assessment_patientanswers_answertype" xml:space="preserve">
+    <value>பதில் வகை</value>
+  </data>
+  <data name="assessmentquestion_answertype" xml:space="preserve">
+    <value>பதில் வகை</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_answertype" xml:space="preserve">
+    <value>பதில் வகை</value>
+  </data>
+  <data name="assessment_patientanswers_answervalue" xml:space="preserve">
+    <value>பதில் மதிப்பு</value>
+  </data>
+  <data name="appetitenature" xml:space="preserve">
+    <value>பசியின் தன்மை</value>
+  </data>
+  <data name="mailbox_applicableservice" xml:space="preserve">
+    <value>பொருந்தக்கூடிய சேவை</value>
+  </data>
+  <data name="clinicalappointment_appointmentdate" xml:space="preserve">
+    <value>நியமனம் தேதி</value>
+  </data>
+  <data name="screening_areyoucontinuingit" xml:space="preserve">
+    <value>அதைத் தொடர்கிறீர்களா?</value>
+  </data>
+  <data name="screening_areyouinterestedinanyspecificphilosophysectreligiousorspiritualactivities" xml:space="preserve">
+    <value>நீங்கள் ஏதேனும் குறிப்பிட்ட தத்துவப் பிரிவு மத அல்லது ஆன்மீக நடவடிக்கைகளில் ஆர்வமாக உள்ளீர்களா?</value>
+  </data>
+  <data name="screening_areyouinterestedinspirituality" xml:space="preserve">
+    <value>ஆன்மீகத்தில் ஆர்வம் உள்ளவரா?</value>
+  </data>
+  <data name="screening_areyousatisfiedwiththetypeofworkyouaredoing" xml:space="preserve">
+    <value>நீங்கள் செய்யும் வேலையில் நீங்கள் திருப்தி அடைகிறீர்களா?</value>
+  </data>
+  <data name="ipdapplicationform_areyouthegroupleader" xml:space="preserve">
+    <value>நீங்கள் குழுத் தலைவரா?</value>
+  </data>
+  <data name="arrivalconfirmation" xml:space="preserve">
+    <value>வருகை உறுதிப்படுத்தல்</value>
+  </data>
+  <data name="screening_artificialcolorandflavouring" xml:space="preserve">
+    <value>செயற்கை நிறம் மற்றும் சுவையூட்டும்</value>
+  </data>
+  <data name="screening_asachildwhatdidyouliketodo" xml:space="preserve">
+    <value>குழந்தையாக நீங்கள் என்ன செய்ய விரும்பினீர்கள்?</value>
+  </data>
+  <data name="assessment_assessedby" xml:space="preserve">
+    <value>மூலம் மதிப்பிடப்பட்டது</value>
+  </data>
+  <data name="assessment_assessmentdate" xml:space="preserve">
+    <value>மதிப்பீட்டு தேதி</value>
+  </data>
+  <data name="assessment_assessmentnotes" xml:space="preserve">
+    <value>மதிப்பீட்டு குறிப்புகள்</value>
+  </data>
+  <data name="tenant_parentid" xml:space="preserve">
+    <value>உடன் தொடர்புடையது</value>
+  </data>
+  <data name="attendantinfo" xml:space="preserve">
+    <value>உதவியாளர் தகவல்</value>
+  </data>
+  <data name="ipdapplicationform_attendantinfo_attendantname" xml:space="preserve">
+    <value>உதவியாளர் பெயர்</value>
+  </data>
+  <data name="people_clinicaltaskinfo_availableon" xml:space="preserve">
+    <value>அன்று கிடைக்கும்</value>
+  </data>
+  <data name="peopletimepreference_timepreference_availableon" xml:space="preserve">
+    <value>அன்று கிடைக்கும்</value>
+  </data>
+  <data name="billingpayment_bankname" xml:space="preserve">
+    <value>வங்கி பெயர்</value>
+  </data>
+  <data name="paymentresponse_banktransactionid" xml:space="preserve">
+    <value>வங்கி பரிவர்த்தனை ஐடி</value>
+  </data>
+  <data name="basicinfo" xml:space="preserve">
+    <value>அடிப்படை தகவல்</value>
+  </data>
+  <data name="screening_beforesleepyouusually" xml:space="preserve">
+    <value>நீங்கள் வழக்கமாக தூங்குவதற்கு முன்</value>
+  </data>
+  <data name="billingpolicy" xml:space="preserve">
+    <value>பில்லிங் கொள்கை</value>
+  </data>
+  <data name="roomtype_billingwaiverfordelayedstart" xml:space="preserve">
+    <value>தாமதமான தொடக்கத்திற்கான பில்லிங் தள்ளுபடி</value>
+  </data>
+  <data name="treatmentpackage_billingwaiverfordelayedstart" xml:space="preserve">
+    <value>பில்லிங் தள்ளுபடி தாமதமாக தொடங்கும்</value>
+  </data>
+  <data name="people_bio" xml:space="preserve">
+    <value>உயிர்</value>
+  </data>
+  <data name="blacklistdetails" xml:space="preserve">
+    <value>தடுப்புப்பட்டியல் விவரங்கள்</value>
+  </data>
+  <data name="patientprofile_blacklisted" xml:space="preserve">
+    <value>பிளாக்லிஸ்ட்</value>
+  </data>
+  <data name="screening_bloating" xml:space="preserve">
+    <value>வீக்கம்</value>
+  </data>
+  <data name="building_block" xml:space="preserve">
+    <value>தடு</value>
+  </data>
+  <data name="floor_block" xml:space="preserve">
+    <value>தடு</value>
+  </data>
+  <data name="room_block" xml:space="preserve">
+    <value>தடு</value>
+  </data>
+  <data name="roomallocation_block" xml:space="preserve">
+    <value>தடு</value>
+  </data>
+  <data name="roomoccupancystatus_block" xml:space="preserve">
+    <value>தடு</value>
+  </data>
+  <data name="block_blockcode" xml:space="preserve">
+    <value>தொகுதி குறியீடு</value>
+  </data>
+  <data name="block_blockdescription" xml:space="preserve">
+    <value>தொகுதி விளக்கம்</value>
+  </data>
+  <data name="block_blockimage" xml:space="preserve">
+    <value>படத்தைத் தடு</value>
+  </data>
+  <data name="block_blocklocationurl" xml:space="preserve">
+    <value>இருப்பிட URLஐத் தடு</value>
+  </data>
+  <data name="block_blockname" xml:space="preserve">
+    <value>தொகுதி பெயர்</value>
+  </data>
+  <data name="block_blocknearbylandmark" xml:space="preserve">
+    <value>அருகிலுள்ள லாண்ட்மார்க்கைத் தடு</value>
+  </data>
+  <data name="patientprofile_bloodgroup" xml:space="preserve">
+    <value>இரத்தக் குழு</value>
+  </data>
+  <data name="bodyenergy" xml:space="preserve">
+    <value>உடல் ஆற்றல்</value>
+  </data>
+  <data name="roomoccupancystatus_bookeddate" xml:space="preserve">
+    <value>முன்பதிவு செய்யப்பட்ட தேதி</value>
+  </data>
+  <data name="roomallocation_bookedfor" xml:space="preserve">
+    <value>முன்பதிவு செய்யப்பட்டது</value>
+  </data>
+  <data name="roomoccupancystatus_bookedfor" xml:space="preserve">
+    <value>முன்பதிவு செய்யப்பட்டது</value>
+  </data>
+  <data name="treatmentpackage_packagebookingadvance" xml:space="preserve">
+    <value>முன்பதிவு முன்பதிவு</value>
+  </data>
+  <data name="ipdapplicationform_bookingdate" xml:space="preserve">
+    <value>முன்பதிவு தேதி</value>
+  </data>
+  <data name="room_attendantbookingdeposit" xml:space="preserve">
+    <value>முன்பதிவு வைப்பு</value>
+  </data>
+  <data name="room_bookingdeposit" xml:space="preserve">
+    <value>முன்பதிவு வைப்பு</value>
+  </data>
+  <data name="roomtype_attendantbookingdeposit" xml:space="preserve">
+    <value>முன்பதிவு வைப்பு</value>
+  </data>
+  <data name="roomtype_bookingdeposit" xml:space="preserve">
+    <value>முன்பதிவு வைப்பு</value>
+  </data>
+  <data name="treatmentpackage_packagebookingdeposit" xml:space="preserve">
+    <value>முன்பதிவு வைப்பு</value>
+  </data>
+  <data name="ipdapplicationform_bookingreferencenumber" xml:space="preserve">
+    <value>முன்பதிவு குறிப்பு எண்</value>
+  </data>
+  <data name="opdform_bookingreferencenumber" xml:space="preserve">
+    <value>முன்பதிவு குறிப்பு எண்</value>
+  </data>
+  <data name="ipdapplicationform_bookingstatus" xml:space="preserve">
+    <value>முன்பதிவு நிலை</value>
+  </data>
+  <data name="screening_bowelfrequency" xml:space="preserve">
+    <value>குடல் அதிர்வெண்</value>
+  </data>
+  <data name="bowelmovement" xml:space="preserve">
+    <value>குடல் இயக்கம்</value>
+  </data>
+  <data name="breakdurationdetails" xml:space="preserve">
+    <value>இடைவெளி கால விவரங்கள்</value>
+  </data>
+  <data name="shift_breakdurationdetails_breakname" xml:space="preserve">
+    <value>உடைப்பு பெயர்</value>
+  </data>
+  <data name="breakfast" xml:space="preserve">
+    <value>காலை உணவு</value>
+  </data>
+  <data name="screening_breakfasttime" xml:space="preserve">
+    <value>காலை உணவு நேரம்</value>
+  </data>
+  <data name="floor_building" xml:space="preserve">
+    <value>கட்டிடம்</value>
+  </data>
+  <data name="room_building" xml:space="preserve">
+    <value>கட்டிடம்</value>
+  </data>
+  <data name="roomallocation_building" xml:space="preserve">
+    <value>கட்டிடம்</value>
+  </data>
+  <data name="roomoccupancystatus_building" xml:space="preserve">
+    <value>கட்டிடம்</value>
+  </data>
+  <data name="building_buildingcode" xml:space="preserve">
+    <value>கட்டிடக் குறியீடு</value>
+  </data>
+  <data name="building_buildingdescription" xml:space="preserve">
+    <value>கட்டிட விளக்கம்</value>
+  </data>
+  <data name="building_buildingimage" xml:space="preserve">
+    <value>கட்டிடம் படம்</value>
+  </data>
+  <data name="building_buildingname" xml:space="preserve">
+    <value>கட்டிடத்தின் பெயர்</value>
+  </data>
+  <data name="building_buildingnearbylandmark" xml:space="preserve">
+    <value>அருகிலுள்ள நிலக் குறி கட்டிடம்</value>
+  </data>
+  <data name="treatmentpackage_calculatedpackagecost" xml:space="preserve">
+    <value>கணக்கிடப்பட்ட தொகுப்பு செலவு</value>
+  </data>
+  <data name="roomtype_refundpolicy_cancellationby" xml:space="preserve">
+    <value>ரத்துசெய்தல் மூலம்</value>
+  </data>
+  <data name="treatmentpackage_refundpolicy_cancellationby" xml:space="preserve">
+    <value>ரத்துசெய்தல் மூலம்</value>
+  </data>
+  <data name="roomtype_refundpolicy_cancellationwindowdays" xml:space="preserve">
+    <value>ரத்துச் சாளரம் (நாட்கள்)</value>
+  </data>
+  <data name="treatmentpackage_refundpolicy_cancellationwindowdays" xml:space="preserve">
+    <value>ரத்துச் சாளரம் (நாட்கள்)</value>
+  </data>
+  <data name="therapycategory_categorydescription" xml:space="preserve">
+    <value>வகை விளக்கம்</value>
+  </data>
+  <data name="clinicaltaskinfo" xml:space="preserve">
+    <value>மருத்துவ பணி தகவல்</value>
+  </data>
+  <data name="screening_coldaerateddrinks" xml:space="preserve">
+    <value>குளிர்ந்த காற்றூட்டப்பட்ட பானங்கள்</value>
+  </data>
+  <data name="billingpayment_collectedby" xml:space="preserve">
+    <value>மூலம் சேகரிக்கப்பட்டது</value>
+  </data>
+  <data name="clinicaltask_competency" xml:space="preserve">
+    <value>திறமை</value>
+  </data>
+  <data name="people_competencylevel" xml:space="preserve">
+    <value>திறன் நிலை</value>
+  </data>
+  <data name="competency_competencyname" xml:space="preserve">
+    <value>தகுதி பெயர்</value>
+  </data>
+  <data name="roomtype_concessoneligibility" xml:space="preserve">
+    <value>சலுகை தகுதி</value>
+  </data>
+  <data name="enquiryform_medicalinfo_conditionname" xml:space="preserve">
+    <value>நிபந்தனை பெயர்</value>
+  </data>
+  <data name="medicalcondition_conditionname" xml:space="preserve">
+    <value>நிபந்தனை பெயர்</value>
+  </data>
+  <data name="ipdapplicationform_consentfile" xml:space="preserve">
+    <value>ஒப்புதல் கோப்பு</value>
+  </data>
+  <data name="patientconsent_consentfile" xml:space="preserve">
+    <value>ஒப்புதல் கோப்பு</value>
+  </data>
+  <data name="ipdapplicationform_consentform" xml:space="preserve">
+    <value>ஒப்புதல் படிவம்</value>
+  </data>
+  <data name="patientconsent_consenttype" xml:space="preserve">
+    <value>ஒப்புதல் வகை</value>
+  </data>
+  <data name="people_clinicaltaskinfo_consultations" xml:space="preserve">
+    <value>ஆலோசனைகள்</value>
+  </data>
+  <data name="patientvisit_consultingdoctor" xml:space="preserve">
+    <value>ஆலோசனை மருத்துவர்</value>
+  </data>
+  <data name="contactaddress" xml:space="preserve">
+    <value>தொடர்பு முகவரி</value>
+  </data>
+  <data name="people_contactnumber" xml:space="preserve">
+    <value>தொடர்பு எண்</value>
+  </data>
+  <data name="referralsource_contactnumber" xml:space="preserve">
+    <value>தொடர்பு எண்</value>
+  </data>
+  <data name="screening_contraceptionusage" xml:space="preserve">
+    <value>கருத்தடை பயன்பாடு</value>
+  </data>
+  <data name="people_contractrenewaldate" xml:space="preserve">
+    <value>ஒப்பந்த புதுப்பித்தல் தேதி</value>
+  </data>
+  <data name="billingpayment_conversionrate" xml:space="preserve">
+    <value>மாற்று விகிதம்</value>
+  </data>
+  <data name="room_attendantcostperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு செலவு</value>
+  </data>
+  <data name="room_costperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு செலவு</value>
+  </data>
+  <data name="roomtype_attendantcostperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு செலவு</value>
+  </data>
+  <data name="roomtype_costperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு செலவு</value>
+  </data>
+  <data name="treatmentpackage_roomtypes_costperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு செலவு</value>
+  </data>
+  <data name="holidaycalendar_taskallowed_count" xml:space="preserve">
+    <value>எண்ணுங்கள்</value>
+  </data>
+  <data name="therapykit_kititems_count" xml:space="preserve">
+    <value>எண்ணிக்கை</value>
+  </data>
+  <data name="billingpayment_counterid" xml:space="preserve">
+    <value>கவுண்டர் ஐடி</value>
+  </data>
+  <data name="tenant_country" xml:space="preserve">
+    <value>நாடு</value>
+  </data>
+  <data name="country_countrycode" xml:space="preserve">
+    <value>நாட்டின் குறியீடு</value>
+  </data>
+  <data name="country_countryname" xml:space="preserve">
+    <value>நாட்டின் பெயர்</value>
+  </data>
+  <data name="ipdapplicationform_countryoforigin" xml:space="preserve">
+    <value>பிறப்பிடமான நாடு</value>
+  </data>
+  <data name="patientprofile_countryoforigin" xml:space="preserve">
+    <value>பிறப்பிடமான நாடு</value>
+  </data>
+  <data name="country_countryshortcode" xml:space="preserve">
+    <value>நாட்டின் குறுகிய குறியீடு</value>
+  </data>
+  <data name="shiftplanning_people_coveragetype" xml:space="preserve">
+    <value>கவரேஜ் வகை</value>
+  </data>
+  <data name="patientprofile_creativeactivities" xml:space="preserve">
+    <value>ஆக்கப்பூர்வமான செயல்பாடுகள்</value>
+  </data>
+  <data name="creativeleisuredimension" xml:space="preserve">
+    <value>கிரியேட்டிவ் ஓய்வு அளவு</value>
+  </data>
+  <data name="billingpayment_currency" xml:space="preserve">
+    <value>நாணயம்</value>
+  </data>
+  <data name="paymentrequest_currency" xml:space="preserve">
+    <value>நாணயம்</value>
+  </data>
+  <data name="paymentrequest_customeremail" xml:space="preserve">
+    <value>வாடிக்கையாளர் மின்னஞ்சல்</value>
+  </data>
+  <data name="paymentrequest_customername" xml:space="preserve">
+    <value>வாடிக்கையாளர் பெயர்</value>
+  </data>
+  <data name="paymentrequest_customerphone" xml:space="preserve">
+    <value>வாடிக்கையாளர் தொலைபேசி</value>
+  </data>
+  <data name="patientprofile_dateandtimeofdeath" xml:space="preserve">
+    <value>இறந்த தேதி மற்றும் நேரம்</value>
+  </data>
+  <data name="ipdapplicationform_preferreddatesofadmission_dateofarrival" xml:space="preserve">
+    <value>வருகை தேதி</value>
+  </data>
+  <data name="patientprofile_dateofbirth" xml:space="preserve">
+    <value>பிறந்த தேதி</value>
+  </data>
+  <data name="ipdapplicationform_preferreddatesofadmission_dateofdeparture" xml:space="preserve">
+    <value>புறப்படும் தேதி</value>
+  </data>
+  <data name="ipdapplicationform_preferreddatesofadmission_daysofstay" xml:space="preserve">
+    <value>தங்கியிருந்த நாட்கள்</value>
+  </data>
+  <data name="screening_daytimesleep" xml:space="preserve">
+    <value>பகல் தூக்கம்</value>
+  </data>
+  <data name="patientprofile_deceased" xml:space="preserve">
+    <value>இறந்தார்</value>
+  </data>
+  <data name="deceasedinformation" xml:space="preserve">
+    <value>இறந்த தகவல்</value>
+  </data>
+  <data name="assessment_patientanswers_defaultvalue" xml:space="preserve">
+    <value>இயல்புநிலை மதிப்பு</value>
+  </data>
+  <data name="assessmentquestion_defaultvalue" xml:space="preserve">
+    <value>இயல்புநிலை மதிப்பு</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_defaultvalue" xml:space="preserve">
+    <value>இயல்புநிலை மதிப்பு</value>
+  </data>
+  <data name="people_educationinfo_degree" xml:space="preserve">
+    <value>பட்டம்</value>
+  </data>
+  <data name="people_educationinfo_degreestatus" xml:space="preserve">
+    <value>பட்டப்படிப்பு நிலை</value>
+  </data>
+  <data name="pincodemaster_delivery" xml:space="preserve">
+    <value>விநியோகம்</value>
+  </data>
+  <data name="consultationqueue_department" xml:space="preserve">
+    <value>துறை</value>
+  </data>
+  <data name="queue_department" xml:space="preserve">
+    <value>துறை</value>
+  </data>
+  <data name="workprofile_department" xml:space="preserve">
+    <value>துறை</value>
+  </data>
+  <data name="roomtype_deposittype" xml:space="preserve">
+    <value>வைப்பு வகை</value>
+  </data>
+  <data name="competency_description" xml:space="preserve">
+    <value>விளக்கம்</value>
+  </data>
+  <data name="department_description" xml:space="preserve">
+    <value>விளக்கம்</value>
+  </data>
+  <data name="medicalcondition_description" xml:space="preserve">
+    <value>விளக்கம்</value>
+  </data>
+  <data name="roomtype_description" xml:space="preserve">
+    <value>விளக்கம்</value>
+  </data>
+  <data name="shift_description" xml:space="preserve">
+    <value>விளக்கம்</value>
+  </data>
+  <data name="tasktype_description" xml:space="preserve">
+    <value>விளக்கம்</value>
+  </data>
+  <data name="therapyitemcategory_description" xml:space="preserve">
+    <value>விளக்கம்</value>
+  </data>
+  <data name="designation_designation" xml:space="preserve">
+    <value>பதவி</value>
+  </data>
+  <data name="people_designation" xml:space="preserve">
+    <value>பதவி</value>
+  </data>
+  <data name="people_workexperience_designation" xml:space="preserve">
+    <value>பதவி</value>
+  </data>
+  <data name="patientprofile_detailedremarks" xml:space="preserve">
+    <value>விரிவான குறிப்புகள்</value>
+  </data>
+  <data name="screening_detailsifyes" xml:space="preserve">
+    <value>விவரங்கள் (ஆம் என்றால்)</value>
+  </data>
+  <data name="screening_diettype" xml:space="preserve">
+    <value>உணவு வகை</value>
+  </data>
+  <data name="dinner" xml:space="preserve">
+    <value>இரவு உணவு</value>
+  </data>
+  <data name="pincodemaster_district" xml:space="preserve">
+    <value>மாவட்டம்</value>
+  </data>
+  <data name="pincodemaster_divisionname" xml:space="preserve">
+    <value>பிரிவு பெயர்</value>
+  </data>
+  <data name="screening_doyoubelieveingod" xml:space="preserve">
+    <value>நீங்கள் கடவுளை நம்புகிறீர்களா?</value>
+  </data>
+  <data name="screening_doyoufeelexhaustedduringtheday" xml:space="preserve">
+    <value>பகலில் சோர்வாக உணர்கிறீர்களா?</value>
+  </data>
+  <data name="screening_doyouhaveanyspecificreasonforstressinyourlife" xml:space="preserve">
+    <value>உங்கள் வாழ்க்கையில் மன அழுத்தத்திற்கு ஏதேனும் குறிப்பிட்ட காரணம் உள்ளதா?</value>
+  </data>
+  <data name="screening_doyoupracticeregularyogameditationanyspecificrelaxationtechnique" xml:space="preserve">
+    <value>நீங்கள் வழக்கமான யோகா தியானத்தை ஏதேனும் குறிப்பிட்ட தளர்வு நுட்பத்தை பயிற்சி செய்கிறீர்களா?</value>
+  </data>
+  <data name="ipdapplicationform_doyourequireahospitalprovidedattendant" xml:space="preserve">
+    <value>உங்களுக்கு மருத்துவமனையில் உதவியாளர் தேவையா?</value>
+  </data>
+  <data name="screening_doyouworktowardsyourgoal" xml:space="preserve">
+    <value>உங்கள் இலக்கை நோக்கி உழைக்கிறீர்களா?</value>
+  </data>
+  <data name="people_dob" xml:space="preserve">
+    <value>DOB</value>
+  </data>
+  <data name="assessment_doctorname" xml:space="preserve">
+    <value>மருத்துவர் பெயர்</value>
+  </data>
+  <data name="screening_dreams" xml:space="preserve">
+    <value>கனவுகள்</value>
+  </data>
+  <data name="enquiryform_medicalinfo_duration" xml:space="preserve">
+    <value>கால அளவு</value>
+  </data>
+  <data name="ipdapplicationform_medicalinfo_duration" xml:space="preserve">
+    <value>கால அளவு</value>
+  </data>
+  <data name="opdform_medicalinfo_duration" xml:space="preserve">
+    <value>கால அளவு</value>
+  </data>
+  <data name="restrictedmedicalconditions_medicalinfo_duration" xml:space="preserve">
+    <value>கால அளவு</value>
+  </data>
+  <data name="clinicalappointment_durationfrom" xml:space="preserve">
+    <value>கால அளவு</value>
+  </data>
+  <data name="screening_physicalactivitydurationhrsperday" xml:space="preserve">
+    <value>கால அளவு ஒரு நாளைக்கு மணி</value>
+  </data>
+  <data name="shift_breakdurationdetails_durationinmin" xml:space="preserve">
+    <value>குறைந்தபட்ச கால அளவு</value>
+  </data>
+  <data name="clinicaltask_taskduration_durationinminutes" xml:space="preserve">
+    <value>நிமிடங்களில் கால அளவு</value>
+  </data>
+  <data name="people_clinicaltaskinfo_durationinminutes" xml:space="preserve">
+    <value>நிமிடங்களில் கால அளவு</value>
+  </data>
+  <data name="clinicalappointment_durationto" xml:space="preserve">
+    <value>கால அளவு</value>
+  </data>
+  <data name="staffattendance_earlyinmin" xml:space="preserve">
+    <value>ஆரம்பத்தில் (நிமிடம்)</value>
+  </data>
+  <data name="staffattendance_earlyoutmin" xml:space="preserve">
+    <value>ஆரம்பம் (நிமிடம்)</value>
+  </data>
+  <data name="screening_eatingcontextofmostmeals" xml:space="preserve">
+    <value>பெரும்பாலான உணவுகளின் உண்ணும் சூழல்</value>
+  </data>
+  <data name="patientprofile_education" xml:space="preserve">
+    <value>கல்வி</value>
+  </data>
+  <data name="educationinfo" xml:space="preserve">
+    <value>கல்வித் தகவல்</value>
+  </data>
+  <data name="people_educationinfo_educationinstitution" xml:space="preserve">
+    <value>கல்வி நிறுவனம்</value>
+  </data>
+  <data name="enquiryform_emailaddress" xml:space="preserve">
+    <value>மின்னஞ்சல் முகவரி</value>
+  </data>
+  <data name="patientprofile_emailaddress" xml:space="preserve">
+    <value>மின்னஞ்சல் முகவரி</value>
+  </data>
+  <data name="mailbox_emailfooter" xml:space="preserve">
+    <value>மின்னஞ்சல் அடிக்குறிப்பு</value>
+  </data>
+  <data name="mailbox_emailhostname" xml:space="preserve">
+    <value>மின்னஞ்சல் புரவலன் பெயர்</value>
+  </data>
+  <data name="people_emailid" xml:space="preserve">
+    <value>மின்னஞ்சல் ஐடி</value>
+  </data>
+  <data name="users_emailid" xml:space="preserve">
+    <value>மின்னஞ்சல் ஐடி</value>
+  </data>
+  <data name="emergencycontact" xml:space="preserve">
+    <value>அவசரத் தொடர்பு</value>
+  </data>
+  <data name="emergencycontactinfo" xml:space="preserve">
+    <value>அவசரத் தொடர்புத் தகவல்</value>
+  </data>
+  <data name="emotionaldimension" xml:space="preserve">
+    <value>உணர்ச்சிப் பரிமாணம்</value>
+  </data>
+  <data name="people_employmentstatus" xml:space="preserve">
+    <value>வேலைவாய்ப்பு நிலை</value>
+  </data>
+  <data name="patientqueue_endtime" xml:space="preserve">
+    <value>முடிவு நேரம்</value>
+  </data>
+  <data name="shift_breakdurationdetails_endtime" xml:space="preserve">
+    <value>முடிவு நேரம்</value>
+  </data>
+  <data name="energylevelduringtheday" xml:space="preserve">
+    <value>பகலில் ஆற்றல் நிலை</value>
+  </data>
+  <data name="enquiryform_enquiredvia" xml:space="preserve">
+    <value>மூலம் விசாரித்தார்</value>
+  </data>
+  <data name="enquiryform_enquirertype" xml:space="preserve">
+    <value>விசாரிப்பவர் வகை</value>
+  </data>
+  <data name="enquiryform_enquirydate" xml:space="preserve">
+    <value>விசாரணை தேதி</value>
+  </data>
+  <data name="enquirytype_enquirydesc" xml:space="preserve">
+    <value>விசாரணை Desc</value>
+  </data>
+  <data name="enquirytype_enquiryname" xml:space="preserve">
+    <value>விசாரணை பெயர்</value>
+  </data>
+  <data name="enquiryform_enquirynumber" xml:space="preserve">
+    <value>விசாரணை எண்</value>
+  </data>
+  <data name="enquiryform_enquiryreason" xml:space="preserve">
+    <value>விசாரணை காரணம்</value>
+  </data>
+  <data name="enquiryform_enquirystatus" xml:space="preserve">
+    <value>விசாரணை நிலை</value>
+  </data>
+  <data name="enquiryform_enquirytype" xml:space="preserve">
+    <value>விசாரணை வகை</value>
+  </data>
+  <data name="alerttemplates_entityaction" xml:space="preserve">
+    <value>நிறுவன நடவடிக்கை</value>
+  </data>
+  <data name="maillogs_entityid" xml:space="preserve">
+    <value>நிறுவன ஐடி</value>
+  </data>
+  <data name="alerttemplates_entityname" xml:space="preserve">
+    <value>நிறுவனத்தின் பெயர்</value>
+  </data>
+  <data name="maillogs_entityname" xml:space="preserve">
+    <value>நிறுவனத்தின் பெயர்</value>
+  </data>
+  <data name="environmentaldimension" xml:space="preserve">
+    <value>சுற்றுச்சூழல் பரிமாணம்</value>
+  </data>
+  <data name="ipdapplicationform_estimatedarrival" xml:space="preserve">
+    <value>மதிப்பிடப்பட்ட வருகை</value>
+  </data>
+  <data name="otplogs_expirytime" xml:space="preserve">
+    <value>காலாவதி நேரம்</value>
+  </data>
+  <data name="screening_familyrelationshipstate" xml:space="preserve">
+    <value>குடும்ப உறவு நிலை</value>
+  </data>
+  <data name="screening_fastfood" xml:space="preserve">
+    <value>துரித உணவு</value>
+  </data>
+  <data name="people_clinicaltaskinfo_feesamount" xml:space="preserve">
+    <value>கட்டணத் தொகை</value>
+  </data>
+  <data name="screening_fermentedfood" xml:space="preserve">
+    <value>புளித்த உணவு</value>
+  </data>
+  <data name="people_educationinfo_fieldofstudy" xml:space="preserve">
+    <value>ஆய்வுக் களம்</value>
+  </data>
+  <data name="screening_firstfoodinthemorning" xml:space="preserve">
+    <value>காலையில் முதல் உணவு</value>
+  </data>
+  <data name="enquiryform_firstname" xml:space="preserve">
+    <value>முதல் பெயர்</value>
+  </data>
+  <data name="ipdapplicationform_firstname" xml:space="preserve">
+    <value>முதல் பெயர்</value>
+  </data>
+  <data name="patientprofile_firstname" xml:space="preserve">
+    <value>முதல் பெயர்</value>
+  </data>
+  <data name="people_firstname" xml:space="preserve">
+    <value>முதல் பெயர்</value>
+  </data>
+  <data name="users_firstname" xml:space="preserve">
+    <value>முதல் பெயர்</value>
+  </data>
+  <data name="flexibilityinfo" xml:space="preserve">
+    <value>நெகிழ்வுத் தகவல்</value>
+  </data>
+  <data name="ipdapplicationform_flexiblewithdates" xml:space="preserve">
+    <value>தேதிகளுடன் நெகிழ்வானது</value>
+  </data>
+  <data name="ipdapplicationform_flexiblewithroomtype" xml:space="preserve">
+    <value>அறை வகையுடன் நெகிழ்வானது</value>
+  </data>
+  <data name="room_floor" xml:space="preserve">
+    <value>மாடி</value>
+  </data>
+  <data name="roomallocation_floor" xml:space="preserve">
+    <value>மாடி</value>
+  </data>
+  <data name="roomoccupancystatus_floor" xml:space="preserve">
+    <value>மாடி</value>
+  </data>
+  <data name="floor_floorname" xml:space="preserve">
+    <value>மாடி பெயர்</value>
+  </data>
+  <data name="floor_floornumber" xml:space="preserve">
+    <value>மாடி எண்</value>
+  </data>
+  <data name="fluidbalance" xml:space="preserve">
+    <value>திரவ இருப்பு</value>
+  </data>
+  <data name="foodpreference" xml:space="preserve">
+    <value>உணவு விருப்பம்</value>
+  </data>
+  <data name="screening_physicalactivityfrequency" xml:space="preserve">
+    <value>அதிர்வெண்</value>
+  </data>
+  <data name="ipdapplicationform_medicationinfo_frequencyinaday" xml:space="preserve">
+    <value>ஒரு நாளில் அதிர்வெண்</value>
+  </data>
+  <data name="opdform_medicationinfo_frequencyinaday" xml:space="preserve">
+    <value>ஒரு நாளில் அதிர்வெண்</value>
+  </data>
+  <data name="screening_frequencyinday" xml:space="preserve">
+    <value>நாளில் அதிர்வெண்</value>
+  </data>
+  <data name="screening_frequencyinnight" xml:space="preserve">
+    <value>இரவில் அதிர்வெண்</value>
+  </data>
+  <data name="screening_frequencyoffruitintake" xml:space="preserve">
+    <value>பழங்களை உட்கொள்ளும் அதிர்வெண்</value>
+  </data>
+  <data name="screening_stimulantsfrequencyperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு அதிர்வெண்</value>
+  </data>
+  <data name="screening_fried" xml:space="preserve">
+    <value>வறுத்த</value>
+  </data>
+  <data name="ipdapplicationform_room_fromdate" xml:space="preserve">
+    <value>தேதியிலிருந்து</value>
+  </data>
+  <data name="people_workexperience_fromdate" xml:space="preserve">
+    <value>தேதியிலிருந்து</value>
+  </data>
+  <data name="roomallocation_fromdate" xml:space="preserve">
+    <value>தேதியிலிருந்து</value>
+  </data>
+  <data name="screening_fruitintake" xml:space="preserve">
+    <value>பழம் உட்கொள்ளல்</value>
+  </data>
+  <data name="roomtype_futurebookinglimit" xml:space="preserve">
+    <value>எதிர்கால முன்பதிவு வரம்பு</value>
+  </data>
+  <data name="screening_gapbetweendinnerandsleep" xml:space="preserve">
+    <value>இரவு உணவுக்கும் தூக்கத்திற்கும் இடையே இடைவெளி</value>
+  </data>
+  <data name="screening_gaspassed" xml:space="preserve">
+    <value>எரிவாயு அனுப்பப்பட்டது</value>
+  </data>
+  <data name="paymentresponse_gatewayresponsecode" xml:space="preserve">
+    <value>நுழைவாயில் பதில் குறியீடு</value>
+  </data>
+  <data name="paymentresponse_gatewayresponsemessage" xml:space="preserve">
+    <value>நுழைவாயில் பதில் செய்தி</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_gender" xml:space="preserve">
+    <value>பாலினம்</value>
+  </data>
+  <data name="enquiryform_gender" xml:space="preserve">
+    <value>பாலினம்</value>
+  </data>
+  <data name="ipdapplicationform_attendantinfo_gender" xml:space="preserve">
+    <value>பாலினம்</value>
+  </data>
+  <data name="ipdapplicationform_gender" xml:space="preserve">
+    <value>பாலினம்</value>
+  </data>
+  <data name="patientprofile_gender" xml:space="preserve">
+    <value>பாலினம்</value>
+  </data>
+  <data name="people_gender" xml:space="preserve">
+    <value>பாலினம்</value>
+  </data>
+  <data name="roomtype_gendersuitability" xml:space="preserve">
+    <value>பாலின பொருத்தம்</value>
+  </data>
+  <data name="ipdapplicationform_generalcondition" xml:space="preserve">
+    <value>பொது நிலை</value>
+  </data>
+  <data name="generalinfo" xml:space="preserve">
+    <value>பொதுவான தகவல்</value>
+  </data>
+  <data name="groupbooking" xml:space="preserve">
+    <value>குழு முன்பதிவு?</value>
+  </data>
+  <data name="ipdapplicationform_groupbooking" xml:space="preserve">
+    <value>குழு முன்பதிவு?</value>
+  </data>
+  <data name="roomgroup_groupdesc" xml:space="preserve">
+    <value>குழு Desc</value>
+  </data>
+  <data name="ipdapplicationform_groupleadersbookingreferencenumber" xml:space="preserve">
+    <value>குழுத் தலைவரின் முன்பதிவு குறிப்பு எண்</value>
+  </data>
+  <data name="roomgroup_groupname" xml:space="preserve">
+    <value>குழுவின் பெயர்</value>
+  </data>
+  <data name="roomgroup_groupnumber" xml:space="preserve">
+    <value>குழு எண்</value>
+  </data>
+  <data name="screening_handlingdifferencesconflicts" xml:space="preserve">
+    <value>முரண்பாடுகளைக் கையாளுதல்</value>
+  </data>
+  <data name="healthinsurancedetails" xml:space="preserve">
+    <value>சுகாதார காப்பீடு விவரங்கள்</value>
+  </data>
+  <data name="holidaycalendar_holidaydate" xml:space="preserve">
+    <value>விடுமுறை தேதி</value>
+  </data>
+  <data name="holidaycalendar_holidayname" xml:space="preserve">
+    <value>விடுமுறை பெயர்</value>
+  </data>
+  <data name="hourlycharges" xml:space="preserve">
+    <value>மணிநேர கட்டணங்கள்</value>
+  </data>
+  <data name="roomtype_hourlychargesapplicable" xml:space="preserve">
+    <value>மணிநேர கட்டணங்கள் பொருந்துமா?</value>
+  </data>
+  <data name="screening_howdoyoumostlyprocessyouremotions" xml:space="preserve">
+    <value>பெரும்பாலும் உங்கள் உணர்ச்சிகளை எவ்வாறு செயலாக்குகிறீர்கள்?</value>
+  </data>
+  <data name="screening_howdoesmoneyaffectyourmentalpeace" xml:space="preserve">
+    <value>பணம் உங்கள் மன அமைதியை எவ்வாறு பாதிக்கிறது?</value>
+  </data>
+  <data name="screening_howistheenvironmentattheplaceofyouroccupation" xml:space="preserve">
+    <value>நீங்கள் வசிக்கும் இடத்தில் சூழல் எப்படி இருக்கிறது?</value>
+  </data>
+  <data name="screening_howisyoursexuallife" xml:space="preserve">
+    <value>உங்கள் பாலியல் வாழ்க்கை எப்படி இருக்கிறது?</value>
+  </data>
+  <data name="screening_howoftendoyouintentionallygetsunlight" xml:space="preserve">
+    <value>எத்தனை முறை நீங்கள் வேண்டுமென்றே சூரிய ஒளியைப் பெறுகிறீர்கள்?</value>
+  </data>
+  <data name="screening_hungerbeforemeals" xml:space="preserve">
+    <value>உணவுக்கு முன் பசி</value>
+  </data>
+  <data name="people_iddocument" xml:space="preserve">
+    <value>அடையாள ஆவணம்</value>
+  </data>
+  <data name="people_idnumber" xml:space="preserve">
+    <value>அடையாள எண்</value>
+  </data>
+  <data name="idproof" xml:space="preserve">
+    <value>அடையாளச் சான்று</value>
+  </data>
+  <data name="patientprofile_idproofnumber" xml:space="preserve">
+    <value>அடையாளச் சான்று எண்</value>
+  </data>
+  <data name="patientprofile_idprooftype" xml:space="preserve">
+    <value>அடையாளச் சான்று வகை</value>
+  </data>
+  <data name="people_idtype" xml:space="preserve">
+    <value>ஐடி வகை</value>
+  </data>
+  <data name="identityproof" xml:space="preserve">
+    <value>அடையாளச் சான்று</value>
+  </data>
+  <data name="screening_ifyes" xml:space="preserve">
+    <value>ஆம் எனில்</value>
+  </data>
+  <data name="screening_ifyesdetails" xml:space="preserve">
+    <value>ஆம் என்றால் விவரங்கள்</value>
+  </data>
+  <data name="screening_ifyouwanttorestartahobbywhatwouldthatbe" xml:space="preserve">
+    <value>நீங்கள் ஒரு பொழுதுபோக்கை மீண்டும் தொடங்க விரும்பினால் அது என்னவாக இருக்கும்?</value>
+  </data>
+  <data name="screening_indicators" xml:space="preserve">
+    <value>குறிகாட்டிகள்</value>
+  </data>
+  <data name="processsla_processsla_initialstage" xml:space="preserve">
+    <value>ஆரம்ப நிலை</value>
+  </data>
+  <data name="people_workexperience_institutionname" xml:space="preserve">
+    <value>நிறுவனத்தின் பெயர்</value>
+  </data>
+  <data name="patientprofile_insurancecompany" xml:space="preserve">
+    <value>காப்பீட்டு நிறுவனம்</value>
+  </data>
+  <data name="patientprofile_insurancetype" xml:space="preserve">
+    <value>காப்பீட்டு வகை</value>
+  </data>
+  <data name="assessment_ipdform" xml:space="preserve">
+    <value>IPD படிவம்</value>
+  </data>
+  <data name="roomallocation_ipdno" xml:space="preserve">
+    <value>IPD எண்</value>
+  </data>
+  <data name="roomoccupancystatus_ipdno" xml:space="preserve">
+    <value>IPD எண்</value>
+  </data>
+  <data name="billingpayment_ipdnumber" xml:space="preserve">
+    <value>IPD எண்</value>
+  </data>
+  <data name="clinicalappointment_ipdnumber" xml:space="preserve">
+    <value>IPD எண்</value>
+  </data>
+  <data name="patientvisit_ipdnumber" xml:space="preserve">
+    <value>IPD எண்</value>
+  </data>
+  <data name="receivable_ipdnumber" xml:space="preserve">
+    <value>IPD எண்</value>
+  </data>
+  <data name="screening_ipdnumber" xml:space="preserve">
+    <value>IPD எண்</value>
+  </data>
+  <data name="holidaycalendar_taskallowed_isallowed" xml:space="preserve">
+    <value>அனுமதிக்கப்பட்டதா?</value>
+  </data>
+  <data name="assessmenttemplate_isdefaulttemplate" xml:space="preserve">
+    <value>இயல்புநிலை டெம்ப்ளேட்</value>
+  </data>
+  <data name="task_screeningtemplates_isdefaulttemplate" xml:space="preserve">
+    <value>இயல்புநிலை டெம்ப்ளேட்டா?</value>
+  </data>
+  <data name="therapies_isgrouptherapyallowed" xml:space="preserve">
+    <value>குழு சிகிச்சை அனுமதிக்கப்படுமா?</value>
+  </data>
+  <data name="assessment_patientanswers_isrequired" xml:space="preserve">
+    <value>தேவை</value>
+  </data>
+  <data name="assessmentquestion_isrequired" xml:space="preserve">
+    <value>தேவை</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_isrequired" xml:space="preserve">
+    <value>தேவை</value>
+  </data>
+  <data name="enquiryform_isroombookingrelated" xml:space="preserve">
+    <value>அறை முன்பதிவு தொடர்பானது</value>
+  </data>
+  <data name="enquirytype_isroombookingrelated" xml:space="preserve">
+    <value>அறை முன்பதிவு தொடர்பானது</value>
+  </data>
+  <data name="maillogs_issent" xml:space="preserve">
+    <value>அனுப்பப்பட்டதா?</value>
+  </data>
+  <data name="workprofile_isthisaclinicalprofile" xml:space="preserve">
+    <value>இது ஒரு மருத்துவ விவரம்</value>
+  </data>
+  <data name="people_issuingauthority" xml:space="preserve">
+    <value>வழங்குதல் ஆணையம்</value>
+  </data>
+  <data name="otplogs_isused" xml:space="preserve">
+    <value>பசியின்மை</value>
+  </data>
+  <data name="therapyitemcategory_itemcategory" xml:space="preserve">
+    <value>பொருள் வகை</value>
+  </data>
+  <data name="ipdapplicationform_joinwaitinglist" xml:space="preserve">
+    <value>காத்திருப்புப் பட்டியலில் சேரவும்</value>
+  </data>
+  <data name="enquiryform_joinwaitinglist" xml:space="preserve">
+    <value>அறை கிடைக்கவில்லை என்றால் காத்திருப்போர் பட்டியலில் சேரவா?</value>
+  </data>
+  <data name="people_joiningdate" xml:space="preserve">
+    <value>சேரும் தேதி</value>
+  </data>
+  <data name="paymentconfig_keyinfo_keyid" xml:space="preserve">
+    <value>முக்கிய ஐடி</value>
+  </data>
+  <data name="keyinfo" xml:space="preserve">
+    <value>முக்கிய தகவல்</value>
+  </data>
+  <data name="paymentconfig_keyinfo_keysecret" xml:space="preserve">
+    <value>முக்கிய ரகசியம்</value>
+  </data>
+  <data name="paymentconfig_keyinfo_keytype" xml:space="preserve">
+    <value>முக்கிய வகை</value>
+  </data>
+  <data name="kititems" xml:space="preserve">
+    <value>கிட் பொருட்கள்</value>
+  </data>
+  <data name="billingpayment_kitprice" xml:space="preserve">
+    <value>கிட் விலை</value>
+  </data>
+  <data name="receivable_kitprice" xml:space="preserve">
+    <value>கிட் விலை</value>
+  </data>
+  <data name="therapykit_kitprice" xml:space="preserve">
+    <value>கிட் விலை</value>
+  </data>
+  <data name="treatmentpackage_therapykits_kitprice" xml:space="preserve">
+    <value>கிட் விலை</value>
+  </data>
+  <data name="medicalcondition_synonyms_slanguage" xml:space="preserve">
+    <value>மொழி</value>
+  </data>
+  <data name="languagepreferences" xml:space="preserve">
+    <value>மொழி விருப்பத்தேர்வுகள்</value>
+  </data>
+  <data name="patientprofile_languagesknown" xml:space="preserve">
+    <value>தெரிந்த மொழிகள்</value>
+  </data>
+  <data name="people_preferredlanguageinfo_languagesknown" xml:space="preserve">
+    <value>தெரிந்த மொழிகள்</value>
+  </data>
+  <data name="patientprofile_languagespreferrable" xml:space="preserve">
+    <value>விருப்பமான மொழிகள்</value>
+  </data>
+  <data name="enquiryform_lastname" xml:space="preserve">
+    <value>கடைசி பெயர்</value>
+  </data>
+  <data name="ipdapplicationform_lastname" xml:space="preserve">
+    <value>கடைசி பெயர்</value>
+  </data>
+  <data name="patientprofile_lastname" xml:space="preserve">
+    <value>கடைசி பெயர்</value>
+  </data>
+  <data name="people_lastname" xml:space="preserve">
+    <value>கடைசி பெயர்</value>
+  </data>
+  <data name="users_lastname" xml:space="preserve">
+    <value>கடைசி பெயர்</value>
+  </data>
+  <data name="staffattendance_latemin" xml:space="preserve">
+    <value>தாமதம் (நிமிடம்)</value>
+  </data>
+  <data name="pincodemaster_latitude" xml:space="preserve">
+    <value>அட்சரேகை</value>
+  </data>
+  <data name="therapycategory_categoryname" xml:space="preserve">
+    <value>வகை பெயர்</value>
+  </data>
+  <data name="patientprofile_causeofdeath" xml:space="preserve">
+    <value>இறப்புக்கான காரணம்</value>
+  </data>
+  <data name="people_educationinfo_certificationnumber" xml:space="preserve">
+    <value>சான்றிதழ் எண்</value>
+  </data>
+  <data name="roomtype_chargeperhour" xml:space="preserve">
+    <value>ஒரு மணி நேரத்திற்கு கட்டணம்</value>
+  </data>
+  <data name="patientqueue_checkintime" xml:space="preserve">
+    <value>செக் இன் டைம்</value>
+  </data>
+  <data name="billingpayment_chequedddate" xml:space="preserve">
+    <value>டிடி தேதியை சரிபார்க்கவும்</value>
+  </data>
+  <data name="screening_chewinghabit" xml:space="preserve">
+    <value>மெல்லும் பழக்கம்</value>
+  </data>
+  <data name="pincodemaster_circlename" xml:space="preserve">
+    <value>வட்டப்பெயர்</value>
+  </data>
+  <data name="ipdapplicationform_ccityordistrict" xml:space="preserve">
+    <value>நகரம் அல்லது மாவட்டம்</value>
+  </data>
+  <data name="ipdapplicationform_pcityordistrict" xml:space="preserve">
+    <value>நகரம் அல்லது மாவட்டம்</value>
+  </data>
+  <data name="patientprofile_ccityordistrict" xml:space="preserve">
+    <value>நகரம் அல்லது மாவட்டம்</value>
+  </data>
+  <data name="patientprofile_pcityordistrict" xml:space="preserve">
+    <value>நகரம் அல்லது மாவட்டம்</value>
+  </data>
+  <data name="people_ccityordistrict" xml:space="preserve">
+    <value>நகரம் அல்லது மாவட்டம்</value>
+  </data>
+  <data name="people_pcityordistrict" xml:space="preserve">
+    <value>நகரம் அல்லது மாவட்டம்</value>
+  </data>
+  <data name="people_clinicaltask" xml:space="preserve">
+    <value>மருத்துவ பணி</value>
+  </data>
+  <data name="peopletimepreference_timepreference_clinicaltask" xml:space="preserve">
+    <value>மருத்துவ பணி</value>
+  </data>
+  <data name="people_licenceupload" xml:space="preserve">
+    <value>உரிமம் பதிவேற்றம்</value>
+  </data>
+  <data name="licenseinfo" xml:space="preserve">
+    <value>உரிமத் தகவல்</value>
+  </data>
+  <data name="therapykit_kititems_linetotal" xml:space="preserve">
+    <value>வரி மொத்தம்</value>
+  </data>
+  <data name="logininformation" xml:space="preserve">
+    <value>உள்நுழைவு தகவல்</value>
+  </data>
+  <data name="pincodemaster_longitude" xml:space="preserve">
+    <value>தீர்க்கரேகை</value>
+  </data>
+  <data name="lunch" xml:space="preserve">
+    <value>மதிய உணவு</value>
+  </data>
+  <data name="patientprofile_magazinename" xml:space="preserve">
+    <value>இதழின் பெயர்</value>
+  </data>
+  <data name="maillogs_mailbody" xml:space="preserve">
+    <value>அஞ்சல் உடல்</value>
+  </data>
+  <data name="maillogs_mailfor" xml:space="preserve">
+    <value>அஞ்சல்</value>
+  </data>
+  <data name="maillogs_mailsubject" xml:space="preserve">
+    <value>அஞ்சல் பொருள்</value>
+  </data>
+  <data name="maillogs_mailto" xml:space="preserve">
+    <value>மெயில்</value>
+  </data>
+  <data name="patientprofile_maritalstatus" xml:space="preserve">
+    <value>திருமண நிலை</value>
+  </data>
+  <data name="screening_maritalstatus" xml:space="preserve">
+    <value>திருமண நிலை</value>
+  </data>
+  <data name="roomtype_maxbookingdays" xml:space="preserve">
+    <value>அதிகபட்ச முன்பதிவு நாட்கள்</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_medicalcondition" xml:space="preserve">
+    <value>மருத்துவ நிலை</value>
+  </data>
+  <data name="enquiryform_medicalinfo_medicalcondition" xml:space="preserve">
+    <value>மருத்துவ நிலை</value>
+  </data>
+  <data name="ipdapplicationform_medicalinfo_medicalconditionname" xml:space="preserve">
+    <value>மருத்துவ நிலை பெயர்</value>
+  </data>
+  <data name="opdform_medicalinfo_medicalconditionname" xml:space="preserve">
+    <value>மருத்துவ நிலை பெயர்</value>
+  </data>
+  <data name="restrictedmedicalconditions_medicalinfo_medicalconditionname" xml:space="preserve">
+    <value>மருத்துவ நிலை பெயர்</value>
+  </data>
+  <data name="medicalinfo" xml:space="preserve">
+    <value>மருத்துவ தகவல்</value>
+  </data>
+  <data name="ipdapplicationform_medicalrecords_medicalrecordfile" xml:space="preserve">
+    <value>மருத்துவ பதிவு கோப்பு</value>
+  </data>
+  <data name="opdform_medicalrecords_medicalrecordfile" xml:space="preserve">
+    <value>மருத்துவ பதிவு கோப்பு</value>
+  </data>
+  <data name="ipdapplicationform_medicalrecords_medicalrecordname" xml:space="preserve">
+    <value>மருத்துவ பதிவு பெயர்</value>
+  </data>
+  <data name="opdform_medicalrecords_medicalrecordname" xml:space="preserve">
+    <value>மருத்துவ பதிவு பெயர்</value>
+  </data>
+  <data name="medicalrecords" xml:space="preserve">
+    <value>மருத்துவ பதிவுகள்</value>
+  </data>
+  <data name="medicationinfo" xml:space="preserve">
+    <value>மருந்து தகவல்</value>
+  </data>
+  <data name="medicine_medicationtype" xml:space="preserve">
+    <value>மருந்து வகை</value>
+  </data>
+  <data name="medicationtype_medicationtypedescription" xml:space="preserve">
+    <value>மருந்து வகை விளக்கம்</value>
+  </data>
+  <data name="medicationtype_medicationtypename" xml:space="preserve">
+    <value>மருந்து வகை பெயர்</value>
+  </data>
+  <data name="billingpayment_medicine" xml:space="preserve">
+    <value>மருந்து</value>
+  </data>
+  <data name="receivable_medicine" xml:space="preserve">
+    <value>மருந்து</value>
+  </data>
+  <data name="treatmentpackage_medicineamount" xml:space="preserve">
+    <value>மருந்து அளவு</value>
+  </data>
+  <data name="treatmentpackage_medicines_medicinecost" xml:space="preserve">
+    <value>மருந்து செலவு</value>
+  </data>
+  <data name="treatmentpackage_medicines_medicinecount" xml:space="preserve">
+    <value>மருந்து எண்ணிக்கை</value>
+  </data>
+  <data name="ipdapplicationform_medicationinfo_medicinecoverimage" xml:space="preserve">
+    <value>மருந்து அட்டைப் படம்</value>
+  </data>
+  <data name="opdform_medicationinfo_medicineimage" xml:space="preserve">
+    <value>மருந்து படம்</value>
+  </data>
+  <data name="ipdapplicationform_medicationinfo_medicinename" xml:space="preserve">
+    <value>மருந்தின் பெயர்</value>
+  </data>
+  <data name="medicine_medicinename" xml:space="preserve">
+    <value>மருந்தின் பெயர்</value>
+  </data>
+  <data name="opdform_medicationinfo_medicinename" xml:space="preserve">
+    <value>மருந்தின் பெயர்</value>
+  </data>
+  <data name="treatmentpackage_medicines_medicinename" xml:space="preserve">
+    <value>மருந்தின் பெயர்</value>
+  </data>
+  <data name="medicines" xml:space="preserve">
+    <value>மருந்துகள்</value>
+  </data>
+  <data name="patientprofile_meditationpractice" xml:space="preserve">
+    <value>தியானப் பயிற்சி</value>
+  </data>
+  <data name="mentaldimension" xml:space="preserve">
+    <value>மன பரிமாணம்</value>
+  </data>
+  <data name="screening_mentalplanningfocusstyle" xml:space="preserve">
+    <value>மன திட்டமிடல் கவனம் பாணி</value>
+  </data>
+  <data name="paymentconfig_keyinfo_merchantid" xml:space="preserve">
+    <value>வணிகர் ஐடி</value>
+  </data>
+  <data name="paymentrequest_merchantid" xml:space="preserve">
+    <value>வணிகர் ஐடி</value>
+  </data>
+  <data name="roomtype_minbookingdays" xml:space="preserve">
+    <value>குறைந்தபட்ச முன்பதிவு நாட்கள்</value>
+  </data>
+  <data name="ipdapplicationform_mobilenumber" xml:space="preserve">
+    <value>மொபைல் எண்</value>
+  </data>
+  <data name="patientprofile_mobilenumber" xml:space="preserve">
+    <value>மொபைல் எண்</value>
+  </data>
+  <data name="users_mobilenumber" xml:space="preserve">
+    <value>மொபைல் எண்</value>
+  </data>
+  <data name="screening_morningfeeling" xml:space="preserve">
+    <value>காலை உணர்வு</value>
+  </data>
+  <data name="department_name" xml:space="preserve">
+    <value>பெயர்</value>
+  </data>
+  <data name="roomtype_name" xml:space="preserve">
+    <value>பெயர்</value>
+  </data>
+  <data name="screening_nasalmucus" xml:space="preserve">
+    <value>நாசி சளி</value>
+  </data>
+  <data name="ipdapplicationform_nationality" xml:space="preserve">
+    <value>தேசியம்</value>
+  </data>
+  <data name="patientprofile_nationality" xml:space="preserve">
+    <value>தேசியம்</value>
+  </data>
+  <data name="people_nationality" xml:space="preserve">
+    <value>தேசியம்</value>
+  </data>
+  <data name="screening_breakfastnature" xml:space="preserve">
+    <value>இயற்கை</value>
+  </data>
+  <data name="screening_dinnernature" xml:space="preserve">
+    <value>இயற்கை</value>
+  </data>
+  <data name="screening_lunchnature" xml:space="preserve">
+    <value>இயற்கை</value>
+  </data>
+  <data name="screening_natureofurine" xml:space="preserve">
+    <value>சிறுநீரின் தன்மை</value>
+  </data>
+  <data name="tenant_natureofbusiness" xml:space="preserve">
+    <value>வேலையின் தன்மை</value>
+  </data>
+  <data name="room_nextdaycheckin" xml:space="preserve">
+    <value>அடுத்த நாள் செக்கின்</value>
+  </data>
+  <data name="room_nextdaycheckout" xml:space="preserve">
+    <value>அடுத்த நாள் செக்அவுட்</value>
+  </data>
+  <data name="treatmentpackage_noofdays" xml:space="preserve">
+    <value>நாட்களின் எண்ணிக்கை</value>
+  </data>
+  <data name="screening_nonvegfrequency" xml:space="preserve">
+    <value>அசைவ அதிர்வெண்</value>
+  </data>
+  <data name="patientvisit_notes" xml:space="preserve">
+    <value>குறிப்புகள்</value>
+  </data>
+  <data name="paymentconfig_keyinfo_notifyurl" xml:space="preserve">
+    <value>URL ஐ அறிவிக்கவும்</value>
+  </data>
+  <data name="paymentrequest_notifyurl" xml:space="preserve">
+    <value>URL க்கு தெரிவிக்கவும்</value>
+  </data>
+  <data name="tenant_numberofemployees" xml:space="preserve">
+    <value>பணியாளர்களின் எண்ணிக்கை</value>
+  </data>
+  <data name="treatmentpackage_therapykits_numberofkits" xml:space="preserve">
+    <value>தொகுப்புகளின் எண்ணிக்கை</value>
+  </data>
+  <data name="ipdapplicationform_numberofmember" xml:space="preserve">
+    <value>உறுப்பினர்களின் எண்ணிக்கை</value>
+  </data>
+  <data name="treatmentpackage_therapy_numberoftimes" xml:space="preserve">
+    <value>நேரங்களின் எண்ணிக்கை</value>
+  </data>
+  <data name="patientprofile_occupation" xml:space="preserve">
+    <value>தொழில்</value>
+  </data>
+  <data name="occupation_occupationdesc" xml:space="preserve">
+    <value>தொழில் விவரம்</value>
+  </data>
+  <data name="occupation_occupationname" xml:space="preserve">
+    <value>தொழில் பெயர்</value>
+  </data>
+  <data name="occupationaldimension" xml:space="preserve">
+    <value>தொழில் பரிமாணம்</value>
+  </data>
+  <data name="pincodemaster_officename" xml:space="preserve">
+    <value>அலுவலக பெயர்</value>
+  </data>
+  <data name="pincodemaster_officetype" xml:space="preserve">
+    <value>அலுவலக வகை</value>
+  </data>
+  <data name="screening_oilorgheeintakeliterinamonth" xml:space="preserve">
+    <value>ஒரு மாதத்தில் எண்ணெய் அல்லது நெய் லிட்டர்</value>
+  </data>
+  <data name="assessment_opdform" xml:space="preserve">
+    <value>OPD படிவம்</value>
+  </data>
+  <data name="billingpayment_opdnumber" xml:space="preserve">
+    <value>OPD எண்</value>
+  </data>
+  <data name="clinicalappointment_opdnumber" xml:space="preserve">
+    <value>OPD எண்</value>
+  </data>
+  <data name="patientvisit_opdnumber" xml:space="preserve">
+    <value>OPD எண்</value>
+  </data>
+  <data name="receivable_opdnumber" xml:space="preserve">
+    <value>OPD எண்</value>
+  </data>
+  <data name="assessment_patientanswers_optiontext" xml:space="preserve">
+    <value>விருப்ப உரை</value>
+  </data>
+  <data name="assessmentquestion_optiontext" xml:space="preserve">
+    <value>விருப்ப உரை</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_optiontext" xml:space="preserve">
+    <value>விருப்ப உரை</value>
+  </data>
+  <data name="assessment_patientanswers_optionvalue" xml:space="preserve">
+    <value>விருப்ப மதிப்பு</value>
+  </data>
+  <data name="assessmentquestion_optionvalue" xml:space="preserve">
+    <value>விருப்ப மதிப்பு</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_optionvalue" xml:space="preserve">
+    <value>விருப்ப மதிப்பு</value>
+  </data>
+  <data name="paymentrequest_orderid" xml:space="preserve">
+    <value>ஆர்டர் ஐடி</value>
+  </data>
+  <data name="paymentresponse_orderid" xml:space="preserve">
+    <value>ஆர்டர் ஐடி</value>
+  </data>
+  <data name="paymentrequest_orderpaymentdesc" xml:space="preserve">
+    <value>ஆர்டர் பேமெண்ட் டெஸ்க்</value>
+  </data>
+  <data name="tenant_businessemail" xml:space="preserve">
+    <value>அமைப்பு மின்னஞ்சல்</value>
+  </data>
+  <data name="tenant_businessname" xml:space="preserve">
+    <value>அமைப்பின் பெயர்</value>
+  </data>
+  <data name="tenant_businessphone" xml:space="preserve">
+    <value>அமைப்பின் தொலைபேசி</value>
+  </data>
+  <data name="tenant_businesswebsite" xml:space="preserve">
+    <value>அமைப்பின் இணையதளம்</value>
+  </data>
+  <data name="tenant_organizationlogo" xml:space="preserve">
+    <value>அமைப்பின் லோகோ</value>
+  </data>
+  <data name="clinicalappointment_origin" xml:space="preserve">
+    <value>தோற்றம்</value>
+  </data>
+  <data name="screening_other" xml:space="preserve">
+    <value>மற்றவை</value>
+  </data>
+  <data name="screening_otherprimaryreason" xml:space="preserve">
+    <value>பிற (முதன்மை காரணம்)</value>
+  </data>
+  <data name="screening_otherchallenges" xml:space="preserve">
+    <value>மற்ற சவால்கள்</value>
+  </data>
+  <data name="patientprofile_othercreativeactivities" xml:space="preserve">
+    <value>பிற ஆக்கப்பூர்வமான செயல்பாடுகள்</value>
+  </data>
+  <data name="patientprofile_otherlanguages" xml:space="preserve">
+    <value>பிற மொழிகள்</value>
+  </data>
+  <data name="patientprofile_otherreferral" xml:space="preserve">
+    <value>மற்ற பரிந்துரை</value>
+  </data>
+  <data name="screening_othersigns" xml:space="preserve">
+    <value>மற்ற அறிகுறிகள்</value>
+  </data>
+  <data name="screening_otherenvironmentoccupation" xml:space="preserve">
+    <value>பிற (சுற்றுச்சூழல் தொழில்)</value>
+  </data>
+  <data name="otplogs_otpcode" xml:space="preserve">
+    <value>otpcode</value>
+  </data>
+  <data name="clinicaltask_taskduration_overbookingcount" xml:space="preserve">
+    <value>முன்பதிவு எண்ணிக்கைக்கு மேல்</value>
+  </data>
+  <data name="people_clinicaltaskinfo_overbookingcount" xml:space="preserve">
+    <value>முன்பதிவு எண்ணிக்கைக்கு மேல்</value>
+  </data>
+  <data name="treatmentpackage_packagecost" xml:space="preserve">
+    <value>தொகுப்பு செலவு</value>
+  </data>
+  <data name="treatmentpackage_packagedescription" xml:space="preserve">
+    <value>தொகுப்பு விளக்கம்</value>
+  </data>
+  <data name="packageinfo" xml:space="preserve">
+    <value>தொகுப்பு தகவல்</value>
+  </data>
+  <data name="ipdapplicationform_packagename" xml:space="preserve">
+    <value>தொகுப்பு பெயர்</value>
+  </data>
+  <data name="treatmentpackage_packagename" xml:space="preserve">
+    <value>தொகுப்பு பெயர்</value>
+  </data>
+  <data name="roles_parentname" xml:space="preserve">
+    <value>பெற்றோர் பெயர்</value>
+  </data>
+  <data name="passportandvisadetails" xml:space="preserve">
+    <value>பாஸ்போர்ட் மற்றும் விசா விவரங்கள்</value>
+  </data>
+  <data name="ipdapplicationform_passportexpirydate" xml:space="preserve">
+    <value>பாஸ்போர்ட் காலாவதி தேதி</value>
+  </data>
+  <data name="ipdapplicationform_passportissuingcountry" xml:space="preserve">
+    <value>பாஸ்போர்ட் வழங்கும் நாடு</value>
+  </data>
+  <data name="ipdapplicationform_passportnumber" xml:space="preserve">
+    <value>பாஸ்போர்ட் எண்</value>
+  </data>
+  <data name="mailbox_password" xml:space="preserve">
+    <value>கடவுச்சொல்</value>
+  </data>
+  <data name="tenant_password" xml:space="preserve">
+    <value>கடவுச்சொல்</value>
+  </data>
+  <data name="users_passwordkey" xml:space="preserve">
+    <value>கடவுச்சொல் திறவுகோல்</value>
+  </data>
+  <data name="screening_pastpsychologicaltrauma" xml:space="preserve">
+    <value>கடந்த உளவியல் அதிர்ச்சி</value>
+  </data>
+  <data name="clinicalappointment_patient" xml:space="preserve">
+    <value>நோயாளி</value>
+  </data>
+  <data name="patientanswers" xml:space="preserve">
+    <value>நோயாளி பதில்கள்</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_patientcategory" xml:space="preserve">
+    <value>நோயாளி வகை</value>
+  </data>
+  <data name="patientprofile_patientcategory" xml:space="preserve">
+    <value>நோயாளி வகை</value>
+  </data>
+  <data name="patientcategory_patientcategorydesc" xml:space="preserve">
+    <value>நோயாளி வகை விவரம்</value>
+  </data>
+  <data name="patientcategory_patientcategoryname" xml:space="preserve">
+    <value>நோயாளி வகை பெயர்</value>
+  </data>
+  <data name="assessment_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="billingpayment_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="enquiryform_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="ipdapplicationform_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="opdform_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="patientqueue_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="patientvisit_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="paymentrequest_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="receivable_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="roomoccupancystatus_patientname" xml:space="preserve">
+    <value>நோயாளி பெயர்</value>
+  </data>
+  <data name="opdform_patientnotes" xml:space="preserve">
+    <value>நோயாளி குறிப்புகள்</value>
+  </data>
+  <data name="assessment_patientvisit" xml:space="preserve">
+    <value>நோயாளி வருகை</value>
+  </data>
+  <data name="billingpayment_patientvisit" xml:space="preserve">
+    <value>நோயாளி வருகை</value>
+  </data>
+  <data name="clinicalappointment_patientvisit" xml:space="preserve">
+    <value>நோயாளி வருகை</value>
+  </data>
+  <data name="patientqueue_patientvisit" xml:space="preserve">
+    <value>நோயாளி வருகை</value>
+  </data>
+  <data name="receivable_patientvisit" xml:space="preserve">
+    <value>நோயாளி வருகை</value>
+  </data>
+  <data name="roomoccupancystatus_patientvisit" xml:space="preserve">
+    <value>நோயாளி வருகை</value>
+  </data>
+  <data name="billingpayment_paymentdate" xml:space="preserve">
+    <value>பணம் செலுத்தும் தேதி</value>
+  </data>
+  <data name="paymentrequest_paymentgateway" xml:space="preserve">
+    <value>கட்டண நுழைவாயில்</value>
+  </data>
+  <data name="paymentconfig_paymentgatewayprovider" xml:space="preserve">
+    <value>கட்டண நுழைவாயில் வழங்குநர்</value>
+  </data>
+  <data name="paymentrequest_paymentid" xml:space="preserve">
+    <value>கட்டண ஐடி</value>
+  </data>
+  <data name="paymentresponse_paymentid" xml:space="preserve">
+    <value>கட்டண ஐடி</value>
+  </data>
+  <data name="paymentresponse_paymentmethod" xml:space="preserve">
+    <value>பணம் செலுத்தும் முறை</value>
+  </data>
+  <data name="billingpayment_paymentmode" xml:space="preserve">
+    <value>கட்டண முறை</value>
+  </data>
+  <data name="paymentresponse_paymentrequest" xml:space="preserve">
+    <value>கட்டண கோரிக்கை</value>
+  </data>
+  <data name="billingpayment_paymentstatus" xml:space="preserve">
+    <value>கட்டண நிலை</value>
+  </data>
+  <data name="paymentrequest_paymenttype" xml:space="preserve">
+    <value>பணம் செலுத்தும் வகை</value>
+  </data>
+  <data name="paymentresponse_paymenttype" xml:space="preserve">
+    <value>பணம் செலுத்தும் வகை</value>
+  </data>
+  <data name="paymentrequest_people" xml:space="preserve">
+    <value>மக்கள்</value>
+  </data>
+  <data name="people" xml:space="preserve">
+    <value>மக்கள்</value>
+  </data>
+  <data name="peopletimepreference_people" xml:space="preserve">
+    <value>மக்கள்</value>
+  </data>
+  <data name="staffattendance_peoplename" xml:space="preserve">
+    <value>மக்கள் பெயர்</value>
+  </data>
+  <data name="treatmentpackage_roomtypes_percentagecovered" xml:space="preserve">
+    <value>சதவீதம் மூடப்பட்டது</value>
+  </data>
+  <data name="permanentaddress" xml:space="preserve">
+    <value>நிரந்தர முகவரி</value>
+  </data>
+  <data name="patientprofile_emergencycontactinfo_personname" xml:space="preserve">
+    <value>நபர் பெயர்</value>
+  </data>
+  <data name="people_emergencycontact_personname" xml:space="preserve">
+    <value>நபர் பெயர்</value>
+  </data>
+  <data name="shiftplanning_people_personname" xml:space="preserve">
+    <value>நபர் பெயர்</value>
+  </data>
+  <data name="personalandlifestyledetails" xml:space="preserve">
+    <value>தனிப்பட்ட மற்றும் வாழ்க்கை முறை விவரங்கள்</value>
+  </data>
+  <data name="enquiryform_phonenumber" xml:space="preserve">
+    <value>தொலைபேசி எண்</value>
+  </data>
+  <data name="ipdapplicationform_attendantinfo_phonenumber" xml:space="preserve">
+    <value>தொலைபேசி எண்</value>
+  </data>
+  <data name="patientprofile_emergencycontactinfo_phonenumber" xml:space="preserve">
+    <value>தொலைபேசி எண்</value>
+  </data>
+  <data name="people_emergencycontact_phonenumber" xml:space="preserve">
+    <value>தொலைபேசி எண்</value>
+  </data>
+  <data name="patientprofile_photo" xml:space="preserve">
+    <value>புகைப்படம்</value>
+  </data>
+  <data name="people_photo" xml:space="preserve">
+    <value>புகைப்படம்</value>
+  </data>
+  <data name="screening_physicalactivityincludes" xml:space="preserve">
+    <value>உடல் செயல்பாடு அடங்கும்</value>
+  </data>
+  <data name="ipdapplicationform_pickupfrom" xml:space="preserve">
+    <value>பிக் அப்</value>
+  </data>
+  <data name="ipdapplicationform_cpincode" xml:space="preserve">
+    <value>பின் குறியீடு</value>
+  </data>
+  <data name="ipdapplicationform_ppincode" xml:space="preserve">
+    <value>பின் குறியீடு</value>
+  </data>
+  <data name="pincodemaster_pincode" xml:space="preserve">
+    <value>பின்கோடு</value>
+  </data>
+  <data name="patientprofile_policyclaimlimit" xml:space="preserve">
+    <value>கொள்கை உரிமைகோரல் வரம்பு</value>
+  </data>
+  <data name="patientprofile_policyexpirydate" xml:space="preserve">
+    <value>பாலிசி காலாவதி தேதி</value>
+  </data>
+  <data name="patientprofile_policynumber" xml:space="preserve">
+    <value>கொள்கை எண்</value>
+  </data>
+  <data name="mailbox_portnumber" xml:space="preserve">
+    <value>போர்ட் எண்</value>
+  </data>
+  <data name="clinicalappointment_practitioner" xml:space="preserve">
+    <value>பயிற்சியாளர்</value>
+  </data>
+  <data name="people_practitionerid" xml:space="preserve">
+    <value>பயிற்சியாளர் ஐடி</value>
+  </data>
+  <data name="roomtype_prebookingdaylimit" xml:space="preserve">
+    <value>முன்பதிவு நாள் வரம்பு</value>
+  </data>
+  <data name="screening_predominantemotionalcondition" xml:space="preserve">
+    <value>முக்கிய உணர்ச்சி நிலை</value>
+  </data>
+  <data name="screening_predominantmentalconditiontickallthatapply" xml:space="preserve">
+    <value>முதன்மையான மன நிலை (பொருந்தும் அனைத்தையும் டிக் செய்யவும்</value>
+  </data>
+  <data name="enquiryform_preferredcontactmethod" xml:space="preserve">
+    <value>விருப்பமான தொடர்பு முறை</value>
+  </data>
+  <data name="opdform_preferreddate" xml:space="preserve">
+    <value>விருப்பமான தேதி</value>
+  </data>
+  <data name="enquiryform_preferreddateofarrival" xml:space="preserve">
+    <value>விருப்பமான வருகைத் தேதி</value>
+  </data>
+  <data name="enquiryform_preferreddateofdeparture" xml:space="preserve">
+    <value>விருப்பமான புறப்படும் தேதி</value>
+  </data>
+  <data name="preferreddatesofadmission" xml:space="preserve">
+    <value>விருப்பமான சேர்க்கை தேதிகள்</value>
+  </data>
+  <data name="opdform_preferreddoctor" xml:space="preserve">
+    <value>விருப்பமான மருத்துவர்</value>
+  </data>
+  <data name="ipdapplicationform_preferredduration" xml:space="preserve">
+    <value>விருப்பமான காலம்</value>
+  </data>
+  <data name="preferredlanguageinfo" xml:space="preserve">
+    <value>விருப்பமான மொழித் தகவல்</value>
+  </data>
+  <data name="enquiryform_preferredroomtype" xml:space="preserve">
+    <value>விருப்பமான அறை வகை</value>
+  </data>
+  <data name="medicine_prescriptionrequired" xml:space="preserve">
+    <value>மருந்துச் சீட்டு தேவை</value>
+  </data>
+  <data name="billingpayment_price" xml:space="preserve">
+    <value>விலை</value>
+  </data>
+  <data name="medicine_price" xml:space="preserve">
+    <value>விலை</value>
+  </data>
+  <data name="receivable_price" xml:space="preserve">
+    <value>விலை</value>
+  </data>
+  <data name="therapyitem_price" xml:space="preserve">
+    <value>விலை</value>
+  </data>
+  <data name="therapykit_kititems_price" xml:space="preserve">
+    <value>விலை</value>
+  </data>
+  <data name="treatmentpackage_medicines_price" xml:space="preserve">
+    <value>விலை</value>
+  </data>
+  <data name="treatmentpackage_therapyitems_price" xml:space="preserve">
+    <value>விலை</value>
+  </data>
+  <data name="pricingforattendant" xml:space="preserve">
+    <value>உதவியாளருக்கான விலை நிர்ணயம்</value>
+  </data>
+  <data name="pricingforhealthseeker" xml:space="preserve">
+    <value>உடல்நலம் தேடுபவர்களுக்கான விலை நிர்ணயம்</value>
+  </data>
+  <data name="pricingsummary" xml:space="preserve">
+    <value>விலை சுருக்கம்</value>
+  </data>
+  <data name="screening_primaryreasonforno" xml:space="preserve">
+    <value>இல்லை என்பதற்கான முதன்மைக் காரணம்</value>
+  </data>
+  <data name="patientqueue_priority" xml:space="preserve">
+    <value>முன்னுரிமை</value>
+  </data>
+  <data name="people_clinicaltaskinfo_priority" xml:space="preserve">
+    <value>முன்னுரிமை</value>
+  </data>
+  <data name="processsla_processname" xml:space="preserve">
+    <value>செயல்முறை பெயர்</value>
+  </data>
+  <data name="processsla" xml:space="preserve">
+    <value>செயல்முறை SLA</value>
+  </data>
+  <data name="people_preferredlanguageinfo_proficiency" xml:space="preserve">
+    <value>திறமை</value>
+  </data>
+  <data name="users_profilepicture" xml:space="preserve">
+    <value>சுயவிவரப் படம்</value>
+  </data>
+  <data name="staffattendance_punchdateandtime" xml:space="preserve">
+    <value>பஞ்ச் தேதி மற்றும் நேரம்</value>
+  </data>
+  <data name="screening_quantityperday" xml:space="preserve">
+    <value>ஒரு நாளைக்கு அளவு</value>
+  </data>
+  <data name="assessment_patientanswers_question" xml:space="preserve">
+    <value>கேள்வி</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_question" xml:space="preserve">
+    <value>கேள்வி</value>
+  </data>
+  <data name="assessment_patientanswers_questioncategory" xml:space="preserve">
+    <value>கேள்வி வகை</value>
+  </data>
+  <data name="assessmentquestion_questioncategory" xml:space="preserve">
+    <value>கேள்வி வகை</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_questioncategory" xml:space="preserve">
+    <value>கேள்வி வகை</value>
+  </data>
+  <data name="questioncategory_questioncategorydesc" xml:space="preserve">
+    <value>கேள்வி வகை Desc</value>
+  </data>
+  <data name="questioncategory_questioncategoryname" xml:space="preserve">
+    <value>கேள்வி வகை பெயர்</value>
+  </data>
+  <data name="questionsubcategory_questioncategoryname" xml:space="preserve">
+    <value>கேள்வி வகை பெயர்</value>
+  </data>
+  <data name="assessment_patientanswers_questionsub" xml:space="preserve">
+    <value>கேள்வி துணை</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_questionsub" xml:space="preserve">
+    <value>கேள்வி துணை</value>
+  </data>
+  <data name="assessmentquestion_questionsubcategory" xml:space="preserve">
+    <value>கேள்வி துணை வகை</value>
+  </data>
+  <data name="questionsubcategory_questionsubcategorydesc" xml:space="preserve">
+    <value>கேள்வி துணை வகை Desc</value>
+  </data>
+  <data name="questionsubcategory_questionsubcategoryname" xml:space="preserve">
+    <value>கேள்வி துணை வகை பெயர்</value>
+  </data>
+  <data name="assessmentquestion_questiontext" xml:space="preserve">
+    <value>கேள்வி உரை</value>
+  </data>
+  <data name="assessmentquestion_questionnairereferencenumber" xml:space="preserve">
+    <value>கேள்வித்தாள் குறிப்பு எண்</value>
+  </data>
+  <data name="assessment_questionnairetemplate" xml:space="preserve">
+    <value>கேள்வித்தாள் வார்ப்புரு</value>
+  </data>
+  <data name="assessment_patientanswers_questions" xml:space="preserve">
+    <value>கேள்விகள்</value>
+  </data>
+  <data name="consultationqueue_queuename" xml:space="preserve">
+    <value>வரிசை பெயர்</value>
+  </data>
+  <data name="patientqueue_queuename" xml:space="preserve">
+    <value>வரிசை பெயர்</value>
+  </data>
+  <data name="queue_queuename" xml:space="preserve">
+    <value>வரிசை பெயர்</value>
+  </data>
+  <data name="consultationqueue_queuenumber" xml:space="preserve">
+    <value>வரிசை எண்</value>
+  </data>
+  <data name="queue_queuenumber" xml:space="preserve">
+    <value>வரிசை எண்</value>
+  </data>
+  <data name="patientqueue_queuestatus" xml:space="preserve">
+    <value>வரிசை நிலை</value>
+  </data>
+  <data name="blacklistreason_reason" xml:space="preserve">
+    <value>காரணம்</value>
+  </data>
+  <data name="blacklistreason_reasondesc" xml:space="preserve">
+    <value>காரணம் விவரம்</value>
+  </data>
+  <data name="patientprofile_reasonforblacklisting" xml:space="preserve">
+    <value>தடுப்புப்பட்டியலுக்கான காரணம்</value>
+  </data>
+  <data name="receivable_receivabledate" xml:space="preserve">
+    <value>பெறத்தக்க தேதி</value>
+  </data>
+  <data name="billingpayment_receivablefor" xml:space="preserve">
+    <value>பெறத்தக்கது</value>
+  </data>
+  <data name="receivable_receivablefor" xml:space="preserve">
+    <value>பெறத்தக்கது</value>
+  </data>
+  <data name="receivable_receivableno" xml:space="preserve">
+    <value>பெறத்தக்க எண்</value>
+  </data>
+  <data name="billingpayment_receivedamount" xml:space="preserve">
+    <value>பெறப்பட்ட தொகை</value>
+  </data>
+  <data name="patientprofile_referralsource" xml:space="preserve">
+    <value>பரிந்துரை ஆதாரம்</value>
+  </data>
+  <data name="referralsourcedetails" xml:space="preserve">
+    <value>பரிந்துரை மூல விவரங்கள்</value>
+  </data>
+  <data name="referralsource_referralsourcename" xml:space="preserve">
+    <value>பரிந்துரை மூல பெயர்</value>
+  </data>
+  <data name="patientprofile_referraltype" xml:space="preserve">
+    <value>பரிந்துரை வகை</value>
+  </data>
+  <data name="patientprofile_referrername" xml:space="preserve">
+    <value>பரிந்துரையாளர் பெயர்</value>
+  </data>
+  <data name="patientprofile_referrerphonenumber" xml:space="preserve">
+    <value>பரிந்துரையாளர் தொலைபேசி எண்</value>
+  </data>
+  <data name="screening_refrigeratedfood" xml:space="preserve">
+    <value>குளிரூட்டப்பட்ட உணவு</value>
+  </data>
+  <data name="billingpayment_refundbankname" xml:space="preserve">
+    <value>பணத்தைத் திரும்பப்பெறும் வங்கியின் பெயர்</value>
+  </data>
+  <data name="refundinfo" xml:space="preserve">
+    <value>பணத்தைத் திரும்பப்பெறுதல் தகவல்</value>
+  </data>
+  <data name="billingpayment_refundmode" xml:space="preserve">
+    <value>பணத்தைத் திரும்பப்பெறும் முறை</value>
+  </data>
+  <data name="roomtype_refundpolicy_refundpercentage" xml:space="preserve">
+    <value>திருப்பிச் செலுத்தும் சதவீதம்</value>
+  </data>
+  <data name="treatmentpackage_refundpolicy_refundpercentage" xml:space="preserve">
+    <value>திருப்பிச் செலுத்தும் சதவீதம்</value>
+  </data>
+  <data name="refundpolicy" xml:space="preserve">
+    <value>பணத்தைத் திரும்பப்பெறுதல் கொள்கை</value>
+  </data>
+  <data name="billingpayment_refundreason" xml:space="preserve">
+    <value>பணத்தைத் திரும்பப் பெறுவதற்கான காரணம்</value>
+  </data>
+  <data name="paymentresponse_refundreason" xml:space="preserve">
+    <value>பணத்தைத் திரும்பப் பெறுவதற்கான காரணம்</value>
+  </data>
+  <data name="billingpayment_refundreferencenumber" xml:space="preserve">
+    <value>ரீஃபண்ட் குறிப்பு எண்</value>
+  </data>
+  <data name="billingpayment_refundstatus" xml:space="preserve">
+    <value>பணத்தைத் திரும்பப்பெறும் நிலை</value>
+  </data>
+  <data name="roomtype_refundpolicy_refundtype" xml:space="preserve">
+    <value>திருப்பிச் செலுத்தும் வகை</value>
+  </data>
+  <data name="treatmentpackage_refundpolicy_refundtype" xml:space="preserve">
+    <value>திருப்பிச் செலுத்தும் வகை</value>
+  </data>
+  <data name="billingpayment_refundedamount" xml:space="preserve">
+    <value>திருப்பியளிக்கப்பட்ட தொகை</value>
+  </data>
+  <data name="paymentresponse_refundedamount" xml:space="preserve">
+    <value>திருப்பியளிக்கப்பட்ட தொகை</value>
+  </data>
+  <data name="billingpayment_refundedby" xml:space="preserve">
+    <value>மூலம் திருப்பியளிக்கப்பட்டது</value>
+  </data>
+  <data name="pincodemaster_regionname" xml:space="preserve">
+    <value>பிராந்திய பெயர்</value>
+  </data>
+  <data name="patientprofile_registrationid" xml:space="preserve">
+    <value>பதிவு ஐடி</value>
+  </data>
+  <data name="people_registrationnumber" xml:space="preserve">
+    <value>பதிவு எண்</value>
+  </data>
+  <data name="screening_regularity" xml:space="preserve">
+    <value>ஒழுங்குமுறை</value>
+  </data>
+  <data name="patientprofile_emergencycontactinfo_relationship" xml:space="preserve">
+    <value>உறவு</value>
+  </data>
+  <data name="people_emergencycontact_relationship" xml:space="preserve">
+    <value>உறவு</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_relationshipstatus" xml:space="preserve">
+    <value>உறவு நிலை</value>
+  </data>
+  <data name="billingpayment_remarks" xml:space="preserve">
+    <value>கருத்துக்கள்</value>
+  </data>
+  <data name="receivable_remarks" xml:space="preserve">
+    <value>கருத்துக்கள்</value>
+  </data>
+  <data name="screening_rememberdreams" xml:space="preserve">
+    <value>கனவுகளை நினைவில் வையுங்கள்</value>
+  </data>
+  <data name="paymentrequest_requestdatetime" xml:space="preserve">
+    <value>கோரிக்கை தேதி நேரம்</value>
+  </data>
+  <data name="ipdapplicationform_requireddinner" xml:space="preserve">
+    <value>இரவு உணவு தேவையா?</value>
+  </data>
+  <data name="ipdapplicationform_requiredparkingspace" xml:space="preserve">
+    <value>தேவையான பார்க்கிங் இடம்?</value>
+  </data>
+  <data name="reshedulehistory" xml:space="preserve">
+    <value>வரலாற்றை மாற்றியமைக்கவும்</value>
+  </data>
+  <data name="clinicalappointment_reshedulehistory_reshedulereason" xml:space="preserve">
+    <value>மறு அட்டவணை காரணம்</value>
+  </data>
+  <data name="clinicalappointment_reshedulehistory_resheduleddatetime" xml:space="preserve">
+    <value>மாற்றியமைக்கப்பட்ட தேதி நேரம்</value>
+  </data>
+  <data name="paymentresponse_responsesignature" xml:space="preserve">
+    <value>பதில் கையொப்பம்</value>
+  </data>
+  <data name="restrictedmedicalconditions_restrictionno" xml:space="preserve">
+    <value>கட்டுப்பாடு எண்</value>
+  </data>
+  <data name="paymentconfig_keyinfo_returnurl" xml:space="preserve">
+    <value>URL திரும்பவும்</value>
+  </data>
+  <data name="paymentrequest_returnurl" xml:space="preserve">
+    <value>திரும்ப URL</value>
+  </data>
+  <data name="roles_rolegroupname" xml:space="preserve">
+    <value>பங்கு குழுவின் பெயர்</value>
+  </data>
+  <data name="roles_rolehierarchynumber" xml:space="preserve">
+    <value>பங்கு படிநிலை எண்</value>
+  </data>
+  <data name="roles_rolename" xml:space="preserve">
+    <value>பாத்திரத்தின் பெயர்</value>
+  </data>
+  <data name="workprofile_rolename" xml:space="preserve">
+    <value>பாத்திரத்தின் பெயர்</value>
+  </data>
+  <data name="billingpayment_room" xml:space="preserve">
+    <value>அறை</value>
+  </data>
+  <data name="receivable_room" xml:space="preserve">
+    <value>அறை</value>
+  </data>
+  <data name="room" xml:space="preserve">
+    <value>அறை</value>
+  </data>
+  <data name="roomallocation_room" xml:space="preserve">
+    <value>அறை</value>
+  </data>
+  <data name="roomoccupancystatus_room" xml:space="preserve">
+    <value>அறை</value>
+  </data>
+  <data name="roomallocation_roomallocationno" xml:space="preserve">
+    <value>அறை ஒதுக்கீடு எண்</value>
+  </data>
+  <data name="roomoccupancystatus_roomallocationno" xml:space="preserve">
+    <value>அறை ஒதுக்கீடு எண்</value>
+  </data>
+  <data name="roomanddaterequest" xml:space="preserve">
+    <value>அறை மற்றும் தேதி கோரிக்கை</value>
+  </data>
+  <data name="room_roomcode" xml:space="preserve">
+    <value>அறை குறியீடு</value>
+  </data>
+  <data name="treatmentpackage_roomtypes_roomcost" xml:space="preserve">
+    <value>அறை செலவு</value>
+  </data>
+  <data name="room_roomgroup" xml:space="preserve">
+    <value>அறை குழு</value>
+  </data>
+  <data name="room_roomimage" xml:space="preserve">
+    <value>அறை படம்</value>
+  </data>
+  <data name="ipdapplicationform_room_roomnumber" xml:space="preserve">
+    <value>அறை எண்</value>
+  </data>
+  <data name="room_roomnumber" xml:space="preserve">
+    <value>அறை எண்</value>
+  </data>
+  <data name="roompreference" xml:space="preserve">
+    <value>அறை விருப்பம்</value>
+  </data>
+  <data name="room_roomtransfercost" xml:space="preserve">
+    <value>அறை பரிமாற்ற செலவு</value>
+  </data>
+  <data name="roomtype_roomtransfercost" xml:space="preserve">
+    <value>அறை பரிமாற்ற செலவு</value>
+  </data>
+  <data name="treatmentpackage_roomtransfercost" xml:space="preserve">
+    <value>அறை பரிமாற்ற செலவு</value>
+  </data>
+  <data name="ipdapplicationform_roompreference_roomtype" xml:space="preserve">
+    <value>அறை வகை</value>
+  </data>
+  <data name="room_roomtype" xml:space="preserve">
+    <value>அறை வகை</value>
+  </data>
+  <data name="treatmentpackage_roomtypes_roomtype" xml:space="preserve">
+    <value>அறை வகை</value>
+  </data>
+  <data name="treatmentpackage_roomtypeamountaverage" xml:space="preserve">
+    <value>அறை வகை தொகை சராசரி</value>
+  </data>
+  <data name="roomtype_roomtypeicon" xml:space="preserve">
+    <value>அறை வகை ஐகான்</value>
+  </data>
+  <data name="roomtypeinfo" xml:space="preserve">
+    <value>அறை வகை தகவல்</value>
+  </data>
+  <data name="roomtypes" xml:space="preserve">
+    <value>அறை வகைகள்</value>
+  </data>
+  <data name="ipdapplicationform_sameaspermanentaddress" xml:space="preserve">
+    <value>அதே நிரந்தர முகவரி</value>
+  </data>
+  <data name="patientprofile_sameaspermanentaddress" xml:space="preserve">
+    <value>அதே நிரந்தர முகவரி</value>
+  </data>
+  <data name="people_sameaspermanentaddress" xml:space="preserve">
+    <value>அதே நிரந்தர முகவரி</value>
+  </data>
+  <data name="screening_satisfiedafterpassingstools" xml:space="preserve">
+    <value>மலம் கழித்த பிறகு திருப்தி</value>
+  </data>
+  <data name="assessment_patientanswers_scalerangemax" xml:space="preserve">
+    <value>அளவு வரம்பு அதிகபட்சம்</value>
+  </data>
+  <data name="assessmentquestion_scalerangemax" xml:space="preserve">
+    <value>அளவு வரம்பு அதிகபட்சம்</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_scalerangemax" xml:space="preserve">
+    <value>அளவு வரம்பு அதிகபட்சம்</value>
+  </data>
+  <data name="assessment_patientanswers_scalerangemin" xml:space="preserve">
+    <value>அளவு வரம்பு குறைந்தபட்சம்</value>
+  </data>
+  <data name="assessmentquestion_scalerangemin" xml:space="preserve">
+    <value>அளவு வரம்பு குறைந்தபட்சம்</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_scalerangemin" xml:space="preserve">
+    <value>அளவு வரம்பு குறைந்தபட்சம்</value>
+  </data>
+  <data name="assessment_patientanswers_scorevalue" xml:space="preserve">
+    <value>மதிப்பெண் மதிப்பு</value>
+  </data>
+  <data name="assessmentquestion_scorevalue" xml:space="preserve">
+    <value>மதிப்பெண் மதிப்பு</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_scorevalue" xml:space="preserve">
+    <value>மதிப்பெண் மதிப்பு</value>
+  </data>
+  <data name="screening_screentime" xml:space="preserve">
+    <value>திரை நேரம்</value>
+  </data>
+  <data name="screening_screenusebeforesleep" xml:space="preserve">
+    <value>தூங்குவதற்கு முன் திரையைப் பயன்படுத்தவும்</value>
+  </data>
+  <data name="people_screeningmeetinglink" xml:space="preserve">
+    <value>ஸ்கிரீனிங் மீட்டிங் இணைப்பு</value>
+  </data>
+  <data name="task_screeningtemplates_screeningtemplate" xml:space="preserve">
+    <value>ஸ்கிரீனிங் டெம்ப்ளேட்</value>
+  </data>
+  <data name="screeningtemplates" xml:space="preserve">
+    <value>ஸ்கிரீனிங் டெம்ப்ளேட்கள்</value>
+  </data>
+  <data name="alerttemplates_sendasbatch" xml:space="preserve">
+    <value>தொகுப்பாக அனுப்பவா?</value>
+  </data>
+  <data name="mailbox_senderdisplayname" xml:space="preserve">
+    <value>அனுப்புநர் காட்சி பெயர்</value>
+  </data>
+  <data name="mailbox_senderemail" xml:space="preserve">
+    <value>அனுப்புநர் மின்னஞ்சல்</value>
+  </data>
+  <data name="screening_senseofbodyfeeling" xml:space="preserve">
+    <value>உடல் உணர்வு</value>
+  </data>
+  <data name="enquiryform_medicalinfo_severity" xml:space="preserve">
+    <value>தீவிரம்</value>
+  </data>
+  <data name="ipdapplicationform_medicalinfo_severitylevel" xml:space="preserve">
+    <value>தீவிர நிலை</value>
+  </data>
+  <data name="opdform_medicalinfo_severitylevel" xml:space="preserve">
+    <value>தீவிர நிலை</value>
+  </data>
+  <data name="restrictedmedicalconditions_medicalinfo_severitylevel" xml:space="preserve">
+    <value>தீவிர நிலை</value>
+  </data>
+  <data name="staffattendance_shift" xml:space="preserve">
+    <value>ஷிப்ட்</value>
+  </data>
+  <data name="shift_shiftcode" xml:space="preserve">
+    <value>ஷிப்ட் குறியீடு</value>
+  </data>
+  <data name="staffattendance_shiftdate" xml:space="preserve">
+    <value>ஷிப்ட் தேதி</value>
+  </data>
+  <data name="shiftdetails" xml:space="preserve">
+    <value>ஷிப்ட் விவரங்கள்</value>
+  </data>
+  <data name="shift_shiftendtime" xml:space="preserve">
+    <value>ஷிப்ட் முடிவு நேரம்</value>
+  </data>
+  <data name="staffattendance_shiftendtime" xml:space="preserve">
+    <value>ஷிப்ட் முடிவு நேரம்</value>
+  </data>
+  <data name="shift_shifthours" xml:space="preserve">
+    <value>ஷிப்ட் மணி</value>
+  </data>
+  <data name="staffattendance_shifthours" xml:space="preserve">
+    <value>ஷிப்ட் மணி</value>
+  </data>
+  <data name="peopletimepreference_shiftname" xml:space="preserve">
+    <value>பெயர் மாற்றம்</value>
+  </data>
+  <data name="shift_shiftname" xml:space="preserve">
+    <value>பெயர் மாற்றம்</value>
+  </data>
+  <data name="shiftplanning_shiftname" xml:space="preserve">
+    <value>பெயர் மாற்றம்</value>
+  </data>
+  <data name="shiftplanningdetails" xml:space="preserve">
+    <value>ஷிப்ட் திட்டமிடல் விவரங்கள்</value>
+  </data>
+  <data name="shift_shiftstarttime" xml:space="preserve">
+    <value>ஷிப்ட் தொடக்க நேரம்</value>
+  </data>
+  <data name="staffattendance_shiftstarttime" xml:space="preserve">
+    <value>ஷிப்ட் தொடக்க நேரம்</value>
+  </data>
+  <data name="shiftsummary" xml:space="preserve">
+    <value>ஷிப்ட் சுருக்கம்</value>
+  </data>
+  <data name="tenant_shortcode" xml:space="preserve">
+    <value>குறுகிய குறியீடு</value>
+  </data>
+  <data name="medicine_sideeffect" xml:space="preserve">
+    <value>பக்க விளைவுகள்</value>
+  </data>
+  <data name="ipdapplicationform_signature" xml:space="preserve">
+    <value>கையெழுத்து</value>
+  </data>
+  <data name="paymentrequest_signatureorchecksum" xml:space="preserve">
+    <value>கையொப்பம் அல்லது செக்சம்</value>
+  </data>
+  <data name="processsla_processsla_slaindays" xml:space="preserve">
+    <value>நாட்களில் SLA</value>
+  </data>
+  <data name="processsla_processsla_slainhrs" xml:space="preserve">
+    <value>எஸ்.எல்.ஏ</value>
+  </data>
+  <data name="task_slainhrs" xml:space="preserve">
+    <value>எஸ்.எல்.ஏ</value>
+  </data>
+  <data name="sleep" xml:space="preserve">
+    <value>தூங்கு</value>
+  </data>
+  <data name="screening_sleepquality" xml:space="preserve">
+    <value>தூக்கத்தின் தரம் (கடந்த 14 நாட்கள்)</value>
+  </data>
+  <data name="medicalcondition_snomedid" xml:space="preserve">
+    <value>SNOMED ஐடி</value>
+  </data>
+  <data name="screening_socialconnectedness" xml:space="preserve">
+    <value>சமூக இணைப்பு</value>
+  </data>
+  <data name="socialdimensionsexualfinancial" xml:space="preserve">
+    <value>சமூகப் பரிமாணம் பாலியல் நிதி</value>
+  </data>
+  <data name="patientprofile_socialmediaplatform" xml:space="preserve">
+    <value>சமூக ஊடக தளம்</value>
+  </data>
+  <data name="ipdapplicationform_specialrequest" xml:space="preserve">
+    <value>சிறப்பு வேண்டுகோள்</value>
+  </data>
+  <data name="screening_specificchallenges" xml:space="preserve">
+    <value>குறிப்பிட்ட சவால்கள்</value>
+  </data>
+  <data name="people_specifycountry" xml:space="preserve">
+    <value>நாட்டைக் குறிப்பிடவும்</value>
+  </data>
+  <data name="screening_spicytangy" xml:space="preserve">
+    <value>காரமான டேங்கி</value>
+  </data>
+  <data name="spiritualdimension" xml:space="preserve">
+    <value>ஆன்மீக பரிமாணம்</value>
+  </data>
+  <data name="therapies_standarddurationinmins" xml:space="preserve">
+    <value>நிமிடங்களில் நிலையான கால அளவு</value>
+  </data>
+  <data name="shift_breakdurationdetails_starttime" xml:space="preserve">
+    <value>தொடக்க நேரம்</value>
+  </data>
+  <data name="tenant_statename" xml:space="preserve">
+    <value>மாநிலம்</value>
+  </data>
+  <data name="ipdapplicationform_cstatename" xml:space="preserve">
+    <value>மாநில பெயர்</value>
+  </data>
+  <data name="ipdapplicationform_pstatename" xml:space="preserve">
+    <value>மாநில பெயர்</value>
+  </data>
+  <data name="patientprofile_cstatename" xml:space="preserve">
+    <value>மாநில பெயர்</value>
+  </data>
+  <data name="patientprofile_ppstatename" xml:space="preserve">
+    <value>மாநில பெயர்</value>
+  </data>
+  <data name="people_cstatename" xml:space="preserve">
+    <value>மாநில பெயர்</value>
+  </data>
+  <data name="people_pstatename" xml:space="preserve">
+    <value>மாநில பெயர்</value>
+  </data>
+  <data name="pincodemaster_statename" xml:space="preserve">
+    <value>மாநில பெயர்</value>
+  </data>
+  <data name="clinicalappointment_status" xml:space="preserve">
+    <value>நிலை</value>
+  </data>
+  <data name="paymentconfig_keyinfo_status" xml:space="preserve">
+    <value>நிலை</value>
+  </data>
+  <data name="paymentresponse_status" xml:space="preserve">
+    <value>நிலை</value>
+  </data>
+  <data name="roomallocation_status" xml:space="preserve">
+    <value>நிலை</value>
+  </data>
+  <data name="roomoccupancystatus_status" xml:space="preserve">
+    <value>நிலை</value>
+  </data>
+  <data name="screening_stimulantsusedforenergy" xml:space="preserve">
+    <value>ஆற்றலுக்கு பயன்படுத்தப்படும் தூண்டுதல்கள்</value>
+  </data>
+  <data name="screening_stooltype" xml:space="preserve">
+    <value>மல வகை</value>
+  </data>
+  <data name="screening_stresslevel0to10" xml:space="preserve">
+    <value>மன அழுத்த நிலை (0 முதல் 10 வரை)</value>
+  </data>
+  <data name="screening_sugerpermonthinkg" xml:space="preserve">
+    <value>ஒரு மாதத்திற்கு சர்க்கரை கிலோ</value>
+  </data>
+  <data name="roomtype_suitabilityforvip" xml:space="preserve">
+    <value>விஐபிக்கு ஏற்றது</value>
+  </data>
+  <data name="screening_supporthistory" xml:space="preserve">
+    <value>ஆதரவு வரலாறு</value>
+  </data>
+  <data name="screening_sweat" xml:space="preserve">
+    <value>வியர்வை</value>
+  </data>
+  <data name="medicalcondition_synonyms_synonymname" xml:space="preserve">
+    <value>ஒத்த பெயர்</value>
+  </data>
+  <data name="synonyms" xml:space="preserve">
+    <value>ஒத்த சொற்கள்</value>
+  </data>
+  <data name="processsla_processsla_targetstage" xml:space="preserve">
+    <value>இலக்கு நிலை</value>
+  </data>
+  <data name="consultationqueue_task" xml:space="preserve">
+    <value>பணி</value>
+  </data>
+  <data name="opdform_task" xml:space="preserve">
+    <value>பணி</value>
+  </data>
+  <data name="queue_task" xml:space="preserve">
+    <value>பணி</value>
+  </data>
+  <data name="taskallowed" xml:space="preserve">
+    <value>பணி அனுமதிக்கப்படுகிறது</value>
+  </data>
+  <data name="task_taskcharges" xml:space="preserve">
+    <value>பணிக் கட்டணங்கள்</value>
+  </data>
+  <data name="task_taskdesc" xml:space="preserve">
+    <value>டாஸ்க் டெஸ்க்</value>
+  </data>
+  <data name="taskduration" xml:space="preserve">
+    <value>பணி காலம்</value>
+  </data>
+  <data name="peopletimepreference_timepreference_taskendtime" xml:space="preserve">
+    <value>பணி முடிவு நேரம்</value>
+  </data>
+  <data name="task_taskfeestype" xml:space="preserve">
+    <value>பணிக் கட்டண வகை</value>
+  </data>
+  <data name="peopletimepreference_timepreference_taskhours" xml:space="preserve">
+    <value>பணி நேரம்</value>
+  </data>
+  <data name="assessmenttemplate_taskname" xml:space="preserve">
+    <value>பணியின் பெயர்</value>
+  </data>
+  <data name="clinicalappointment_taskname" xml:space="preserve">
+    <value>பணியின் பெயர்</value>
+  </data>
+  <data name="clinicaltask_taskduration_taskname" xml:space="preserve">
+    <value>பணியின் பெயர்</value>
+  </data>
+  <data name="holidaycalendar_taskallowed_taskname" xml:space="preserve">
+    <value>பணியின் பெயர்</value>
+  </data>
+  <data name="people_clinicaltaskinfo_taskname" xml:space="preserve">
+    <value>பணியின் பெயர்</value>
+  </data>
+  <data name="peopletimepreference_timepreference_taskname" xml:space="preserve">
+    <value>பணியின் பெயர்</value>
+  </data>
+  <data name="task_taskname" xml:space="preserve">
+    <value>பணியின் பெயர்</value>
+  </data>
+  <data name="peopletimepreference_timepreference_taskstarttime" xml:space="preserve">
+    <value>பணி தொடங்கும் நேரம்</value>
+  </data>
+  <data name="clinicalappointment_tasktype" xml:space="preserve">
+    <value>பணி வகை</value>
+  </data>
+  <data name="clinicaltask_taskduration_tasktype" xml:space="preserve">
+    <value>பணி வகை</value>
+  </data>
+  <data name="consultationqueue_tasktype" xml:space="preserve">
+    <value>பணி வகை</value>
+  </data>
+  <data name="people_clinicaltaskinfo_tasktype" xml:space="preserve">
+    <value>பணி வகை</value>
+  </data>
+  <data name="peopletimepreference_timepreference_tasktype" xml:space="preserve">
+    <value>பணி வகை</value>
+  </data>
+  <data name="queue_tasktype" xml:space="preserve">
+    <value>பணி வகை</value>
+  </data>
+  <data name="task_tasktype" xml:space="preserve">
+    <value>பணி வகை</value>
+  </data>
+  <data name="tasktype_tasktypename" xml:space="preserve">
+    <value>பணி வகை பெயர்</value>
+  </data>
+  <data name="screening_tastecravings" xml:space="preserve">
+    <value>சுவை ஆசைகள்</value>
+  </data>
+  <data name="templateapplicability" xml:space="preserve">
+    <value>டெம்ப்ளேட் பொருந்தக்கூடிய தன்மை</value>
+  </data>
+  <data name="assessmenttemplate_templatename" xml:space="preserve">
+    <value>டெம்ப்ளேட் பெயர்</value>
+  </data>
+  <data name="templatequestions" xml:space="preserve">
+    <value>டெம்ப்ளேட் கேள்விகள்</value>
+  </data>
+  <data name="billingpayment_therapy" xml:space="preserve">
+    <value>சிகிச்சை</value>
+  </data>
+  <data name="receivable_therapy" xml:space="preserve">
+    <value>சிகிச்சை</value>
+  </data>
+  <data name="therapy" xml:space="preserve">
+    <value>சிகிச்சை</value>
+  </data>
+  <data name="treatmentpackage_therapyamount" xml:space="preserve">
+    <value>சிகிச்சை அளவு</value>
+  </data>
+  <data name="therapies_therapycategory" xml:space="preserve">
+    <value>சிகிச்சை வகை</value>
+  </data>
+  <data name="billingpayment_therapycost" xml:space="preserve">
+    <value>சிகிச்சை செலவு</value>
+  </data>
+  <data name="receivable_therapycost" xml:space="preserve">
+    <value>சிகிச்சை செலவு</value>
+  </data>
+  <data name="therapies_therapycost" xml:space="preserve">
+    <value>சிகிச்சை செலவு</value>
+  </data>
+  <data name="treatmentpackage_therapy_therapycost" xml:space="preserve">
+    <value>சிகிச்சை செலவு</value>
+  </data>
+  <data name="therapies_therapyimage" xml:space="preserve">
+    <value>சிகிச்சை படம்</value>
+  </data>
+  <data name="therapies_therapyinstructions" xml:space="preserve">
+    <value>சிகிச்சை வழிமுறைகள்</value>
+  </data>
+  <data name="therapykit_kititems_therapyitem" xml:space="preserve">
+    <value>சிகிச்சை பொருள்</value>
+  </data>
+  <data name="treatmentpackage_therapyitems_therapyitem" xml:space="preserve">
+    <value>சிகிச்சை பொருள்</value>
+  </data>
+  <data name="treatmentpackage_therapyitemamount" xml:space="preserve">
+    <value>சிகிச்சை பொருளின் அளவு</value>
+  </data>
+  <data name="therapyitem_therapyitemcategory" xml:space="preserve">
+    <value>சிகிச்சை பொருள் வகை</value>
+  </data>
+  <data name="treatmentpackage_therapyitems_therapyitemcost" xml:space="preserve">
+    <value>சிகிச்சை பொருளின் விலை</value>
+  </data>
+  <data name="treatmentpackage_therapyitems_therapyitemcount" xml:space="preserve">
+    <value>சிகிச்சை பொருள் எண்ணிக்கை</value>
+  </data>
+  <data name="therapyitem_therapyitemimage" xml:space="preserve">
+    <value>சிகிச்சை பொருள் படம்</value>
+  </data>
+  <data name="therapyitem_therapyitemname" xml:space="preserve">
+    <value>சிகிச்சை பொருளின் பெயர்</value>
+  </data>
+  <data name="therapyitems" xml:space="preserve">
+    <value>சிகிச்சை பொருட்கள்</value>
+  </data>
+  <data name="billingpayment_therapykit" xml:space="preserve">
+    <value>சிகிச்சை கிட்</value>
+  </data>
+  <data name="receivable_therapykit" xml:space="preserve">
+    <value>சிகிச்சை கிட்</value>
+  </data>
+  <data name="treatmentpackage_therapykitamount" xml:space="preserve">
+    <value>சிகிச்சை கிட் அளவு</value>
+  </data>
+  <data name="treatmentpackage_therapykits_therapykitcost" xml:space="preserve">
+    <value>சிகிச்சை கிட் செலவு</value>
+  </data>
+  <data name="therapykit_therapykitname" xml:space="preserve">
+    <value>தெரபி கிட் பெயர்</value>
+  </data>
+  <data name="treatmentpackage_therapykits_therapykitname" xml:space="preserve">
+    <value>தெரபி கிட் பெயர்</value>
+  </data>
+  <data name="therapykits" xml:space="preserve">
+    <value>சிகிச்சை கருவிகள்</value>
+  </data>
+  <data name="therapies_therapyname" xml:space="preserve">
+    <value>சிகிச்சை பெயர்</value>
+  </data>
+  <data name="treatmentpackage_therapy_therapyname" xml:space="preserve">
+    <value>சிகிச்சை பெயர்</value>
+  </data>
+  <data name="treatmentpackage_therapy_therapyprice" xml:space="preserve">
+    <value>சிகிச்சை விலை</value>
+  </data>
+  <data name="therapies_therapyvideourl" xml:space="preserve">
+    <value>சிகிச்சை வீடியோ URL</value>
+  </data>
+  <data name="screening_thirstpattern" xml:space="preserve">
+    <value>தாகம் முறை</value>
+  </data>
+  <data name="screening_dinnertime" xml:space="preserve">
+    <value>நேரம்</value>
+  </data>
+  <data name="screening_lunchtime" xml:space="preserve">
+    <value>நேரம்</value>
+  </data>
+  <data name="timepreference" xml:space="preserve">
+    <value>நேர விருப்பம்</value>
+  </data>
+  <data name="screening_timespentdailyorweekly" xml:space="preserve">
+    <value>செலவழித்த நேரம் (தினசரி அல்லது வாரந்தோறும்)</value>
+  </data>
+  <data name="screening_timing" xml:space="preserve">
+    <value>டைமிங்</value>
+  </data>
+  <data name="ipdapplicationform_room_todate" xml:space="preserve">
+    <value>இன்றுவரை</value>
+  </data>
+  <data name="people_workexperience_todate" xml:space="preserve">
+    <value>இன்றுவரை</value>
+  </data>
+  <data name="roomallocation_todate" xml:space="preserve">
+    <value>இன்றுவரை</value>
+  </data>
+  <data name="clinicalappointment_tokennumber" xml:space="preserve">
+    <value>டோக்கன் எண்</value>
+  </data>
+  <data name="shift_totalbreakinhrs" xml:space="preserve">
+    <value>மணிநேரத்தில் மொத்த இடைவெளி</value>
+  </data>
+  <data name="shift_totalbreakinmins" xml:space="preserve">
+    <value>நிமிடங்களில் மொத்த இடைவெளி</value>
+  </data>
+  <data name="screening_totalsleep" xml:space="preserve">
+    <value>மொத்த தூக்கம்</value>
+  </data>
+  <data name="ipdapplicationform_ctown" xml:space="preserve">
+    <value>நகரம்</value>
+  </data>
+  <data name="ipdapplicationform_ptown" xml:space="preserve">
+    <value>நகரம்</value>
+  </data>
+  <data name="patientprofile_ctown" xml:space="preserve">
+    <value>நகரம்</value>
+  </data>
+  <data name="patientprofile_ptown" xml:space="preserve">
+    <value>நகரம்</value>
+  </data>
+  <data name="people_ctown" xml:space="preserve">
+    <value>நகரம்</value>
+  </data>
+  <data name="people_ptown" xml:space="preserve">
+    <value>நகரம்</value>
+  </data>
+  <data name="tenant_town" xml:space="preserve">
+    <value>நகரம்</value>
+  </data>
+  <data name="transactioninfo" xml:space="preserve">
+    <value>பரிவர்த்தனை தகவல்</value>
+  </data>
+  <data name="billingpayment_transactionreference" xml:space="preserve">
+    <value>பரிவர்த்தனை குறிப்பு</value>
+  </data>
+  <data name="paymentresponse_transactiontime" xml:space="preserve">
+    <value>பரிவர்த்தனை நேரம்</value>
+  </data>
+  <data name="ipdapplicationform_travelarrangement" xml:space="preserve">
+    <value>பயண ஏற்பாடு</value>
+  </data>
+  <data name="screening_tryingorplanningtostop" xml:space="preserve">
+    <value>நிறுத்த முயற்சிப்பது அல்லது திட்டமிடுவது</value>
+  </data>
+  <data name="screening_breakfasttype" xml:space="preserve">
+    <value>வகை</value>
+  </data>
+  <data name="screening_dinnertype" xml:space="preserve">
+    <value>வகை</value>
+  </data>
+  <data name="screening_lunchtype" xml:space="preserve">
+    <value>வகை</value>
+  </data>
+  <data name="screening_type" xml:space="preserve">
+    <value>வகை</value>
+  </data>
+  <data name="screening_typeofaerateddrinks" xml:space="preserve">
+    <value>காற்றோட்டமான பானங்களின் வகை</value>
+  </data>
+  <data name="patientprofile_typeofpractice" xml:space="preserve">
+    <value>நடைமுறையின் வகை</value>
+  </data>
+  <data name="screening_typeoftoiletused" xml:space="preserve">
+    <value>பயன்படுத்தப்படும் கழிப்பறை வகை</value>
+  </data>
+  <data name="ipdapplicationform_typeoftravelrequired" xml:space="preserve">
+    <value>பயண வகை தேவை</value>
+  </data>
+  <data name="screening_typeofwater" xml:space="preserve">
+    <value>நீர் வகை</value>
+  </data>
+  <data name="ipdapplicationform_medicalinfo_unit" xml:space="preserve">
+    <value>அலகு</value>
+  </data>
+  <data name="opdform_medicalinfo_unit" xml:space="preserve">
+    <value>அலகு</value>
+  </data>
+  <data name="restrictedmedicalconditions_medicalinfo_unit" xml:space="preserve">
+    <value>அலகு</value>
+  </data>
+  <data name="unitofmeasure_unitofmeasuredesc" xml:space="preserve">
+    <value>அளவீட்டு அலகு</value>
+  </data>
+  <data name="unitofmeasure_unitofmeasurename" xml:space="preserve">
+    <value>அளவீட்டு பெயர் அலகு</value>
+  </data>
+  <data name="patientprofile_uploadidproof" xml:space="preserve">
+    <value>ஐடி ஆதாரத்தை பதிவேற்றவும்</value>
+  </data>
+  <data name="ipdapplicationform_uploadpassportcopy" xml:space="preserve">
+    <value>பாஸ்போர்ட் நகலை பதிவேற்றவும்</value>
+  </data>
+  <data name="ipdapplicationform_uploadvisacopy" xml:space="preserve">
+    <value>விசா நகலை பதிவேற்றவும்</value>
+  </data>
+  <data name="screening_urine" xml:space="preserve">
+    <value>சிறுநீர்</value>
+  </data>
+  <data name="users_userpassword" xml:space="preserve">
+    <value>பயனர் கடவுச்சொல்</value>
+  </data>
+  <data name="tenant_userrole" xml:space="preserve">
+    <value>பயனர் பங்கு</value>
+  </data>
+  <data name="users_userrole" xml:space="preserve">
+    <value>பயனர் பங்கு</value>
+  </data>
+  <data name="otplogs_username" xml:space="preserve">
+    <value>பயனர் பெயர்</value>
+  </data>
+  <data name="tenant_username" xml:space="preserve">
+    <value>பயனர் பெயர்</value>
+  </data>
+  <data name="users_username" xml:space="preserve">
+    <value>பயனர் பெயர்</value>
+  </data>
+  <data name="screening_usualbedtime" xml:space="preserve">
+    <value>வழக்கமான உறக்க நேரம்</value>
+  </data>
+  <data name="screening_breakfastusualfoods" xml:space="preserve">
+    <value>வழக்கமான உணவுகள்</value>
+  </data>
+  <data name="screening_dinnerusualfoods" xml:space="preserve">
+    <value>வழக்கமான உணவுகள்</value>
+  </data>
+  <data name="screening_lunchusualfoods" xml:space="preserve">
+    <value>வழக்கமான உணவுகள்</value>
+  </data>
+  <data name="screening_usualwakeuptime" xml:space="preserve">
+    <value>வழக்கமான விழிப்பு நேரம்</value>
+  </data>
+  <data name="shiftplanning_validfrom" xml:space="preserve">
+    <value>செல்லுபடியாகும்</value>
+  </data>
+  <data name="people_validtill" xml:space="preserve">
+    <value>செல்லுபடியாகும்</value>
+  </data>
+  <data name="shiftplanning_validto" xml:space="preserve">
+    <value>செல்லுபடியாகும்</value>
+  </data>
+  <data name="roomtype_attendantvariableofbookingdays" xml:space="preserve">
+    <value>மாறி (புக்கிங் நாட்கள்)</value>
+  </data>
+  <data name="roomtype_variableofbookingdays" xml:space="preserve">
+    <value>மாறி (புக்கிங் நாட்கள்)</value>
+  </data>
+  <data name="enquiryform_verifiedstatus" xml:space="preserve">
+    <value>சரிபார்க்கப்பட்ட நிலை</value>
+  </data>
+  <data name="ipdapplicationform_verifiedstatus" xml:space="preserve">
+    <value>சரிபார்க்கப்பட்ட நிலை</value>
+  </data>
+  <data name="opdform_verifiedstatus" xml:space="preserve">
+    <value>சரிபார்க்கப்பட்ட நிலை</value>
+  </data>
+  <data name="screening_verycoldfood" xml:space="preserve">
+    <value>மிகவும் குளிர்ந்த உணவு</value>
+  </data>
+  <data name="ipdapplicationform_visaexpirydate" xml:space="preserve">
+    <value>விசா காலாவதி தேதி</value>
+  </data>
+  <data name="ipdapplicationform_visaissuedate" xml:space="preserve">
+    <value>விசா வழங்கும் தேதி</value>
+  </data>
+  <data name="ipdapplicationform_visaissuedcountry" xml:space="preserve">
+    <value>விசா வழங்கப்பட்ட நாடு</value>
+  </data>
+  <data name="ipdapplicationform_visanumber" xml:space="preserve">
+    <value>விசா எண்</value>
+  </data>
+  <data name="ipdapplicationform_visatype" xml:space="preserve">
+    <value>விசா வகை</value>
+  </data>
+  <data name="patientqueue_visitdatetime" xml:space="preserve">
+    <value>வருகை தேதி நேரம்</value>
+  </data>
+  <data name="patientvisit_visitdatetime" xml:space="preserve">
+    <value>வருகை தேதி நேரம்</value>
+  </data>
+  <data name="patientvisit_visitnumber" xml:space="preserve">
+    <value>வருகை எண்</value>
+  </data>
+  <data name="patientvisit_visitstatus" xml:space="preserve">
+    <value>நிலையைப் பார்வையிடவும்</value>
+  </data>
+  <data name="patientvisit_visittype" xml:space="preserve">
+    <value>வருகை வகை</value>
+  </data>
+  <data name="roomtype_waiverpercentage" xml:space="preserve">
+    <value>தள்ளுபடி சதவீதம்</value>
+  </data>
+  <data name="treatmentpackage_waiverpercentage" xml:space="preserve">
+    <value>தள்ளுபடி சதவீதம்</value>
+  </data>
+  <data name="referralsource_websiteurl" xml:space="preserve">
+    <value>இணையதள URL</value>
+  </data>
+  <data name="screening_weightpattern" xml:space="preserve">
+    <value>எடை முறை</value>
+  </data>
+  <data name="screening_whatareyourhobbiesthatyouhavetried" xml:space="preserve">
+    <value>நீங்கள் முயற்சித்த உங்கள் பொழுதுபோக்குகள் என்ன?</value>
+  </data>
+  <data name="screening_whatdoyouliketoreadwatch" xml:space="preserve">
+    <value>நீங்கள் எதைப் படிக்க விரும்புகிறீர்கள்?</value>
+  </data>
+  <data name="screening_whatisthegoalofyourlife" xml:space="preserve">
+    <value>உங்கள் வாழ்க்கையின் இலக்கு என்ன?</value>
+  </data>
+  <data name="screening_whatisyourambition" xml:space="preserve">
+    <value>உங்கள் லட்சியம் என்ன?</value>
+  </data>
+  <data name="screening_whattimeduringthedayyoufeelexhausted" xml:space="preserve">
+    <value>பகலில் எந்த நேரத்தில் நீங்கள் சோர்வாக உணர்கிறீர்கள்?</value>
+  </data>
+  <data name="ipdapplicationform_whatsappnumber" xml:space="preserve">
+    <value>வாட்ஸ்அப் எண்</value>
+  </data>
+  <data name="patientprofile_whatsappnumber" xml:space="preserve">
+    <value>வாட்ஸ்அப் எண்</value>
+  </data>
+  <data name="people_whatsappnumber" xml:space="preserve">
+    <value>வாட்ஸ்அப் எண்</value>
+  </data>
+  <data name="ipdapplicationform_wheelchairassistance" xml:space="preserve">
+    <value>சக்கர நாற்காலி உதவி</value>
+  </data>
+  <data name="screening_whydidyoudiscontinueit" xml:space="preserve">
+    <value>அதை ஏன் நிறுத்தினீர்கள்?</value>
+  </data>
+  <data name="workexperience" xml:space="preserve">
+    <value>பணி அனுபவம்</value>
+  </data>
+  <data name="people_clinicaltaskinfo_workhourends" xml:space="preserve">
+    <value>வேலை நேரம் முடிவடைகிறது</value>
+  </data>
+  <data name="people_clinicaltaskinfo_workhourstarts" xml:space="preserve">
+    <value>வேலை நேரம் தொடங்குகிறது</value>
+  </data>
+  <data name="shift_workhours" xml:space="preserve">
+    <value>வேலை நேரம்</value>
+  </data>
+  <data name="staffattendance_workhours" xml:space="preserve">
+    <value>வேலை நேரம்</value>
+  </data>
+  <data name="clinicaltask_taskduration_workprofile" xml:space="preserve">
+    <value>பணி சுயவிவரம்</value>
+  </data>
+  <data name="clinicaltask_workprofile" xml:space="preserve">
+    <value>பணி சுயவிவரம்</value>
+  </data>
+  <data name="designation_workprofile" xml:space="preserve">
+    <value>பணி சுயவிவரம்</value>
+  </data>
+  <data name="people_clinicaltaskinfo_workprofile" xml:space="preserve">
+    <value>பணி சுயவிவரம்</value>
+  </data>
+  <data name="people_workprofile" xml:space="preserve">
+    <value>பணி சுயவிவரம்</value>
+  </data>
+  <data name="shiftplanning_people_workprofile" xml:space="preserve">
+    <value>பணி சுயவிவரம்</value>
+  </data>
+  <data name="staffattendance_workprofile" xml:space="preserve">
+    <value>பணி சுயவிவரம்</value>
+  </data>
+  <data name="workprofile_workprofiledescription" xml:space="preserve">
+    <value>பணி சுயவிவர விளக்கம்</value>
+  </data>
+  <data name="workprofile_workprofilename" xml:space="preserve">
+    <value>பணி சுயவிவரப் பெயர்</value>
+  </data>
+  <data name="people_educationinfo_yearofgraduation" xml:space="preserve">
+    <value>பட்டப்படிப்பு ஆண்டு</value>
+  </data>
+  <data name="screening_stimulantsyearsofuse" xml:space="preserve">
+    <value>ஆண்டுகள் உபயோகம்</value>
+  </data>
+  <data name="screening_yourregularcontactwithnatureincludes" xml:space="preserve">
+    <value>இயற்கையுடனான உங்கள் வழக்கமான தொடர்பு அடங்கும்</value>
+  </data>
+  <data name="screening_yourusualdailyenvironmentismostly" xml:space="preserve">
+    <value>உங்கள் வழக்கமான தினசரி சூழல் பெரும்பாலும் உள்ளது</value>
+  </data>
+  <data name="patientprofile_czip" xml:space="preserve">
+    <value>ஜிப்</value>
+  </data>
+  <data name="patientprofile_pzip" xml:space="preserve">
+    <value>ஜிப்</value>
+  </data>
+  <data name="people_czip" xml:space="preserve">
+    <value>ஜிப்</value>
+  </data>
+  <data name="people_pzip" xml:space="preserve">
+    <value>ஜிப்</value>
+  </data>
+  <data name="tenant_zip" xml:space="preserve">
+    <value>ஜிப்</value>
+  </data>
+  <data name="alerttemplates" xml:space="preserve">
+    <value>எச்சரிக்கை வார்ப்புருக்கள்</value>
+  </data>
+  <data name="assessment" xml:space="preserve">
+    <value>மதிப்பீடு</value>
+  </data>
+  <data name="assessmentquestion" xml:space="preserve">
+    <value>மதிப்பீட்டு கேள்வி</value>
+  </data>
+  <data name="assessmenttemplate" xml:space="preserve">
+    <value>மதிப்பீட்டு டெம்ப்ளேட்</value>
+  </data>
+  <data name="billingpayment" xml:space="preserve">
+    <value>பில்லிங் கட்டணம்</value>
+  </data>
+  <data name="blacklistreason" xml:space="preserve">
+    <value>பிளாக்லிஸ்ட் காரணம்</value>
+  </data>
+  <data name="block" xml:space="preserve">
+    <value>தடு</value>
+  </data>
+  <data name="building" xml:space="preserve">
+    <value>கட்டிடம்</value>
+  </data>
+  <data name="clinicalappointment" xml:space="preserve">
+    <value>மருத்துவ நியமனம்</value>
+  </data>
+  <data name="clinicaltask" xml:space="preserve">
+    <value>மருத்துவ பணி</value>
+  </data>
+  <data name="competency" xml:space="preserve">
+    <value>திறமை</value>
+  </data>
+  <data name="consultationqueue" xml:space="preserve">
+    <value>ஆலோசனை வரிசை</value>
+  </data>
+  <data name="country" xml:space="preserve">
+    <value>நாடு</value>
+  </data>
+  <data name="department" xml:space="preserve">
+    <value>துறை</value>
+  </data>
+  <data name="designation" xml:space="preserve">
+    <value>பதவி</value>
+  </data>
+  <data name="enquiryform" xml:space="preserve">
+    <value>விசாரணை படிவம்</value>
+  </data>
+  <data name="enquirytype" xml:space="preserve">
+    <value>விசாரணை வகை</value>
+  </data>
+  <data name="floor" xml:space="preserve">
+    <value>மாடி</value>
+  </data>
+  <data name="holidaycalendar" xml:space="preserve">
+    <value>விடுமுறை நாட்காட்டி</value>
+  </data>
+  <data name="ipdapplicationform" xml:space="preserve">
+    <value>IPD விண்ணப்பப் படிவம்</value>
+  </data>
+  <data name="lookups" xml:space="preserve">
+    <value>தேடுதல்</value>
+  </data>
+  <data name="mailbox" xml:space="preserve">
+    <value>அஞ்சல் பெட்டி</value>
+  </data>
+  <data name="maillogs" xml:space="preserve">
+    <value>அஞ்சல் பதிவுகள்</value>
+  </data>
+  <data name="medicalcondition" xml:space="preserve">
+    <value>மருத்துவ நிலை</value>
+  </data>
+  <data name="medicationtype" xml:space="preserve">
+    <value>மருந்து வகை</value>
+  </data>
+  <data name="medicine" xml:space="preserve">
+    <value>மருந்து</value>
+  </data>
+  <data name="occupation" xml:space="preserve">
+    <value>தொழில்</value>
+  </data>
+  <data name="opdform" xml:space="preserve">
+    <value>OPD படிவம்</value>
+  </data>
+  <data name="otplogs" xml:space="preserve">
+    <value>சாளரத்தை திறக்க</value>
+  </data>
+  <data name="patientcategory" xml:space="preserve">
+    <value>நோயாளி வகை</value>
+  </data>
+  <data name="patientconsent" xml:space="preserve">
+    <value>நோயாளியின் ஒப்புதல்</value>
+  </data>
+  <data name="patientprofile" xml:space="preserve">
+    <value>நோயாளியின் சுயவிவரம்</value>
+  </data>
+  <data name="patientqueue" xml:space="preserve">
+    <value>நோயாளி வால்</value>
+  </data>
+  <data name="patientvisit" xml:space="preserve">
+    <value>நோயாளி வருகை</value>
+  </data>
+  <data name="paymentconfig" xml:space="preserve">
+    <value>கட்டண கட்டமைப்பு</value>
+  </data>
+  <data name="paymentrequest" xml:space="preserve">
+    <value>கட்டண கோரிக்கை</value>
+  </data>
+  <data name="paymentresponse" xml:space="preserve">
+    <value>பணம் செலுத்தும் பதில்</value>
+  </data>
+  <data name="peopletimepreference" xml:space="preserve">
+    <value>மக்கள் நேர விருப்பம்</value>
+  </data>
+  <data name="pincodemaster" xml:space="preserve">
+    <value>பின்கோடு மாஸ்டர்</value>
+  </data>
+  <data name="questioncategory" xml:space="preserve">
+    <value>கேள்வி வகை</value>
+  </data>
+  <data name="questionsubcategory" xml:space="preserve">
+    <value>கேள்வி துணை வகை</value>
+  </data>
+  <data name="queue" xml:space="preserve">
+    <value>வரிசை</value>
+  </data>
+  <data name="receivable" xml:space="preserve">
+    <value>பெறத்தக்கது</value>
+  </data>
+  <data name="referralsource" xml:space="preserve">
+    <value>பரிந்துரை ஆதாரம்</value>
+  </data>
+  <data name="restrictedmedicalconditions" xml:space="preserve">
+    <value>கட்டுப்படுத்தப்பட்ட மருத்துவ நிலைமைகள்</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>பாத்திரங்கள்</value>
+  </data>
+  <data name="roomallocation" xml:space="preserve">
+    <value>அறை ஒதுக்கீடு</value>
+  </data>
+  <data name="roomgroup" xml:space="preserve">
+    <value>அறை குழு</value>
+  </data>
+  <data name="roomoccupancystatus" xml:space="preserve">
+    <value>அறை ஆக்கிரமிப்பு நிலை</value>
+  </data>
+  <data name="roomtype" xml:space="preserve">
+    <value>அறை வகை</value>
+  </data>
+  <data name="screening" xml:space="preserve">
+    <value>திரையிடல்</value>
+  </data>
+  <data name="shift" xml:space="preserve">
+    <value>ஷிப்ட்</value>
+  </data>
+  <data name="shiftplanning" xml:space="preserve">
+    <value>ஷிப்ட் திட்டமிடல்</value>
+  </data>
+  <data name="staffattendance" xml:space="preserve">
+    <value>பணியாளர் வருகை</value>
+  </data>
+  <data name="task" xml:space="preserve">
+    <value>பணி</value>
+  </data>
+  <data name="tasktype" xml:space="preserve">
+    <value>பணி வகை</value>
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value>குத்தகைதாரர்</value>
+  </data>
+  <data name="therapies" xml:space="preserve">
+    <value>சிகிச்சைகள்</value>
+  </data>
+  <data name="therapycategory" xml:space="preserve">
+    <value>சிகிச்சை வகை</value>
+  </data>
+  <data name="therapyitem" xml:space="preserve">
+    <value>சிகிச்சை பொருள்</value>
+  </data>
+  <data name="therapyitemcategory" xml:space="preserve">
+    <value>சிகிச்சை பொருள் வகை</value>
+  </data>
+  <data name="therapykit" xml:space="preserve">
+    <value>சிகிச்சை கிட்</value>
+  </data>
+  <data name="treatmentpackage" xml:space="preserve">
+    <value>சிகிச்சை தொகுப்பு</value>
+  </data>
+  <data name="unitofmeasure" xml:space="preserve">
+    <value>அளவீட்டு அலகு</value>
+  </data>
+  <data name="users" xml:space="preserve">
+    <value>பயனர்கள்</value>
+  </data>
+  <data name="workprofile" xml:space="preserve">
+    <value>பணி சுயவிவரம்</value>
+  </data>
+  <data name="addassessment" xml:space="preserve">
+    <value>மதிப்பீட்டைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addassessmentquestion" xml:space="preserve">
+    <value>மதிப்பீட்டு கேள்வியைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addassessmenttemplate" xml:space="preserve">
+    <value>மதிப்பீட்டு டெம்ப்ளேட்டைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addbillingpayment" xml:space="preserve">
+    <value>பில்லிங் கட்டணத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addblacklistreason" xml:space="preserve">
+    <value>பிளாக்லிஸ்ட் காரணத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addblock" xml:space="preserve">
+    <value>தொகுதியைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addbuilding" xml:space="preserve">
+    <value>கட்டிடத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addclinicalappointment" xml:space="preserve">
+    <value>மருத்துவ நியமனத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addclinicaltask" xml:space="preserve">
+    <value>மருத்துவப் பணியைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addcompetency" xml:space="preserve">
+    <value>திறமையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addconsultationqueue" xml:space="preserve">
+    <value>ஆலோசனை வரிசையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addcountry" xml:space="preserve">
+    <value>நாட்டைச் சேர்க்கவும்</value>
+  </data>
+  <data name="adddepartment" xml:space="preserve">
+    <value>துறையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="adddesignation" xml:space="preserve">
+    <value>பதவியைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addenquiry" xml:space="preserve">
+    <value>விசாரணையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addenquirytype" xml:space="preserve">
+    <value>விசாரணை வகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addfloor" xml:space="preserve">
+    <value>தரையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addholiday" xml:space="preserve">
+    <value>விடுமுறையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addipdapplicationform" xml:space="preserve">
+    <value>IPD விண்ணப்பப் படிவத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addmailbox" xml:space="preserve">
+    <value>அஞ்சல் பெட்டியைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addmedicalcondition" xml:space="preserve">
+    <value>மருத்துவ நிலையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addmedicationtype" xml:space="preserve">
+    <value>மருந்து வகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addmedicine" xml:space="preserve">
+    <value>மருந்து சேர்க்கவும்</value>
+  </data>
+  <data name="addoccupation" xml:space="preserve">
+    <value>தொழிலைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addopdform" xml:space="preserve">
+    <value>OPD படிவத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addotplogs" xml:space="preserve">
+    <value>ஓட்ப்லாக்களைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpatientcategory" xml:space="preserve">
+    <value>நோயாளி வகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpatientconsent" xml:space="preserve">
+    <value>நோயாளியின் ஒப்புதலைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpatientprofile" xml:space="preserve">
+    <value>நோயாளியின் சுயவிவரத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpatientqueue" xml:space="preserve">
+    <value>நோயாளி வரிசையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpatientvisit" xml:space="preserve">
+    <value>நோயாளி வருகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpaymentconfig" xml:space="preserve">
+    <value>கட்டண கட்டமைப்பைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpaymentrequest" xml:space="preserve">
+    <value>கட்டணக் கோரிக்கையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpaymentresponse" xml:space="preserve">
+    <value>கட்டண பதிலைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpeople" xml:space="preserve">
+    <value>நபர்களைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpeopletimepreference" xml:space="preserve">
+    <value>மக்கள் நேர விருப்பத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addpincode" xml:space="preserve">
+    <value>பின்கோடு சேர்க்கவும்</value>
+  </data>
+  <data name="addprocesssla" xml:space="preserve">
+    <value>செயல்முறை SLA ஐச் சேர்க்கவும்</value>
+  </data>
+  <data name="addquestioncategory" xml:space="preserve">
+    <value>கேள்வி வகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addquestionsubcategory" xml:space="preserve">
+    <value>கேள்வி துணை வகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addqueue" xml:space="preserve">
+    <value>வரிசையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addreceivable" xml:space="preserve">
+    <value>பெறத்தக்கதைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addreferralsource" xml:space="preserve">
+    <value>பரிந்துரை மூலத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addrestrictedmedicalconditions" xml:space="preserve">
+    <value>கட்டுப்படுத்தப்பட்ட மருத்துவ நிலைமைகளைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addroom" xml:space="preserve">
+    <value>அறையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addroomallocation" xml:space="preserve">
+    <value>அறை ஒதுக்கீட்டைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addroomgroup" xml:space="preserve">
+    <value>அறைக் குழுவைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addroomoccupancystatus" xml:space="preserve">
+    <value>அறை ஆக்கிரமிப்பு நிலையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addroomtype" xml:space="preserve">
+    <value>அறை வகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addscreening" xml:space="preserve">
+    <value>திரையிடலைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addshift" xml:space="preserve">
+    <value>Shift ஐ சேர்க்கவும்</value>
+  </data>
+  <data name="addshiftplanning" xml:space="preserve">
+    <value>ஷிப்ட் திட்டமிடலைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addstaffattendance" xml:space="preserve">
+    <value>பணியாளர் வருகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addtask" xml:space="preserve">
+    <value>பணியைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addtasktype" xml:space="preserve">
+    <value>பணி வகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addtherapy" xml:space="preserve">
+    <value>சிகிச்சையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addtherapycategory" xml:space="preserve">
+    <value>சிகிச்சை வகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addtherapyitem" xml:space="preserve">
+    <value>சிகிச்சை உருப்படியைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addtherapyitemcategory" xml:space="preserve">
+    <value>சிகிச்சை உருப்படி வகையைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addtherapykit" xml:space="preserve">
+    <value>சிகிச்சை கிட் சேர்க்கவும்</value>
+  </data>
+  <data name="addtoblacklist" xml:space="preserve">
+    <value>தடுப்புப்பட்டியலில் சேர்க்கவும்</value>
+  </data>
+  <data name="addtreatmentpackage" xml:space="preserve">
+    <value>சிகிச்சை தொகுப்பைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addunitofmeasure" xml:space="preserve">
+    <value>அளவீட்டு அலகு சேர்க்கவும்</value>
+  </data>
+  <data name="addworkprofile" xml:space="preserve">
+    <value>பணி சுயவிவரத்தைச் சேர்க்கவும்</value>
+  </data>
+  <data name="addedenquiries" xml:space="preserve">
+    <value>கூடுதல் விசாரணைகள்</value>
+  </data>
+  <data name="addedipdapplicationform" xml:space="preserve">
+    <value>IPD விண்ணப்பப் படிவம் சேர்க்கப்பட்டது</value>
+  </data>
+  <data name="addedopdform" xml:space="preserve">
+    <value>OPD படிவம் சேர்க்கப்பட்டது</value>
+  </data>
+  <data name="alerttemplateslist" xml:space="preserve">
+    <value>எச்சரிக்கை டெம்ப்ளேட்கள் பட்டியல்</value>
+  </data>
+  <data name="allotroom" xml:space="preserve">
+    <value>அறை ஒதுக்கீடு</value>
+  </data>
+  <data name="approvedipdapplicationform" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்ட IPD விண்ணப்பப் படிவம்</value>
+  </data>
+  <data name="approvedipdapplicationforms" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்ட IPD விண்ணப்பப் படிவங்கள்</value>
+  </data>
+  <data name="approvedopdforms" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்ட OPD படிவங்கள்</value>
+  </data>
+  <data name="assessmentlist" xml:space="preserve">
+    <value>மதிப்பீட்டு பட்டியல்</value>
+  </data>
+  <data name="assessmentquestionlist" xml:space="preserve">
+    <value>மதிப்பீட்டு கேள்வி பட்டியல்</value>
+  </data>
+  <data name="assessmenttemplatelist" xml:space="preserve">
+    <value>மதிப்பீட்டு டெம்ப்ளேட் பட்டியல்</value>
+  </data>
+  <data name="authenticate" xml:space="preserve">
+    <value>அங்கீகரிக்கவும்</value>
+  </data>
+  <data name="billingpaymentlist" xml:space="preserve">
+    <value>பில்லிங் பேமெண்ட் பட்டியல்</value>
+  </data>
+  <data name="blacklistreasonlist" xml:space="preserve">
+    <value>பிளாக்லிஸ்ட் காரணம் பட்டியல்</value>
+  </data>
+  <data name="blocklist" xml:space="preserve">
+    <value>தடுப்பு பட்டியல்</value>
+  </data>
+  <data name="buildinglist" xml:space="preserve">
+    <value>கட்டிட பட்டியல்</value>
+  </data>
+  <data name="changestatus" xml:space="preserve">
+    <value>நிலையை மாற்றவும்</value>
+  </data>
+  <data name="changepassword" xml:space="preserve">
+    <value>கடவுச்சொல்லை மாற்றவும்</value>
+  </data>
+  <data name="clinicalappointmentlist" xml:space="preserve">
+    <value>மருத்துவ நியமனம் பட்டியல்</value>
+  </data>
+  <data name="clinicaltasklist" xml:space="preserve">
+    <value>மருத்துவ பணி பட்டியல்</value>
+  </data>
+  <data name="competencylist" xml:space="preserve">
+    <value>தகுதி பட்டியல்</value>
+  </data>
+  <data name="confirmarrival" xml:space="preserve">
+    <value>வருகையை உறுதிப்படுத்தவும்</value>
+  </data>
+  <data name="consultationqueuelist" xml:space="preserve">
+    <value>ஆலோசனை வரிசை பட்டியல்</value>
+  </data>
+  <data name="countrylist" xml:space="preserve">
+    <value>நாட்டின் பட்டியல்</value>
+  </data>
+  <data name="createalerttemplates" xml:space="preserve">
+    <value>எச்சரிக்கை டெம்ப்ளேட்களை உருவாக்கவும்</value>
+  </data>
+  <data name="createhealthcareprovider" xml:space="preserve">
+    <value>சுகாதார வழங்குநரை உருவாக்கவும்</value>
+  </data>
+  <data name="createmaillog" xml:space="preserve">
+    <value>MailLog ஐ உருவாக்கவும்</value>
+  </data>
+  <data name="departmentlist" xml:space="preserve">
+    <value>துறை பட்டியல்</value>
+  </data>
+  <data name="designationlist" xml:space="preserve">
+    <value>பதவி பட்டியல்</value>
+  </data>
+  <data name="detail" xml:space="preserve">
+    <value>விவரம்</value>
+  </data>
+  <data name="detailalerttemplates" xml:space="preserve">
+    <value>விரிவான எச்சரிக்கை டெம்ப்ளேட்கள்</value>
+  </data>
+  <data name="detailassessmenttemplate" xml:space="preserve">
+    <value>விவர மதிப்பீடு டெம்ப்ளேட்</value>
+  </data>
+  <data name="detailbillingpayment" xml:space="preserve">
+    <value>விரிவான பில்லிங் கட்டணம்</value>
+  </data>
+  <data name="detailmaillog" xml:space="preserve">
+    <value>விரிவான அஞ்சல் பதிவு</value>
+  </data>
+  <data name="detailoccupation" xml:space="preserve">
+    <value>விரிவான தொழில்</value>
+  </data>
+  <data name="detailpaymentresponse" xml:space="preserve">
+    <value>விரிவான கட்டண பதில்</value>
+  </data>
+  <data name="detailprocesssla" xml:space="preserve">
+    <value>விவர செயல்முறை SLA</value>
+  </data>
+  <data name="detailquestionsubcategory" xml:space="preserve">
+    <value>விரிவான கேள்வி துணை வகை</value>
+  </data>
+  <data name="detailqueue" xml:space="preserve">
+    <value>விவர வரிசை</value>
+  </data>
+  <data name="detailroomoccupancystatus" xml:space="preserve">
+    <value>அறையில் தங்கியிருக்கும் நிலை பற்றிய விவரம்</value>
+  </data>
+  <data name="enquiries" xml:space="preserve">
+    <value>விசாரணைகள்</value>
+  </data>
+  <data name="enquiriesforreview" xml:space="preserve">
+    <value>மதிப்பாய்வுக்கான விசாரணைகள்</value>
+  </data>
+  <data name="enquirydetails" xml:space="preserve">
+    <value>விசாரணை விவரங்கள்</value>
+  </data>
+  <data name="enquirytypelist" xml:space="preserve">
+    <value>விசாரணை வகை பட்டியல்</value>
+  </data>
+  <data name="floorlist" xml:space="preserve">
+    <value>மாடி பட்டியல்</value>
+  </data>
+  <data name="index" xml:space="preserve">
+    <value>குறியீட்டு</value>
+  </data>
+  <data name="ipdapplicationformsforreview" xml:space="preserve">
+    <value>மதிப்பாய்வுக்கான IPD விண்ணப்பப் படிவங்கள்</value>
+  </data>
+  <data name="listofuserprofiles" xml:space="preserve">
+    <value>பயனர் சுயவிவரங்களின் பட்டியல்</value>
+  </data>
+  <data name="mailboxlist" xml:space="preserve">
+    <value>அஞ்சல் பெட்டி பட்டியல்</value>
+  </data>
+  <data name="maillogslist" xml:space="preserve">
+    <value>அஞ்சல் பதிவுகள் பட்டியல்</value>
+  </data>
+  <data name="markasdeceased" xml:space="preserve">
+    <value>இறந்ததாகக் குறிக்கவும்</value>
+  </data>
+  <data name="medicalconditionlist" xml:space="preserve">
+    <value>மருத்துவ நிலை பட்டியல்</value>
+  </data>
+  <data name="medicationtypelist" xml:space="preserve">
+    <value>மருந்து வகை பட்டியல்</value>
+  </data>
+  <data name="medicinelist" xml:space="preserve">
+    <value>மருந்து பட்டியல்</value>
+  </data>
+  <data name="modifypatientcategory" xml:space="preserve">
+    <value>நோயாளி வகையை மாற்றவும்</value>
+  </data>
+  <data name="occupationlist" xml:space="preserve">
+    <value>தொழில் பட்டியல்</value>
+  </data>
+  <data name="opdformsforreview" xml:space="preserve">
+    <value>மதிப்பாய்வுக்கான OPD படிவங்கள்</value>
+  </data>
+  <data name="otplogslist" xml:space="preserve">
+    <value>otplogs பட்டியல்</value>
+  </data>
+  <data name="patientcategorylist" xml:space="preserve">
+    <value>நோயாளி வகை பட்டியல்</value>
+  </data>
+  <data name="patientconsentlist" xml:space="preserve">
+    <value>நோயாளியின் ஒப்புதல் பட்டியல்</value>
+  </data>
+  <data name="patientprofiles" xml:space="preserve">
+    <value>நோயாளி சுயவிவரங்கள்</value>
+  </data>
+  <data name="patientqueuelist" xml:space="preserve">
+    <value>நோயாளிகளின் வரிசை பட்டியல்</value>
+  </data>
+  <data name="patientvisitlist" xml:space="preserve">
+    <value>நோயாளி வருகை பட்டியல்</value>
+  </data>
+  <data name="paymentconfiglist" xml:space="preserve">
+    <value>கட்டண கட்டமைப்பு பட்டியல்</value>
+  </data>
+  <data name="paymentrequestlist" xml:space="preserve">
+    <value>கட்டண கோரிக்கை பட்டியல்</value>
+  </data>
+  <data name="paymentresponselist" xml:space="preserve">
+    <value>கட்டண பதில் பட்டியல்</value>
+  </data>
+  <data name="peoplelist" xml:space="preserve">
+    <value>மக்கள் பட்டியல்</value>
+  </data>
+  <data name="peopletimepreferencelist" xml:space="preserve">
+    <value>மக்கள் நேர விருப்பப் பட்டியல்</value>
+  </data>
+  <data name="pincodelist" xml:space="preserve">
+    <value>பின்கோடு பட்டியல்</value>
+  </data>
+  <data name="processslalist" xml:space="preserve">
+    <value>செயல்முறை SLA பட்டியல்</value>
+  </data>
+  <data name="questioncategorylist" xml:space="preserve">
+    <value>கேள்வி வகை பட்டியல்</value>
+  </data>
+  <data name="questionsubcategorylist" xml:space="preserve">
+    <value>கேள்வி துணை வகை பட்டியல்</value>
+  </data>
+  <data name="queuelist" xml:space="preserve">
+    <value>வரிசை பட்டியல்</value>
+  </data>
+  <data name="receivables" xml:space="preserve">
+    <value>பெறத்தக்கவை</value>
+  </data>
+  <data name="referralsourcelist" xml:space="preserve">
+    <value>பரிந்துரை மூலப் பட்டியல்</value>
+  </data>
+  <data name="refund" xml:space="preserve">
+    <value>பணத்தைத் திரும்பப்பெறுதல்</value>
+  </data>
+  <data name="registerprofile" xml:space="preserve">
+    <value>பதிவு சுயவிவரம்</value>
+  </data>
+  <data name="removealerttemplates" xml:space="preserve">
+    <value>எச்சரிக்கை டெம்ப்ளேட்களை அகற்று</value>
+  </data>
+  <data name="removeassessment" xml:space="preserve">
+    <value>மதிப்பீட்டை அகற்று</value>
+  </data>
+  <data name="removeassessmentquestion" xml:space="preserve">
+    <value>மதிப்பீட்டு கேள்வியை அகற்று</value>
+  </data>
+  <data name="removeassessmenttemplate" xml:space="preserve">
+    <value>மதிப்பீட்டு டெம்ப்ளேட்டை அகற்று</value>
+  </data>
+  <data name="removebillingpayment" xml:space="preserve">
+    <value>பில்லிங் கட்டணத்தை அகற்று</value>
+  </data>
+  <data name="removeblacklistreason" xml:space="preserve">
+    <value>தடுப்புப்பட்டியலின் காரணத்தை அகற்று</value>
+  </data>
+  <data name="removeblock" xml:space="preserve">
+    <value>தடுப்பை அகற்று</value>
+  </data>
+  <data name="removebuilding" xml:space="preserve">
+    <value>கட்டிடத்தை அகற்று</value>
+  </data>
+  <data name="removeclinicalappointment" xml:space="preserve">
+    <value>மருத்துவ நியமனத்தை அகற்று</value>
+  </data>
+  <data name="removeclinicaltask" xml:space="preserve">
+    <value>மருத்துவ பணியை அகற்று</value>
+  </data>
+  <data name="removecompetency" xml:space="preserve">
+    <value>திறமையை அகற்று</value>
+  </data>
+  <data name="removeconsultationqueue" xml:space="preserve">
+    <value>ஆலோசனை வரிசையை அகற்று</value>
+  </data>
+  <data name="removecountry" xml:space="preserve">
+    <value>நாட்டை அகற்று</value>
+  </data>
+  <data name="removedepartment" xml:space="preserve">
+    <value>துறையை அகற்று</value>
+  </data>
+  <data name="removedesignation" xml:space="preserve">
+    <value>பதவியை அகற்று</value>
+  </data>
+  <data name="removeenquiry" xml:space="preserve">
+    <value>விசாரணையை அகற்று</value>
+  </data>
+  <data name="removeenquirytype" xml:space="preserve">
+    <value>விசாரணை வகையை அகற்று</value>
+  </data>
+  <data name="removefloor" xml:space="preserve">
+    <value>தரையை அகற்று</value>
+  </data>
+  <data name="removehealthcareprovider" xml:space="preserve">
+    <value>சுகாதார வழங்குநரை அகற்று</value>
+  </data>
+  <data name="removeholiday" xml:space="preserve">
+    <value>விடுமுறையை அகற்று</value>
+  </data>
+  <data name="removeipdapplicationform" xml:space="preserve">
+    <value>IPD விண்ணப்பப் படிவத்தை அகற்று</value>
+  </data>
+  <data name="removemailbox" xml:space="preserve">
+    <value>அஞ்சல் பெட்டியை அகற்று</value>
+  </data>
+  <data name="removemaillog" xml:space="preserve">
+    <value>MailLog ஐ அகற்று</value>
+  </data>
+  <data name="removemedicalcondition" xml:space="preserve">
+    <value>மருத்துவ நிலையை அகற்றவும்</value>
+  </data>
+  <data name="removemedicationtype" xml:space="preserve">
+    <value>மருந்து வகையை அகற்று</value>
+  </data>
+  <data name="removemedicine" xml:space="preserve">
+    <value>மருந்தை அகற்று</value>
+  </data>
+  <data name="removeoccupation" xml:space="preserve">
+    <value>ஆக்கிரமிப்பை அகற்றவும்</value>
+  </data>
+  <data name="removeopdform" xml:space="preserve">
+    <value>OPD படிவத்தை அகற்று</value>
+  </data>
+  <data name="removeotplogs" xml:space="preserve">
+    <value>Otplogகளை அகற்று</value>
+  </data>
+  <data name="removepatientcategory" xml:space="preserve">
+    <value>நோயாளி வகையை அகற்று</value>
+  </data>
+  <data name="removepatientconsent" xml:space="preserve">
+    <value>நோயாளியின் ஒப்புதலை அகற்று</value>
+  </data>
+  <data name="removepatientprofile" xml:space="preserve">
+    <value>நோயாளியின் சுயவிவரத்தை அகற்று</value>
+  </data>
+  <data name="removepatientqueue" xml:space="preserve">
+    <value>நோயாளி வரிசையை அகற்று</value>
+  </data>
+  <data name="removepatientvisit" xml:space="preserve">
+    <value>நோயாளி வருகையை அகற்று</value>
+  </data>
+  <data name="removepaymentconfig" xml:space="preserve">
+    <value>கட்டண கட்டமைப்பை அகற்று</value>
+  </data>
+  <data name="removepaymentrequest" xml:space="preserve">
+    <value>கட்டண கோரிக்கையை அகற்று</value>
+  </data>
+  <data name="removepaymentresponse" xml:space="preserve">
+    <value>கட்டண பதிலை அகற்று</value>
+  </data>
+  <data name="removepeople" xml:space="preserve">
+    <value>நபர்களை அகற்று</value>
+  </data>
+  <data name="removepeopletimepreference" xml:space="preserve">
+    <value>மக்கள் நேர விருப்பத்தை அகற்று</value>
+  </data>
+  <data name="removepincode" xml:space="preserve">
+    <value>பின்கோடை அகற்று</value>
+  </data>
+  <data name="removeprocesssla" xml:space="preserve">
+    <value>செயல்முறை SLA ஐ அகற்று</value>
+  </data>
+  <data name="removequestioncategory" xml:space="preserve">
+    <value>கேள்வி வகையை அகற்று</value>
+  </data>
+  <data name="removequestionsubcategory" xml:space="preserve">
+    <value>கேள்வி துணை வகையை அகற்று</value>
+  </data>
+  <data name="removequeue" xml:space="preserve">
+    <value>வரிசையை அகற்று</value>
+  </data>
+  <data name="removereceivable" xml:space="preserve">
+    <value>பெறத்தக்கதை அகற்று</value>
+  </data>
+  <data name="removereferralsource" xml:space="preserve">
+    <value>பரிந்துரை மூலத்தை அகற்று</value>
+  </data>
+  <data name="removerestrictedmedicalconditions" xml:space="preserve">
+    <value>தடைசெய்யப்பட்ட மருத்துவ நிலைமைகளை அகற்றவும்</value>
+  </data>
+  <data name="removeroom" xml:space="preserve">
+    <value>அறையை அகற்று</value>
+  </data>
+  <data name="removeroomallocation" xml:space="preserve">
+    <value>அறை ஒதுக்கீட்டை அகற்று</value>
+  </data>
+  <data name="removeroomgroup" xml:space="preserve">
+    <value>அறை குழுவை அகற்று</value>
+  </data>
+  <data name="removeroomoccupancystatus" xml:space="preserve">
+    <value>அறை ஆக்கிரமிப்பு நிலையை அகற்று</value>
+  </data>
+  <data name="removeroomtype" xml:space="preserve">
+    <value>அறை வகையை அகற்று</value>
+  </data>
+  <data name="removescreening" xml:space="preserve">
+    <value>திரையிடலை அகற்று</value>
+  </data>
+  <data name="removeshift" xml:space="preserve">
+    <value>Shift ஐ அகற்று</value>
+  </data>
+  <data name="removeshiftplanning" xml:space="preserve">
+    <value>ஷிப்ட் திட்டமிடலை அகற்று</value>
+  </data>
+  <data name="removestaffattendance" xml:space="preserve">
+    <value>பணியாளர் வருகையை அகற்று</value>
+  </data>
+  <data name="removetask" xml:space="preserve">
+    <value>பணியை அகற்று</value>
+  </data>
+  <data name="removetasktype" xml:space="preserve">
+    <value>பணி வகையை அகற்று</value>
+  </data>
+  <data name="removetherapy" xml:space="preserve">
+    <value>சிகிச்சையை அகற்று</value>
+  </data>
+  <data name="removetherapycategory" xml:space="preserve">
+    <value>சிகிச்சை வகையை அகற்று</value>
+  </data>
+  <data name="removetherapyitem" xml:space="preserve">
+    <value>சிகிச்சை உருப்படியை அகற்று</value>
+  </data>
+  <data name="removetherapyitemcategory" xml:space="preserve">
+    <value>சிகிச்சை உருப்படி வகையை அகற்று</value>
+  </data>
+  <data name="removetherapykit" xml:space="preserve">
+    <value>சிகிச்சை கிட் அகற்றவும்</value>
+  </data>
+  <data name="removetreatmentpackage" xml:space="preserve">
+    <value>சிகிச்சை தொகுப்பை அகற்று</value>
+  </data>
+  <data name="removeunitofmeasure" xml:space="preserve">
+    <value>அளவீட்டு அலகு அகற்று</value>
+  </data>
+  <data name="removeworkprofile" xml:space="preserve">
+    <value>பணி சுயவிவரத்தை அகற்று</value>
+  </data>
+  <data name="rescheduleappointment" xml:space="preserve">
+    <value>மறுஅட்டவணை நியமனம்</value>
+  </data>
+  <data name="restrictedmedicalconditionslist" xml:space="preserve">
+    <value>கட்டுப்படுத்தப்பட்ட மருத்துவ நிபந்தனைகள் பட்டியல்</value>
+  </data>
+  <data name="reviewipdapplicationform" xml:space="preserve">
+    <value>IPD விண்ணப்பப் படிவத்தை மதிப்பாய்வு செய்யவும்</value>
+  </data>
+  <data name="reviewopd" xml:space="preserve">
+    <value>OPD ஐ மதிப்பாய்வு செய்யவும்</value>
+  </data>
+  <data name="reviseipdapplicationform" xml:space="preserve">
+    <value>IPD விண்ணப்பப் படிவத்தை மறுபரிசீலனை செய்யவும்</value>
+  </data>
+  <data name="roomallocationlist" xml:space="preserve">
+    <value>அறை ஒதுக்கீடு பட்டியல்</value>
+  </data>
+  <data name="roomgrouplist" xml:space="preserve">
+    <value>அறை குழு பட்டியல்</value>
+  </data>
+  <data name="roomlist" xml:space="preserve">
+    <value>அறை பட்டியல்</value>
+  </data>
+  <data name="roomoccupancystatuslist" xml:space="preserve">
+    <value>அறை ஆக்கிரமிப்பு நிலை பட்டியல்</value>
+  </data>
+  <data name="roomtypelist" xml:space="preserve">
+    <value>அறை வகை பட்டியல்</value>
+  </data>
+  <data name="screeninglist" xml:space="preserve">
+    <value>திரையிடல் பட்டியல்</value>
+  </data>
+  <data name="shiftlist" xml:space="preserve">
+    <value>ஷிப்ட் பட்டியல்</value>
+  </data>
+  <data name="shiftplanninglist" xml:space="preserve">
+    <value>ஷிப்ட் திட்டமிடல் பட்டியல்</value>
+  </data>
+  <data name="staffattendancelist" xml:space="preserve">
+    <value>பணியாளர் வருகை பட்டியல்</value>
+  </data>
+  <data name="suspendprofile" xml:space="preserve">
+    <value>சுயவிவரத்தை இடைநிறுத்தவும்</value>
+  </data>
+  <data name="tasklist" xml:space="preserve">
+    <value>பணி பட்டியல்</value>
+  </data>
+  <data name="tasktypelist" xml:space="preserve">
+    <value>பணி வகை பட்டியல்</value>
+  </data>
+  <data name="therapycategorylist" xml:space="preserve">
+    <value>சிகிச்சை வகை பட்டியல்</value>
+  </data>
+  <data name="therapyitemcategorylist" xml:space="preserve">
+    <value>சிகிச்சை பொருள் வகை பட்டியல்</value>
+  </data>
+  <data name="therapyitemlist" xml:space="preserve">
+    <value>சிகிச்சை பொருள் பட்டியல்</value>
+  </data>
+  <data name="therapykitlist" xml:space="preserve">
+    <value>சிகிச்சை கிட் பட்டியல்</value>
+  </data>
+  <data name="treatmentpackagelist" xml:space="preserve">
+    <value>சிகிச்சை தொகுப்பு பட்டியல்</value>
+  </data>
+  <data name="unitofmeasurelist" xml:space="preserve">
+    <value>அளவீட்டுப் பட்டியலின் அலகு</value>
+  </data>
+  <data name="updatealerttemplates" xml:space="preserve">
+    <value>எச்சரிக்கை டெம்ப்ளேட்களைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateassessment" xml:space="preserve">
+    <value>மதிப்பீட்டைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateassessmentquestion" xml:space="preserve">
+    <value>மதிப்பீட்டுக் கேள்வியைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateassessmenttemplate" xml:space="preserve">
+    <value>மதிப்பீட்டு டெம்ப்ளேட்டைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatebillingpayment" xml:space="preserve">
+    <value>பில்லிங் கட்டணத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateblacklistreason" xml:space="preserve">
+    <value>தடுப்புப்பட்டியலின் காரணத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateblock" xml:space="preserve">
+    <value>புதுப்பித்தல் தொகுதி</value>
+  </data>
+  <data name="updatebuilding" xml:space="preserve">
+    <value>கட்டிடத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateclinicalappointment" xml:space="preserve">
+    <value>மருத்துவ நியமனத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateclinicaltask" xml:space="preserve">
+    <value>மருத்துவப் பணியைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatecompetency" xml:space="preserve">
+    <value>திறனை மேம்படுத்தவும்</value>
+  </data>
+  <data name="updateconsultationqueue" xml:space="preserve">
+    <value>ஆலோசனை வரிசையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatecountry" xml:space="preserve">
+    <value>நாட்டைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatedepartment" xml:space="preserve">
+    <value>புதுப்பித்தல் துறை</value>
+  </data>
+  <data name="updatedesignation" xml:space="preserve">
+    <value>பதவியைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateenquiry" xml:space="preserve">
+    <value>புதுப்பிப்பு விசாரணை</value>
+  </data>
+  <data name="updateenquirytype" xml:space="preserve">
+    <value>விசாரணை வகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatefloor" xml:space="preserve">
+    <value>மாடியைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatehealthcareprovider" xml:space="preserve">
+    <value>சுகாதார வழங்குநரைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateholiday" xml:space="preserve">
+    <value>விடுமுறையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateipdapplicationform" xml:space="preserve">
+    <value>IPD விண்ணப்பப் படிவத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatemailbox" xml:space="preserve">
+    <value>அஞ்சல் பெட்டியைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatemaillog" xml:space="preserve">
+    <value>MailLog ஐப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatemedicalcondition" xml:space="preserve">
+    <value>மருத்துவ நிலையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatemedicationtype" xml:space="preserve">
+    <value>மருந்து வகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatemedicine" xml:space="preserve">
+    <value>மருத்துவத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateoccupation" xml:space="preserve">
+    <value>தொழிலைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateopdform" xml:space="preserve">
+    <value>OPD படிவத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateotplogs" xml:space="preserve">
+    <value>otplogs ஐப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepatientcategory" xml:space="preserve">
+    <value>நோயாளி வகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepatientconsent" xml:space="preserve">
+    <value>நோயாளியின் ஒப்புதலைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepatientprofile" xml:space="preserve">
+    <value>நோயாளியின் சுயவிவரத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepatientqueue" xml:space="preserve">
+    <value>நோயாளி வரிசையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepatientvisit" xml:space="preserve">
+    <value>நோயாளி வருகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepaymentconfig" xml:space="preserve">
+    <value>கட்டண கட்டமைப்பைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepaymentrequest" xml:space="preserve">
+    <value>கட்டணக் கோரிக்கையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepaymentresponse" xml:space="preserve">
+    <value>கட்டணப் பதிலைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepeople" xml:space="preserve">
+    <value>நபர்களைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepeopletimepreference" xml:space="preserve">
+    <value>மக்கள் நேர விருப்பத்தேர்வை புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatepincode" xml:space="preserve">
+    <value>பின்கோடைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateprocesssla" xml:space="preserve">
+    <value>SLA செயல்முறையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateprofile" xml:space="preserve">
+    <value>சுயவிவரத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatequestioncategory" xml:space="preserve">
+    <value>கேள்வி வகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatequestionsubcategory" xml:space="preserve">
+    <value>கேள்வியின் துணை வகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatequeue" xml:space="preserve">
+    <value>வரிசையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatereceivable" xml:space="preserve">
+    <value>பெறத்தக்க புதுப்பிப்பு</value>
+  </data>
+  <data name="updatereferralsource" xml:space="preserve">
+    <value>பரிந்துரை மூலத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updaterestrictedmedicalconditions" xml:space="preserve">
+    <value>கட்டுப்படுத்தப்பட்ட மருத்துவ நிலைமைகளைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateroom" xml:space="preserve">
+    <value>அறையை புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateroomallocation" xml:space="preserve">
+    <value>அறை ஒதுக்கீட்டைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateroomgroup" xml:space="preserve">
+    <value>அறைக் குழுவைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateroomoccupancystatus" xml:space="preserve">
+    <value>அறை ஆக்கிரமிப்பு நிலையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateroomtype" xml:space="preserve">
+    <value>அறை வகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatescreening" xml:space="preserve">
+    <value>ஸ்கிரீனிங்கைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateshift" xml:space="preserve">
+    <value>ஷிப்டைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateshiftplanning" xml:space="preserve">
+    <value>ஷிப்ட் திட்டமிடலைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatestaffattendance" xml:space="preserve">
+    <value>பணியாளர் வருகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatetask" xml:space="preserve">
+    <value>பணியைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatetasktype" xml:space="preserve">
+    <value>பணி வகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatetherapy" xml:space="preserve">
+    <value>புதுப்பித்தல் சிகிச்சை</value>
+  </data>
+  <data name="updatetherapycategory" xml:space="preserve">
+    <value>சிகிச்சை வகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatetherapyitem" xml:space="preserve">
+    <value>சிகிச்சை உருப்படியைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatetherapyitemcategory" xml:space="preserve">
+    <value>சிகிச்சை உருப்படி வகையைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatetherapykit" xml:space="preserve">
+    <value>சிகிச்சை கருவியைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updatetreatmentpackage" xml:space="preserve">
+    <value>சிகிச்சை தொகுப்பைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateunitofmeasure" xml:space="preserve">
+    <value>அளவீட்டு அலகு புதுப்பிக்கவும்</value>
+  </data>
+  <data name="updateworkprofile" xml:space="preserve">
+    <value>பணி சுயவிவரத்தைப் புதுப்பிக்கவும்</value>
+  </data>
+  <data name="uploadshiftplanning" xml:space="preserve">
+    <value>ஷிப்ட் திட்டமிடலைப் பதிவேற்றவும்</value>
+  </data>
+  <data name="versionhistoryipdapplicationform" xml:space="preserve">
+    <value>பதிப்பு வரலாறு IPD விண்ணப்பப் படிவம்</value>
+  </data>
+  <data name="viewapprovedopdform" xml:space="preserve">
+    <value>அங்கீகரிக்கப்பட்ட OPD படிவத்தைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewassessment" xml:space="preserve">
+    <value>மதிப்பீட்டைக் காண்க</value>
+  </data>
+  <data name="viewassessmentquestion" xml:space="preserve">
+    <value>மதிப்பீட்டு வினாவைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewblacklistreason" xml:space="preserve">
+    <value>தடுப்புப்பட்டியலின் காரணத்தைக் காண்க</value>
+  </data>
+  <data name="viewblock" xml:space="preserve">
+    <value>தொகுதியைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewbuilding" xml:space="preserve">
+    <value>கட்டிடத்தைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewclinicalappointment" xml:space="preserve">
+    <value>மருத்துவ நியமனத்தைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewclinicaltask" xml:space="preserve">
+    <value>மருத்துவப் பணியைக் காண்க</value>
+  </data>
+  <data name="viewcompetency" xml:space="preserve">
+    <value>திறமையைக் காண்க</value>
+  </data>
+  <data name="viewconsultationqueue" xml:space="preserve">
+    <value>ஆலோசனை வரிசையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewcountry" xml:space="preserve">
+    <value>பார்க்க நாடு</value>
+  </data>
+  <data name="viewdepartment" xml:space="preserve">
+    <value>துறையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewdesignation" xml:space="preserve">
+    <value>பதவியைக் காண்க</value>
+  </data>
+  <data name="viewenquiry" xml:space="preserve">
+    <value>விசாரணையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewenquirydetail" xml:space="preserve">
+    <value>விசாரணை விவரங்களைக் காண்க</value>
+  </data>
+  <data name="viewenquirytype" xml:space="preserve">
+    <value>விசாரணை வகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewfloor" xml:space="preserve">
+    <value>தரையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewholiday" xml:space="preserve">
+    <value>விடுமுறையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewipdapplicationform" xml:space="preserve">
+    <value>IPD விண்ணப்பப் படிவத்தைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewlistofhealthcareprovider" xml:space="preserve">
+    <value>சுகாதார வழங்குநரின் பட்டியலைக் காண்க</value>
+  </data>
+  <data name="viewmailbox" xml:space="preserve">
+    <value>அஞ்சல் பெட்டியைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewmedicalcondition" xml:space="preserve">
+    <value>மருத்துவ நிலையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewmedicationtype" xml:space="preserve">
+    <value>மருந்து வகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewmedicine" xml:space="preserve">
+    <value>மருத்துவத்தைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewopdform" xml:space="preserve">
+    <value>OPD படிவத்தைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewotplogs" xml:space="preserve">
+    <value>otplogs பார்க்க</value>
+  </data>
+  <data name="viewpatientcategory" xml:space="preserve">
+    <value>நோயாளி வகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewpatientconsent" xml:space="preserve">
+    <value>நோயாளியின் ஒப்புதலைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewpatientprofile" xml:space="preserve">
+    <value>நோயாளியின் சுயவிவரத்தைக் காண்க</value>
+  </data>
+  <data name="viewpatientqueue" xml:space="preserve">
+    <value>நோயாளி வரிசையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewpatientvisit" xml:space="preserve">
+    <value>நோயாளி வருகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewpaymentconfig" xml:space="preserve">
+    <value>கட்டண கட்டமைப்பைக் காண்க</value>
+  </data>
+  <data name="viewpaymentrequest" xml:space="preserve">
+    <value>கட்டணக் கோரிக்கையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewpeople" xml:space="preserve">
+    <value>மக்களைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewpeopletimepreference" xml:space="preserve">
+    <value>மக்கள் நேர விருப்பத்தைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewpincodedetail" xml:space="preserve">
+    <value>பின்கோடு விவரங்களைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewquestioncategory" xml:space="preserve">
+    <value>கேள்வி வகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewreceivable" xml:space="preserve">
+    <value>பெறத்தக்கதைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewreferralsource" xml:space="preserve">
+    <value>பரிந்துரை மூலத்தைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewrestrictedmedicalconditions" xml:space="preserve">
+    <value>கட்டுப்படுத்தப்பட்ட மருத்துவ நிலைமைகளைக் காண்க</value>
+  </data>
+  <data name="viewroom" xml:space="preserve">
+    <value>பார்வை அறை</value>
+  </data>
+  <data name="viewroomallocation" xml:space="preserve">
+    <value>அறை ஒதுக்கீட்டைக் காண்க</value>
+  </data>
+  <data name="viewroomgroup" xml:space="preserve">
+    <value>அறை குழுவைக் காண்க</value>
+  </data>
+  <data name="viewroomtype" xml:space="preserve">
+    <value>அறை வகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewscreening" xml:space="preserve">
+    <value>திரையிடலைக் காண்க</value>
+  </data>
+  <data name="viewshift" xml:space="preserve">
+    <value>ஷிப்டைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewshiftplanning" xml:space="preserve">
+    <value>ஷிப்ட் திட்டமிடலைக் காண்க</value>
+  </data>
+  <data name="viewstaffattendance" xml:space="preserve">
+    <value>பணியாளர் வருகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewtask" xml:space="preserve">
+    <value>பணியைக் காண்க</value>
+  </data>
+  <data name="viewtasktype" xml:space="preserve">
+    <value>பணி வகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewtherapy" xml:space="preserve">
+    <value>சிகிச்சையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewtherapycategory" xml:space="preserve">
+    <value>சிகிச்சை வகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewtherapyitem" xml:space="preserve">
+    <value>சிகிச்சை உருப்படியைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewtherapyitemcategory" xml:space="preserve">
+    <value>சிகிச்சை பொருள் வகையைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewtherapykit" xml:space="preserve">
+    <value>தெரபி கிட் பார்க்கவும்</value>
+  </data>
+  <data name="viewtreatmentpackage" xml:space="preserve">
+    <value>சிகிச்சை தொகுப்பைப் பார்க்கவும்</value>
+  </data>
+  <data name="viewunitofmeasure" xml:space="preserve">
+    <value>அளவீட்டு அலகு காண்க</value>
+  </data>
+  <data name="viewworkprofile" xml:space="preserve">
+    <value>பணி சுயவிவரத்தைக் காண்க</value>
+  </data>
+  <data name="viewdetailshealthcareprovider" xml:space="preserve">
+    <value>ViewDetails ஹெல்த்கேர் வழங்குநர்</value>
+  </data>
+  <data name="workprofilelist" xml:space="preserve">
+    <value>பணி சுயவிவரப் பட்டியல்</value>
+  </data>
+  <data name="tenantdisplayname" xml:space="preserve">
+    <value>மருத்துவ சேவை வழங்குநர்</value>
+  </data>
+  <data name="providertenantdisplayname" xml:space="preserve">
+    <value />
+  </data>
+  <data name="appadmin" xml:space="preserve">
+    <value>பயன்பாட்டு நிர்வாகி</value>
+  </data>
+  <data name="doctor" xml:space="preserve">
+    <value>டாக்டர்</value>
+  </data>
+  <data name="frontdeskadmin" xml:space="preserve">
+    <value>முன் மேசை நிர்வாகி</value>
+  </data>
+  <data name="healthseeker" xml:space="preserve">
+    <value>ஆரோக்கியம் தேடுபவர்</value>
+  </data>
+  <data name="healthcareadministrator" xml:space="preserve">
+    <value>சுகாதார நிர்வாகி</value>
+  </data>
+  <data name="healthcareprovideradmin" xml:space="preserve">
+    <value>சுகாதார வழங்குநர் நிர்வாகி</value>
+  </data>
+  <data name="platformadmin" xml:space="preserve">
+    <value>தள நிர்வாகி</value>
+  </data>
+  <data name="appointmentscheduling" xml:space="preserve">
+    <value>நியமனம் திட்டமிடல்</value>
+  </data>
+  <data name="clinicalsetup" xml:space="preserve">
+    <value>மருத்துவ அமைப்பு</value>
+  </data>
+  <data name="configuration" xml:space="preserve">
+    <value>கட்டமைப்பு</value>
+  </data>
+  <data name="consultation" xml:space="preserve">
+    <value>ஆலோசனை</value>
+  </data>
+  <data name="diagnosis" xml:space="preserve">
+    <value>நோய் கண்டறிதல்</value>
+  </data>
+  <data name="insuranceclaimsprocessing" xml:space="preserve">
+    <value>காப்பீட்டு கோரிக்கைகள் செயலாக்கம்</value>
+  </data>
+  <data name="managehealthcareprovider" xml:space="preserve">
+    <value>சுகாதார வழங்குநரை நிர்வகிக்கவும்</value>
+  </data>
+  <data name="manageusers" xml:space="preserve">
+    <value>பயனர்களை நிர்வகிக்கவும்</value>
+  </data>
+  <data name="patientbilling" xml:space="preserve">
+    <value>நோயாளி பில்லிங்</value>
+  </data>
+  <data name="patientfollowup" xml:space="preserve">
+    <value>நோயாளி பின்தொடர்தல்</value>
+  </data>
+  <data name="patientregistration" xml:space="preserve">
+    <value>நோயாளி பதிவு</value>
+  </data>
+  <data name="patientsafety" xml:space="preserve">
+    <value>நோயாளி பாதுகாப்பு</value>
+  </data>
+  <data name="paymentcollection" xml:space="preserve">
+    <value>கட்டண சேகரிப்பு</value>
+  </data>
+  <data name="performancemanagement" xml:space="preserve">
+    <value>செயல்திறன் மேலாண்மை</value>
+  </data>
+  <data name="qualitycontrol" xml:space="preserve">
+    <value>தரக் கட்டுப்பாடு</value>
+  </data>
+  <data name="recordsmanagement" xml:space="preserve">
+    <value>பதிவுகள் மேலாண்மை</value>
+  </data>
+  <data name="recruitment" xml:space="preserve">
+    <value>ஆட்சேர்ப்பு</value>
+  </data>
+  <data name="regulatorycompliance" xml:space="preserve">
+    <value>ஒழுங்குமுறை இணக்கம்</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>அமைப்புகள்</value>
+  </data>
+  <data name="setuphealthcareprovider" xml:space="preserve">
+    <value>சுகாதார வழங்குநரை அமைக்கவும்</value>
+  </data>
+  <data name="setuphealthcareproviderusers" xml:space="preserve">
+    <value>ஹெல்த்கேர் வழங்குநர் பயனர்களை அமைக்கவும்</value>
+  </data>
+  <data name="traininganddevelopment" xml:space="preserve">
+    <value>பயிற்சி மற்றும் மேம்பாடு</value>
+  </data>
+  <data name="treatmentplanning" xml:space="preserve">
+    <value>சிகிச்சை திட்டமிடல்</value>
+  </data>
+  <data name="user" xml:space="preserve">
+    <value>பயனர்</value>
+  </data>
+  <data name="action" xml:space="preserve">
+    <value>செயல்</value>
+  </data>
+  <data name="apply" xml:space="preserve">
+    <value>விண்ணப்பிக்கவும்</value>
+  </data>
+  <data name="back" xml:space="preserve">
+    <value>மீண்டும்</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>ரத்து செய்</value>
+  </data>
+  <data name="download" xml:space="preserve">
+    <value>பதிவிறக்கவும்</value>
+  </data>
+  <data name="forgotpasswordcommon" xml:space="preserve">
+    <value>மறந்து போன கடவுச்சொல்</value>
+  </data>
+  <data name="from" xml:space="preserve">
+    <value>இருந்து</value>
+  </data>
+  <data name="login" xml:space="preserve">
+    <value>உள்நுழைக</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>வெளியேறு</value>
+  </data>
+  <data name="manageroleauthorization" xml:space="preserve">
+    <value>பங்கு அங்கீகாரத்தை நிர்வகிக்கவும்</value>
+  </data>
+  <data name="print" xml:space="preserve">
+    <value>அச்சிடுக</value>
+  </data>
+  <data name="save" xml:space="preserve">
+    <value>சேமிக்கவும்</value>
+  </data>
+  <data name="submit" xml:space="preserve">
+    <value>சமர்ப்பிக்கவும்</value>
+  </data>
+  <data name="to" xml:space="preserve">
+    <value>செய்ய</value>
+  </data>
+  <data name="room_easeofaccess" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ipdapplicationform_isbookingdepositmandatory" xml:space="preserve">
+    <value>Is Booking Deposit Mandatory</value>
+  </data>
+  <data name="patientconsent_consentlanguage" xml:space="preserve">
+    <value>Consent Language</value>
+  </data>
+</root>

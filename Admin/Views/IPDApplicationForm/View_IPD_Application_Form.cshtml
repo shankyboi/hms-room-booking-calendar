@@ -1,0 +1,3112 @@
+<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:15 -->
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@model NalamVazha.Models.IPDApplicationFormModel
+@{
+	ViewData["Title"] = "IPD Application Form";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	var currentUserRole = Context.Session.GetString("NalamVazhauserrole") ?? "";
+	var hideFinancialTabs = currentUserRole == "Doctor" || currentUserRole == "Intern Doctor";
+	var canShowReceivableActions =
+		string.Equals(currentUserRole, "Frontdesk Admin", StringComparison.OrdinalIgnoreCase) ||
+		string.Equals(currentUserRole, "Healthcare Provider Admin", StringComparison.OrdinalIgnoreCase);
+}
+
+<div class="">
+
+	<div class="">
+
+		<div class="row" id="reworksection" style="display:none">
+			<div class="col-sm-12">
+				<div class="review-common-title rework ipd-rework-alert" role="alert">
+					<svg class="ipd-rework-alert__icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+						<path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+						<path d="M12 8V12" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+						<path d="M12 16H12.01" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg>
+					<div class="ipd-rework-alert__content">
+						<div class="ipd-rework-alert__heading" role="heading" aria-level="2">Action Required &ndash; Reason for Rework</div>
+						<div class="ipd-rework-alert__comment auto_cls_reviewcomments"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row" id="rejectedsection" style="display:none">
+			<div class="col-sm-12">
+				<div class="review-common-title rejected">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+						<path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+						<path d="M12 8V12" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+						<path d="M12 16H12.01" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+					</svg>
+					<label>Reason for Rejection : </label><span class="auto_cls_reviewcomments"> </span>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			.ipd-view-truncated-text {
+				display: block;
+				width: 100%;
+				max-width: 100%;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+				vertical-align: bottom;
+				cursor: default;
+			}
+			.admissionreason_craftmyapp_viewcontainer,
+			.admissionreason_craftmyapp_viewcontainer .form-group {
+				min-width: 0;
+				overflow: hidden;
+			}
+
+					/* ── Tab Nav ── */
+					#ipdViewTabsWrapper {
+						background: #fff;
+						border-radius: 8px;
+						box-shadow: 0 2px 12px rgba(0,0,0,.08);
+						overflow: hidden;
+						margin-bottom: 0;
+					}
+
+						#ipdViewTabsWrapper .ipd-view-tabs {
+							display: flex;
+							margin: 0;
+							padding: 0;
+							list-style: none;
+							background: var(--btnprimary, #2d5f44);
+							border-bottom: none;
+						}
+
+							#ipdViewTabsWrapper .ipd-view-tabs > li {
+								flex: 0 0 auto;
+							}
+
+								#ipdViewTabsWrapper .ipd-view-tabs > li > a {
+									display: flex;
+									align-items: center;
+									gap: 7px;
+									color: rgba(255,255,255,.7) !important;
+									font-weight: 600;
+									font-size: 13px;
+									letter-spacing: .3px;
+									padding: 14px 22px;
+									border: none !important;
+									border-radius: 0;
+									background: transparent !important;
+									text-decoration: none;
+									position: relative;
+									transition: color .18s, background .18s;
+								}
+
+									#ipdViewTabsWrapper .ipd-view-tabs > li > a i {
+										font-size: 14px;
+									}
+
+									#ipdViewTabsWrapper .ipd-view-tabs > li > a:hover,
+									#ipdViewTabsWrapper .ipd-view-tabs > li > a:focus {
+										color: #fff !important;
+										background: rgba(255,255,255,.12) !important;
+										border: none !important;
+									}
+								#ipdViewTabsWrapper .ipd-view-tabs > li.active > a,
+								#ipdViewTabsWrapper .ipd-view-tabs > li.active > a:hover,
+								#ipdViewTabsWrapper .ipd-view-tabs > li.active > a:focus {
+									color: #fff !important;
+									background: rgba(255,255,255,.18) !important;
+									border: none !important;
+									margin-bottom: 0;
+								}
+									#ipdViewTabsWrapper .ipd-view-tabs > li.active > a::after {
+										content: '';
+										position: absolute;
+										bottom: 0;
+										left: 0;
+										right: 0;
+										height: 3px;
+										background: #fff;
+										border-radius: 2px 2px 0 0;
+										opacity: .85;
+									}
+							#ipdViewTabsWrapper .ipd-view-tabs .badge {
+								margin-left: 6px;
+								background: rgba(255,255,255,.25);
+								color: #fff;
+								font-weight: 700;
+								font-size: 11px;
+								padding: 2px 7px;
+								border-radius: 10px;
+							}
+							#ipdViewTabsWrapper .ipd-view-tabs > li.active .badge {
+								background: #fff;
+								color: var(--btnprimary, #2d5f44);
+							}
+					/* ── Tab Content ── */
+					#ipdViewMainTabContent.tab-content {
+						overflow: visible;
+						min-height: 200px;
+						padding: 20px 16px;
+						background: #fff;
+					}
+
+					#ipdViewMainTabContent > .ipd-tab-pane {
+						display: none;
+					}
+
+						#ipdViewMainTabContent > .ipd-tab-pane.active {
+							display: block;
+						}
+					/* ── Summary Cards ── */
+					.ipd-summary-card {
+						border-left: 4px solid var(--btnprimary, #2d5f44);
+						background: #f8faf9;
+						padding: 14px 16px;
+						margin-bottom: 14px;
+						border-radius: 6px;
+						box-shadow: 0 1px 4px rgba(0,0,0,.06);
+					}
+
+						.ipd-summary-card .label {
+							font-size: 11px;
+							color: #6c757d;
+							text-transform: uppercase;
+							letter-spacing: .5px;
+							font-weight: 600;
+						}
+
+						.ipd-summary-card .amount {
+							font-size: 1.35em;
+							font-weight: 700;
+							margin-top: 5px;
+						}
+					/* ── States ── */
+					.ipd-tab-loading {
+						padding: 40px;
+						text-align: center;
+						color: #6c757d;
+					}
+
+						.ipd-tab-loading .fa-spinner {
+							color: var(--btnprimary, #2d5f44);
+						}
+
+					.ipd-tab-empty {
+						padding: 40px 24px;
+						background: #f8faf9;
+						border-radius: 10px;
+						text-align: center;
+						color: #6c757d;
+						border: 1px solid #e5e7eb;
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						gap: 12px;
+					}
+					.ipd-tab-empty svg {
+						width: 46px;
+						height: 46px;
+						color: #a3b1c2;
+					}
+					.ipd-tab-empty span {
+						font-size: 13.5px;
+						font-weight: 500;
+						color: #64748b;
+					}
+					
+					#tab-ipd-details .card.card-blue {
+						border: 1.5px solid #dde3ea !important;
+						border-radius: 12px !important;
+						overflow: hidden;
+						box-shadow: 0 3px 12px rgba(15,23,42,.07);
+						margin-bottom: 16px;
+					}
+					#tab-ipd-details .card.card-blue .card-head {
+						background: linear-gradient(135deg, #f8fafc 0%, #fff 100%) !important;
+						border-bottom: 1px solid #f1f5f9 !important;
+						border-left: 3px solid #2d5f44 !important;
+					}
+					#tab-ipd-details .card.card-blue .card-head header {
+						font-size: 14px !important;
+						font-weight: 700 !important;
+						color: #1e293b !important;
+					}
+					#tab-ipd-details .cma_dependent_band table thead th {
+						font-weight: 600;
+						letter-spacing: .3px;
+					}
+					.ipd-panel-title {
+						/*display: flex; */
+						align-items: center;
+						justify-content: space-between;
+						gap: 8px;
+						margin: -20px -20px 16px -20px;
+						padding: 12px 20px;
+						background: linear-gradient(135deg, #f8fafc 0%, #fff 100%);
+						border-bottom: 1px solid #f1f5f9;
+						border-left: 3px solid #2d5f44;
+					}
+					.ipd-panel-title > span {
+						display: flex;
+						align-items: center;
+						gap: 8px;
+						font-size: 14px;
+						font-weight: 700;
+						color: #1e293b;
+					}
+					.ipd-panel-title--sub {
+						margin: 0 0 12px;
+						padding: 8px 12px;
+						font-size: 12.5px;
+					}
+					.ipd-panel-title--sub > span {
+						font-size: 12.5px;
+					}
+					.ipd-tab-empty svg {
+						width: 46px;
+						height: 46px;
+						color: #a3b1c2;
+					}
+					.ipd-tab-empty span {
+						font-size: 13.5px;
+						font-weight: 500;
+						color: #64748b;
+					}
+
+					#tab-ipd-details .card.card-blue {
+						border: 1.5px solid #dde3ea !important;
+						border-radius: 12px !important;
+						overflow: hidden;
+						box-shadow: 0 3px 12px rgba(15,23,42,.07);
+						margin-bottom: 16px;
+					}
+					#tab-ipd-details .card.card-blue .card-head {
+						background: linear-gradient(135deg, #f8fafc 0%, #fff 100%) !important;
+						border-bottom: 1px solid #f1f5f9 !important;
+						border-left: 3px solid #2d5f44 !important;
+					}
+					#tab-ipd-details .card.card-blue .card-head header {
+						font-size: 14px !important;
+						font-weight: 700 !important;
+						color: #1e293b !important;
+					}
+					#tab-ipd-details .cma_dependent_band table thead th {
+						font-weight: 600;
+						letter-spacing: .3px;
+					}
+					/* ── Eligibility Badges ── */
+					.eligibility-badge {
+						padding: 3px 10px;
+						border-radius: 12px;
+						font-size: 12px;
+						font-weight: 600;
+					}
+
+						.eligibility-badge.eligible {
+							background: #e8f5e9;
+							color: #2e7d32;
+						}
+
+						.eligibility-badge.notEligible {
+							background: #ffebee;
+							color: #c62828;
+						}
+						/* ── Page Header: Patient Name / Booking Ref (Duration of Stay) ── */
+						.ipd-header-name { font-weight: 700; font-size: 20px; text-transform: capitalize; letter-spacing: 0.5px; }
+						.ipd-header-ref  { font-size: 16px; font-weight: 400; color: rgb(11 36 2 / 65%); letter-spacing: 0.5px; margin-left: 4px; }
+						.ipd-header-bookingref {font-weight: 700;
+	font-size: 18px;
+	color: #2f6b4f; }
+						.ipd-header-dos {
+							display: block;
+							margin-left: 26px;
+							margin-top: 2px;
+							font-size: 13px;
+							font-weight: 400;
+							color: rgb(11 36 2 / 55%);
+							letter-spacing: 0.3px;
+						}
+			.fd-ipd-actions {
+				display: flex;
+				gap: 8px;
+				flex-wrap: wrap;
+}
+
+.fd-ipdact {
+				display: inline-flex;
+				align-items: center;
+				gap: 5px;
+				padding: 6px 10px;
+				border-radius: 4px;
+				font-size: 12px;
+				font-weight: 600;
+				text-decoration: none !important;
+				background: var(--btnprimary, #2d5f44);
+				color: #fff !important;
+}
+
+				.fd-ipdact:hover,
+				.fd-ipdact:focus {
+					color: #fff !important;
+					opacity: .9;
+				}
+
+.ipd-receivable-dropdown-wrap {
+				position: relative;
+}
+
+.ipd-receivable-more {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 34px;
+				height: 34px;
+				border-radius: 4px;
+				text-decoration: none !important;
+				color: #000 !important;
+				background: transparent;
+				border: 1px solid #d9d9d9;
+}
+
+				.ipd-receivable-more:hover,
+				.ipd-receivable-more:focus {
+					color: #000 !important;
+					background: #f5f5f5;
+					text-decoration: none !important;
+				}
+
+				.ipd-receivable-more i {
+					font-size: 18px;
+					color: #000 !important;
+				}
+
+.ipd-receivable-dropdown-menu {
+				min-width: 220px;
+				padding: 6px 0;
+				border-radius: 6px;
+}
+
+				.ipd-receivable-dropdown-menu > li > a {
+					display: block;
+					padding: 10px 14px;
+					color: #333 !important;
+					text-decoration: none;
+					font-size: 13px;
+				}
+
+					.ipd-receivable-dropdown-menu > li > a:hover,
+					.ipd-receivable-dropdown-menu > li > a:focus {
+						background: #f5f5f5;
+						color: #000 !important;
+					}
+
+					.ipd-receivable-dropdown-menu > li > a i {
+						width: 18px;
+						margin-right: 8px;
+					}
+
+					.ipd-header-dos {
+						display: inline-flex;
+						align-items: center;
+						vertical-align: middle;
+						margin-left: 8px;
+						padding: 3px 10px;
+						font-size: 12px;
+						font-weight: 700;
+						color: #2d5f44;
+						background: rgba(45, 95, 68, 0.1);
+						border: 1px solid rgba(45, 95, 68, 0.2);
+						border-radius: 999px;
+						letter-spacing: 0.2px;
+					}
+		</style>
+
+		<div id="ipdViewTabsWrapper">
+			<ul class="nav nav-tabs ipd-view-tabs" role="tablist" id="ipdViewTabs">
+				<li role="presentation" class="active"><a href="#tab-ipd-details" role="tab"><i class="fa fa-id-card-o"></i> IPD Details</a></li>
+				<li role="presentation"><a href="#tab-assessments" role="tab"><i class="fa fa-stethoscope"></i> Assessments <span class="badge" id="assessments-count" style="display:none;">0</span></a></li>
+				<li role="presentation" style="@Html.Raw(hideFinancialTabs ? "display:none;" : "")"><a href="#tab-bills" role="tab"><i class="fa fa-money"></i> Bills &amp; Payments</a></li>
+				<li role="presentation" style="@Html.Raw(hideFinancialTabs ? "display:none;" : "")">
+					<a href="#tab-receivables" role="tab">
+						<i class="fa fa-list-alt"></i> Receivable
+					</a>
+				</li>
+			</ul>
+
+			<div class="tab-content" id="ipdViewMainTabContent">
+				<div role="tabpanel" class="tab-pane active ipd-tab-pane" id="tab-ipd-details">
+					<div id="cma_printableArea" style="padding:20px">
+
+						<div class="row printablerow">
+							<div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+								<h3>
+									<img src="~/images/logo.png" style="height:60px;width:60px;">
+									<b>IPD Application Form</b>
+								</h3>
+
+								<br />
+							</div>
+							<div class="col-sm-12 revisions" style="display:none;">
+								<div class="card-head">
+									<header><span class="auto_cls_quotenumber"></span></header>
+
+									<ul class="nav nav-tabs tabs-vessels pull-right">
+										<li class="dropdown">
+											<a href="javascript:void(0);" class="cma_highlight" data-toggle="dropdown">
+												<i class="md md-more-vert"></i><sup class="badge style-danger number_of_records"></sup>
+											</a>
+											<ul class="dropdown-menu dropleft animation-expand allrecords">
+											</ul><!--end .dropdown-menu -->
+										</li><!--end .dropdown -->
+
+
+									</ul>
+								</div>
+							</div>
+
+							 
+							<div class="col-sm-12 col-xs-12 mt-3 BasicInfo_craftmyapp_container">
+								<!--form_group_div_block-->
+								<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+									<div class="card-head">
+										<header>@Resource.basicinfo</header>
+									</div>
+									<div class="card-body card-container-Padding-NoShadow">
+										<div class="row">
+											<div class="col-sm-3 col-xs-12 p-2 bookingreferencenumber_craftmyapp_viewcontainer" style="@(Context.Session.GetString("NalamVazhauserrole") == "Frontdesk Admin" ? "display:none" : "")">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="bookingreferencenumber">@Resource.ipdapplicationform_bookingreferencenumber</label><br>
+														<span class="auto_cls_bookingreferencenumber"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 gender_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="gender">@Resource.ipdapplicationform_gender</label><br>
+														<span class="auto_cls_gender"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 mobilenumber_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="mobilenumber">@Resource.ipdapplicationform_mobilenumber</label><br>
+														<span class="auto_cls_mobilenumber"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 whatsappnumber_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="whatsappnumber">@Resource.ipdapplicationform_whatsappnumber</label><br>
+														<span class="auto_cls_whatsappnumber"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 nationality_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="nationality">@Resource.ipdapplicationform_nationality</label><br>
+														<span class="auto_cls_nationality"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 countryoforigin_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="countryoforigin">@Resource.ipdapplicationform_countryoforigin</label><br>
+														<span class="auto_cls_countryoforigin"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 generalcondition_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="generalcondition">@Resource.ipdapplicationform_generalcondition</label><br>
+														<span class="auto_cls_generalcondition"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 bookingtype_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="bookingtype">@Resource.ipdapplicationform_bookingtype</label><br>
+														<span class="auto_cls_bookingtype"></span>
+														<i class="form-group__bar"></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 groupcode_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="groupcode">@Resource.ipdapplicationform_groupcode</label><br>
+														<span class="auto_cls_groupcode"></span>
+														<i class="form-group__bar"></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 generalcondition_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="doyourequireahospitalprovidedattendant">@Resource.ipdapplicationform_doyourequireahospitalprovidedattendant</label><br>
+														<span class="auto_cls_doyourequireahospitalprovidedattendant"></span>
+														<i class="form-group__bar"></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 preferredduration_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="preferredduration">@Resource.ipdapplicationform_preferredduration</label><br>
+														<span class="auto_cls_preferredduration"></span>
+														<i class="form-group__bar"></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 bookingstatus_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="bookingstatus">@Resource.ipdapplicationform_bookingstatus</label><br>
+														<span class="auto_cls_bookingstatus"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label>@Resource.contactaddress</label><br>
+														<span id="span_combined_contactaddress"></span>
+														<i class="form-group__bar"></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label>@Resource.permanentaddress</label><br>
+														<span id="span_combined_permanentaddress"></span>
+														<i class="form-group__bar"></i>
+													</div>
+												</div>
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div><!--form_group_div_block-->
+
+			 
+							<div class="col-sm-12 col-xs-12 mt-3 GroupBooking_craftmyapp_container" style="display:none">
+								<!--form_group_div_block-->
+								<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+									<div class="card-head">
+										<header>@Resource.groupbooking</header>
+									</div>
+									<div class="card-body card-container-Padding-NoShadow">
+										<div class="row">
+											<div class="col-sm-3 col-xs-12 p-2 groupbooking_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="groupbooking">@Resource.ipdapplicationform_groupbooking</label><br>
+														<span class="auto_cls_groupbooking"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 areyouthegroupleader_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="areyouthegroupleader">@Resource.ipdapplicationform_areyouthegroupleader</label><br>
+														<span class="auto_cls_areyouthegroupleader"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 numberofmember_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="numberofmember">@Resource.ipdapplicationform_numberofmember</label><br>
+														<span class="auto_cls_numberofmember"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 groupleadersbookingreferencenumber_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="groupleadersbookingreferencenumber">@Resource.ipdapplicationform_groupleadersbookingreferencenumber</label><br>
+														<span class="auto_cls_groupleadersbookingreferencenumber"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+							</div><!--form_group_div_block-->
+
+			 
+							<div class="col-sm-12 col-xs-12 mt-3 PermanentAddress_craftmyapp_container" style="display:none">
+								<!--form_group_div_block-->
+								<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+									<div class="card-head">
+										<header>@Resource.permanentaddress</header>
+									</div>
+									<div class="card-body card-container-Padding-NoShadow">
+										<div class="row">
+											<div class="col-sm-3 col-xs-12 p-2 paddressline1_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="paddressline1">@Resource.ipdapplicationform_paddressline1</label><br>
+														<span class="auto_cls_paddressline1"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 paddressline2_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="paddressline2">@Resource.ipdapplicationform_paddressline2</label><br>
+														<span class="auto_cls_paddressline2"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 ppincode_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="ppincode">@Resource.ipdapplicationform_ppincode</label><br>
+														<span class="auto_cls_ppincode"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 ptown_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="ptown">@Resource.ipdapplicationform_ptown</label><br>
+														<span class="auto_cls_ptown"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 pcityordistrict_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="pcityordistrict">@Resource.ipdapplicationform_pcityordistrict</label><br>
+														<span class="auto_cls_pcityordistrict"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 pstatename_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="pstatename">@Resource.ipdapplicationform_pstatename</label><br>
+														<span class="auto_cls_pstatename"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+							</div><!--form_group_div_block-->
+			 
+							@* <div class="col-sm-3 col-xs-12 p-2 sameaspermanentaddress_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="sameaspermanentaddress">@Resource.ipdapplicationform_sameaspermanentaddress</label><br>
+										<span class="auto_cls_sameaspermanentaddress"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div> *@
+ 
+							<div class="col-sm-12 col-xs-12 mt-3 ContactAddress_craftmyapp_container" style="display:none">
+								<!--form_group_div_block-->
+								<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+									<div class="card-head">
+										<header>@Resource.contactaddress</header>
+									</div>
+									<div class="card-body card-container-Padding-NoShadow">
+										<div class="row">
+											<div class="col-sm-3 col-xs-12 p-2 caddressline1_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="caddressline1">@Resource.ipdapplicationform_caddressline1</label><br>
+														<span class="auto_cls_caddressline1"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 caddressline2_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="caddressline2">@Resource.ipdapplicationform_caddressline2</label><br>
+														<span class="auto_cls_caddressline2"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 cpincode_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="cpincode">@Resource.ipdapplicationform_cpincode</label><br>
+														<span class="auto_cls_cpincode"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 ctown_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="ctown">@Resource.ipdapplicationform_ctown</label><br>
+														<span class="auto_cls_ctown"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 ccityordistrict_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="ccityordistrict">@Resource.ipdapplicationform_ccityordistrict</label><br>
+														<span class="auto_cls_ccityordistrict"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 cstatename_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="cstatename">@Resource.ipdapplicationform_cstatename</label><br>
+														<span class="auto_cls_cstatename"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+							</div><!--form_group_div_block-->
+
+			 
+							<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent preferreddatesofadmissionContainerBodyParent hide">
+								<!--Dependent Preferred Dates of Admission Containder Block-->
+								<div class="card card card-blue cma_dependent_band">
+									<div class="card-head">
+										<header>
+											@Resource.preferreddatesofadmission
+										</header>
+							 <header class="auditheader preferreddatesofadmissionauditheader" >
+											<a href="#" style="margin: 20px !important;font-size: 22px;" class="preferreddatesofadmissionauditheaderlink"><i class="fa fa-history" aria-hidden="true"></i></a>
+										</header>
+									</div>
+									<div class="card-body fluent-card-body commonContainer">
+										<div class="col-12">
+											<div class="table-responsive-lg">
+												<table id="preferreddatesofadmissionContainer" class="table table-bordered mb-0 preferreddatesofadmissionContainer">
+													<thead id="preferreddatesofadmissionContainerHead">
+														<th>Date of Arrival</th>
+														<th>Date of Departure</th>
+														<th>Days of Stay</th>
+
+
+													</thead>
+
+													<tbody id="preferreddatesofadmissionContainerBody">
+													</tbody>
+
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div><!--Dependent Preferred Dates of Admission Containder Block-->
+
+			 
+			
+							<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicalinfoContainerBodyParent hide">
+								<!--Dependent Medical Info Containder Block-->
+								<div class="card card card-blue cma_dependent_band">
+									<div class="card-head">
+										<header>
+											@Resource.medicalinfo
+										</header>
+							 <header class="auditheader medicalinfoauditheader" >
+											<a href="#" style="margin: 20px !important;font-size: 22px;" class="medicalinfoauditheaderlink"><i class="fa fa-history" aria-hidden="true"></i></a>
+										</header>
+									</div>
+									<div class="card-body fluent-card-body commonContainer">
+										<div class="col-12">
+											<div class="table-responsive-lg">
+												<table id="medicalinfoContainer" class="table table-bordered mb-0 medicalinfoContainer">
+													<thead id="medicalinfoContainerHead">
+														<th>Medical Condition Name</th>
+														<th>Duration</th>
+														<th>Unit</th>
+														<th>Severity Level</th>
+
+
+													</thead>
+
+													<tbody id="medicalinfoContainerBody">
+													</tbody>
+
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div><!--Dependent Medical Info Containder Block-->
+
+			 
+			
+							<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicationinfoContainerBodyParent hide">
+								<!--Dependent Medication Info Containder Block-->
+								<div class="card card card-blue cma_dependent_band">
+									<div class="card-head">
+										<header>
+											@Resource.medicationinfo
+										</header>
+							 <header class="auditheader medicationinfoauditheader" >
+											<a href="#" style="margin: 20px !important;font-size: 22px;" class="medicationinfoauditheaderlink"><i class="fa fa-history" aria-hidden="true"></i></a>
+										</header>
+									</div>
+									<div class="card-body fluent-card-body commonContainer">
+										<div class="col-12">
+											<div class="table-responsive-lg">
+												<table id="medicationinfoContainer" class="table table-bordered mb-0 medicationinfoContainer">
+													<thead id="medicationinfoContainerHead">
+														<th>Medicine Name</th>
+														<th>Frequency in a day</th>
+														<th>Medication Duration</th>
+														<th>Quantity</th>
+
+
+													</thead>
+
+													<tbody id="medicationinfoContainerBody">
+													</tbody>
+
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div><!--Dependent Medication Info Containder Block-->
+
+			 
+			
+							<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicalrecordsContainerBodyParent hide">
+								<!--Dependent Medical Records Containder Block-->
+								<div class="card card card-blue cma_dependent_band">
+									<div class="card-head">
+										<header>
+											@Resource.medicalrecords
+										</header>
+							 <header class="auditheader medicalrecordsauditheader" >
+											<a href="#" style="margin: 20px !important;font-size: 22px;" class="medicalrecordsauditheaderlink"><i class="fa fa-history" aria-hidden="true"></i></a>
+										</header>
+									</div>
+									<div class="card-body fluent-card-body commonContainer">
+										<div class="col-12">
+											<div class="table-responsive-lg">
+												<table id="medicalrecordsContainer" class="table table-bordered mb-0 medicalrecordsContainer">
+													<thead id="medicalrecordsContainerHead">
+														<th>Medical Record Name</th>
+														<th>Medical Record File</th>
+
+
+													</thead>
+
+													<tbody id="medicalrecordsContainerBody">
+													</tbody>
+
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div><!--Dependent Medical Records Containder Block-->
+
+			 
+			
+							<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent attendantinfoContainerBodyParent hide">
+								<!--Dependent Attendant Info Containder Block-->
+								<div class="card card card-blue cma_dependent_band">
+									<div class="card-head">
+										<header>
+											@Resource.attendantinfo
+										</header>
+							 <header class="auditheader attendantinfoauditheader" >
+											<a href="#" style="margin: 20px !important;font-size: 22px;" class="attendantinfoauditheaderlink"><i class="fa fa-history" aria-hidden="true"></i></a>
+										</header>
+									</div>
+									<div class="card-body fluent-card-body commonContainer">
+										<div class="col-12">
+											<div class="table-responsive-lg">
+												<table id="attendantinfoContainer" class="table table-bordered mb-0 attendantinfoContainer">
+													<thead id="attendantinfoContainerHead">
+														<th>Attendant Name</th>
+														<th>Age</th>
+														<th>Gender</th>
+														<th>Phone Number</th>
+
+
+													</thead>
+
+													<tbody id="attendantinfoContainerBody">
+													</tbody>
+
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div><!--Dependent Attendant Info Containder Block-->
+
+							<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent emergencycontactinfoContainerBodyParent">
+								<!--Dependent Emergency Contact Info Container Block-->
+								<div class="card card card-blue cma_dependent_band">
+									<div class="card-head">
+										<header>@Resource.emergencycontactinfo</header>
+									</div>
+									<div class="card-body fluent-card-body commonContainer">
+										<div class="col-12">
+											<div class="table-responsive-lg">
+												<table id="emergencycontactinfoContainer" class="table table-bordered mb-0 emergencycontactinfoContainer">
+													<thead id="emergencycontactinfoContainerHead">
+														<tr>
+															<th>Person Name</th>
+															<th>Relationship</th>
+															<th>Phone Number</th>
+														</tr>
+													</thead>
+													<tbody id="emergencycontactinfoContainerBody">
+														<tr class="emergency-contact-empty-row">
+															<td colspan="3" class="automaton_table_label text-muted">No emergency contact information available.</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div><!--Dependent Emergency Contact Info Container Block-->
+
+			
+							<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent roompreferenceContainerBodyParent hide">
+								<!--Dependent Room Preference Containder Block-->
+								<div class="card card card-blue cma_dependent_band">
+									<div class="card-head">
+										<header>
+											@Resource.roompreference
+										</header>
+							 <header class="auditheader roompreferenceauditheader" >
+											<a href="#" style="margin: 20px !important;font-size: 22px;" class="roompreferenceauditheaderlink"><i class="fa fa-history" aria-hidden="true"></i></a>
+										</header>
+									</div>
+									<div class="card-body fluent-card-body commonContainer">
+										<div class="col-12">
+											<div class="table-responsive-lg">
+												<table id="roompreferenceContainer" class="table table-bordered mb-0 roompreferenceContainer">
+													<thead id="roompreferenceContainerHead">
+														<th>Room Type</th>
+
+
+													</thead>
+
+													<tbody id="roompreferenceContainerBody">
+													</tbody>
+
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div><!--Dependent Room Preference Containder Block-->
+
+			 
+			
+							<div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent roomContainerBodyParent hide">
+								<!--Dependent Room Containder Block-->
+								<div class="card card card-blue cma_dependent_band">
+									<div class="card-head">
+										<header>
+											Booked Room
+										</header>
+							 <header class="auditheader roomauditheader" >
+											<a href="#" style="margin: 20px !important;font-size: 22px;" class="roomauditheaderlink"><i class="fa fa-history" aria-hidden="true"></i></a>
+										</header>
+									</div>
+									<div class="card-body fluent-card-body commonContainer">
+										<div class="col-12">
+											<div class="table-responsive-lg">
+												<table id="roomContainer" class="table table-bordered mb-0 roomContainer">
+													<thead id="roomContainerHead">
+														<th>Room Number</th>
+														<th>Room Type</th>
+														<th>From Date</th>
+														<th>To Date</th>
+
+
+													</thead>
+
+													<tbody id="roomContainerBody">
+													</tbody>
+
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div><!--Dependent Room Containder Block-->
+
+			 
+			
+							<div class="col-sm-12 col-xs-12 mt-3 FlexibilityInfo_craftmyapp_container">
+								<!--form_group_div_block-->
+								<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+									<div class="card-head">
+										<header>@Resource.flexibilityinfo</header>
+									</div>
+									<div class="card-body card-container-Padding-NoShadow">
+										<div class="row">
+											<div class="col-sm-3 col-xs-12 p-2 flexiblewithdates_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="flexiblewithdates">@Resource.ipdapplicationform_flexiblewithdates</label><br>
+														<span class="auto_cls_flexiblewithdates"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 flexiblewithroomtype_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="flexiblewithroomtype">@Resource.ipdapplicationform_flexiblewithroomtype</label><br>
+														<span class="auto_cls_flexiblewithroomtype"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 joinwaitinglist_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="joinwaitinglist">@Resource.ipdapplicationform_joinwaitinglist</label><br>
+														<span class="auto_cls_joinwaitinglist"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+							</div><!--form_group_div_block-->
+
+			 
+							<div class="col-sm-12 col-xs-12 mt-3 PassportandVisaDetails_craftmyapp_container">
+								<!--form_group_div_block-->
+								<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+									<div class="card-head">
+										<header>@Resource.passportandvisadetails</header>
+									</div>
+									<div class="card-body card-container-Padding-NoShadow">
+										<div class="row">
+											<div class="col-sm-3 col-xs-12 p-2 passportnumber_craftmyapp_viewcontainer">
+												<div>
+									<div class="form-group form-group--float-above my-3" > 
+														<label for="passportnumber">@Resource.ipdapplicationform_passportnumber</label><br>
+														<span class="auto_cls_passportnumber"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 passportissuingcountry_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="passportissuingcountry">@Resource.ipdapplicationform_passportissuingcountry</label><br>
+														<span class="auto_cls_passportissuingcountry"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 passportexpirydate_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="passportexpirydate">@Resource.ipdapplicationform_passportexpirydate</label><br>
+														<span class="auto_cls_passportexpirydate"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 uploadpassportcopy_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="uploadpassportcopy">@Resource.ipdapplicationform_uploadpassportcopy</label><br>
+														<span class="auto_cls_uploadpassportcopy"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 visatype_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="visatype">@Resource.ipdapplicationform_visatype</label><br>
+														<span class="auto_cls_visatype"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 visanumber_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="visanumber">@Resource.ipdapplicationform_visanumber</label><br>
+														<span class="auto_cls_visanumber"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 visaissuedcountry_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="visaissuedcountry">@Resource.ipdapplicationform_visaissuedcountry</label><br>
+														<span class="auto_cls_visaissuedcountry"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 visaissuedate_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="visaissuedate">@Resource.ipdapplicationform_visaissuedate</label><br>
+														<span class="auto_cls_visaissuedate"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 visaexpirydate_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="visaexpirydate">@Resource.ipdapplicationform_visaexpirydate</label><br>
+														<span class="auto_cls_visaexpirydate"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 uploadvisacopy_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="uploadvisacopy">@Resource.ipdapplicationform_uploadvisacopy</label><br>
+														<span class="auto_cls_uploadvisacopy"></span>
+										<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
+								</div>
+							</div><!--form_group_div_block-->
+
+							<div class="col-sm-12 col-xs-12 mt-3 AdditionalInfo_craftmyapp_container">
+								<!--form_group_div_block-->
+								<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+									<div class="card-head">
+										<header>Additional Information</header>
+									</div>
+									<div class="card-body card-container-Padding-NoShadow">
+										<div class="row">
+											<div class="col-sm-3 col-xs-12 p-2 doyourequireahospitalprovidedattendant_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="doyourequireahospitalprovidedattendant">@Resource.ipdapplicationform_doyourequireahospitalprovidedattendant</label><br>
+														<span class="auto_cls_doyourequireahospitalprovidedattendant"></span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 preferredduration_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="preferredduration">@Resource.ipdapplicationform_preferredduration</label><br>
+														<span class="auto_cls_preferredduration"></span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 packagename_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="packagename">@Resource.ipdapplicationform_packagename</label><br>
+														<span class="auto_cls_packagename"></span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 admissionreason_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="admissionreason">@Resource.ipdapplicationform_admissionreason</label><br>
+														<span class="auto_cls_admissionreason"></span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											@* <div class="col-sm-3 col-xs-12 p-2 consentform_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3" >
+														<label for="consentform">@Resource.ipdapplicationform_consentform</label><br>
+														<span class="auto_cls_consentform"></span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+<div class="col-sm-3 col-xs-12 p-2 consentfile_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3" >
+														<label for="consentfile">@Resource.ipdapplicationform_consentfile</label><br>
+														<span class="auto_cls_consentfile"></span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div> *@
+											<div class="col-sm-3 col-xs-12 p-2 agreefortermsandconditions_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="agreefortermsandconditions">@Resource.ipdapplicationform_agreefortermsandconditions</label><br>
+														<span class="auto_cls_agreefortermsandconditions_">Yes</span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-3 col-xs-12 p-2 signature_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="signature">@Resource.ipdapplicationform_signature</label><br>
+														<span class="auto_cls_signature"></span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+											@*
+								<div class="col-sm-12 col-xs-12 mt-3 PackageInfo_craftmyapp_container"><!--form_group_div_block-->
+									<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+											<div class="card-head">
+												<header>@Resource.packageinfo</header>
+											</div>
+											<div class="card-body card-container-Padding-NoShadow">
+												<div class="row">
+														<div class="col-sm-3 col-xs-12 p-2 packagename_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3" >
+														<label for="packagename">@Resource.ipdapplicationform_packagename</label><br>
+														<span class="auto_cls_packagename"></span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+
+
+												</div>
+											</div>
+									</div>
+								</div><!--form_group_div_block--> *@
+
+											<div class="col-sm-3 col-xs-12 p-2 verifiedstatus_craftmyapp_viewcontainer">
+												<div>
+													<div class="form-group form-group--float-above my-3">
+														<label for="verifiedstatus">@Resource.ipdapplicationform_verifiedstatus</label><br>
+														<span class="auto_cls_verifiedstatus"></span>
+														<i class="form-group__bar" ></i>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div><!--form_group_div_block-->
+
+							<div class="col-sm-12 col-xs-12 mt-3 review_logs_parent hide">
+								<!--Dependent review_logs Containder Block-->
+								<div class="card card card-blue cma_dependent_band">
+									<div class="card-head">
+										<header>
+											Journey
+										</header>
+
+									</div>
+									<div class="card-body fluent-card-body commonContainer">
+
+										<div class="col-12">
+											<div class="col-12">
+												<ul class="nav nav-tabs tab-nav-right" role="tablist">
+													<li role="presentation" class="active"><a href="#home" data-toggle="tab"><i class="fa fa-calendar"></i> Timeline</a></li>
+													<li role="presentation"><a href="#profile" data-toggle="tab"><i class="fa fa-table"></i> Table</a></li>
+
+												</ul>
+
+												<div class="tab-content">
+													<div role="tabpanel" class="tab-pane fade in active" id="home">
+														<div class="table-responsive-lg">
+															<table id="review_logsContainer" class="table table-bordered mb-0 review_logsContainer">
+																<thead id="review_logsContainerHead">
+																	<th>Reviewed On</th>
+																	<th>Done By</th>
+																	<th>Log Type</th>
+																	<th>Phase</th>
+																	<th>Previous Status</th>
+																	<th>Status</th>
+																	<th>Previous Phase</th>
+																	<th>Comments</th>
+
+																</thead>
+
+																<tbody id="review_logsContainerBody">
+																</tbody>
+
+															</table>
+														</div>
+
+													</div>
+													<div role="tabpanel" class="tab-pane fade" id="profile">
+														<div class="table-responsive-lg">
+															<table id="review_logs_historyContainer" class="table table-bordered mb-0 review_logsContainer">
+																<thead id="review_logsContainerHead">
+																	<th>Booking Reference Number</th>
+																	<th>Reviewed On</th>
+																	<th>Done By</th>
+																	<th>Log Type</th>
+																	<th>Phase</th>
+																	<th>Previous Status</th>
+																	<th>Status</th>
+																	<th>Previous Phase</th>
+																	<th>Comments</th>
+
+																</thead>
+
+																<tbody id="review_logs_historyContainerBody">
+																</tbody>
+
+															</table>
+														</div>
+													</div>
+
+												</div>
+
+
+														  
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12 p-2 auto_review_comments">
+								<div>
+										<div class="form-group form-group--float-above my-3" > 
+										<label>Review Comments</label><br>
+										<textarea id="reviewcomments" readonly class="form-control auto_cls_reviewcomments" name="reviewcomments"></textarea>
+										<i class="form-group__bar"></i>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-12 col-xs-12 ">
+								<div class="btn-group pull-right" id="verifiedstatus_buttons">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div id="comparisonContainer"></div>
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+
+									<button type="button"  onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>            
+
+						</div>
+					</div>
+
+				</div>
+				<!-- /tab-ipd-details -->
+
+				<div role="tabpanel" class="tab-pane ipd-tab-pane" id="tab-assessments" style="display:none;">
+					<div class="card card-block">
+						<div class="card-block">
+							<div class="ipd-panel-title"><span><i class="fa fa-stethoscope"></i> Assessments for this IPD</span></div>
+							<div id="ipd-assessments-loading" class="ipd-tab-loading"><i class="fa fa-spinner fa-spin fa-2x"></i><div style="margin-top:8px;">Loading assessments...</div></div>
+							<div id="ipd-assessments-empty" class="ipd-tab-empty" style="display:none;">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+								<rect x="5" y="4" width="14" height="17" rx="2" stroke-linejoin="round"/>
+								<path d="M9 3.5h6a1 1 0 0 1 1 1V6H8V4.5a1 1 0 0 1 1-1Z" stroke-linejoin="round"/>
+								<path stroke-linecap="round" d="M8.5 10.5h7M8.5 14h7M8.5 17.5h4"/>
+							</svg>
+							<span>No assessments recorded for this IPD application.</span>
+						</div>
+							<div class="table-responsive" id="ipd-assessments-table-container" style="display:none;">
+								<table class="table table-bordered table-striped table-hover" style="margin:0;">
+									<thead class="thead-default">
+										<tr>
+											<th style="width:48px;">#</th>
+											<th>Assessment Date</th>
+											<th>Assessment Template</th>
+											<th>Doctor</th>
+											<th>Assessed By</th>
+											<th>Eligible for Final Admission</th>
+											<th>Notes</th>
+											<th style="width:120px;" class="text-center">Action</th>
+										</tr>
+									</thead>
+									<tbody id="ipd-assessments-rows"></tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div><!-- /tab-assessments -->
+
+				<div role="tabpanel" class="tab-pane ipd-tab-pane" id="tab-bills" style="display:none;@Html.Raw(hideFinancialTabs ? "visibility:hidden;" : "")">
+					<div class="card card-block">
+						<div class="card-block">
+							<div class="ipd-panel-title"><span><i class="fa fa-money"></i> Bills &amp; Payments</span></div>
+							<div id="ipd-bills-loading" class="ipd-tab-loading"><i class="fa fa-spinner fa-spin fa-2x"></i><div style="margin-top:8px;">Loading billing details...</div></div>
+							<div id="ipd-bills-content" style="display:none;">
+								@* <div class="row">
+										<div class="col-sm-3">
+											<div class="ipd-summary-card" style="border-left-color:#2196F3;">
+												<div class="label">Total Receivable</div>
+												<div class="amount text-info">&#8377; <span id="ipd-bill-total">0.00</span></div>
+											</div>
+										</div>
+										<div class="col-sm-3">
+											<div class="ipd-summary-card" style="border-left-color:#4CAF50;">
+												<div class="label">Total Paid</div>
+												<div class="amount text-success">&#8377; <span id="ipd-bill-paid">0.00</span></div>
+											</div>
+										</div>
+										<div class="col-sm-3">
+											<div class="ipd-summary-card" style="border-left-color:#ff9800;">
+												<div class="label">Booking Advance</div>
+												<div class="amount text-warning">&#8377; <span id="ipd-bill-advance">0.00</span></div>
+											</div>
+										</div>
+										<div class="col-sm-3">
+											<div class="ipd-summary-card" style="border-left-color:#f44336;">
+												<div class="label">Remaining Balance</div>
+												<div class="amount text-danger">&#8377; <span id="ipd-bill-balance">0.00</span></div>
+											</div>
+										</div>
+									</div> *@
+								<div class="ipd-panel-title ipd-panel-title--sub"><span><i class="fa fa-list"></i> Payment History</span></div>
+								<div id="ipd-bills-empty" class="ipd-tab-empty" style="display:none;">
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+									<rect x="3" y="5.5" width="18" height="13" rx="2" stroke-linejoin="round"/>
+									<path stroke-linecap="round" d="M3 9.5h18"/>
+									<path stroke-linecap="round" d="M6.5 14.5h4"/>
+								</svg>
+								<span>No payments recorded for this IPD application.</span>
+							</div>
+								<div class="table-responsive" id="ipd-bills-table-container" style="display:none;">
+									<table class="table table-bordered table-striped table-hover" style="margin:0;">
+										<thead class="thead-default">
+											<tr>
+												<th>#</th>
+												<th>Receipt No</th>
+												<th>Payment For</th>
+												<th>Date</th>
+												<th class="text-right">Amount (&#8377;)</th>
+												<th>Payment Mode</th>
+												<th>Payment Reference / Cheque / DD No</th>
+												<th>Status</th>
+												<th>Collected By</th>
+												<th>Refund Status</th>
+												<th class="text-right">Refunded (&#8377;)</th>
+												<th>Remarks</th>
+											</tr>
+										</thead>
+										<tbody id="ipd-bills-rows"></tbody>
+										<tfoot>
+											<tr class="active">
+												<td colspan="4" class="text-right"><strong>Net Total</strong></td>
+												<td class="text-right"><strong>&#8377; <span id="ipd-bill-grandtotal">0.00</span></strong></td>
+												<td colspan="7"></td>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div><!-- /tab-bills -->
+
+
+				<div role="tabpanel" class="tab-pane ipd-tab-pane" id="tab-receivables" style="display:none;@Html.Raw(hideFinancialTabs ? "visibility:hidden;" : "")">
+					<div class="card card-block">
+						<div class="card-block">
+							<div class="ipd-panel-title">
+								
+								<div style="display:flex;align-items:center;gap:10px;justify-content: space-between">
+									<span><i class="fa fa-list-alt"></i> Receivable Details</span>
+									@if (canShowReceivableActions)
+									{
+									<div class="dropdown ipd-receivable-dropdown-wrap">
+										<a href="javascript:void(0);"
+										   class="ipd-receivable-more"
+										   style="display:none;"
+										   data-toggle="dropdown"
+										   aria-expanded="false"
+										   title="More actions">
+											<i class="fa fa-ellipsis-v"></i>
+										</a>
+
+									<ul id="ipd-receivable-actions-menu"
+										class="dropdown-menu dropdown-menu-right ipd-receivable-dropdown-menu">
+									</ul>
+								</div>
+									}
+							</div>
+							<div id="ipd-receivables-loading" class="ipd-tab-loading">
+								<i class="fa fa-spinner fa-spin fa-2x"></i>
+								<div style="margin-top:8px;">Loading receivables...</div>
+							</div>
+
+							<div id="ipd-receivables-content" style="display:none;">
+								<div id="ipd-receivables-empty" class="ipd-tab-empty" style="display:none;">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+										<path stroke-linejoin="round" d="M6 3h9l3 3v15l-3-1.5-3 1.5-3-1.5-3 1.5V3Z"/>
+										<path stroke-linecap="round" d="M9 8h6M9 12h6M9 16h3"/>
+									</svg>
+									<span>No receivables found for this IPD application.</span>
+								</div>
+
+								<div class="table-responsive" id="ipd-receivables-table-container" style="display:none;">
+									<table class="table table-bordered table-striped table-hover" style="margin:0;">
+										<thead class="thead-default">
+											<tr>
+												<th>#</th>
+												<th>Receivable No</th>
+												<th>Date</th>
+												<th>Receivable For</th>
+												<th>Room</th>
+												<th>Remarks</th>
+												<th class="text-right">Amount (&#8377;)</th>
+												<th class="text-right">Paid (&#8377;)</th>
+												<th class="text-right">Balance (&#8377;)</th>
+												<th>Status</th>
+											</tr>
+										</thead>
+
+										<tbody id="ipd-receivables-rows"></tbody>
+
+										<tfoot>
+											<tr class="active">
+												<td colspan="6" class="text-right"><strong>Total</strong></td>
+												<td class="text-right"><strong>&#8377; <span id="ipd-receivable-total">0.00</span></strong></td>
+												<td class="text-right"><strong>&#8377; <span id="ipd-receivable-paid">0.00</span></strong></td>
+												<td class="text-right"><strong>&#8377; <span id="ipd-receivable-balance">0.00</span></strong></td>
+												<td></td>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div><!-- /tab-content -->
+		</div><!-- /ipdViewTabsWrapper -->
+
+		<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+		<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+		<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+		<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+		<script>
+				var AddReceivable = '@Url.Action("Add_Receivable", "Receivable")';
+				var FD_CONCESSION_FORM_URL = '@Url.Action("Add_Concession_Form", "ConcessionForm")';
+
+				var FD_FRONTDESK_DASHBOARD_URL = '@Url.Action("Dashboard", "FrontDesk", new { area = "Admin" })';
+
+				var FD_USER_ROLE = '@(Context.Session.GetString("NalamVazhauserrole") ?? "")';
+				var FD_CONCESSION_REVIEW_LIST_URL = '@Url.Action("get_Concession_Form_for_Review", "ConcessionForm")';
+				var FD_CONCESSION_REVIEW_URL = '@Url.Action("CheckerDetail_Concession_Form", "ConcessionForm")';
+			</script>
+		<script type="text/javascript">
+			function ensureIPDJourneyStyles() {
+				if ($('#ipdJourneyStyles').length) return;
+				$('head').append(`
+					<style id="ipdJourneyStyles">
+						.ipd-journey-cell{background:linear-gradient(180deg,#f7faf8 0%,#f3f6f8 100%)!important;padding:16px!important}
+						#review_logsContainer thead{display:none}
+						.review_logs_parent .nav-tabs{border-bottom:1px solid #dce3ea;margin-bottom:16px}
+						.review_logs_parent .nav-tabs>li>a{font-weight:700;color:#5b6470;border-radius:6px 6px 0 0}
+						.review_logs_parent .nav-tabs>li.active>a{color:var(--theme-primary,var(--btnprimary,#2F6B4F));background:#f6f7fb;border-color:#dce3ea #dce3ea transparent}
+						.ipd-journey-phase{margin-bottom:18px}
+						.ipd-journey-phase-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--theme-primary,var(--btnprimary,#2F6B4F));margin:0 0 12px;text-transform:uppercase;letter-spacing:.02em}
+						.ipd-journey-phase-title:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--theme-primary,var(--btnprimary,#2F6B4F));box-shadow:0 0 0 4px rgba(47,107,79,.12)}
+						.ipd-journey-count{font-size:10px;font-weight:700;color:#667085;background:#fff;border:1px solid #dfe6e3;border-radius:999px;padding:2px 8px;text-transform:none;letter-spacing:0}
+						.ipd-journey-track{display:flex;flex-direction:column}
+						.ipd-journey-item{display:grid;grid-template-columns:52px 1fr;column-gap:12px;position:relative;padding-bottom:14px}
+						.ipd-journey-item:last-child{padding-bottom:0}
+						.ipd-journey-marker{position:relative;display:flex;flex-direction:column;align-items:center}
+						.ipd-journey-marker:before{content:"";position:absolute;top:26px;bottom:-14px;width:2px;border-radius:999px;background:linear-gradient(180deg,var(--theme-primary,var(--btnprimary,#2F6B4F)),#d8e2dc)}
+						.ipd-journey-item:last-child .ipd-journey-marker:before{display:none}
+						.ipd-journey-dot{position:relative;z-index:1;width:24px;height:24px;border-radius:50%;background:var(--theme-primary,var(--btnprimary,#2F6B4F));color:#fff;border:3px solid #fff;box-shadow:0 2px 8px rgba(15,23,42,.22);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+						.ipd-journey-date{order:-1;margin-bottom:4px;text-align:center;color:#111827;font-weight:700;font-size:10px;line-height:1.1}
+						.ipd-journey-date span{display:block;color:#8a8f98;font-weight:600;font-size:9px}
+						.ipd-journey-card{min-width:0;background:#fff;border:1px solid #e3e9e6;border-left:4px solid var(--theme-primary,var(--btnprimary,#2F6B4F));border-radius:6px;box-shadow:0 2px 10px rgba(15,23,42,.06);padding:10px 14px}
+						.ipd-journey-status{font-size:13px;font-weight:700;color:#1f2937;margin-bottom:6px}
+						.ipd-journey-meta{display:flex;flex-wrap:wrap;gap:6px 8px;color:#667085;font-size:11px}
+						.ipd-journey-meta span{background:#f6f8f7;border:1px solid #e4ebe7;border-radius:999px;padding:3px 8px}
+						.ipd-journey-meta strong{color:#344054}
+						.ipd-journey-empty{padding:12px;color:#6b7280;font-size:12px}
+					</style>`);
+			}
+
+			function ipdJourneyEscape(value) {
+				return $('<div/>').text(value == null || value === '' ? '-' : value).html();
+			}
+
+			function ipdJourneyPhaseForStatus(status) {
+				var normalized = $.trim(String(status || '')).toLowerCase();
+				if (['assessment form - in draft','assessment form - review pending','assessment form reviewed','screening scheduled','admission approved','approved for admission','screening completed by the patient - in draft','screening completed by the patient','screening completed by the patient - intern doctor review pending','intern doctor reviewed'].indexOf(normalized) !== -1) return 'Assessment';
+				if (['arrival confirmed','confirmed for arrival','patient arrived','consultation scheduled','admission confirmed','admitted'].indexOf(normalized) !== -1) return 'Admission';
+				if (['discharged','extended stay'].indexOf(normalized) !== -1) return 'Stay';
+				return 'Intake';
+			}
+
+			function renderIPDJourneyTimeline(data) {
+				ensureIPDJourneyStyles();
+				var rows = typeof data === 'string' ? JSON.parse(data || '[]') : (data || []);
+				var seenJourneyEvents = {};
+				var distinctJourneyEvents = [];
+				rows.forEach(function (item) {
+					var rawStatus = $.trim(String(item.Status || item.bookingstatus || item.verifiedstatus || '')).toLowerCase();
+					var canonicalStatus = rawStatus === 'rework' ? 'rework requested' : rawStatus;
+					var eventKey = [
+						canonicalStatus,
+						$.trim(String(item['Reviewed On'] || '')),
+						$.trim(String(item['Reviewed By'] || '')).toLowerCase()
+					].join('|');
+					if (seenJourneyEvents[eventKey] !== undefined) {
+						/* Prefer the workflow status over the intermediate review action. */
+						if (rawStatus === 'rework requested') {
+							distinctJourneyEvents[seenJourneyEvents[eventKey]] = item;
+						}
+						return;
+					}
+					seenJourneyEvents[eventKey] = distinctJourneyEvents.length;
+					distinctJourneyEvents.push(item);
+				});
+				rows = distinctJourneyEvents;
+				if (!rows.length) return '<tr><td colspan="12" class="ipd-journey-empty">No Data Available</td></tr>';
+				var phaseOrder = ['Intake', 'Assessment', 'Admission', 'Stay'];
+				var grouped = {};
+				rows.forEach(function (item) {
+					var status = item.Status || item.bookingstatus || item.verifiedstatus || '-';
+					var phase = item.Phase && item.Phase !== '-' ? item.Phase : ipdJourneyPhaseForStatus(status);
+					if (!grouped[phase]) grouped[phase] = [];
+					grouped[phase].push(item);
+				});
+				var html = '<tr><td colspan="12" class="ipd-journey-cell"><div class="ipd-journey">';
+				var phaseIndex = 0;
+				phaseOrder.concat(Object.keys(grouped).filter(function (p) { return phaseOrder.indexOf(p) === -1; })).forEach(function (phase) {
+					if (!grouped[phase]) return;
+					phaseIndex++;
+					html += '<section class="ipd-journey-phase"><h4 class="ipd-journey-phase-title">Phase ' + phaseIndex + ': ' + ipdJourneyEscape(phase) + '<span class="ipd-journey-count">' + grouped[phase].length + ' status</span></h4><div class="ipd-journey-track">';
+					grouped[phase].forEach(function (item, itemIndex) {
+						var reviewedOn = item['Reviewed On'] || '';
+						var appointmentOn = item['Appointment On'] || '';
+						var parts = reviewedOn.split(' ');
+						var dateBits = (parts[0] || '').split('/');
+						var status = item.Status || '-';
+						html += '<div class="ipd-journey-item"><div class="ipd-journey-marker"><div class="ipd-journey-date">' + ipdJourneyEscape(dateBits[0] || '-') + '<span>' + ipdJourneyEscape(dateBits[1] || '') + '</span></div><div class="ipd-journey-dot">' + (itemIndex + 1) + '</div></div><div class="ipd-journey-card">';
+						html += '<div class="ipd-journey-status">' + ipdJourneyEscape(status) + '</div>';
+						html += '<div class="ipd-journey-meta"><span><strong>By:</strong> ' + ipdJourneyEscape(item['Reviewed By']) + '</span><span><strong>Status updated:</strong> ' + ipdJourneyEscape(reviewedOn) + '</span>';
+						if (appointmentOn) html += '<span><strong>Appointment:</strong> ' + ipdJourneyEscape(appointmentOn) + '</span>';
+						html += '</div>';
+						html += '</div></div>';
+					});
+					html += '</div></section>';
+				});
+				html += '</div></td></tr>';
+				return html;
+			}
+
+			function download() {
+			const element = document.getElementById('cma_printableArea');
+
+			const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+			// Hide the elements
+			elementsToHide.forEach(function (el) {
+			el.style.display = '';
+			});
+
+			html2pdf()
+			.from(element)
+			.save('IPDApplicationForm.pdf')
+			.then(function () {
+			// Show the hidden elements after generating PDF
+			elementsToHide.forEach(function (el) {
+			el.style.display = 'none';
+			});
+			});
+			}
+			window._currentIpdPatientId = '';
+			window._currentIpdBookingRef = '';
+
+			function isGuidValue(value) {
+			return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test((value || '').toString());
+			}
+
+			function loadIpdEmergencyContacts(ipdApplicationFormId) {
+			var $section = $('.emergencycontactinfoContainerBodyParent');
+			var $body = $('#emergencycontactinfoContainerBody');
+			$body.html('<tr class="emergency-contact-empty-row"><td colspan="3" class="automaton_table_label text-muted">No emergency contact information available.</td></tr>');
+			$section.removeClass('hide');
+			var hasEmergencyContacts = false;
+			function appendEmergencyContacts(rows) {
+			if (!Array.isArray(rows)) return;
+			$.each(rows, function (_, contact) {
+			if (!hasEmergencyContacts) { $body.empty(); hasEmergencyContacts = true; }
+			$body.append('<tr><td class="automaton_table_label">' + $('<div/>').text(contact.personname || contact['Person Name'] || '-').html() + '</td>' +
+			'<td class="automaton_table_label">' + $('<div/>').text(contact.relationship || contact.Relationship || '-').html() + '</td>' +
+			'<td class="automaton_table_label">' + $('<div/>').text(contact.phonenumber || contact['Phone Number'] || '-').html() + '</td></tr>');
+			});
+			}
+
+			if (!isGuidValue(ipdApplicationFormId)) return;
+
+			$.get('@Url.Action("Get_IPD_Application_Form_JSON", "IPDApplicationForm")', { IPDApplicationFormid: ipdApplicationFormId })
+			.done(function (ipdResult) {
+			var ipd = ipdResult;
+			if (typeof ipd === 'string') {
+			try { ipd = JSON.parse(ipd); } catch (e) { ipd = null; }
+			}
+			if (Array.isArray(ipd)) ipd = ipd.length ? ipd[0] : null;
+			var patientProfileId = ipd && (ipd.patientname || ipd.PatientName || ipd.patientprofileid || ipd.PatientProfileid);
+			if (!isGuidValue(patientProfileId)) return;
+
+			$.get('@Url.Action("getById_emergencycontactinfo", "PatientProfile")', { PatientProfileid: patientProfileId })
+			.done(function (result) {
+			var rows = result;
+			if (typeof rows === 'string') {
+			try { rows = JSON.parse(rows); } catch (e) { rows = []; }
+			}
+			if (rows && Array.isArray(rows.detail)) rows = rows.detail;
+			if (rows && Array.isArray(rows.data)) rows = rows.data;
+			appendEmergencyContacts(rows);
+			});
+			});
+			$.get('@Url.Action("Get_Booking_Emergency_Contacts", "IPDApplicationForm")', { IPDApplicationFormid: ipdApplicationFormId })
+			.done(function (result) {
+			var rows = result;
+			if (typeof rows === 'string') { try { rows = JSON.parse(rows); } catch (e) { rows = []; } }
+			if (rows && Array.isArray(rows.data)) rows = rows.data;
+			appendEmergencyContacts(rows);
+			});
+			}
+
+			function fill_IPDApplicationForm_view_data(id) {
+			var IPDApplicationFormid = id ? id : getUrlVars()["IPDApplicationFormid"];
+
+			$("#viewDetails_Auto").show()
+			$(".auto_checker_action").hide()
+			$.ajax({
+			url: '@Url.Action("getById_allinfo_IPDApplicationForm")',
+			dataType: 'json',
+			data: { IPDApplicationFormid: IPDApplicationFormid },
+			success: function (data) {
+				console.log("FULL OBJECT:", data[0]);
+
+			var obj = eval(data[0]);
+			
+			window._currentIpdPatientId =
+			obj.patientnameid ||
+			obj.patientname_id ||
+			obj.patientprofileid ||
+			obj.patientprofileid_master ||
+			obj.patientid ||
+			obj.patient ||
+			obj.patientname_masterid ||
+			obj.patientname_value ||
+			'';
+				window._currentIpdBookingStatus = (obj.bookingstatus || '').toString().trim();
+
+			if (!window._currentIpdPatientId && isGuidValue(obj.patientname)) {
+			window._currentIpdPatientId = obj.patientname;
+			}
+
+			loadIpdEmergencyContacts(IPDApplicationFormid);
+
+			var currentIpdId =
+			typeof getUrlVars === 'function'
+			? getUrlVars()["IPDApplicationFormid"]
+			: '';
+
+				if (
+				currentIpdId &&
+				typeof window.renderReceivableActions === 'function'
+				) {
+				window.renderReceivableActions(currentIpdId);
+				}
+
+
+
+			window._currentIpdBookingRef = obj.bookingreferencenumber || '';
+			function ipdCleanDisplayValue(value) {
+				var text = (value || '').toString().trim();
+				return text.toLowerCase() === 'null' ? '' : text;
+			}
+			function ipdPlainTextValue(value) {
+				var text = ipdCleanDisplayValue(value);
+				if (!text) return '';
+				return $('<div/>').html(text).text().replace(/\s+/g, ' ').trim();
+			}
+			function ipdApplyTooltipText(selector, value) {
+				var text = ipdPlainTextValue(value);
+				var displayText = text || '-';
+				$(selector)
+					.text(displayText)
+					.removeAttr('title')
+					.attr('data-full-text', displayText)
+					.addClass('ipd-view-truncated-text');
+			}
+			function ipdViewEscape(value) {
+				return $('<div/>').text(value || '').html();
+			}
+			function ipdViewDateOnly(value) {
+				var text = ipdCleanDisplayValue(value);
+				if (!text) return '-';
+
+				var dateMatch = text.match(/^(\d{1,2}[\/-]\d{1,2}[\/-]\d{4})/);
+				return dateMatch ? dateMatch[1] : text;
+			}
+			var ipdBookedRoomTypeFallbacks = [];
+			try {
+				ipdBookedRoomTypeFallbacks = JSON.parse(obj.automaton_IPDApplicationForm_roompreference || '[]');
+			} catch (_roomPreferenceError) {
+				ipdBookedRoomTypeFallbacks = [];
+			}
+			var ipdPatientFirstName = ipdCleanDisplayValue(obj.firstname);
+			var ipdPatientLastName = ipdCleanDisplayValue(obj.lastname);
+			var ipdPatientDisplayName = ipdCleanDisplayValue(obj.patientname);
+			if (!ipdPatientDisplayName || ipdPatientDisplayName === '-' || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(ipdPatientDisplayName)) {
+				ipdPatientDisplayName = (ipdPatientFirstName + ' ' + ipdPatientLastName).replace(/\s+/g, ' ').trim();
+			}
+			if (ipdPatientDisplayName) {
+				obj.patientname = ipdPatientDisplayName;
+			}
+			var ipdPackageDisplayName = ipdCleanDisplayValue(obj.packagename_master || obj.packagename || obj.package_master || obj.package);
+			if (isGuidValue(ipdPackageDisplayName)) {
+				ipdPackageDisplayName = '';
+			}
+			obj.packagename = ipdPackageDisplayName;
+			for (var key in obj) {
+
+			var displayValue = ipdCleanDisplayValue(obj[key]);
+			$(".auto_cls_" + key).html(displayValue || '-');
+			if (key == 'admissionreason') {
+				ipdApplyTooltipText('.auto_cls_admissionreason', displayValue);
+			}
+			if (key == 'agreefortermsandconditions') {
+				ipdApplyTooltipText('.auto_cls_agreefortermsandconditions, .auto_cls_agreefortermsandconditions_', displayValue);
+			}
+
+			if (key == 'automaton_IPDApplicationForm_preferreddatesofadmission') {
+			$('#preferreddatesofadmissionContainerBody').empty()
+			if (obj[key] != null && obj[key] != "") {
+			var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid + '&section=automaton_IPDApplicationForm_preferreddatesofadmission_history'
+			$(".preferreddatesofadmissionauditheaderlink").attr('href', audit)
+
+			var Actions = getAutho("IPDApplicationForm", "versionhistory")
+			if (Actions == undefined) {
+			$("preferreddatesofadmissionauditheaderlink").parent().hide()
+			}
+
+			$('.preferreddatesofadmissionContainerBodyParent').removeClass('hide')
+			$('#preferreddatesofadmissionContainerBody').append(get_dependent_table(obj[key]))
+			} else {
+			$('.preferreddatesofadmissionContainerBodyParent').addClass('hide')
+			}
+			}
+			if (key == 'automaton_IPDApplicationForm_medicalinfo') {
+			$('#medicalinfoContainerBody').empty()
+			if (obj[key] != null && obj[key] != "") {
+			var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid + '&section=automaton_IPDApplicationForm_medicalinfo_history'
+			$(".medicalinfoauditheaderlink").attr('href', audit)
+
+			var Actions = getAutho("IPDApplicationForm", "versionhistory")
+			if (Actions == undefined) {
+			$("medicalinfoauditheaderlink").parent().hide()
+			}
+
+			$('.medicalinfoContainerBodyParent').removeClass('hide')
+			$('#medicalinfoContainerBody').append(get_dependent_table(obj[key]))
+			} else {
+			$('.medicalinfoContainerBodyParent').addClass('hide')
+			}
+			}
+			if (key == 'automaton_IPDApplicationForm_medicationinfo') {
+			$('#medicationinfoContainerBody').empty()
+			if (obj[key] != null && obj[key] != "") {
+			var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid + '&section=automaton_IPDApplicationForm_medicationinfo_history'
+			$(".medicationinfoauditheaderlink").attr('href', audit)
+
+			var Actions = getAutho("IPDApplicationForm", "versionhistory")
+			if (Actions == undefined) {
+			$("medicationinfoauditheaderlink").parent().hide()
+			}
+
+			$('.medicationinfoContainerBodyParent').removeClass('hide')
+			$('#medicationinfoContainerBody').append(get_dependent_table(obj[key]))
+			} else {
+			$('.medicationinfoContainerBodyParent').addClass('hide')
+			}
+			}
+			if (key == 'automaton_IPDApplicationForm_medicalrecords') {
+			$('#medicalrecordsContainerBody').empty()
+			if (obj[key] != null && obj[key] != "") {
+			var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid + '&section=automaton_IPDApplicationForm_medicalrecords_history'
+			$(".medicalrecordsauditheaderlink").attr('href', audit)
+
+			var Actions = getAutho("IPDApplicationForm", "versionhistory")
+			if (Actions == undefined) {
+			$("medicalrecordsauditheaderlink").parent().hide()
+			}
+
+			$('.medicalrecordsContainerBodyParent').removeClass('hide')
+			$('#medicalrecordsContainerBody').append(get_dependent_table(obj[key]))
+			} else {
+			$('.medicalrecordsContainerBodyParent').addClass('hide')
+			}
+			}
+			if (key == 'medicalrecordfile') {
+			$('.auto_cls_medicalrecordfile').empty()
+			if (obj[key] != null) {
+
+			var uploaded_medicalrecordfile = obj[key].split('|');
+			var iterate = 0;
+			for (var i = 0; i < uploaded_medicalrecordfile.length; i++) {
+
+
+			if (uploaded_medicalrecordfile[i] != "") {
+			var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_medicalrecordfile[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+			iterate = iterate + 1;
+			$('.auto_cls_medicalrecordfile').append('<a href=' + filepath + ' class="medicalrecordfile filedisplay"><i class="fa fa-file"></i></a>')
+
+			}
+
+
+			}
+
+ 
+			}
+
+
+			}
+			if (key == 'automaton_IPDApplicationForm_attendantinfo') {
+			$('#attendantinfoContainerBody').empty()
+			if (obj[key] != null && obj[key] != "") {
+			var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid + '&section=automaton_IPDApplicationForm_attendantinfo_history'
+			$(".attendantinfoauditheaderlink").attr('href', audit)
+
+			var Actions = getAutho("IPDApplicationForm", "versionhistory")
+			if (Actions == undefined) {
+			$("attendantinfoauditheaderlink").parent().hide()
+			}
+
+			$('.attendantinfoContainerBodyParent').removeClass('hide')
+			$('#attendantinfoContainerBody').append(get_dependent_table(obj[key]))
+			} else {
+			$('.attendantinfoContainerBodyParent').addClass('hide')
+			}
+			}
+			if (key == 'automaton_PatientProfile_emergencycontactinfo') {
+			$('#emergencycontactinfoContainerBody').empty();
+			var emergencyContacts = obj[key];
+			if (typeof emergencyContacts === 'string') {
+			try { emergencyContacts = JSON.parse(emergencyContacts); } catch (e) { emergencyContacts = []; }
+			}
+			if (emergencyContacts && Array.isArray(emergencyContacts.detail)) emergencyContacts = emergencyContacts.detail;
+			if (emergencyContacts && Array.isArray(emergencyContacts.data)) emergencyContacts = emergencyContacts.data;
+
+			if (Array.isArray(emergencyContacts) && emergencyContacts.length) {
+			$.each(emergencyContacts, function (_, contact) {
+			$('#emergencycontactinfoContainerBody').append(
+			'<tr>' +
+			'<td class="automaton_table_label">' + ipdViewEscape(contact.personname || contact['Person Name'] || '-') + '</td>' +
+			'<td class="automaton_table_label">' + ipdViewEscape(contact.relationship || contact.Relationship || '-') + '</td>' +
+			'<td class="automaton_table_label">' + ipdViewEscape(contact.phonenumber || contact['Phone Number'] || '-') + '</td>' +
+			'</tr>'
+			);
+			});
+			$('.emergencycontactinfoContainerBodyParent').removeClass('hide');
+			} else {
+			$('#emergencycontactinfoContainerBody').html(
+			'<tr class="emergency-contact-empty-row"><td colspan="3" class="automaton_table_label text-muted">No emergency contact information available.</td></tr>'
+			);
+			$('.emergencycontactinfoContainerBodyParent').removeClass('hide');
+			}
+			}
+			if (key == 'automaton_IPDApplicationForm_roompreference') {
+			$('#roompreferenceContainerBody').empty()
+			if (obj[key] != null && obj[key] != "") {
+			var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid + '&section=automaton_IPDApplicationForm_roompreference_history'
+			$(".roompreferenceauditheaderlink").attr('href', audit)
+
+			var Actions = getAutho("IPDApplicationForm", "versionhistory")
+			if (Actions == undefined) {
+			$("roompreferenceauditheaderlink").parent().hide()
+			}
+
+			$('.roompreferenceContainerBodyParent').removeClass('hide')
+			var roomPrefRows = JSON.parse(obj[key]);
+			$.each(roomPrefRows, function (index, room) {
+			$('#roompreferenceContainerBody').append(
+			'<tr><td class="automaton_table_label">' + ipdViewEscape(room["Room Type"] || '-') + '</td></tr>'
+			);
+			});
+			} else {
+			$('.roompreferenceContainerBodyParent').addClass('hide')
+			}
+			}
+			if (key == 'automaton_IPDApplicationForm_room') {
+			$('#roomContainerBody').empty()
+			if (obj[key] != null && obj[key] != "") {
+			var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid + '&section=automaton_IPDApplicationForm_room_history'
+			$(".roomauditheaderlink").attr('href', audit)
+
+			var Actions = getAutho("IPDApplicationForm", "versionhistory")
+			if (Actions == undefined) {
+			$("roomauditheaderlink").parent().hide()
+			}
+
+			var roomRows = JSON.parse(obj[key]);
+			$.each(roomRows, function (index, room) {
+			var matchingRoomPreference = ipdBookedRoomTypeFallbacks[index] || {};
+			var roomTypeName = room["Room Type"] || matchingRoomPreference["Room Type"] || obj.accommodationtype || '-';
+			$('#roomContainerBody').append(
+			'<tr>' +
+			'<td>' + ipdViewEscape(room["Room Number"] || '-') + '</td>' +
+			'<td>' + ipdViewEscape(roomTypeName) + '</td>' +
+			'<td>' + ipdViewEscape(ipdViewDateOnly(room["From Date"])) + '</td>' +
+			'<td>' + ipdViewEscape(ipdViewDateOnly(room["To Date"])) + '</td>' +
+			'</tr>'
+			);
+			});
+			$('.roomContainerBodyParent').removeClass('hide')
+			} else {
+			$('.roomContainerBodyParent').addClass('hide')
+			}
+			}
+			if (key == 'uploadpassportcopy') {
+			$('.auto_cls_uploadpassportcopy').empty()
+			if (obj[key] != null) {
+
+			var uploaded_uploadpassportcopy = obj[key].split('|');
+			var iterate = 0;
+			for (var i = 0; i < uploaded_uploadpassportcopy.length; i++) {
+
+
+			if (uploaded_uploadpassportcopy[i] != "") {
+			var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_uploadpassportcopy[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+			iterate = iterate + 1;
+			$('.auto_cls_uploadpassportcopy').append('<a href=' + filepath + ' class="uploadpassportcopy filedisplay"><i class="fa fa-file"></i></a>')
+
+			}
+
+
+			}
+
+ 
+			}
+
+
+			}
+			if (key == 'uploadvisacopy') {
+			$('.auto_cls_uploadvisacopy').empty()
+			if (obj[key] != null) {
+
+			var uploaded_uploadvisacopy = obj[key].split('|');
+			var iterate = 0;
+			for (var i = 0; i < uploaded_uploadvisacopy.length; i++) {
+
+
+			if (uploaded_uploadvisacopy[i] != "") {
+			var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_uploadvisacopy[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+			iterate = iterate + 1;
+			$('.auto_cls_uploadvisacopy').append('<a href=' + filepath + ' class="uploadvisacopy filedisplay"><i class="fa fa-file"></i></a>')
+
+			}
+
+
+			}
+
+ 
+			}
+
+
+			}
+			if (key == 'consentfile') {
+			$('.auto_cls_consentfile').empty()
+			if (obj[key] != null) {
+
+			var uploaded_consentfile = obj[key].split('|');
+			var iterate = 0;
+			for (var i = 0; i < uploaded_consentfile.length; i++) {
+
+
+			if (uploaded_consentfile[i] != "") {
+			var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_consentfile[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+			iterate = iterate + 1;
+			$('.auto_cls_consentfile').append('<a href=' + filepath + ' class="consentfile filedisplay"><i class="fa fa-file"></i></a>')
+
+			}
+
+
+			}
+
+ 
+			}
+
+
+			}
+
+
+			if (key === 'signature') { loadSignatureDynamic(key, obj[key]); }
+
+			if (key == 'verifiedstatus') {
+			var headerElement = $("div.page-header-box h1");
+
+			// Update page header: Patient Name / Booking Ref (Duration of Stay)
+			(function() {
+				var _hdrName = ipdCleanDisplayValue(obj.patientname);
+				var _hdrRef  = ipdCleanDisplayValue(obj.bookingreferencenumber);
+				var _backBtn  = '<a href="javascript:void(0);" onclick="window.location.href = document.referrer"><i class="fa fa-angle-left" aria-hidden="true"></i></a>';
+				var _nameHtml = _hdrName ? '<span class="ipd-header-name">' + _hdrName + '</span>' : '';
+				var _refHtml  = _hdrRef ? ' / <span class="ipd-header-ref ipd-header-bookingref">' + _hdrRef + '</span>' : '';
+				var _hdrToDmy = function(s) {
+					if (!s) return '';
+					s = s.toString().trim();
+					var _months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+					var _d, _m, _y;
+					if (s.indexOf('/') >= 0) {
+						var _p = s.split('/');
+						_d = parseInt(_p[0], 10); _m = parseInt(_p[1], 10) - 1; _y = parseInt(_p[2], 10);
+					} else if (s.indexOf('-') >= 0 && s.length >= 10) {
+						var _p2 = s.substring(0, 10).split('-');
+						_y = parseInt(_p2[0], 10); _m = parseInt(_p2[1], 10) - 1; _d = parseInt(_p2[2], 10);
+					} else {
+						var _dt = new Date(s);
+						if (isNaN(_dt.getTime())) return '';
+						_d = _dt.getDate(); _m = _dt.getMonth(); _y = _dt.getFullYear();
+					}
+					if (isNaN(_d) || isNaN(_m) || isNaN(_y) || !_months[_m]) return '';
+					return (_d < 10 ? '0' : '') + _d + '-' + _months[_m] + '-' + _y;
+				};
+				var _prefDatesRaw = obj['automaton_IPDApplicationForm_preferreddatesofadmission'];
+				var _totalDays = 0, _stayFrom = '', _stayTo = '';
+				if (_prefDatesRaw) {
+					try {
+						var _arr = typeof _prefDatesRaw === 'string' ? JSON.parse(_prefDatesRaw) : _prefDatesRaw;
+						if (Array.isArray(_arr)) {
+							_arr.forEach(function(dr, idx) {
+								var d = parseInt(dr.daysofstay || dr.Daysofstay || dr['Days of Stay'] || 0, 10);
+								if (!isNaN(d)) _totalDays += d;
+								if (idx === 0) {
+									_stayFrom = _hdrToDmy(dr.dateofarrival || dr.Dateofarrival || dr['Date of Arrival']);
+									_stayTo   = _hdrToDmy(dr.dateofdeparture || dr.Dateofdeparture || dr['Date of Departure']);
+								}
+							});
+						}
+					} catch (exHdrDur) {}
+				}
+				var _durHtml = _totalDays > 0 ? ' <span class="ipd-header-dos">DOS - ' + _totalDays + ' days' + ((_stayFrom && _stayTo) ? ': ' + _stayFrom + ' - ' + _stayTo : '') + '</span>' : '';
+				headerElement.html(_backBtn + _nameHtml + _refHtml + _durHtml);
+			})();
+
+			if (obj[key] == 'Rejected') {
+			$("#rejectedsection").show()
+			headerElement.append(`
+			<div class="review_title">
+			<a href="#" id="rejecticon_header" style="display: block;">
+			<svg width="18" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+			<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+			<g id="SVGRepo_iconCarrier">
+			<circle cx="12" cy="12" r="9" stroke="#FFFFFF"></circle>
+			<path d="M18 18L6 6" stroke="#FFFFFF"></path>
+			</g>
+			</svg>
+			Rejected
+			</a>
+			</div>
+			`);
+			}
+			else if (obj[key] == 'Rework') {
+			$("#reworksection").show()
+			headerElement.append(`<div class="review_title">
+
+			<a href="#" id="reworkicon_header" style="display: block;">
+			<svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 18 16" fill="none" id="reworkicon_header_icon">
+			<path d="M1 1.77637V6.44426H5.36364" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+			<path d="M16.9999 14.2236V9.55566H12.6362" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+			<path d="M15.1745 5.66605C14.8057 4.55104 14.1788 3.55414 13.3524 2.76839C12.526 1.98264 11.5269 1.43365 10.4485 1.17263C9.3701 0.91161 8.24745 0.947078 7.18532 1.27572C6.12318 1.60437 5.15618 2.21548 4.37455 3.05203L1 6.44404M17 9.55596L13.6255 12.948C12.8438 13.7845 11.8768 14.3956 10.8147 14.7243C9.75255 15.0529 8.6299 15.0884 7.55148 14.8274C6.47307 14.5664 5.47404 14.0174 4.64761 13.2316C3.82119 12.4459 3.1943 11.449 2.82545 10.3339" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+			</svg> Rework </a>
+
+			</div>`);
+			}
+			if (obj[key] == 'Ready For Review' && (obj.bookingstatus || '').toString().trim().toLowerCase() != 'pending') {
+
+			var Actions = getAutho("IPDApplicationForm", "list_verify")
+			if (Actions != undefined) {
+			$(".auto_checker_action").show()
+			$("#reviewcomments").attr('readonly', false)
+			}
+
+																			   
+																	 
+
+			//$("#reviewcomments").focus()
+
+			} else {
+
+			$(".auto_checker_action").hide()
+			$("#reviewcomments").attr('readonly', 'readonly')
+
+																
+			}
+
+
+			}
+			if (key == 'automaton_review_logs') {
+			$('#review_logsContainerBody').empty()
+			if (obj[key] != null && obj[key] != "") {
+			$('#review_logsContainerBody').append(renderIPDJourneyTimeline(obj[key]))
+			$('.review_logs_parent').removeClass('hide')
+			}
+			else {
+			$('.review_logs_parent').addClass('hide')
+			$('#review_logsContainerBody').append('No Data Available')
+			}
+
+			}
+			if (key == 'automaton_review_logs_history') {
+			$('#review_logs_historyContainerBody').empty()
+			if (obj[key] != null && obj[key] != "") {
+
+																			
+
+
+
+			const jsonData = JSON.parse(obj[key])
+			const distinctQuotes = {};
+			let IdsSet = new Set();
+			jsonData.forEach(item => {
+			const quoteNumber = item["Booking Reference Number"];
+			const IPDApplicationFormid = item["IPDApplicationFormid"];
+			distinctQuotes[IPDApplicationFormid] = quoteNumber;
+			IdsSet.add(IPDApplicationFormid);
+			});
+			$(".allrecords").empty()
+			$(".revisions").hide()
+
+			const IdsSetString = [...IdsSet].join(',');
+
+			localStorage.setItem('IPDApplicationForm_Compare', IdsSetString);
+
+
+			var cnt = 0;
+			for (const IPDApplicationFormid in distinctQuotes) {
+			if (distinctQuotes.hasOwnProperty(IPDApplicationFormid)) {
+
+			var requestcard = '<li id="' + IPDApplicationFormid + '">' +
+			'<a href="#" class="vessel-id-text">' +
+			'<span class="_cma_pda">' + distinctQuotes[IPDApplicationFormid] + '</span>' +
+
+
+			'<span class="material-icons create_pda_and_download_from_cloud" id="' + IPDApplicationFormid + '">' +
+
+			'</span>' +
+
+
+			'</a>' +
+
+			'</div>' +
+			'</li>'
+
+			cnt = cnt + 1;
+
+
+			$(".allrecords").append(requestcard)
+
+			$("#" + IPDApplicationFormid).click(function () {
+			$('.page-loader').show()
+			fill_IPDApplicationForm_view_data($(this).attr('id'))
+
+			$('.page-loader').hide()
+
+
+
+			})
+			if (cnt > 1) {
+			$(".revisions").show()
+			}
+
+			$(".number_of_records").html(cnt)
+
+			}
+			}
+
+																		 
+
+			$.each(jsonData, function (index, item) {
+			delete item.IPDApplicationFormid;
+			});
+
+			var jsonWithoutIPDApplicationFormid = JSON.stringify(jsonData, null, 2);
+			$('#review_logs_historyContainerBody').append(get_dependent_table(jsonWithoutIPDApplicationFormid))
+			$('.review_logs_parent').removeClass('hide')
+			}
+			else {
+			$('.review_logs_parent').addClass('hide')
+			$('#review_logs_historyContainerBody').append('No Data Available')
+			}
+
+			}
+
+			}
+			if (obj) {
+			if (obj.hasOwnProperty('groupbooking') && obj.groupbooking) {
+			str_visible_groupbooking = obj.groupbooking;
+			} else {
+			str_visible_groupbooking = '';
+			}
+			if (str_visible_groupbooking === "Yes") {
+			$(".areyouthegroupleader_craftmyapp_viewcontainer").show();
+			} else {
+			$(".areyouthegroupleader_craftmyapp_viewcontainer").hide();
+			}
+			if (obj.hasOwnProperty('nationality') && obj.nationality) {
+			str_visible_nationality = obj.nationality;
+			} else {
+			str_visible_nationality = '';
+			}
+			if (str_visible_nationality === "Foreign") {
+			$(".countryoforigin_craftmyapp_viewcontainer").show();
+			$(".PassportandVisaDetails_craftmyapp_container").show();
+			} else {
+			$(".countryoforigin_craftmyapp_viewcontainer").hide();
+			$(".PassportandVisaDetails_craftmyapp_container").hide();
+			}
+
+			// Build combined contact address
+			var cparts = [obj.caddressline1, obj.caddressline2, obj.ctown, obj.ccityordistrict, obj.cstatename, obj.cpincode]
+			.filter(function (p) { return p && p.toString().trim() !== ''; });
+			$('#span_combined_contactaddress').html(cparts.length ? cparts.join(', ') : '-');
+
+			// Build combined permanent address
+			var pparts = [obj.paddressline1, obj.paddressline2, obj.ptown, obj.pcityordistrict, obj.pstatename, obj.ppincode]
+			.filter(function (p) { return p && p.toString().trim() !== ''; });
+			$('#span_combined_permanentaddress').html(pparts.length ? pparts.join(', ') : '-');
+			}
+
+			}
+
+			})
+
+			}
+
+			function redirectToSamePage() {
+			// Get the current URL
+			const currentUrl = window.location.href;
+
+			// Check if the URL already contains query parameters
+			if (currentUrl.indexOf('?') > -1) {
+			// If there are already query parameters, append '&iscompare=Y'
+			window.location.href = currentUrl + '&iscompare=Y';
+			} else {
+			// If there are no query parameters, append '?iscompare=Y'
+			window.location.href = currentUrl + '?iscompare=Y';
+			}
+			}
+			$(document).ready(function () {
+
+			$(".auto_checker_action").hide()
+
+			$("body").on("click", '.auto_checker_action', function () {
+
+			if ((this.id == 'Rejected' || this.id == 'Rework') && $("#reviewcomments").val() == '') {
+			swal({
+			title: 'Validation !',
+			text: "Please enter Review Comments",
+			type: 'error',
+			buttonsStyling: false,
+			confirmButtonClass: 'btn btn-primary',
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false
+			})
+			$("#reviewcomments").focus()
+			return;
+			} else {
+
+			var IPDApplicationFormid = getUrlVars()["IPDApplicationFormid"];
+			$.ajax({
+			url: '@Url.Action("verify_IPDApplicationForm")',
+			method: 'POST',
+			contentType: 'application/json',
+			dataType: 'json',
+			data: JSON.stringify({
+			IPDApplicationFormid: IPDApplicationFormid,
+			verifiedstatus: this.id,
+			reviewcomments: $("#reviewcomments").val()
+			}),
+			success: function (data) {
+
+			swal({
+			title: 'Success',
+			text: "Your review has been updated!",
+			type: 'success',
+			buttonsStyling: false,
+			confirmButtonClass: 'btn btn-primary',
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			allowEnterKey: false
+			}).then(() => {
+			window.location = document.referrer;
+			});
+
+			fill_IPDApplicationForm_view_data()
+
+
+			}
+
+			})
+			}
+
+
+			})
+
+			$.ajax({
+			url: '@Url.Action("get_lookups_by_entity","lookups")',
+			dataType: 'json',
+			data: { id: 'IPDApplicationForm' },
+			success: function (data) {
+
+			$.each(data, function (index, optionDataInner) {
+			if (optionDataInner.fieldname == "verifiedstatus") {
+			var ddltarget_verifiedstatus = "#verifiedstatus_buttons"
+
+			$(ddltarget_verifiedstatus).empty()
+
+			if (optionDataInner.fieldname == "verifiedstatus") {
+
+			var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+			options_verifiedstatus.forEach(function (option_verifiedstatus) {
+			if (option_verifiedstatus != 'Ready For Review' && option_verifiedstatus != 'Revised') {
+			var displayText = option_verifiedstatus;
+			if (option_verifiedstatus === "Approved") {
+			displayText = "Approve";
+			}
+			else if
+			(option_verifiedstatus === "Rejected") {
+			displayText = "Reject";
+			}
+			$(ddltarget_verifiedstatus).append('<button style="display:none" class="btn btn-primary   auto_checker_action" id=' + option_verifiedstatus + '>' + displayText + '</button>')
+
+			}
+			})
+			fill_IPDApplicationForm_view_data()
+			}
+
+
+			}
+			})
+
+
+			}
+
+			})
+
+					
+
+
+ 
+
+
+
+
+			});
+
+		</script>
+
+		<script type="text/javascript">
+			var str_visible_groupbooking;
+			var str_visible_nationality;
+
+			$(document).ready(function () {
+			$(".countryoforigin_craftmyapp_viewcontainer").hide();
+			$(".areyouthegroupleader_craftmyapp_viewcontainer").hide();
+			$(".numberofmember_craftmyapp_viewcontainer").hide();
+			$(".groupleadersbookingreferencenumber_craftmyapp_viewcontainer").hide();
+			$(".PassportandVisaDetails_craftmyapp_container").hide();
+
+			});
+		</script>
+
+					
+		<script type="text/javascript">
+			(function () {
+			var _assessmentsLoaded = false;
+			var _billsLoaded = false;
+			var _receivablesLoaded = false;
+
+			var AddReceivable = '@Url.Action("Add_Receivable", "Receivable")';
+			var FD_CONCESSION_FORM_URL =
+			'@Url.Action("Add_Concession_Form", "ConcessionForm")';
+
+			var FD_FRONTDESK_DASHBOARD_URL =
+			'@Url.Action("Dashboard", "FrontDesk", new { area = "Admin" })';
+
+			function getIPDApplicationFormid() {
+			return (typeof getUrlVars === 'function' ? (getUrlVars()["IPDApplicationFormid"] || '') : '');
+			}
+			function getCurrentIPDReturnUrl() {
+			return window.location.pathname + window.location.search;
+			}
+			function ipdFmt(val) { var n = parseFloat(val || 0); return n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+			function ipdEscape(val) {
+			if (val === null || val === undefined) return '';
+			return String(val)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;');
+			}
+
+			function ipdDisplayRemarks(remarks) {
+			var value = (remarks || '').toString().trim();
+			if (value.toLowerCase().indexOf('auto:concessionform:') === 0) {
+			return 'Approved concession adjustment';
+			}
+			return value || '-';
+			}
+
+			function ipdFormatDate(dateStr) {
+			if (!dateStr) return '-';
+			if (typeof dateStr === 'string' && dateStr.indexOf('/') > -1) return dateStr;
+			try {
+			var dt = new Date(dateStr);
+			if (!isNaN(dt.getTime())) {
+			var dd = ('0' + dt.getDate()).slice(-2);
+			var mm = ('0' + (dt.getMonth() + 1)).slice(-2);
+			var yy = dt.getFullYear();
+			return dd + '/' + mm + '/' + yy;
+			}
+			} catch (e) { }
+			return dateStr || '-';
+			}
+
+			function ipdReceivableDateValue(dateValue) {
+			if (!dateValue) return Number.POSITIVE_INFINITY;
+
+			var text = String(dateValue).trim();
+			var dotNetDate = /^\/Date\((\d+)/.exec(text);
+			if (dotNetDate) return parseInt(dotNetDate[1], 10);
+
+			var dmy = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{1,2}))?/.exec(text);
+			if (dmy) {
+			return new Date(
+			parseInt(dmy[3], 10),
+			parseInt(dmy[2], 10) - 1,
+			parseInt(dmy[1], 10),
+			parseInt(dmy[4] || '0', 10),
+			parseInt(dmy[5] || '0', 10)
+			).getTime();
+			}
+
+			var parsed = new Date(text);
+			return isNaN(parsed.getTime()) ? Number.POSITIVE_INFINITY : parsed.getTime();
+			}
+
+			function loadAssessmentsTab() {
+			if (_assessmentsLoaded) return;
+			var ipdId = getIPDApplicationFormid();
+			if (!ipdId) {
+			$('#ipd-assessments-loading').hide();
+			$('#ipd-assessments-empty').show();
+			return;
+			}
+			$('#ipd-assessments-loading').show();
+			$('#ipd-assessments-empty,#ipd-assessments-table-container').hide();
+			$.ajax({
+			url: '@Url.Action("get_Assessments_for_IPD_Data", "Assessment")',
+			dataType: 'json',
+			data: { IPDApplicationFormid: ipdId },
+			success: function (resp) {
+			_assessmentsLoaded = true;
+			var rows = $.isArray(resp) ? resp : ((resp && resp.detail) ? resp.detail : []);
+			$('#ipd-assessments-loading').hide();
+			if (!rows || rows.length === 0) {
+			$('#ipd-assessments-empty').show();
+			$('#assessments-count').hide();
+			return;
+			}
+			$('#assessments-count').text(rows.length).show();
+			var tbody = $('#ipd-assessments-rows');
+			tbody.empty();
+			rows.forEach(function (r, i) {
+			var assessmentId = r.Assessmentid || r.assessmentid || '';
+			var date = r.assessmentdate || '-';
+			var template = r.questionnairetemplate_master || '-';
+			var doctor = r.doctorname_master || '-';
+			var assessedby = r.assessedby || '-';
+			var eligible = (r.eligibleforfinaladmission || '').toString();
+			var notes = r.assessmentnotes || '';
+			var eligibleHtml;
+			if (eligible.toLowerCase() === 'yes') {
+			eligibleHtml = '<span class="eligibility-badge eligible">Yes</span>';
+			} else if (eligible.toLowerCase() === 'no') {
+			eligibleHtml = '<span class="eligibility-badge notEligible">No</span>';
+			} else {
+			eligibleHtml = '<span class="text-muted">' + (ipdEscape(eligible) || '-') + '</span>';
+			}
+			var viewUrl = '@Url.Action("IPD_Screening", "IPDApplicationForm")?IPDApplicationFormid=' + encodeURIComponent(ipdId);
+			tbody.append(
+			'<tr>' +
+			'<td>' + (i + 1) + '</td>' +
+			'<td>' + ipdEscape(date) + '</td>' +
+			'<td>' + ipdEscape(template) + '</td>' +
+			'<td>' + ipdEscape(doctor) + '</td>' +
+			'<td>' + ipdEscape(assessedby) + '</td>' +
+			'<td>' + eligibleHtml + '</td>' +
+			'<td>' + ipdEscape(notes) + '</td>' +
+			'<td class="text-center">' +
+			(assessmentId ? '<a href="' + viewUrl + '" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> View</a>' : '-') +
+			'</td>' +
+			'</tr>'
+			);
+			});
+			$('#ipd-assessments-table-container').show();
+			},
+			error: function () {
+			$('#ipd-assessments-loading').hide();
+			$('#ipd-assessments-empty').html('<i class="fa fa-exclamation-circle text-danger"></i> Failed to load assessments.').show();
+			}
+			});
+			}
+
+			function loadBillsTab() {
+			if (_billsLoaded) return;
+			var ipdId = getIPDApplicationFormid();
+			if (!ipdId) {
+			$('#ipd-bills-loading').hide();
+			$('#ipd-bills-content').show();
+			$('#ipd-bills-empty').show();
+			return;
+			}
+			$('#ipd-bills-loading').show();
+			$('#ipd-bills-content').hide();
+
+			var summaryReq = $.ajax({
+			url: '@Url.Action("Get_IPD_Billing_Summary_Data", "IPDApplicationForm")',
+			dataType: 'json',
+			data: { IPDApplicationFormid: ipdId }
+			});
+			var historyReq = $.ajax({
+			url: '@Url.Action("Get_Cancel_IPD_Payment_History_Data", "IPDApplicationForm")',
+			dataType: 'json',
+			data: { IPDApplicationFormid: ipdId }
+			});
+
+			$.when(summaryReq, historyReq).done(function (sumResp, histResp) {
+			_billsLoaded = true;
+			var summary = (sumResp && sumResp[0]) ? sumResp[0] : {};
+			var history = histResp && histResp[0] ? histResp[0] : [];
+			if (!$.isArray(history)) history = (history && history.detail) ? history.detail : [];
+
+			var totalReceivable = parseFloat(summary.totalamount) || 0;
+			var totalPaidServer = parseFloat(summary.totalamountpaid) || 0;
+			var advance = parseFloat(summary.advanceamount) || parseFloat(summary.bookingdepositpaid) || 0;
+			var balance = parseFloat(summary.remainingbalance) || 0;
+
+			var grandTotal = 0;
+			var advanceFromHistory = 0;
+			var tbody = $('#ipd-bills-rows');
+			tbody.empty();
+			if (!history || history.length === 0) {
+			$('#ipd-bills-table-container').hide();
+			$('#ipd-bills-empty').show();
+			} else {
+			$('#ipd-bills-empty').hide();
+			history.forEach(function (r, i) {
+			var amt = parseFloat(r.amount) || 0;
+			var refundAmt = parseFloat(r.refundedamount) || 0;
+			var isRefundRow = (r.receivablefor || '').toLowerCase() === 'cancellation refund' || amt < 0;
+			var netAmt = isRefundRow ? amt : (amt - refundAmt);
+			grandTotal += netAmt;
+			if (!isRefundRow && r.receivablefor && r.receivablefor.toLowerCase().indexOf('booking advance') >= 0) {
+			advanceFromHistory += netAmt;
+			}
+			var statusBadge = r.paymentstatus === 'Success'
+			? '<span class="label label-success">Success</span>'
+			: '<span class="label label-warning">' + ipdEscape(r.paymentstatus || '-') + '</span>';
+			var refundBadge = r.refundstatus ? '<span class="label label-info">' + ipdEscape(r.refundstatus) + '</span>' : '-';
+			var createdDate = r.createddate ? ipdFormatDate(r.createddate) : '-';
+			tbody.append(
+			'<tr>' +
+			'<td>' + (i + 1) + '</td>' +
+			'<td>' + ipdEscape(r.receiptno || '-') + '</td>' +
+			'<td>' + ipdEscape(r.receivablefor || '-') + (r.room_master ? '<br><small class="text-muted">Room: ' + ipdEscape(r.room_master) + '</small>' : '') + '</td>' +
+			'<td>' + createdDate + '</td>' +
+			'<td class="text-right">' + ipdFmt(amt) + '</td>' +
+			'<td>' + ipdEscape(r.paymentmode || '-') + '</td>' +
+			'<td>' + ipdEscape(r.transactionreference || '-') + '</td>' +
+			'<td>' + statusBadge + '</td>' +
+			'<td>' + ipdEscape(r.collectedby_master || '-') + '</td>' +
+			'<td>' + refundBadge + '</td>' +
+			'<td class="text-right">' + (refundAmt > 0 ? ipdFmt(refundAmt) : '-') + '</td>' +
+			'<td>' + ipdEscape(ipdDisplayRemarks(r.remarks)) + '</td>' +
+			'</tr>'
+			);
+			});
+			$('#ipd-bill-grandtotal').text(ipdFmt(grandTotal));
+			$('#ipd-bills-table-container').show();
+			}
+
+			if (totalPaidServer <= 0) totalPaidServer = grandTotal > 0 ? grandTotal : 0;
+			if (advance <= 0) advance = advanceFromHistory;
+
+			$('#ipd-bill-total').text(ipdFmt(totalReceivable));
+			$('#ipd-bill-paid').text(ipdFmt(totalPaidServer));
+			$('#ipd-bill-advance').text(ipdFmt(advance));
+			$('#ipd-bill-balance').text(ipdFmt(balance));
+
+			$('#ipd-bills-loading').hide();
+			$('#ipd-bills-content').show();
+			}).fail(function () {
+			$('#ipd-bills-loading').hide();
+			$('#ipd-bills-content').show();
+			$('#ipd-bills-empty').html('<i class="fa fa-exclamation-circle text-danger"></i> Failed to load billing details.').show();
+			});
+			}
+				function renderReceivableActions(ipdId) {
+				var patientId = window._currentIpdPatientId || '';
+				var bookingStatus = (window._currentIpdBookingStatus || '').toString().trim();
+				var isHealthcareProviderAdmin = (FD_USER_ROLE || '').toLowerCase() === 'healthcare provider admin';
+				var isFrontdeskAdmin = (FD_USER_ROLE || '').toLowerCase() === 'frontdesk admin';
+
+				if ((!isHealthcareProviderAdmin && !isFrontdeskAdmin) || !ipdId || bookingStatus !== 'Admitted') {
+				$('#ipd-receivable-actions-menu').empty();
+				$('.ipd-receivable-more').toggle(false);
+				return;
+				}
+
+				checkConcessionReviewForIpd(ipdId, function () {
+				var returnUrl = window.location.pathname + window.location.search;
+				var links = '';
+
+				if (isHealthcareProviderAdmin) {
+				if (_ipdConcessionInReview) {
+				links += '<li>' +
+				'<a href="' + FD_CONCESSION_REVIEW_URL + '?ConcessionFormid=' + encodeURIComponent(_ipdConcessionReviewFormId) + '">' +
+				'<i class="fa fa-percent"></i> Review Concession Form</a>' +
+				'</li>';
+				}
+				// No Add Receivable / create Concession Form for this role — same as Dashboard
+				} else {
+				var patientQuery = isGuidValue(patientId) ? '&patientname=' + encodeURIComponent(patientId) : '';
+				links += '<li>' +
+				'<a href="' + AddReceivable +
+				'?ipdnumber=' + encodeURIComponent(ipdId) +
+				patientQuery +
+				'&returnurl=' + encodeURIComponent(returnUrl) +
+				'">' +
+				'<i class="fa fa-plus-circle"></i> Add Receivable</a>' +
+				'</li>';
+
+				links += '<li>' +
+				'<a href="' + FD_CONCESSION_FORM_URL +
+				'?ipdnumber=' + encodeURIComponent(ipdId) +
+				patientQuery +
+				'&returnurl=' + encodeURIComponent(returnUrl) +
+				'">' +
+				'<i class="fa fa-percent"></i> Concession Form</a>' +
+				'</li>';
+				}
+
+				$('#ipd-receivable-actions-menu').html(links);
+				$('.ipd-receivable-more').toggle(!!links);
+				});
+				}
+
+			window.renderReceivableActions = renderReceivableActions;
+
+			window.renderReceivableActions = renderReceivableActions;
+			function loadReceivablesTab() {
+			if (_receivablesLoaded) return;
+
+			var ipdId = getIPDApplicationFormid();
+
+				renderReceivableActions(ipdId);
+
+			if (!ipdId) {
+			$('#ipd-receivables-loading').hide();
+			$('#ipd-receivables-content').show();
+			$('#ipd-receivables-empty').show();
+			return;
+			}
+
+			$('#ipd-receivables-loading').show();
+			$('#ipd-receivables-content').hide();
+			$('#ipd-receivables-empty,#ipd-receivables-table-container').hide();
+
+			$.ajax({
+			url: '@Url.Action("get_Receivables", "Receivable")',
+			dataType: 'json',
+			data: {
+			tenantid: '@Context.Session.GetString("NalamVazhachoosedtenantid")',
+			receivabledate_automatonfrom: '',
+			receivabledate_automatonto: '',
+			patientname: '',
+			ipdnumber: ipdId,
+			opdnumber: '',
+			receivablefor: '',
+			pagesize: 1000,
+			pagenumber: 0,
+			searchterm: '',
+			sortFieldsJson: ''
+			},
+			success: function (resp) {
+			_receivablesLoaded = true;
+
+			var rows = [];
+
+			if ($.isArray(resp)) {
+			rows = resp;
+			}
+			else if (resp && $.isArray(resp.detail)) {
+			rows = resp.detail;
+			}
+			else if (resp && resp.data && $.isArray(resp.data)) {
+			rows = resp.data;
+			}
+
+			// Inactive room/date rows are zero-value technical reconciliation records
+			// retained for transfer auditability. They are not patient-facing charges.
+			rows = rows.filter(function (row) {
+			var receivableFor = String(row.receivablefor || '').trim().toLowerCase();
+			var remarks = String(row.remarks || '').trim().toLowerCase();
+			var isInactiveRoomAdjustment = receivableFor === 'room' &&
+			(remarks.indexOf('inactive room/date') !== -1 ||
+			 remarks.indexOf('duplicate inactive line') !== -1);
+			return !isInactiveRoomAdjustment;
+			});
+
+			// Financial records are shown chronologically: oldest receivable first.
+			rows.sort(function (a, b) {
+			var firstDate = ipdReceivableDateValue(a.receivabledate);
+			var secondDate = ipdReceivableDateValue(b.receivabledate);
+
+			if (firstDate !== secondDate) return firstDate - secondDate;
+
+			return String(a.receivableno || '').localeCompare(
+			String(b.receivableno || ''),
+			undefined,
+			{ numeric: true, sensitivity: 'base' }
+			);
+			});
+
+			$('#ipd-receivables-loading').hide();
+			$('#ipd-receivables-content').show();
+
+			if (!rows || rows.length === 0) {
+			$('#ipd-receivables-empty').show();
+			
+			return;
+			}
+
+			
+
+			var tbody = $('#ipd-receivables-rows');
+			tbody.empty();
+
+			var totalAmount = 0;
+			var totalPaid = 0;
+			var totalBalance = 0;
+
+			rows.forEach(function (r, i) {
+			var amount = parseFloat(r.amount || 0);
+			var paid = parseFloat(r.paidamount || 0);
+
+			var balance;
+			if (r.balance !== undefined && r.balance !== null && r.balance !== '') {
+			balance = parseFloat(r.balance || 0);
+			} else {
+			balance = amount - paid;
+			}
+
+			totalAmount += amount;
+			totalPaid += paid;
+			totalBalance += balance;
+
+			var status = r.paymentstatus || 'Pending';
+
+			var statusBadge = status === 'Paid'
+			? '<span class="label label-success">Paid</span>'
+			: status === 'Partial'
+			? '<span class="label label-info">Partial</span>'
+			: '<span class="label label-warning">' + ipdEscape(status) + '</span>';
+
+			tbody.append(
+			'<tr>' +
+			'<td>' + (i + 1) + '</td>' +
+			'<td>' + ipdEscape(r.receivableno || '-') + '</td>' +
+			'<td>' + ipdEscape(ipdFormatDate(r.receivabledate) || '-') + '</td>' +
+			'<td>' + ipdEscape(r.receivablefor || '-') + '</td>' +
+			'<td>' + ipdEscape(r.room_master || r.roomnumber || '-') + '</td>' +
+			'<td>' + ipdEscape(ipdDisplayRemarks(r.remarks)) + '</td>' +
+			'<td class="text-right">' + ipdFmt(amount) + '</td>' +
+			'<td class="text-right">' + ipdFmt(paid) + '</td>' +
+			'<td class="text-right">' + ipdFmt(balance) + '</td>' +
+			'<td>' + statusBadge + '</td>' +
+			'</tr>'
+			);
+			});
+
+			$('#ipd-receivable-total').text(ipdFmt(totalAmount));
+			$('#ipd-receivable-paid').text(ipdFmt(totalPaid));
+			$('#ipd-receivable-balance').text(ipdFmt(totalBalance));
+
+			$('#ipd-receivables-table-container').show();
+			},
+			error: function () {
+			$('#ipd-receivables-loading').hide();
+			$('#ipd-receivables-content').show();
+			$('#ipd-receivables-empty')
+			.html('<i class="fa fa-exclamation-circle text-danger"></i> Failed to load receivables.')
+			.show();
+			}
+			});
+			}
+
+			$(document).ready(function () {
+			$('#ipdViewTabs a[role="tab"]').on('click', function (e) {
+			e.preventDefault();
+			var $this = $(this);
+			var target = $this.attr('href');
+
+			$('#ipdViewTabs li').removeClass('active');
+			$this.closest('li').addClass('active');
+
+			$('#ipdViewMainTabContent > .ipd-tab-pane').removeClass('active').hide();
+			$(target).addClass('active').show();
+
+			if (target === '#tab-assessments') loadAssessmentsTab();
+			else if (target === '#tab-receivables') loadReceivablesTab();
+			else if (target === '#tab-bills') loadBillsTab();
+			});
+			});
+			})();
+		</script>
+
+		<script>
+			function loadSignatureDynamic(signatureKey, signatureData) {
+			{
+			let spanElement = $(".auto_cls_" + signatureKey);
+			spanElement.html('<canvas id="' + signatureKey + '-pad" style="width:100%;height:100%"></canvas>');
+			const canvas = document.getElementById(signatureKey + '-pad');
+			if (canvas != undefined) {
+			const signaturePad = new SignaturePad(canvas);
+
+			function resizeCanvas() {
+			{
+			const ratio = Math.max(window.devicePixelRatio || 1, 1);
+			canvas.width = canvas.offsetWidth * ratio;
+			canvas.height = canvas.offsetHeight * ratio;
+			canvas.getContext('2d').scale(ratio, ratio);
+			}
+			}
+
+			$(window).on('resize', resizeCanvas);
+			resizeCanvas();
+
+			if (signatureData && signatureData !== '-') {
+			{
+			const img = new Image();
+			img.src = signatureData;
+			img.onload = function () {
+			{
+			signaturePad.clear();
+			signaturePad.fromDataURL(signatureData);
+			}
+			};
+			}
+			}
+
+			// Disable drawing for details page
+			signaturePad.off();
+			}
+			}
+			}
+		</script>
+		<script>
+				var _ipdConcessionInReview = false;
+				var _ipdConcessionReviewFormId = '';
+
+				function checkConcessionReviewForIpd(ipdId, callback) {
+				var tenantid = '@Context.Session.GetString("NalamVazhachoosedtenantid")';
+				_ipdConcessionInReview = false;
+				_ipdConcessionReviewFormId = '';
+
+				if (!tenantid || !ipdId) { callback(); return; }
+
+				var reviewUrl = FD_CONCESSION_REVIEW_LIST_URL +
+				'?tenantid=' + encodeURIComponent(tenantid) +
+				'&verifiedstatus=' + encodeURIComponent('Ready For Review');
+
+				$.ajax({ url: reviewUrl, dataType: 'json' })
+				.done(function (resp) {
+				var rows = $.isArray(resp) ? resp : ((resp && resp.detail) ? resp.detail : []);
+				(rows || []).forEach(function (row) {
+				var rowIpdId = (row.bookingreferencenumber || row.ipdnumber || row.IPDApplicationFormid || '').toString().trim();
+				if (rowIpdId === ipdId.toString().trim()) {
+				_ipdConcessionInReview = true;
+				_ipdConcessionReviewFormId = (row.concessionformid || row.ConcessionFormid || '').toString();
+				}
+				});
+				callback();
+				})
+				.fail(function () { callback(); });
+				}
+			</script>
+		<script src="~/js/signature_pad.umd.min.js"></script>

@@ -1,0 +1,1389 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@using Newtonsoft.Json.Linq
+@using System.Globalization
+@model NalamVazha.Models.BillingPaymentModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var summary = ViewBag.BillingSummary as NalamVazha.Models.IPDBillingSummaryModel;
+    var isOverpaidRefund = (ViewBag.IsOverpaymentRefund ?? false).ToString().Equals("true", StringComparison.OrdinalIgnoreCase);
+    var isRefundFlow = isOverpaidRefund || (ViewBag.TriggerRefund ?? false).ToString().Equals("true", StringComparison.OrdinalIgnoreCase);
+    var refundPageTitle = summary != null
+        ? $"Refund IPD {summary.patientfullname} / {summary.bookingreferencenumber}"
+        : "Refund IPD";
+    ViewData["Title"] = isRefundFlow ? refundPageTitle : "Cancel IPD";
+    decimal overpaidRefundAmount = 0;
+    if (ViewBag.OverpaidRefundAmount != null)
+    {
+        try { overpaidRefundAmount = Convert.ToDecimal(ViewBag.OverpaidRefundAmount); } catch { overpaidRefundAmount = 0; }
+    }
+}
+
+<style>
+    .payment-summary-card { border-left: 4px solid #2196F3; background: #f8f9fa; padding: 15px; margin-bottom: 15px; }
+    .payment-summary-card .amount { font-size: 1.4em; font-weight: bold; }
+    .text-success { color: #4CAF50 !important; }
+    .text-danger { color: #f44336 !important; }
+    .text-warning { color: #ff9800 !important; }
+    .text-info { color: #2196F3 !important; }
+    .payment-row-refund { background-color: #fff3e0 !important; }
+    #tblReceivableHistory th, #tblPaymentHistory th, #tblRefundBreakdown th { white-space: nowrap; }
+    .btn-danger { color: #f44336;border-color: transparent; }
+    .btn-danger:hover { color: #f44336;border-color: transparent; }
+    #btn-confirm-cancel.btn-primary { color: #fff !important; background-color: #2196F3; border-color: #2196F3; }
+    #btn-confirm-cancel.btn-primary:hover, #btn-confirm-cancel.btn-primary:focus { color: #fff !important; background-color: #0b7dda; border-color: #0b7dda; }
+    #btn-confirm-cancel:disabled { opacity: .55; cursor: not-allowed; }
+    .refund-field-error { color: #f44336; display: none; margin-top: 4px; }
+    .has-error .form-control { border-color: #f44336; }
+    .ipd-cancel-swal { width: 520px !important; padding: 28px 30px 24px !important; border-radius: 16px !important; box-shadow: 0 24px 70px rgba(16,45,36,.24) !important; }
+    .ipd-cancel-swal .swal2-icon, .ipd-cancel-swal .swal2-title { display: none !important; }
+    .ipd-cancel-swal .swal2-content { margin: 0 !important; padding: 0 !important; }
+    .ipd-cancel-confirm { color: #263b34; text-align: left; }
+    .ipd-cancel-confirm__header { margin-bottom: 20px; text-align: center; }
+    .ipd-cancel-confirm__icon { display: inline-flex; width: 52px; height: 52px; margin-bottom: 12px; align-items: center; justify-content: center; border-radius: 50%; background: #fff1f0; color: #b42318; font-size: 23px; box-shadow: inset 0 0 0 1px #ffd1cc; }
+    .ipd-cancel-confirm__eyebrow { margin-bottom: 4px; color: #b42318; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; }
+    .ipd-cancel-confirm__title { margin: 0; color: #183e32; font-size: 22px; font-weight: 700; line-height: 1.25; }
+    .ipd-cancel-confirm__intro { margin: 7px 0 0; color: #66756f; font-size: 14px; }
+    .ipd-cancel-confirm__summary { overflow: hidden; border: 1px solid #dbe7e2; border-radius: 12px; background: #fbfdfc; box-shadow: 0 4px 14px rgba(27,82,65,.05); }
+    .ipd-cancel-confirm__row { display: flex; justify-content: space-between; gap: 20px; padding: 12px 15px; border-bottom: 1px solid #e6eeeb; }
+    .ipd-cancel-confirm__row:last-child { border-bottom: 0; }
+    .ipd-cancel-confirm__label { color: #71807a; font-size: 13px; font-weight: 500; }
+    .ipd-cancel-confirm__value { color: #174c3b; font-size: 14px; font-weight: 700; text-align: right; }
+    .ipd-cancel-confirm__amount { color: #b42318; font-size: 18px; }
+    .ipd-cancel-confirm__note { display: flex; gap: 9px; margin: 14px 0 0; padding: 11px 13px; align-items: flex-start; border: 1px solid #f4dfb3; border-radius: 10px; background: #fffaf0; color: #795000; font-size: 12.5px; line-height: 1.45; text-align: left; }
+    .ipd-cancel-confirm__note i { margin-top: 2px; color: #b7791f; }
+    .ipd-cancel-swal .swal2-buttonswrapper { display: flex !important; gap: 10px; margin-top: 22px !important; justify-content: center; }
+    .ipd-cancel-swal .ipd-cancel-stay, .ipd-cancel-swal .ipd-cancel-proceed { min-width: 180px; margin: 0 !important; padding: 11px 18px !important; border-radius: 9px !important; font-size: 14px; font-weight: 700; box-shadow: none !important; }
+    .ipd-cancel-swal .ipd-cancel-stay { border: 1px solid #b9cbc4 !important; background: #fff !important; color: #275d4c !important; }
+    .ipd-cancel-swal .ipd-cancel-stay:hover { background: #f3f8f6 !important; }
+    .ipd-cancel-swal .ipd-cancel-proceed { border: 1px solid #b42318 !important; background: #b42318 !important; color: #fff !important; }
+    .ipd-cancel-swal .ipd-cancel-proceed:hover { border-color: #8f1c13 !important; background: #8f1c13 !important; }
+    @@media (max-width: 520px) {
+        .ipd-cancel-swal { width: calc(100% - 24px) !important; padding: 24px 18px 20px !important; }
+        .ipd-cancel-confirm__row { display: block; }
+        .ipd-cancel-confirm__value { display: block; margin-top: 3px; text-align: left; }
+        .ipd-cancel-swal .swal2-buttonswrapper { flex-direction: column-reverse; }
+        .ipd-cancel-swal .ipd-cancel-stay, .ipd-cancel-swal .ipd-cancel-proceed { width: 100%; min-width: 0; }
+    }
+</style>
+
+@if (summary != null)
+{
+<div class="card card-block contCard">
+    <div class="mobileHeader">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="formHdr">
+                    <i class="fa @(isRefundFlow ? "fa-undo text-warning" : "fa-times-circle text-danger")"></i>
+                    @(isRefundFlow ? refundPageTitle : "Cancel IPD")
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-block">
+        @{
+            var roomDetails = new JArray();
+            if (!string.IsNullOrWhiteSpace(summary.blocked_room_details_json))
+            {
+                try { roomDetails = JArray.Parse(summary.blocked_room_details_json); } catch { roomDetails = new JArray(); }
+            }
+            var days = summary.daysofstay.GetValueOrDefault() > 0 ? summary.daysofstay.GetValueOrDefault() : 1;
+            decimal blockedRoomsGrandTotal = 0;
+        }
+
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label">Booking Reference</label>
+                    <p class="form-control-static"><strong>@summary.bookingreferencenumber</strong></p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label">Patient Name</label>
+                    <p class="form-control-static"><strong>@summary.patientfullname</strong></p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label">Booking Status</label>
+                    <p class="form-control-static">
+                        @{
+                            string badgeClass = summary.bookingstatus == "Admitted" ? "label-success"
+                                              : summary.bookingstatus == "Patient Arrived" ? "label-warning"
+                                              : "label-info";
+                        }
+                        <span class="label @badgeClass">@summary.bookingstatus</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+       @*  @if (roomDetails.Count > 0)
+        {
+            <h5><i class="fa fa-bed"></i> Blocked Room Details</h5>
+            <div class="row">
+                <div class="col-sm-12">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Allotted To</th>
+                                <th>Blocked Room Number</th>
+                                <th>From Date</th>
+                                <th>To Date</th>
+                                <th class="text-right">No. of Days</th>
+                                <th class="text-right">Cost Per Day</th>
+                                <th class="text-right">Line Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var room in roomDetails)
+                            {
+                                var role = (room["allottedto"]?.ToString() ?? "").Trim();
+                                var roomNo = (room["roomnumber"]?.ToString() ?? "").Trim();
+                                var fromDateRaw = (room["fromdate"]?.ToString() ?? "").Trim();
+                                var toDateRaw = (room["todate"]?.ToString() ?? "").Trim();
+                                DateTime parsedFrom;
+                                DateTime parsedTo;
+                                var fromDate = DateTime.TryParse(fromDateRaw, out parsedFrom) ? parsedFrom.ToString("dd/MM/yyyy") : fromDateRaw.Split(' ')[0];
+                                var toDate = DateTime.TryParse(toDateRaw, out parsedTo) ? parsedTo.ToString("dd/MM/yyyy") : toDateRaw.Split(' ')[0];
+                                var patientCpd = (decimal?)room["costperday"] ?? 0;
+                                var attendantCpd = (decimal?)room["attendantcostperday"] ?? 0;
+                                var rowCost = role.Equals("Attendant", StringComparison.OrdinalIgnoreCase) ? attendantCpd : patientCpd;
+                                var rowDays = (DateTime.TryParse(fromDateRaw, out parsedFrom) && DateTime.TryParse(toDateRaw, out parsedTo))
+                                    ? Math.Max(1, (parsedTo.Date - parsedFrom.Date).Days + 1)
+                                    : days;
+                                var lineTotal = rowCost * rowDays;
+                                blockedRoomsGrandTotal += lineTotal;
+                                <tr>
+                                    <td>@role</td>
+                                    <td><strong>@(string.IsNullOrWhiteSpace(roomNo) ? "-" : roomNo)</strong></td>
+                                    <td>@(string.IsNullOrWhiteSpace(fromDate) ? "-" : fromDate)</td>
+                                    <td>@(string.IsNullOrWhiteSpace(toDate) ? "-" : toDate)</td>
+                                    <td class="text-right">@rowDays</td>
+                                    <td class="text-right">&#8377; @rowCost.ToString("N2")</td>
+                                    <td class="text-right"><strong>&#8377; @lineTotal.ToString("N2")</strong></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-info">
+                                <th colspan="6" class="text-right">Total Room Cost</th>
+                                <th class="text-right">&#8377; @blockedRoomsGrandTotal.ToString("N2")</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <hr />
+        }
+ *@
+        <div class="row" style="display:none">
+            <div class="col-sm-3">
+                <div class="payment-summary-card" style="border-left-color:#2196F3;">
+                    <small class="text-muted">Total Room Cost</small>
+                    <div class="amount">&#8377; <span id="lbl-room-cost">@blockedRoomsGrandTotal.ToString("N2")</span></div>
+                </div>
+            </div>  
+            <div class="col-sm-3">
+                <div class="payment-summary-card" style="border-left-color:#4CAF50;">
+                    <small class="text-muted">Total Paid</small>
+                    <div class="amount text-success">&#8377; <span id="lbl-total-paid">0.00</span></div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="payment-summary-card" style="border-left-color:#ff9800;">
+                    <small class="text-muted">Booking Advance Paid</small>
+                    <div class="amount text-warning">&#8377; <span id="lbl-advance-paid">0.00</span></div>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="payment-summary-card" style="border-left-color:#f44336;">
+                    <small class="text-muted">Amount To Refund</small>
+                    <div class="amount text-danger">&#8377; <span id="lbl-refund-total-card">0.00</span></div>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h5><i class="fa fa-file-text-o"></i> Receivable Details</h5>
+                <div id="receivable-loading" class="text-center" style="padding:20px;">
+                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                    <p>Loading receivable details...</p>
+                </div>
+                <div class="table-responsive" id="receivable-table-container" style="display:none;">
+                    <table id="tblReceivableHistory" class="table table-bordered table-striped table-hover" style="margin:0;">
+                        <thead class="thead-default">
+                            <tr>
+                                <th>#</th>
+                                <th>Receivable No</th>
+                                <th>Date</th>
+                                <th>Receivable For</th>
+                                <th>Room</th>
+                                <th class="text-right">Amount (&#8377;)</th>
+                                <th class="text-right">Paid (&#8377;)</th>
+                                <th class="text-right">Balance (&#8377;)</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="receivable-rows"></tbody>
+                        <tfoot>
+                            <tr class="active">
+                                <td colspan="5" class="text-right"><strong>Total</strong></td>
+                                <td class="text-right"><strong>&#8377; <span id="lbl-receivable-total">0.00</span></strong></td>
+                                <td class="text-right"><strong>&#8377; <span id="lbl-receivable-paid">0.00</span></strong></td>
+                                <td class="text-right"><strong>&#8377; <span id="lbl-receivable-balance">0.00</span></strong></td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div id="receivable-no-data" class="alert alert-info" style="display:none;">
+                    <i class="fa fa-info-circle"></i> No receivables found for this IPD.
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h5><i class="fa fa-list"></i> Payment History</h5>
+                <div id="payment-loading" class="text-center" style="padding:20px;">
+                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                    <p>Loading payment history...</p>
+                </div>
+                <div class="table-responsive" id="payment-table-container" style="display:none;">
+                    <table id="tblPaymentHistory" class="table table-bordered table-striped table-hover" style="margin:0;">
+                        <thead class="thead-default">
+                            <tr>
+                                <th>#</th>
+                                <th>Receipt No</th>
+                                <th>Payment For</th>
+                                <th>Date</th>
+                                <th class="text-right">Amount (&#8377;)</th>
+                                <th>Payment Mode</th>
+                                <th>Status</th>
+                                <th>Collected By</th>
+                                <th>Refund Status</th>
+                                <th>Refunded Amt (&#8377;)</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payment-rows"></tbody>
+                        <tfoot>
+                            <tr class="active">
+                                <td colspan="4" class="text-right"><strong>Grand Total</strong></td>
+                                <td class="text-right"><strong>&#8377; <span id="lbl-grand-total">0.00</span></strong></td>
+                                <td colspan="6"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div id="payment-no-data" class="alert alert-info" style="display:none;">
+                    <i class="fa fa-info-circle"></i> No payments found for this IPD.
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="row">
+            <div class="col-sm-12">
+                <h5><i class="fa fa-undo"></i> Refund Details</h5>
+                <div id="refund-loading" class="text-center" style="padding:30px;">
+                    <i class="fa fa-spinner fa-spin fa-2x"></i>
+                    <p>Fetching refund details...</p>
+                </div>
+                <div id="refund-details" style="display:none;">
+                    @if (!isOverpaidRefund)
+                    {
+                        <div class="alert alert-info">
+                            <strong>Cancellation by:</strong> <span id="lbl-cancellationby">-</span>
+                        </div>
+                    }
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped" id="tblRefundBreakdown">
+                            <thead>
+                                <tr class="active">
+                                    <th>Payment For / Refund Type</th>
+                                    <th class="text-right">Paid Amount</th>
+                                    <th class="text-center">Refund %</th>
+                                    <th class="text-right">Refund Amount</th>
+                                    <th class="text-center">Policy</th>
+                                </tr>
+                            </thead>
+                            <tbody id="refund-rows"></tbody>
+                            <tfoot>
+                                <tr class="success">
+                                    <td colspan="3"><strong>Total Refund to Patient</strong></td>
+                                    <td class="text-right"><strong>&#8377; <span id="lbl-total-refund">0.00</span></strong></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12" id="row-health-seeker-remarks" style="display:none;">
+                            <div class="form-group">
+                                <label>Health Seeker Cancellation Remarks</label>
+                                <div id="health-seeker-remarks" class="alert alert-info" style="margin-bottom:15px; white-space:pre-wrap;"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" id="row-cancellationby" style="display:none;">
+                            <div class="form-group">
+                                <label>Cancelled By <span class="text-danger">*</span></label>
+                                <select id="cancellationby" class="form-control">
+                                    <option value="Patient">Cancelled by Patient</option>
+                                    <option value="Hospital">Cancelled by Front Desk</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6" id="col-refundmode">
+                            <div class="form-group">
+                                <label>Refund Mode <span class="text-danger">*</span></label>
+                                <select id="refundmode" class="form-control">
+                                    <option value="">Choose</option>
+                                </select>
+                                <div id="refundmode-validation" class="help-block refund-field-error"></div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label id="cancellation-reason-label">@(isOverpaidRefund ? "Refund Reason" : "Cancellation Reason") <span class="text-danger">*</span></label>
+                                <textarea id="txt-cancel-reason" class="form-control" rows="2" placeholder="@(isOverpaidRefund ? "Enter reason for refund..." : "Enter reason for cancellation...")">@(isOverpaidRefund ? "Overpayment refund" : "")</textarea>
+                                <div id="txt-cancel-reason-validation" class="help-block refund-field-error"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="row-refunded-amount" style="display:none;">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>
+                                    Refund Amount (&#8377;) <span class="text-danger">*</span>
+                                    <small class="text-muted"> - @(isOverpaidRefund ? "extra paid amount only" : "full policy amount only")</small>
+                                </label>
+                                <input type="number" id="txt-refunded-amount" class="form-control" min="0" step="0.01" placeholder="0.00" readonly />
+                                <div id="txt-refunded-amount-validation" class="help-block refund-field-error"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="info-razorpay" class="alert alert-info" style="display:none;">
+                        <p style="margin-bottom:6px;"><i class="fa fa-bolt"></i> <strong>How RazorPay Refund works:</strong></p>
+                        <ol style="margin-bottom:4px; padding-left:18px;">
+                            <li>Enter the <strong>Cancellation Reason</strong>.</li>
+                            <li>Click <strong>Process RazorPay Refund</strong>.</li>
+                            <li>The refund is sent automatically to the patient's original payment source.</li>
+                        </ol>
+                    </div>
+                    <div id="info-manual" class="alert alert-info" style="display:none;">
+                        <i class="fa fa-hand-o-right"></i>
+                        <strong>Manual Refund:</strong> Enter the refund amount, then click <strong>Record Manual Refund</strong>.
+                    </div>
+                    <div class="alert alert-info" id="alert-cancel-warning-hs" style="display:none;">
+                        <i class="fa fa-info-circle"></i>
+                        The amounts below are <strong>estimated</strong> from the cancellation policy. This will cancel your booking as <strong>Cancelled by Patient</strong>.
+                        <strong>Front Desk</strong> will process the actual refund. No payment is released from this screen.
+                        <span class="hidden-xs"><br /></span>
+                        Estimated refund: <strong>&#8377; <span class="lbl-warning-amount-hs">0.00</span></strong>
+                    </div>
+                    <div class="alert alert-warning" id="alert-cancel-warning-fd">
+                        <i class="fa fa-exclamation-triangle"></i>
+                        This action will
+                        @if (isOverpaidRefund)
+                        {
+                            <strong>record the overpaid refund</strong>
+                        }
+                        else
+                        {
+                            <strong>cancel the booking</strong>
+                        }
+                        and refund
+                        <strong>&#8377; <span id="lbl-warning-amount">0.00</span></strong>.
+                        @if (!isOverpaidRefund)
+                        {
+                            <strong>This cannot be undone.</strong>
+                        }
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center" style="display:flex!important; justify-content:space-between; align-items:center;">
+                        <button type="button" onclick="history.back()" class="btn btn-secondary">
+                            <i class="fa fa-arrow-left"></i> Go Back
+                        </button>
+                        <button type="button" id="btn-confirm-cancel" class="btn btn-danger" disabled>
+                            <i class="fa fa-check"></i> @(isOverpaidRefund ? "Record Refund" : "Confirm Cancellation & Refund")
+                        </button>
+                    </div>
+                </div>
+                <div id="refund-error" class="alert alert-danger" style="display:none;"></div>
+                <div id="refund-success" class="alert alert-success" style="display:none;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+}
+else
+{
+<div class="card card-block contCard">
+    <div class="card-block">
+        <div class="alert alert-danger">IPD billing record not found. Please go back and try again.</div>
+        <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+</div>
+}
+
+@if (summary != null)
+{
+<script>
+var _ipdApplicationFormId = '@ViewBag.IPDApplicationFormid';
+var _roomCost = parseFloat('@summary.totalamount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)');
+var _paymentData = [];
+let userRole = "@(Context.Session.GetString("NalamVazhauserrole") ?? "")";
+var _initialCancellationBy = '@(ViewBag.CancellationBy ?? "Hospital")';
+var isHealthSeeker = @(ViewBag.IsHealthSeeker == true ? "true" : "false");
+var isFrontDeskAdmin = @(ViewBag.IsFrontDeskAdmin == true ? "true" : "false");
+var isOverpaidRefund = @(isOverpaidRefund ? "true" : "false");
+</script>
+
+<script>
+function loadPaymentHistory() {
+    $.ajax({
+        url: '@Url.Action("Get_Cancel_IPD_Payment_History_Data", "IPDApplicationForm")',
+        dataType: 'json',
+        data: { "IPDApplicationFormid": _ipdApplicationFormId },
+        success: function (response) {
+            $('#payment-loading').hide();
+            var records = $.isArray(response) ? response : ((response && response.detail) ? response.detail : []);
+            _paymentData = records;
+            if (typeof window.updateRefundPaymentEligibility === 'function') window.updateRefundPaymentEligibility(records);
+            if (records.length === 0) {
+                $('#payment-no-data').show();
+                updateSummaryCards(0, 0);
+                return;
+            }
+            $('#payment-table-container').show();
+            var tbody = $('#payment-rows');
+            tbody.empty();
+            var grandTotal = 0;
+            var advanceTotal = 0;
+            for (var i = 0; i < records.length; i++) {
+                var r = records[i];
+                var amt = parseFloat(r.amount) || 0;
+                var refundAmt = parseFloat(r.refundedamount) || 0;
+                var isRefundRow = (r.receivablefor || '').toLowerCase() === 'cancellation refund' || amt < 0;
+                var netAmt = isRefundRow ? amt : (amt - refundAmt);
+                grandTotal += netAmt;
+                if (!isRefundRow && r.receivablefor && r.receivablefor.toLowerCase().indexOf('booking advance') >= 0) advanceTotal += netAmt;
+                var rowClass = refundAmt > 0 ? 'payment-row-refund' : '';
+                var statusBadge = r.paymentstatus === 'Success'
+                    ? '<span class="label label-success">Success</span>'
+                    : '<span class="label label-warning">' + (r.paymentstatus || '-') + '</span>';
+                var refundBadge = r.refundstatus ? '<span class="label label-info">' + r.refundstatus + '</span>' : '-';
+                var createdDate = r.createddate ? formatDate(r.createddate) : '-';
+                tbody.append(
+                    '<tr class="' + rowClass + '">' +
+                    '<td>' + (i + 1) + '</td>' +
+                    '<td>' + (r.receiptno || '-') + '</td>' +
+                    '<td>' + (r.receivablefor || '-') + (r.room_master ? '<br><small class="text-muted">Room: ' + r.room_master + '</small>' : '') + '</td>' +
+                    '<td>' + createdDate + '</td>' +
+                    '<td class="text-right">' + fmt(amt) + '</td>' +
+                    '<td>' + (r.paymentmode || '-') + '</td>' +
+                    '<td>' + statusBadge + '</td>' +
+                    '<td>' + (r.collectedby_master || '-') + '</td>' +
+                    '<td>' + refundBadge + '</td>' +
+                    '<td class="text-right">' + (refundAmt > 0 ? fmt(refundAmt) : '-') + '</td>' +
+                    '<td>' + (r.remarks || '-') + '</td>' +
+                    '</tr>'
+                );
+            }
+            $('#lbl-grand-total').text(fmt(grandTotal));
+            updateSummaryCards(grandTotal, advanceTotal);
+        },
+        error: function () {
+            $('#payment-loading').hide();
+            if (typeof window.updateRefundPaymentEligibility === 'function') window.updateRefundPaymentEligibility([]);
+            $('#payment-no-data').html('<i class="fa fa-exclamation-circle text-danger"></i> Failed to load payment history.').show();
+        }
+    });
+}
+
+function loadReceivableHistory() {
+    $.ajax({
+        url: '@Url.Action("Get_IPD_All_Receivables_Data", "IPDApplicationForm")',
+        dataType: 'json',
+        data: { "IPDApplicationFormid": _ipdApplicationFormId },
+        success: function (response) {
+            $('#receivable-loading').hide();
+            var records = $.isArray(response) ? response : ((response && response.detail) ? response.detail : []);
+            if (!records.length) {
+                $('#receivable-no-data').show();
+                return;
+            }
+
+            $('#receivable-table-container').show();
+            var tbody = $('#receivable-rows').empty();
+            var totalAmount = 0;
+            var totalPaid = 0;
+            var totalBalance = 0;
+
+            records.forEach(function (r, index) {
+                var amount = parseFloat(r.amount) || 0;
+                var paid = parseFloat(r.paidamount) || 0;
+                var balance = r.balance == null ? amount - paid : (parseFloat(r.balance) || 0);
+                var dateValue = r.receivabledate || r.createddate;
+                totalAmount += amount;
+                totalPaid += paid;
+                totalBalance += balance;
+
+                tbody.append('<tr>' +
+                    '<td>' + (index + 1) + '</td>' +
+                    '<td>' + safeText(r.receivableno || '-') + '</td>' +
+                    '<td>' + (dateValue ? safeText(formatDate(dateValue)) : '-') + '</td>' +
+                    '<td>' + safeText(r.receivablefor || '-') + '</td>' +
+                    '<td>' + safeText(r.roomnumber || r.room_master || r.room || '-') + '</td>' +
+                    '<td class="text-right">' + fmt(amount) + '</td>' +
+                    '<td class="text-right">' + fmt(paid) + '</td>' +
+                    '<td class="text-right">' + fmt(balance) + '</td>' +
+                    '<td>' + safeText(r.paymentstatus || '-') + '</td>' +
+                    '<td>' + safeText(r.remarks || '-') + '</td>' +
+                    '</tr>');
+            });
+
+            $('#lbl-receivable-total').text(fmt(totalAmount));
+            $('#lbl-receivable-paid').text(fmt(totalPaid));
+            $('#lbl-receivable-balance').text(fmt(totalBalance));
+        },
+        error: function () {
+            $('#receivable-loading').hide();
+            $('#receivable-no-data')
+                .html('<i class="fa fa-exclamation-circle text-danger"></i> Failed to load receivable details.')
+                .show();
+        }
+    });
+}
+
+function updateSummaryCards(totalPaid, advancePaid) {
+    $('#lbl-total-paid').text(fmt(totalPaid));
+    $('#lbl-advance-paid').text(fmt(advancePaid));
+}
+
+function loadRefundModes() {
+    var strrefundmode = '';
+    $.ajax({
+        url: '@Url.Action("get_lookups_by_entity","lookups")',
+        dataType: 'json',
+        data: { id: 'BillingPayment' },
+        success: function (data) {
+            $.each(data, function (index, optionDataInner) {
+                if (optionDataInner.fieldname == "refundmode") {
+                    var ddl = "#refundmode"; $(ddl).empty(); $(ddl).append("<option value=''>Choose</option>");
+                    optionDataInner.fielddesc.split(',').sort(function(a,b){return a.localeCompare(b);}).forEach(function(o){
+                        $(ddl).append('<option '+(strrefundmode==o?'selected ':'')+' value="'+o+'">'+o+'</option>');
+                    });
+                }
+            });
+        }
+    });
+}
+
+(function () {
+    var ipdId = '@summary.IPDApplicationFormid';
+    var overpaidRefundAmount = parseFloat('@overpaidRefundAmount.ToString("0.00", CultureInfo.InvariantCulture)') || 0;
+    /* isHealthSeeker / isFrontDeskAdmin come from server (ViewBag) — avoids session string mismatch and jQuery ready ordering issues */
+    var cancellationBy = isHealthSeeker ? 'Patient' : (_initialCancellationBy || 'Hospital');
+    var refundRows = [];
+    var totalPaidCap = 0;
+    var totalRefundDue = 0;
+    var razorpayPaidBalance = 0;
+    var hasRazorpayEligiblePayment = false;
+    var isPaymentHistoryLoaded = false;
+    var isProcessingRefund = false;
+
+    function applyRoleModeUI() {
+        var elHs = document.getElementById('alert-cancel-warning-hs');
+        var elFd = document.getElementById('alert-cancel-warning-fd');
+        var btn = document.getElementById('btn-confirm-cancel');
+        if (isHealthSeeker) {
+            document.getElementById('row-cancellationby').style.display = 'none';
+            document.getElementById('col-refundmode').style.display = 'none';
+            document.getElementById('row-refunded-amount').style.display = 'none';
+            document.getElementById('info-razorpay').style.display = 'none';
+            document.getElementById('info-manual').style.display = 'none';
+            var lblBy = document.getElementById('lbl-cancellationby');
+            if (lblBy) lblBy.textContent = 'Patient';
+            btn.className = 'btn btn-danger';
+            btn.innerHTML = '<i class="fa fa-check"></i> Record cancellation';
+            if (elHs) elHs.style.display = 'block';
+            if (elFd) elFd.style.display = 'none';
+        } else {
+            if (elHs) elHs.style.display = 'none';
+            if (elFd) elFd.style.display = 'block';
+            if (isFrontDeskAdmin && !isOverpaidRefund) {
+                document.getElementById('row-cancellationby').style.display = 'block';
+                document.getElementById('cancellationby').value = (cancellationBy === 'Patient' ? 'Patient' : 'Hospital');
+            } else if (isOverpaidRefund) {
+                document.getElementById('row-cancellationby').style.display = 'none';
+            }
+        }
+        updateActionButton();
+    }
+
+    window.updateRefundPaymentEligibility = function (records) {
+        var onlineBalance = 0;
+        records = Array.isArray(records) ? records : [];
+        records.forEach(function (r) {
+            var amt = parseFloat(r.amount) || 0;
+            var refundAmt = parseFloat(r.refundedamount) || 0;
+            var receivable = (r.receivablefor || '').toLowerCase();
+            var isRefundRow = receivable === 'cancellation refund' || amt < 0;
+            if (isRefundRow) return;
+
+            var mode = (r.paymentmode || '').toLowerCase();
+            var txn = (r.transactionreference || '').trim();
+            var isOnline = mode.indexOf('online') >= 0 || mode.indexOf('razor') >= 0 || txn.toLowerCase().indexOf('pay_') === 0;
+            if (isOnline) onlineBalance += Math.max(0, amt - refundAmt);
+        });
+        razorpayPaidBalance = onlineBalance;
+        hasRazorpayEligiblePayment = razorpayPaidBalance > 0;
+        isPaymentHistoryLoaded = true;
+        updateActionButton();
+    };
+
+    function clearValidation() {
+        ['refundmode', 'txt-cancel-reason', 'txt-refunded-amount'].forEach(function (id) {
+            var el = document.getElementById(id);
+            var msg = document.getElementById(id + '-validation');
+            if (el && el.parentElement) el.parentElement.classList.remove('has-error');
+            if (msg) { msg.textContent = ''; msg.style.display = 'none'; }
+        });
+        var error = document.getElementById('refund-error');
+        if (error) error.style.display = 'none';
+    }
+
+    function setFieldError(id, message) {
+        var el = document.getElementById(id);
+        var msg = document.getElementById(id + '-validation');
+        if (el && el.parentElement) el.parentElement.classList.add('has-error');
+        if (msg) { msg.textContent = message; msg.style.display = 'block'; }
+    }
+
+    function validateRefundForm(showMessages) {
+        if (showMessages) clearValidation();
+        var errors = [];
+        var refundMode = (document.getElementById('refundmode').value || '').trim();
+        var reason = (document.getElementById('txt-cancel-reason').value || '').trim();
+        var isRazorPay = refundMode === 'RazorPay';
+        var isZeroRefund = isHealthSeeker || (!isOverpaidRefund && refundRows.length === 0);
+        var manualRefundAmount = totalRefundDue;
+
+        if (!reason) {
+            errors.push(isOverpaidRefund ? 'Please enter a Refund Reason.' : 'Please enter a Cancellation Reason.');
+            if (showMessages) setFieldError('txt-cancel-reason', isOverpaidRefund ? 'Refund Reason is required.' : 'Cancellation Reason is required.');
+        }
+        if (!isHealthSeeker && !isZeroRefund && !refundMode) {
+            errors.push('Please select a Refund Mode.');
+            if (showMessages) setFieldError('refundmode', 'Refund Mode is required.');
+        }
+        if (isOverpaidRefund && totalRefundDue <= 0) {
+            errors.push('Extra paid amount should be greater than zero.');
+            if (showMessages) setFieldError('txt-refunded-amount', 'Extra paid amount should be greater than zero.');
+        }
+        if (!isHealthSeeker && !isZeroRefund && !isRazorPay) {
+            if (isNaN(manualRefundAmount) || manualRefundAmount < 0) {
+                errors.push('Please enter a valid Refund Amount.');
+                if (showMessages) setFieldError('txt-refunded-amount', 'Enter a valid Refund Amount.');
+            } else if (totalPaidCap > 0 && manualRefundAmount > totalPaidCap) {
+                errors.push('Refund amount cannot be greater than paid amount (₹' + fmt(totalPaidCap) + ').');
+                if (showMessages) setFieldError('txt-refunded-amount', 'Amount cannot exceed ₹' + fmt(totalPaidCap) + '.');
+            }
+        }
+        if (!isOverpaidRefund && !isHealthSeeker && !isZeroRefund && isRazorPay) {
+            if (!isPaymentHistoryLoaded) {
+                errors.push('Payment history is still loading. Please try again in a moment.');
+            } else if (!hasRazorpayEligiblePayment) {
+                errors.push('RazorPay refund is allowed only when the original payment was made online.');
+                if (showMessages) setFieldError('refundmode', 'No eligible online payment found for RazorPay refund.');
+            } else if (totalRefundDue <= 0) {
+                errors.push('Refund amount must be greater than zero for RazorPay refund.');
+                if (showMessages) setFieldError('refundmode', 'RazorPay refund requires a positive refund amount.');
+            } else if (totalRefundDue > razorpayPaidBalance) {
+                errors.push('Refund amount cannot be greater than online paid balance (₹' + fmt(razorpayPaidBalance) + ').');
+                if (showMessages) setFieldError('refundmode', 'Online paid balance is ₹' + fmt(razorpayPaidBalance) + '.');
+            }
+        }
+
+        if (showMessages && errors.length) showError(errors[0]);
+        return {
+            valid: errors.length === 0,
+            errors: errors,
+            refundMode: refundMode,
+            reason: reason,
+            isRazorPay: isRazorPay,
+            isZeroRefund: isZeroRefund,
+            manualRefundAmount: isZeroRefund ? 0 : (isRazorPay ? null : totalRefundDue)
+        };
+    }
+
+    function updateActionButton() {
+        var btn = document.getElementById('btn-confirm-cancel');
+        if (!btn) return;
+        var mode = (document.getElementById('refundmode').value || '').trim();
+        var validation = validateRefundForm(false);
+        restoreBtnLabel(btn, mode === 'RazorPay', mode);
+        btn.disabled = isProcessingRefund || !validation.valid;
+        btn.style.display = 'inline-block';
+    }
+
+    document.getElementById('refundmode').addEventListener('change', function () {
+        var mode = this.value;
+        var isRazorPay = (mode === 'RazorPay');
+        var btn = document.getElementById('btn-confirm-cancel');
+        document.getElementById('info-razorpay').style.display = (!isOverpaidRefund && isRazorPay) ? 'block' : 'none';
+        document.getElementById('info-manual').style.display = (mode && (isOverpaidRefund || !isRazorPay)) ? 'block' : 'none';
+        document.getElementById('row-refunded-amount').style.display = (mode && (isOverpaidRefund || !isRazorPay)) ? 'block' : 'none';
+        if (isOverpaidRefund && mode) { btn.innerHTML = '<i class="fa fa-check"></i> Record Refund (' + mode + ')'; btn.className = 'btn btn-warning'; }
+        else if (isOverpaidRefund) { btn.innerHTML = '<i class="fa fa-check"></i> Record Refund'; btn.className = 'btn btn-warning'; }
+        else if (isRazorPay) { btn.innerHTML = '<i class="fa fa-bolt"></i> Process RazorPay Refund'; btn.className = 'btn btn-primary'; }
+        else if (mode) { btn.innerHTML = '<i class="fa fa-check"></i> Record Manual Refund (' + mode + ')'; btn.className = 'btn btn-warning'; }
+        else { btn.innerHTML = '<i class="fa fa-check"></i> ' + (isOverpaidRefund ? 'Record Refund' : 'Confirm Cancellation &amp; Refund'); btn.className = isOverpaidRefund ? 'btn btn-warning' : 'btn btn-danger'; }
+        updateActionButton();
+    });
+
+    var cancelReasonEl = document.getElementById('txt-cancel-reason');
+    if (cancelReasonEl) {
+        cancelReasonEl.addEventListener('input', function () { clearValidation(); updateActionButton(); });
+        cancelReasonEl.addEventListener('change', updateActionButton);
+    }
+
+    var refundedAmountEl = document.getElementById('txt-refunded-amount');
+    if (refundedAmountEl) {
+        refundedAmountEl.addEventListener('input', function () { clearValidation(); updateActionButton(); });
+        refundedAmountEl.addEventListener('change', updateActionButton);
+    }
+
+    if (document.getElementById('cancellationby')) {
+        document.getElementById('cancellationby').addEventListener('change', function () {
+            if (isFrontDeskAdmin && !isHealthSeeker && !isOverpaidRefund) {
+                cancellationBy = this.value || 'Hospital';
+                loadRefundDetails();
+                loadHealthSeekerCancellationRemarks();
+            }
+        });
+    }
+
+    window.loadRefundDetails = function () {
+        resetRefund();
+        if (isOverpaidRefund) {
+            renderOverpaidRefundDetails();
+            return;
+        }
+        var by = isHealthSeeker ? 'Patient' : cancellationBy;
+        fetch('@Url.Action("Get_IPD_Refund_Details_Data", "IPDApplicationForm")?IPDApplicationFormid=' + ipdId + '&cancellationby=' + encodeURIComponent(by))
+            .then(function (res) { if (res.status === 404) return []; return res.json(); })
+            .then(function (data) {
+                document.getElementById('refund-loading').style.display = 'none';
+                refundRows = Array.isArray(data) ? data : (data ? [data] : []);
+                if (refundRows.length === 0) {
+                    document.getElementById('tblRefundBreakdown').style.display = 'none';
+                    setRefundTotals(0);
+                    var msg = '<strong>No refund policy configured for this booking.</strong> You may still cancel';
+                    msg += isHealthSeeker ? ' — Front Desk can review later.' : ' — no refund will be issued.';
+                    showError(msg);
+                } else {
+                    renderRefundTable(refundRows);
+                }
+                document.getElementById('refund-details').style.display = 'block';
+                applyRoleModeUI();
+            })
+            .catch(function (err) {
+                document.getElementById('refund-loading').style.display = 'none';
+                showError('Failed to fetch refund details: ' + err.message);
+            });
+    };
+
+    function loadHealthSeekerCancellationRemarks() {
+        var row = document.getElementById('row-health-seeker-remarks');
+        var content = document.getElementById('health-seeker-remarks');
+        if (!row || !content) return;
+        if (isHealthSeeker || cancellationBy !== 'Patient') {
+            row.style.display = 'none';
+            var defaultLabel = document.getElementById('cancellation-reason-label');
+            if (defaultLabel) defaultLabel.innerHTML = 'Cancellation Reason <span class="text-danger">*</span>';
+            return;
+        }
+
+        fetch('@Url.Action("Get_IPD_Cancellation_Request_Remarks_Data", "IPDApplicationForm")?IPDApplicationFormid=' +
+            encodeURIComponent(ipdId))
+            .then(function (response) { return response.json(); })
+            .then(function (result) {
+                var remarks = result && result.remarks ? result.remarks.trim() : '';
+                content.textContent = remarks || 'No cancellation remarks were provided by the Health Seeker.';
+                row.style.display = 'block';
+                var reasonLabel = document.getElementById('cancellation-reason-label');
+                if (reasonLabel) reasonLabel.innerHTML = 'Front Desk Approval Remarks <span class="text-danger">*</span>';
+            })
+            .catch(function () {
+                content.textContent = 'Unable to load the Health Seeker cancellation remarks.';
+                row.style.display = 'block';
+            });
+    }
+
+    function renderOverpaidRefundDetails() {
+        document.getElementById('refund-loading').style.display = 'none';
+        document.getElementById('refund-details').style.display = 'block';
+        document.getElementById('tblRefundBreakdown').style.display = '';
+        refundRows = [{ receivablefor: 'Overpayment Refund', paid_amount: overpaidRefundAmount, refund_percentage_applied: 100, refund_amount: overpaidRefundAmount, policy_table_used: 'Extra Paid' }];
+        totalPaidCap = overpaidRefundAmount;
+        totalRefundDue = overpaidRefundAmount;
+        var tbody = document.getElementById('refund-rows');
+        tbody.innerHTML = '<tr>'
+            + '<td>Overpayment Refund</td>'
+            + '<td class="text-right">&#8377; ' + fmt(overpaidRefundAmount) + '</td>'
+            + '<td class="text-center">100.00 %</td>'
+            + '<td class="text-right"><strong>&#8377; ' + fmt(overpaidRefundAmount) + '</strong></td>'
+            + '<td class="text-center">Extra Paid</td>'
+            + '</tr>';
+        setRefundTotals(overpaidRefundAmount);
+        var refundInput = document.getElementById('txt-refunded-amount');
+        refundInput.value = fmt(overpaidRefundAmount);
+        refundInput.setAttribute('max', fmt(overpaidRefundAmount));
+        document.getElementById('txt-cancel-reason').value = 'Overpayment refund';
+        document.getElementById('row-refunded-amount').style.display = 'block';
+        applyRoleModeUI();
+        updateActionButton();
+    }
+
+    function renderRefundTable(rows) {
+        var tbody = document.getElementById('refund-rows');
+        var totalRefund = 0;
+        var totalPaid = 0;
+        tbody.innerHTML = '';
+        var first = rows[0] || {};
+        var cancellationLabel = document.getElementById('lbl-cancellationby');
+        if (cancellationLabel) cancellationLabel.textContent = first.cancellationby || cancellationBy;
+       // document.getElementById('lbl-days').textContent = first.days_until_admission != null ? first.days_until_admission : '-';
+        rows.forEach(function (r) {
+            var receivablefor = r.receivablefor || r.refundtype || '-';
+            var paidAmount = parseFloat(r.paid_amount != null ? r.paid_amount : r.total_paid_amount) || 0;
+            var refundPct = parseFloat(r.refund_percentage_applied != null ? r.refund_percentage_applied : r.refundpercentage) || 0;
+            var refundAmount = parseFloat(r.refund_amount != null ? r.refund_amount : r.final_refund_amount) || 0;
+            var policyTable = r.policy_table_used || '';
+            totalPaid += paidAmount;
+            totalRefund += refundAmount;
+            tbody.innerHTML += '<tr>'
+                + '<td>' + receivablefor + '</td>'
+                + '<td class="text-right">&#8377; ' + fmt(paidAmount) + '</td>'
+                + '<td class="text-center">' + fmt(refundPct) + ' %</td>'
+                + '<td class="text-right"><strong>&#8377; ' + fmt(refundAmount) + '</strong></td>'
+                + '<td class="text-center">' + (policyTable || '-') + '</td>'
+                + '</tr>';
+        });
+        if (!totalRefund && first.total_refund_amount != null) totalRefund = parseFloat(first.total_refund_amount) || 0;
+        totalPaidCap = totalPaid;
+        totalRefundDue = totalRefund;
+        setRefundTotals(totalRefund);
+        var refundInput = document.getElementById('txt-refunded-amount');
+        refundInput.value = fmt(totalRefund);
+        if (totalPaidCap > 0) refundInput.setAttribute('max', fmt(totalPaidCap));
+        updateActionButton();
+    }
+
+    document.getElementById('btn-confirm-cancel').addEventListener('click', function () {
+        var btn = this;
+        if (isFrontDeskAdmin) {
+            cancellationBy = (document.getElementById('cancellationby').value || 'Hospital');
+        }
+        var validation = validateRefundForm(true);
+        if (!validation.valid) return;
+        if (validation.isZeroRefund) {
+            validation.refundMode = 'Cash';
+            validation.manualRefundAmount = 0;
+        }
+        if (isOverpaidRefund) {
+            submitOverpaidRefund(btn, validation);
+            return;
+        }
+        var payload = {
+            IPDApplicationFormid: ipdId,
+            cancellationby: cancellationBy,
+            cancellationreason: validation.reason,
+            refundmode: validation.refundMode,
+            manualrefundamount: validation.manualRefundAmount
+        };
+        // The dashboard action already reconfirms cancellation/refund navigation.
+        // This page is the review step; its explicit action button performs the final submission.
+        submitCancellation(btn, payload, validation);
+        return;
+    });
+
+    /*
+        var refundMode = (document.getElementById('refundmode').value || '').trim();
+        var reason = document.getElementById('txt-cancel-reason').value.trim();
+        var isRazorPay = (refundMode === 'RazorPay');
+        var isZeroRefund = isHealthSeeker || (refundRows.length === 0);
+        var manualRefundAmount = null;
+        if (isZeroRefund) { refundMode = 'Cash'; manualRefundAmount = 0; }
+        else if (!isRazorPay) manualRefundAmount = totalRefundDue;
+        if (!isHealthSeeker && !isZeroRefund && !refundMode) { showError('Please select a Refund Mode.'); return; }
+        if (!reason) { showError('Please enter a Cancellation Reason.'); return; }
+        if (!isHealthSeeker && !isZeroRefund && !isRazorPay && (isNaN(manualRefundAmount) || manualRefundAmount < 0)) { showError('Please enter a valid Refund Amount.'); return; }
+        if (!isHealthSeeker && !isZeroRefund && !isRazorPay && totalPaidCap > 0 && manualRefundAmount > totalPaidCap) {
+            showError('Refund amount cannot be greater than paid amount (₹' + fmt(totalPaidCap) + ').');
+            return;
+        }
+        btn.disabled = true; btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
+        fetch('@Url.Action("Cancel_IPD_Booking", "IPDApplicationForm")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ IPDApplicationFormid: ipdId, cancellationby: cancellationBy, cancellationreason: reason, refundmode: refundMode, manualrefundamount: manualRefundAmount })
+        })
+        .then(function (res) { return res.json(); })
+        .then(function (result) {
+            if (result && (result.message === '201.1' || result.message === '"201.1"')) {
+                document.getElementById('refund-details').style.display = 'none';
+                document.getElementById('btn-confirm-cancel').style.display = 'none';
+                var isPatientCancellationApproval = !isHealthSeeker && cancellationBy === 'Patient';
+                var h = '<i class="fa fa-check-circle"></i> <strong>' +
+                    (isPatientCancellationApproval ? 'Cancellation Approved and Refunded Successfully!' : 'Booking Cancelled Successfully!') +
+                    '</strong><br>';
+                if (isHealthSeeker) {
+                    h += '<span class="text-info"><i class="fa fa-info-circle"></i> Marked as <strong>Cancelled by Patient</strong>. Front Desk can trigger refund from dashboard.</span>';
+                } else if (isPatientCancellationApproval) {
+                    h += 'The cancellation request has been approved and a refund of <strong>&#8377; ' +
+                        fmt(result.refundamount) + '</strong> has been processed successfully.<br>';
+                } else {
+                    h += 'Refund of <strong>&#8377; ' + fmt(result.refundamount) + '</strong> via <strong>' + (result.refundmode || refundMode) + '</strong>.<br>';
+                    if (result.israzorpayrefund) h += (result.refundid ? 'Razorpay Refund ID: <code>' + result.refundid + '</code><br>' : '') + 'Refund Status: <strong>' + (result.refundstatus || 'Pending') + '</strong>';
+                    else h += '<span class="text-warning"><i class="fa fa-info-circle"></i> Manual refund recorded. Please process the ' + refundMode + ' payment offline.</span>';
+                }
+                document.getElementById('refund-success').innerHTML = h;
+                document.getElementById('refund-success').style.display = 'block';
+
+                 if (isHealthSeeker) {
+                    window.location="@Url.Action("Index", "PatientDashboard")";;
+                          
+                 }
+                 else{
+                     window.location="@Url.Action("Dashboard", "FrontDesk")";;
+
+                 }
+                 
+            } else {
+                btn.disabled = false;
+                restoreBtnLabel(btn, isRazorPay, refundMode);
+                showError('Cancellation failed: ' + JSON.stringify(result));
+            }
+        })
+        .catch(function (err) {
+            btn.disabled = false;
+            restoreBtnLabel(btn, isRazorPay, refundMode);
+            showError('Error: ' + err.message);
+        });
+    });
+    */
+
+    function submitOverpaidRefund(btn, validation) {
+        isProcessingRefund = true;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Recording...';
+        fetch('@Url.Action("Process_IPD_Overpaid_Refund", "IPDApplicationForm")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                IPDApplicationFormid: ipdId,
+                refundmode: validation.refundMode,
+                refundamount: totalRefundDue,
+                refundreason: validation.reason
+            })
+        })
+        .then(function (res) {
+            return res.text().then(function (text) {
+                var payload = text;
+                try { payload = text ? JSON.parse(text) : {}; } catch (e) { }
+                if (!res.ok) {
+                    return { message: (typeof payload === 'string' ? payload : getResultMessage(payload)), httpStatus: res.status };
+                }
+                return payload;
+            });
+        })
+        .then(function (result) {
+            if (result && (result.message === '201.1' || result.message === '"201.1"')) {
+                document.getElementById('refund-details').style.display = 'none';
+                document.getElementById('btn-confirm-cancel').style.display = 'none';
+                var h = '<i class="fa fa-check-circle"></i> <strong>Refund Recorded Successfully!</strong><br>'
+                    + 'Refund of <strong>&#8377; ' + fmt(result.refundamount || totalRefundDue) + '</strong> via <strong>' + (result.refundmode || validation.refundMode) + '</strong>.<br>'
+                    + '<span class="text-warning"><i class="fa fa-info-circle"></i> Manual refund recorded. Please process the ' + validation.refundMode + ' payment offline.</span>';
+                document.getElementById('refund-success').innerHTML = h;
+                document.getElementById('refund-success').style.display = 'block';
+                showResultAndRedirect('Refund Recorded Successfully', stripHtml(h), 'success');
+            } else {
+                isProcessingRefund = false;
+                updateActionButton();
+                var failedMessage = 'Refund failed: ' + getResultMessage(result);
+                showError(failedMessage);
+                showResultAndRedirect('Refund Failed', failedMessage, 'error');
+            }
+        })
+        .catch(function (err) {
+            isProcessingRefund = false;
+            updateActionButton();
+            var errorMessage = 'Error: ' + err.message;
+            showError(errorMessage);
+            showResultAndRedirect('Refund Failed', errorMessage, 'error');
+        });
+    }
+
+    function submitCancellation(btn, payload, validation) {
+        isProcessingRefund = true;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
+        fetch('@Url.Action("Cancel_IPD_Booking", "IPDApplicationForm")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(function (res) {
+            return res.text().then(function (text) {
+                var payload = text;
+                try { payload = text ? JSON.parse(text) : {}; } catch (e) { }
+                if (!res.ok) {
+                    return { message: (typeof payload === 'string' ? payload : getResultMessage(payload)), httpStatus: res.status };
+                }
+                return payload;
+            });
+        })
+        .then(function (result) {
+            if (result && (result.message === '201.1' || result.message === '"201.1"')) {
+                document.getElementById('refund-details').style.display = 'none';
+                document.getElementById('btn-confirm-cancel').style.display = 'none';
+                var isPatientCancellationApproval = !isHealthSeeker && cancellationBy === 'Patient';
+                var h = '<i class="fa fa-check-circle"></i> <strong>' +
+                    (isPatientCancellationApproval ? 'Cancellation Approved and Refunded Successfully!' : 'Booking Cancelled Successfully!') +
+                    '</strong><br>';
+                if (isHealthSeeker) {
+                    h += '<span class="text-info"><i class="fa fa-info-circle"></i> Marked as <strong>Cancelled by Patient</strong>. Front Desk can trigger refund from dashboard.</span>';
+                } else if (isPatientCancellationApproval) {
+                    h += 'The cancellation request has been approved and a refund of <strong>&#8377; ' +
+                        fmt(result.refundamount) + '</strong> has been processed successfully.<br>';
+                } else {
+                    h += 'Refund of <strong>&#8377; ' + fmt(result.refundamount) + '</strong> via <strong>' + (result.refundmode || validation.refundMode) + '</strong>.<br>';
+                    if (result.israzorpayrefund) h += (result.refundid ? 'Razorpay Refund ID: <code>' + result.refundid + '</code><br>' : '') + 'Refund Status: <strong>' + (result.refundstatus || 'Pending') + '</strong>';
+                    else h += '<span class="text-warning"><i class="fa fa-info-circle"></i> Manual refund recorded. Please process the ' + validation.refundMode + ' payment offline.</span>';
+                }
+                document.getElementById('refund-success').innerHTML = h;
+                document.getElementById('refund-success').style.display = 'block';
+                showResultAndRedirect(
+                    isPatientCancellationApproval ? 'Cancellation Approved and Refunded Successfully' : 'Booking Cancelled Successfully',
+                    stripHtml(h),
+                    'success');
+            } else {
+                isProcessingRefund = false;
+                updateActionButton();
+                var failedMessage = 'Cancellation failed: ' + getResultMessage(result);
+                showError(failedMessage);
+                showResultAndRedirect('Refund Failed', failedMessage, 'error');
+            }
+        })
+        .catch(function (err) {
+            isProcessingRefund = false;
+            updateActionButton();
+            var errorMessage = 'Error: ' + err.message;
+            showError(errorMessage);
+            showResultAndRedirect('Refund Failed', errorMessage, 'error');
+        });
+    }
+
+    function getRedirectUrl() {
+        return isHealthSeeker ? '@Url.Action("Index", "PatientDashboard")' : '@Url.Action("Dashboard", "FrontDesk")';
+    }
+
+    function showResultAndRedirect(title, text, type) {
+        var redirectUrl = getRedirectUrl();
+        if (typeof swal === 'function') {
+            swal({
+                title: title,
+                text: text,
+                type: type,
+                confirmButtonText: 'OK',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(function () {
+                window.location = redirectUrl;
+            });
+            return;
+        }
+        alert(title + '\n\n' + text);
+        window.location = redirectUrl;
+    }
+
+    function stripHtml(value) {
+        var div = document.createElement('div');
+        div.innerHTML = value || '';
+        return (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function getResultMessage(result) {
+        if (!result) return 'Unknown error';
+        if (typeof result === 'string') return result;
+        return result.message || result.error || JSON.stringify(result);
+    }
+
+    function confirmRazorPayRefund(amount, onlineBalance) {
+        var text = 'This will cancel the booking and trigger a RazorPay refund of Rs. ' + fmt(amount) +
+            ' to the original online payment source. Online paid balance: Rs. ' + fmt(onlineBalance) + '.';
+        if (typeof swal === 'function') {
+            return swal({
+                title: 'Confirm RazorPay Refund',
+                text: text,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, process refund',
+                cancelButtonText: 'Review again',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-secondary',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(function (result) {
+                return result === true || (result && result.value === true);
+            });
+        }
+        return Promise.resolve(window.confirm(text));
+    }
+
+    function confirmIPDCancellation(validation) {
+        // Display the percentage selected by the refund policy. Do not calculate
+        // it against all booking payments when only one amount is refundable.
+        var refundPercentage = 0;
+        refundRows.some(function (row) {
+            var appliedPercentage = parseFloat(
+                row.refund_percentage_applied != null
+                    ? row.refund_percentage_applied
+                    : row.refundpercentage
+            );
+            var refundAmount = parseFloat(
+                row.refund_amount != null ? row.refund_amount : row.final_refund_amount
+            ) || 0;
+            if (!isNaN(appliedPercentage) && refundAmount > 0) {
+                refundPercentage = appliedPercentage;
+                return true;
+            }
+            return false;
+        });
+        var cancelledByText = isHealthSeeker ? 'Health Seeker' :
+            (cancellationBy === 'Patient' ? 'Front Desk approval of Health Seeker request' : 'Hospital / Front Desk');
+        var html = '<div class="ipd-cancel-confirm">' +
+            '<div class="ipd-cancel-confirm__header">' +
+                '<span class="ipd-cancel-confirm__icon"><i class="fa fa-exclamation-triangle"></i></span>' +
+                '<div class="ipd-cancel-confirm__eyebrow">Confirmation required</div>' +
+                '<h3 class="ipd-cancel-confirm__title">Cancel this IPD booking?</h3>' +
+                '<p class="ipd-cancel-confirm__intro">Please review the refund details before continuing.</p>' +
+            '</div>' +
+            '<div class="ipd-cancel-confirm__summary">' +
+                '<div class="ipd-cancel-confirm__row">' +
+                    '<span class="ipd-cancel-confirm__label">Refund eligibility</span>' +
+                    '<span class="ipd-cancel-confirm__value">' + fmt(refundPercentage) + '%</span>' +
+                '</div>' +
+                '<div class="ipd-cancel-confirm__row">' +
+                    '<span class="ipd-cancel-confirm__label">Estimated refund</span>' +
+                    '<span class="ipd-cancel-confirm__value ipd-cancel-confirm__amount">&#8377; ' + fmt(totalRefundDue) + '</span>' +
+                '</div>' +
+                '<div class="ipd-cancel-confirm__row">' +
+                    '<span class="ipd-cancel-confirm__label">Cancellation by</span>' +
+                    '<span class="ipd-cancel-confirm__value">' + cancelledByText + '</span>' +
+                '</div>' +
+            '</div>' +
+            '<div class="ipd-cancel-confirm__note"><i class="fa fa-info-circle"></i><span>This action cannot be undone. Stay on this page if you want to review the booking before cancelling.</span></div>';
+
+        if (validation.isRazorPay) {
+            html += '<div class="ipd-cancel-confirm__note"><i class="fa fa-credit-card"></i><span>The refund will be returned to the original online payment source. Available online balance: &#8377; ' +
+                fmt(razorpayPaidBalance) + '.</span></div>';
+        }
+        html += '</div>';
+
+        var fallbackText = 'Are you sure you want to cancel this IPD booking? ' +
+            'Refund eligibility: ' + fmt(refundPercentage) + '%. ' +
+            'Estimated refund: Rs. ' + fmt(totalRefundDue) + '. ' +
+            'Cancellation by: ' + cancelledByText + '.';
+
+        if (typeof swal === 'function') {
+            return swal({
+                title: '',
+                html: html,
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Cancel Booking',
+                cancelButtonText: 'Stay Here',
+                buttonsStyling: false,
+                customClass: 'ipd-cancel-swal',
+                confirmButtonClass: 'btn ipd-cancel-proceed',
+                cancelButtonClass: 'btn ipd-cancel-stay',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(function (result) {
+                return result === true || (result && result.value === true);
+            }, function () {
+                return false;
+            });
+        }
+        return Promise.resolve(window.confirm(fallbackText));
+    }
+
+    function setRefundTotals(totalRefund) {
+        document.getElementById('lbl-total-refund').textContent = fmt(totalRefund);
+        document.getElementById('lbl-warning-amount').textContent = fmt(totalRefund);
+        document.getElementById('lbl-refund-total-card').textContent = fmt(totalRefund);
+        var hsAmt = document.querySelectorAll('.lbl-warning-amount-hs');
+        for (var i = 0; i < hsAmt.length; i++) hsAmt[i].textContent = fmt(totalRefund);
+    }
+    function resetRefund() {
+        document.getElementById('refund-loading').style.display = 'block';
+        document.getElementById('refund-details').style.display = 'none';
+        document.getElementById('refund-error').style.display = 'none';
+        document.getElementById('refund-success').style.display = 'none';
+        document.getElementById('info-razorpay').style.display = 'none';
+        document.getElementById('info-manual').style.display = 'none';
+        document.getElementById('btn-confirm-cancel').style.display = 'inline-block';
+        document.getElementById('btn-confirm-cancel').disabled = true;
+        document.getElementById('btn-confirm-cancel').className = 'btn btn-danger';
+        document.getElementById('btn-confirm-cancel').innerHTML = '<i class="fa fa-check"></i> Confirm Cancellation &amp; Refund';
+        document.getElementById('refund-rows').innerHTML = '';
+        document.getElementById('txt-cancel-reason').value = '';
+        document.getElementById('refundmode').value = '';
+        document.getElementById('txt-refunded-amount').value = '';
+        document.getElementById('txt-refunded-amount').removeAttribute('max');
+        document.getElementById('row-refunded-amount').style.display = 'none';
+        totalPaidCap = 0;
+        totalRefundDue = 0;
+        isProcessingRefund = false;
+        clearValidation();
+        setRefundTotals(0);
+        document.getElementById('tblRefundBreakdown').style.display = '';
+        applyRoleModeUI();
+    }
+    function showError(msg) {
+        var el = document.getElementById('refund-error');
+        el.innerHTML = '<i class="fa fa-exclamation-circle"></i> ' + msg;
+        el.style.display = 'block';
+    }
+    function restoreBtnLabel(btn, isRazorPay, mode) {
+        if (isHealthSeeker) { btn.innerHTML = '<i class="fa fa-check"></i> Record cancellation'; btn.className = 'btn btn-danger'; return; }
+        if (isRazorPay) { btn.innerHTML = '<i class="fa fa-bolt"></i> Process RazorPay Refund'; btn.className = 'btn btn-primary'; }
+        else if (mode) { btn.innerHTML = '<i class="fa fa-check"></i> Record Manual Refund (' + mode + ')'; btn.className = 'btn btn-warning'; }
+        else { btn.innerHTML = '<i class="fa fa-check"></i> Confirm Cancellation &amp; Refund'; btn.className = 'btn btn-danger'; }
+    }
+}());
+
+function verifyHealthSeekerPendingPayment() {
+    if (!isHealthSeeker || isOverpaidRefund) {
+        return Promise.resolve(true);
+    }
+
+    return fetch('@Url.Action("GetIPDBillingStatus", "PatientDashboard")?IPDApplicationFormid='
+        + encodeURIComponent(_ipdApplicationFormId))
+        .then(function (response) {
+            if (!response.ok) throw new Error('Unable to verify pending payment.');
+            return response.json();
+        })
+        .then(function (status) {
+            var balance = parseFloat(status && (
+                status.balance !== undefined ? status.balance :
+                status.Balance !== undefined ? status.Balance :
+                status.remainingbalance !== undefined ? status.remainingbalance :
+                status.RemainingBalance
+            )) || 0;
+            var hasBalance = !!(status && (status.hasBalance || status.HasBalance)) || balance > 0;
+
+            if (!hasBalance || balance <= 0) {
+                return true;
+            }
+
+            return swal({
+                title: 'Pending Payment',
+                text: 'A pending payment amount of \u20B9 ' + balance.toLocaleString('en-IN', {
+                    maximumFractionDigits: 2
+                }) + ' exists for this IPD. Do you want to open the Billing Dashboard?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-secondary',
+                allowOutsideClick: false,
+                allowEscapeKey: false
+            }).then(function (result) {
+                var confirmed = result === true || !!(result && (result.value === true || result.isConfirmed === true));
+                if (confirmed) {
+                    window.location.assign('@Url.Action("Billing_Dashboard", "IPDApplicationForm")'
+                        + '?IPDApplicationFormid=' + encodeURIComponent(_ipdApplicationFormId));
+                } else if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = '@Url.Action("Index", "PatientDashboard")';
+                }
+                return false;
+            });
+        })
+        .catch(function () {
+            return swal({
+                title: 'Unable to Continue',
+                text: 'The pending payment amount could not be verified. Please try again.',
+                type: 'error',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary',
+                allowOutsideClick: false
+            }).then(function () {
+                if (window.history.length > 1) {
+                    window.history.back();
+                } else {
+                    window.location.href = '@Url.Action("Index", "PatientDashboard")';
+                }
+                return false;
+            });
+        });
+}
+
+$(document).ready(function () {
+    verifyHealthSeekerPendingPayment().then(function (canContinue) {
+        if (!canContinue) return;
+
+        loadReceivableHistory();
+        loadPaymentHistory();
+        loadRefundModes();
+        if (typeof window.loadRefundDetails === 'function') {
+            window.loadRefundDetails();
+        }
+        loadHealthSeekerCancellationRemarks();
+    });
+});
+
+function fmt(val) { return parseFloat(val || 0).toFixed(2); }
+function safeText(value) {
+    return $('<div/>').text(value == null ? '' : String(value)).html();
+}
+function formatDate(dateStr) {
+    try {
+        var dt = new Date(dateStr);
+        if (!isNaN(dt.getTime())) {
+            var dd = ('0' + dt.getDate()).slice(-2);
+            var mm = ('0' + (dt.getMonth() + 1)).slice(-2);
+            var yy = dt.getFullYear();
+            return dd + '/' + mm + '/' + yy;
+        }
+    } catch (e) { }
+    return dateStr || '-';
+}
+</script>
+}

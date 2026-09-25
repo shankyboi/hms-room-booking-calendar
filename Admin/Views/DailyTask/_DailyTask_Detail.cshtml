@@ -1,0 +1,94 @@
+@* Right-panel partial — no scripts; parent Daily_Task__List.cshtml runs ftInitDetail() after injection *@
+@{
+    Layout = null;
+    var taskJson    = ViewBag.TaskDetailJson as string ?? "{}";
+    var dailyTaskId = ViewBag.DailyTaskId   as string ?? "";
+    var tenantId    = ViewBag.TenantId      as string ?? "";
+}
+
+<input type="hidden" id="ftdRawJson"     value="@taskJson.Replace("\"", "&quot;")" />
+<input type="hidden" id="ftdDailyTaskId" value="@dailyTaskId" />
+<input type="hidden" id="ftdTenantId"    value="@tenantId" />
+
+<!-- Patient header -->
+<div class="ft-d-head">
+    <div class="ft-d-avatar" id="ftdAvatar">?</div>
+    <div>
+        <h2 id="ftdPatientName">Loading…</h2>
+        <span class="ft-d-ref"  id="ftdRef">—</span>
+        <span class="ft-d-code" id="ftdCode"></span>
+    </div>
+    <button onclick="if(typeof ftAutoSelectFirst==='function') ftAutoSelectFirst();"
+            style="margin-left:auto;border:0;background:transparent;font-size:22px;cursor:pointer;color:#536159;line-height:1;align-self:flex-start;padding:0 2px;"
+            title="Back to first record">&#8635;</button>
+</div>
+
+<!-- Action buttons -->
+<div class="ft-d-actions">
+    <button id="ftdBtnFollowup" class="ft-d-followup">&#43; Follow-up</button>
+    <button id="ftdBtnEscalate" class="ft-d-esc">&#8679; Escalate</button>
+    <button id="ftdBtnAssign"   class="ft-d-assign">&#8594; Assign</button>
+</div>
+
+<!-- Inline form area -->
+<div id="ftdFormWrap" class="ft-d-formwrap" style="display:none;">
+    <div class="ft-d-formcard">
+        <div class="ft-d-formhead">
+            <h3 id="ftdFormTitle">Action</h3>
+            <button id="ftdCloseForm" title="Close">&#215;</button>
+        </div>
+        <form id="ftdActionForm" autocomplete="off">
+            <div class="ft-d-formbody" id="ftdFormFields"></div>
+            <div class="ft-d-formfoot">
+                <button type="button" id="ftdCancelForm">Cancel</button>
+                <button type="submit" class="ft-d-save">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Workflow progress -->
+<div class="ft-d-section">
+    <h3>Workflow Progress</h3>
+    <div class="ft-d-flow" id="ftdFlow">
+        <div class="ft-d-step">Pending</div>
+        <div class="ft-d-step">In Progress</div>
+        <div class="ft-d-step">Waiting</div>
+        <div class="ft-d-step">Complete</div>
+    </div>
+</div>
+
+<!-- Task metadata -->
+<div class="ft-d-section">
+    <h3>Task Details</h3>
+    <div class="ft-d-row"><span>Task Time</span>    <b id="ftdTime">—</b></div>
+    <div class="ft-d-row"><span>Source Status</span><b id="ftdSource">—</b></div>
+    <div class="ft-d-row"><span>Assigned To</span>  <b id="ftdAssigned">—</b></div>
+    <div class="ft-d-row"><span>Due / SLA</span>    <b id="ftdDue">—</b></div>
+</div>
+
+<!-- Billing summary -->
+<div class="ft-d-section">
+    <h3>Billing Summary</h3>
+    <div class="ft-d-bill">
+        <div><small>Total</small>  <b id="ftdBillTotal">₹0</b></div>
+        <div><small>Paid</small>   <b id="ftdBillPaid" style="color:#075c43;">₹0</b></div>
+        <div><small>Balance</small><b class="ft-d-danger" id="ftdBillBalance">₹0</b></div>
+    </div>
+</div>
+
+<!-- Dependencies & clearance -->
+<div class="ft-d-section">
+    <h3>Dependencies &amp; Clearance</h3>
+    <div id="ftdDeps">
+        <div class="ft-d-dep ok">&#10003; Loading…</div>
+    </div>
+</div>
+
+<!-- Activity timeline -->
+<div class="ft-d-section" style="border-bottom:0;">
+    <h3>Activity Timeline</h3>
+    <div class="ft-d-timeline" id="ftdTimeline">
+        <div class="ft-d-event"><small>—</small><b>Loading…</b></div>
+    </div>
+</div>

@@ -1,0 +1,415 @@
+
+				<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 02/20/2026 10:50:58 -->
+				@using Microsoft.AspNetCore.Http
+				@inject IHttpContextAccessor HttpContextAccessor
+				@using Microsoft.Extensions.Configuration
+				@inject IConfiguration Configuration
+				@using Admin;
+				@model NalamVazha.Models.RoomModel
+				@{
+				ViewData["Title"] = "Room";
+				Layout = "~/Views/Shared/_Layout.cshtml";
+				}
+
+<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+
+<style>
+/* ══════════════════════════════════════════════
+   Room Gallery – E-commerce product view
+   ══════════════════════════════════════════════ */
+.room-gallery {
+	display: flex;
+	gap: 32px;
+	padding: 24px;
+	max-width: 1200px;
+}
+
+/* ── Left: Image gallery ── */
+.room-gallery__images {
+	flex: 0 0 55%;
+	max-width: 55%;
+}
+
+.room-gallery__main-img {
+	width: 100%;
+	aspect-ratio: 4 / 3;
+	border-radius: 12px;
+	overflow: hidden;
+	background: #f1f5f9;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: zoom-in;
+	border: 1px solid #e5e7eb;
+}
+
+.room-gallery__main-img img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s;
+}
+
+.room-gallery__main-img:hover img {
+	transform: scale(1.03);
+}
+
+.room-gallery__main-img .room-gallery__no-img {
+	color: #94a3b8;
+	font-size: 48px;
+}
+
+.room-gallery__thumbs {
+	display: flex;
+	gap: 10px;
+	margin-top: 12px;
+	overflow-x: auto;
+	padding-bottom: 4px;
+}
+
+.room-gallery__thumb {
+	flex: 0 0 72px;
+	width: 72px;
+	height: 54px;
+	border-radius: 8px;
+	overflow: hidden;
+	border: 2px solid transparent;
+	cursor: pointer;
+	opacity: 0.6;
+	transition: opacity 0.2s, border-color 0.2s;
+}
+
+.room-gallery__thumb.active,
+.room-gallery__thumb:hover {
+	border-color: var(--btnprimary, #2d5f44);
+	opacity: 1;
+}
+
+.room-gallery__thumb img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+/* ── Right: Details ── */
+.room-gallery__details {
+	flex: 1;
+	min-width: 0;
+}
+
+.room-gallery__title {
+	font-size: 22px;
+	font-weight: 700;
+	color: #1e293b;
+	margin: 0 0 4px;
+}
+
+.room-gallery__subtitle {
+	font-size: 14px;
+	color: #64748b;
+	margin-bottom: 20px;
+}
+
+.room-gallery__price {
+	font-size: 28px;
+	font-weight: 700;
+	color: var(--btnprimary, #2d5f44);
+	margin-bottom: 20px;
+}
+
+.room-gallery__price small {
+	font-size: 13px;
+	font-weight: 400;
+	color: #64748b;
+}
+
+.room-gallery__badges {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 24px;
+}
+
+.room-gallery__badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	padding: 5px 12px;
+	border-radius: 20px;
+	font-size: 12px;
+	font-weight: 600;
+}
+
+
+/* ── Detail rows ── */
+.room-gallery__info {
+	border-top: 1px solid #f1f5f9;
+	padding-top: 16px;
+}
+
+.room-gallery__row {
+	display: flex;
+	align-items: baseline;
+	padding: 8px 0;
+	border-bottom: 1px solid #f8fafc;
+}
+
+.room-gallery__row:last-child {
+	border-bottom: none;
+}
+
+.room-gallery__label {
+	flex: 0 0 140px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #64748b;
+}
+
+.room-gallery__value {
+	flex: 1;
+	font-size: 14px;
+	font-weight: 600;
+	color: #1e293b;
+}
+
+/* ── Actions ── */
+.room-gallery__actions {
+	margin-top: 24px;
+	padding-top: 16px;
+	border-top: 1px solid #f1f5f9;
+}
+
+/* ── Responsive ── */
+@@media (max-width: 767px) {
+	.room-gallery {
+		flex-direction: column;
+		gap: 20px;
+		padding: 16px;
+	}
+	.room-gallery__images {
+		flex: 1;
+		max-width: 100%;
+	}
+	.room-gallery__title {
+		font-size: 18px;
+	}
+	.room-gallery__price {
+		font-size: 22px;
+	}
+}
+</style>
+
+<div id="cma_printableArea">
+	<!-- PDF print header (hidden) -->
+	<div class="show-on-pdf" style="display:none;text-align:left;padding:20px;">
+		<h3><img src="~/images/logo.png" style="height:60px;width:60px;"><b> Room</b></h3><br/>
+	</div>
+
+	<div class="room-gallery">
+		<!-- ══════════ LEFT: Image Gallery ══════════ -->
+		<div class="room-gallery__images">
+			<div class="room-gallery__main-img" id="roomGalleryMainImg">
+				<i class="fa fa-image room-gallery__no-img"></i>
+			</div>
+			<div class="room-gallery__thumbs" id="roomGalleryThumbs"></div>
+			<!-- Hidden colorbox links -->
+			<div id="roomGalleryColorbox" style="display:none;"></div>
+		</div>
+
+		<!-- ══════════ RIGHT: Details ══════════ -->
+		<div class="room-gallery__details">
+			<h2 class="room-gallery__title">
+				<span class="auto_cls_roomtype">-</span>
+			</h2>
+			<div class="room-gallery__subtitle">
+				Room <span class="auto_cls_roomnumber" style="font-weight:600;">-</span>
+				&nbsp;&middot;&nbsp;
+				Code: <span class="auto_cls_roomcode" style="font-weight:600;">-</span>
+			</div>
+
+			<div class="room-gallery__price">
+				<span id="roomCostDisplay">-</span>
+				<small>Cost Per Day</small>
+			</div>
+
+
+			<div class="room-gallery__info">
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Block</span>
+					<span class="room-gallery__value auto_cls_block">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Building</span>
+					<span class="room-gallery__value auto_cls_building">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Floor</span>
+					<span class="room-gallery__value auto_cls_floor">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Room Type</span>
+					<span class="room-gallery__value auto_cls_roomtype">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Room Number</span>
+					<span class="room-gallery__value auto_cls_roomnumber">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Room Code</span>
+					<span class="room-gallery__value auto_cls_roomcode">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Cost Per Day</span>
+					<span class="room-gallery__value auto_cls_costperday">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Advance Per Day</span>
+					<span class="room-gallery__value auto_cls_advanceperday">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Booking Deposit</span>
+					<span class="room-gallery__value auto_cls_bookingdeposit">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Attendant Cost/Day</span>
+					<span class="room-gallery__value auto_cls_attendantcostperday">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Attendant Advance/Day</span>
+					<span class="room-gallery__value auto_cls_attendantadvanceperday">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Attendant Deposit</span>
+					<span class="room-gallery__value auto_cls_attendantbookingdeposit">-</span>
+				</div>
+				<div class="room-gallery__row">
+					<span class="room-gallery__label">Room Transfer Cost</span>
+					<span class="room-gallery__value auto_cls_roomtransfercost">-</span>
+				</div>
+				<div class="room-gallery__row" id="rowNextCheckin" style="display:none;">
+					<span class="room-gallery__label">Next Day Check-in</span>
+					<span class="room-gallery__value auto_cls_nextdaycheckin">-</span>
+				</div>
+				<div class="room-gallery__row" id="rowNextCheckout" style="display:none;">
+					<span class="room-gallery__label">Next Day Check-out</span>
+					<span class="room-gallery__value auto_cls_nextdaycheckout">-</span>
+				</div>
+			</div>
+
+			<div class="room-gallery__actions">
+				<button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect"><i class="fa fa-arrow-left"></i> @Resource.back</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="comparisonContainer"></div>
+
+<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+<script type="text/javascript">
+function download() {
+	const element = document.getElementById('cma_printableArea');
+	const elementsToHide = document.querySelectorAll('.show-on-pdf');
+	elementsToHide.forEach(function (el) { el.style.display = ''; });
+	html2pdf().from(element).save('Room.pdf').then(function () {
+		elementsToHide.forEach(function (el) { el.style.display = 'none'; });
+	});
+}
+
+/* ── Gallery state ── */
+var _roomImages = [];
+var _roomActiveIdx = 0;
+
+function setMainImage(idx) {
+	if (!_roomImages.length) return;
+	_roomActiveIdx = idx;
+	$('#roomGalleryMainImg').html('<img src="' + _roomImages[idx] + '" alt="Room image" />');
+	$('#roomGalleryThumbs .room-gallery__thumb').removeClass('active').eq(idx).addClass('active');
+}
+
+function buildGallery(imageUrls) {
+	_roomImages = imageUrls;
+	if (!imageUrls.length) {
+		$('#roomGalleryMainImg').html('<i class="fa fa-image room-gallery__no-img"></i>');
+		$('#roomGalleryThumbs').empty();
+		return;
+	}
+
+	/* Main image */
+	$('#roomGalleryMainImg').html('<img src="' + imageUrls[0] + '" alt="Room image" />');
+
+	/* Thumbnails */
+	var $thumbs = $('#roomGalleryThumbs').empty();
+	if (imageUrls.length > 1) {
+		imageUrls.forEach(function (url, i) {
+			var cls = (i === 0) ? 'room-gallery__thumb active' : 'room-gallery__thumb';
+			$thumbs.append('<div class="' + cls + '" data-idx="' + i + '"><img src="' + url + '" alt="thumb" /></div>');
+		});
+	}
+
+	/* Colorbox links for full-screen gallery */
+	var $cb = $('#roomGalleryColorbox').empty();
+	imageUrls.forEach(function (url) {
+		$cb.append('<a href="' + url + '" class="imgroomimage"></a>');
+	});
+}
+
+function fill_Room_view_data() {
+	var Roomid = getUrlVars()["Roomid"];
+	$.ajax({
+		url: '@Url.Action("getById_allinfo_Room")',
+		dataType: 'json',
+		data: { Roomid: Roomid },
+		success: function (data) {
+			if (!data || !data.length) return;
+			var obj = data[0];
+			var imageUrls = [];
+
+			for (var key in obj) {
+				if (key === 'roomimage') {
+					if (obj[key]) {
+						var parts = obj[key].split('|');
+						for (var i = 0; i < parts.length; i++) {
+							if (parts[i] !== '') {
+								imageUrls.push("@Context.Session.GetString("NalamVazhacloudpath")" + "/" + parts[i] + "@Context.Session.GetString("NalamVazhaSAStoken")");
+							}
+						}
+					}
+					} else if (key === 'costperday') {
+		var val = obj[key];
+		$('.auto_cls_costperday').html(val || '-');
+		$('#roomCostDisplay').html(val != null ? '<i class="fa fa-rupee-sign"></i> ' + parseFloat(val).toLocaleString('en-IN') : '-');
+	} else {
+					$('.auto_cls_' + key).html(obj[key] || '-');
+				}
+			}
+
+			/* Build image gallery */
+			buildGallery(imageUrls);
+
+
+			/* Show check-in/out rows if data exists */
+			if (obj.nextdaycheckin) $('#rowNextCheckin').show();
+			if (obj.nextdaycheckout) $('#rowNextCheckout').show();
+		}
+	});
+}
+
+$(document).ready(function () {
+	fill_Room_view_data();
+
+	/* Thumbnail click → change main image */
+	$(document).on('click', '.room-gallery__thumb', function () {
+		setMainImage($(this).data('idx'));
+	});
+
+	/* Main image click → open colorbox gallery */
+	$(document).on('click', '#roomGalleryMainImg', function () {
+		if (!_roomImages.length) return;
+		$('.imgroomimage').colorbox({ rel: '.imgroomimage', width: "90%", height: "85%", current: "Image {current} of {total}" });
+		$('.imgroomimage').eq(_roomActiveIdx).colorbox({ open: true });
+	});
+});
+</script>

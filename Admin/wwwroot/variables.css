@@ -1,0 +1,124 @@
+:root {
+    /* ========== PRIMARY THEME COLOR ========== */
+    --theme-primary: #686f70;
+    --theme-primary-hover: #1e4d36;
+    /* ========== FONT SETTINGS ========== */
+    --font-family: 'Roboto', sans-serif; /* Clean, modern font */
+    /* ========== SIDEBAR SETTINGS ==========  */
+    --sidebar: linear-gradient(to bottom, #2C6045 50%, #6D9F40 100%);
+    --sidebarcolor: #ffffff;
+    --sidebaractivecolor: #fff;
+    --sidebaricon: #ffffff;
+    --sidebariconbg: #2F6B4F;
+    --sidebarsubmenubgcolor: #ffffff;
+    --sidebarsubmenucolor: #2F6B4F;
+    /* ========== HEADER SETTINGS ========== */
+    --Header: #ffffff;
+    --Headertext: #2F6B4F;
+    --HeaderShadow: box-shadow: 0px 4px 12px 0px rgba(76, 126, 166, 0.3);
+    --headerprofilecolor: #EAEDED; /* Light Gray for profile icon background */
+    --header-bg: #2F6B4F;
+    /* ========== TABLE SETTINGS ========== */
+    --tableheader: #2f6b4fa6;
+    --thheader: #ffffff;
+    --tablecolor: #000000;
+    --tabelsecoundaybgcolor: #fafff5;
+    --tablelink: #2F6B4F;
+    /* ========== BORDER SETTINGS ========== */
+    --border-top: 1px solid #fff;
+    --border-bottom: 1px solid #fff;
+    --border-right: 1px solid #fff;
+    --border-left: 1px solid #fff;
+    --border-primary: 1px solid #2F6B4F;
+    /* ========== BACKGROUND & LABEL SETTINGS ========== */
+    --bgwhite: #FFFFFF;
+    --labelcolor: #4a4a4a;
+    --body-background: #fff;
+    --body-text: #2F6B4F;
+    --input-background: #FFFFFF;
+    --input-border: #D5D5DE;
+    --input-border-focus: #D5D5DE;
+    /* ========== TEXT COLOR SETTINGS ========== */
+    --colorwhite: #FFFFFF;
+    --colorblack: #000000; /* Vivid Blue for primary text color */
+    /* ========== FONT SIZE & WEIGHT ========== */
+    --font-13: 13px;
+    --font-14: 14px;
+    --font-15: 15px;
+    --font-16: 16px;
+    --font-20: 20px;
+    --font-22: 22px;
+    --font-weight-400: 400;
+    --font-weight-600: 600;
+    --font-weight-700: 700;
+    --font-weight-800: 800;
+    /* ========== SPACING SETTINGS ========== */
+    --padding-0: 0px;
+    --padding-10: 10px;
+    --padding-20: 20px;
+    --margin-top-0: 0px;
+    --margin-bottom-0: 0px;
+    --margin-right-0: 0px;
+    --margin-left-0: 0px;
+    --btnborder-0: 0px;
+    /* ========== BORDER RADIUS SETTINGS ========== */
+    --border-radius-0: 0px;
+    --border-radius-4: 4px;
+    --border-radius-5: 5px;
+    --border-radius-10: 10px;
+    /* ========== BORDER SETTINGS ========== */
+    --border-0: 0px;
+    /* ========== BACKGROUND SETTINGS ========== */
+    --background-color: transparent;
+    /* ========== BUTTON SETTINGS ========== */
+    --btnprimary: #2d5f44;
+    --btncolor: #ffffff;
+    --btnsecoundary: #ffffff;
+    --btnsecoundarycolor: #2d5f44;
+    --Addbtnbackground: #2d5f44;
+    /* ========== FORM SETTINGS ========== */
+    --input-form: 1px solid #2F6B4F;
+    /* ========== CARD SETTINGS ========== */
+    --cardcolor: #FFFFFF;
+    --cardshadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    --card-head-header: #2F6B4F;
+    --card-head-text: #FFFFFF;
+    /* ========== ICON SETTINGS ========== */
+    --iconprimary: #2F6B4F;
+    --actionicon: #000000;
+    /* ========== TOGGLE SETTINGS ========== */
+    --tooglecolor: #2F6B4F;
+    /* ========== PAGINATION SETTINGS ========== */
+    --paginate-count-button: #2F6B4F;
+    /* ========== FILTER SETTINGS ========== */
+    --filterbg: #2F6B4F;
+    --bgfliterwhite: #FFFFFF;
+    /* ========== ALERT SETTINGS ========== */
+    --swalcolor: #2F6B4F;
+    /* ========== SCROLLBAR SETTINGS ========== */
+    --scrollbarcolor: #2F6B4F7a;
+    --scrollbarwidth: 5px;
+    --scrollbarheight: 3px;
+    /* ========== TAB SETTINGS ========== */
+    --tab-card-bg: #F8FAFC;
+    --tab-border-radius: 5px;
+    --tab-height: 1px;
+    /* ========== Z-INDEX SETTINGS ========== */
+    --z-index-1: 1;
+    /* ========== DEPENDENT TABLE SETTINGS ========== */
+    --Dependtableheader: #2F6B4F;
+    --Dependtablecolor: #ffffff;
+    --Dependalternativecolor: #b1bcc5;
+    /* ========== BUTTON HOVER SETTINGS ========== */
+    --btncolorhover: #fff;
+    --btnsecoundarycolorhover: #ffffff;
+    --Addbtnbackgroundhover: #2F6B4F;
+    --colorwhite: #fff;
+    --btnprimaryhover: #2F6B4F;
+    --border-primaryhover: #2F6B4F;
+    --btnsecoundaryhover: #2F6B4F;
+    --checkbox: #2F6B4F;
+    /* ========== LOGIN SLIDER ARROW SETTINGS ========== */
+    --slider-arrow-bg: #2F6B4F;
+    --slider-arrow-hover-bg: #1e4d36;
+}

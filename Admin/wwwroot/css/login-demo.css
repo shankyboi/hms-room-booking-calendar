@@ -1,0 +1,425 @@
+/* ============================================
+   Demo Login — New UI, high visibility, clear arrangement
+   ============================================ */
+
+.demo-login-body {
+  margin: 0;
+  font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f1f5f9;
+  min-height: 100vh;
+  color: #1e293b;
+}
+
+.demo-login-wrap {
+  display: flex;
+  min-height: 100vh;
+  flex-wrap: wrap;
+}
+
+/* —— Left: Brand panel —— */
+.demo-brand-panel {
+  flex: 0 0 42%;
+  min-height: 100vh;
+  background: linear-gradient(165deg, var(--btnprimary, #2d5f44) 0%, var(--theme-primary-hover, #1e4d36) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+}
+
+.demo-brand-inner {
+  max-width: 380px;
+  width: 100%;
+}
+
+.demo-logo-fallback {
+  display: inline-block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.5rem;
+}
+
+.demo-logo-fallback--hide {
+  display: none !important;
+}
+
+.demo-brand-logo {
+  display: block;
+  height: 44px;
+  max-width: 180px;
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 1.5rem;
+  /* White logo on dark green – no filter so SVG shows correctly */
+}
+
+.demo-brand-tagline {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.5;
+  margin: 0 0 2.5rem;
+}
+
+.demo-brand-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+}
+
+.demo-brand-features span {
+  font-size: 1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.demo-brand-features i {
+  font-size: 1.1rem;
+  opacity: 0.95;
+}
+
+/* —— Right: Form panel —— */
+.demo-form-panel {
+  flex: 1 1 58%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: #f8fafc;
+}
+
+.demo-form-inner {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Demo form card */
+.demo-login .demo-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.demo-login .demo-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.02em;
+}
+
+.demo-login .demo-subtitle {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0 0 1.75rem;
+}
+
+/* Alerts */
+.demo-login .alert {
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+}
+
+/* Tenant block */
+.demo-login .demo-tenant {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.demo-login .demo-tenant img {
+  max-height: 48px;
+  max-width: 160px;
+  object-fit: contain;
+}
+
+.demo-login .demo-tenant .demo-tenant-name {
+  font-weight: 600;
+  color: #334155;
+  margin-top: 0.5rem;
+}
+
+.demo-login .demo-tenant a {
+  font-size: 0.9rem;
+  color: var(--btnprimary, #2d5f44);
+}
+
+/* Fields */
+.demo-login .demo-field-group {
+  margin-bottom: 1.35rem;
+}
+
+.demo-login .demo-field-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.demo-login .demo-input-wrap {
+  position: relative;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.demo-login .demo-input-wrap:focus-within {
+  border-color: var(--btnprimary, #2d5f44);
+  box-shadow: 0 0 0 4px rgba(45, 95, 68, 0.12);
+}
+
+.demo-login .demo-input-wrap .form-control {
+  border: none !important;
+  padding: 0.85rem 1rem 0.85rem 1rem;
+  font-size: 1.05rem;
+  height: auto;
+  background: transparent;
+}
+
+.demo-login .demo-input-wrap .form-control::placeholder {
+  color: #94a3b8;
+}
+
+.demo-login .demo-input-wrap .demo-input-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.demo-login .demo-input-wrap.demo-has-icon .form-control {
+  padding-right: 2.75rem;
+}
+
+.demo-login .demo-forgot {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--btnprimary, #2d5f44);
+  text-decoration: none;
+}
+
+.demo-login .demo-forgot:hover {
+  color: var(--theme-primary-hover, #1e4d36);
+  text-decoration: underline;
+}
+
+.demo-login .demo-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Submit button */
+.demo-login .demo-submit-btn {
+  width: 100%;
+  padding: 0.95rem 1.25rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  border: none !important;
+  background: var(--btnprimary, #2d5f44) !important;
+  color: #fff !important;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.demo-login .demo-submit-btn:hover {
+  background: var(--theme-primary-hover, #1e4d36) !important;
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+/* Divider */
+.demo-login .demo-divider {
+  text-align: center;
+  margin: 1.5rem 0 1.25rem;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  position: relative;
+}
+
+.demo-login .demo-divider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.demo-login .demo-divider span {
+  position: relative;
+  background: #fff;
+  padding: 0 1rem;
+}
+
+/* Quick actions */
+.demo-login .demo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.demo-login .demo-action-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  text-decoration: none !important;
+  color: #1e293b;
+  font-size: 1rem;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.demo-login .demo-action-card:hover {
+  border-color: var(--btnprimary, #2d5f44);
+  background: #f0fdf4;
+  color: #1e293b;
+}
+
+.demo-login .demo-action-card .demo-action-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  color: var(--btnprimary, #2d5f44);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.demo-login .demo-action-card .demo-action-text strong {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.15rem;
+}
+
+.demo-login .demo-action-card .demo-action-text span {
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.demo-login .demo-action-card .demo-action-arrow {
+  margin-left: auto;
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+/* Footer links */
+.demo-build {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.demo-switch-link {
+  display: block;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--btnprimary, #2d5f44);
+  margin-top: 0.75rem;
+  text-decoration: none;
+}
+
+.demo-switch-link:hover {
+  color: var(--theme-primary-hover, #1e4d36);
+  text-decoration: underline;
+}
+
+/* Select org button */
+.demo-login .demo-org-btn {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  text-align: center;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: var(--btnprimary, #2d5f44);
+  font-weight: 600;
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.demo-login .demo-org-btn:hover {
+  border-color: var(--btnprimary, #2d5f44);
+  background: #f0fdf4;
+  color: var(--theme-primary-hover, #1e4d36);
+}
+
+/* Error state */
+.demo-login .demo-field-group.has-error .demo-input-wrap {
+  border-color: #ef4444;
+}
+
+.demo-login .demo-field-group.has-error .demo-input-wrap:focus-within {
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+.demo-login .help-block {
+  font-size: 0.85rem;
+  color: #ef4444;
+  margin-top: 0.35rem;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+  .demo-brand-panel {
+    flex: 0 0 100%;
+    min-height: 220px;
+    padding: 2rem 1.5rem;
+  }
+
+  .demo-brand-tagline {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .demo-brand-features {
+    gap: 0.75rem 1.25rem;
+  }
+
+  .demo-form-panel {
+    flex: 1 1 100%;
+    padding: 2rem 1rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .demo-login .demo-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .demo-login .demo-title {
+    font-size: 1.5rem;
+  }
+
+  .demo-login .demo-submit-btn {
+    padding: 0.85rem !important;
+    font-size: 1.05rem !important;
+  }
+}

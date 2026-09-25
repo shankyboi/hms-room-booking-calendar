@@ -1,0 +1,95 @@
+@{
+    ViewData["Title"] = "Confirm Your Arrival";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string ipdId = ViewBag.IPDApplicationFormid ?? "";
+}
+
+<div class="card card-block contCard">
+    <div class="mobileHeader">
+        <div class="row">
+            <div class="col-sm-12 col-xs-12">
+                <h4 class="formHdr"><i class="fa fa-check-circle"></i> Confirm Your Arrival</h4>
+            </div>
+        </div>
+    </div>
+
+    @if (TempData["message"] != null)
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-success alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">x</span></button>
+                    <i class="fa fa-check-circle"></i>&nbsp; @TempData["message"]
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (TempData["errMessage"] != null)
+    {
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">x</span></button>
+                    @TempData["errMessage"]
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="card-block">
+        @if (!string.IsNullOrEmpty(ipdId))
+        {
+            <div class="alert alert-info">
+                <i class="fa fa-info-circle"></i>
+                Please confirm your planned arrival so that the hospital team can prepare for your admission.
+                Clicking the button below will notify the front desk that you are on your way.
+            </div>
+
+            <form id="confirm-patient-arrival-form" method="post"
+                  action="@Url.Action("Confirm_Patient_Arrival_Post", "IPDApplicationForm")">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="IPDApplicationFormid" value="@ipdId" />
+
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="control-label">Estimated Arrival Date &amp; Time <small class="text-muted">(optional)</small></label>
+                            <input type="datetime-local" name="estimatedarrival" id="estimatedarrival" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Special Requests <small class="text-muted">(optional)</small></label>
+                    <textarea name="specialrequest" id="specialrequest" class="form-control" rows="3"
+                              placeholder="Any special requests or requirements..."></textarea>
+                </div>
+
+                <div class="row" style="margin-top:20px;">
+                    <div class="col-sm-12">
+                        <button id="btn-confirm" class="btn btn-success btn-lg" type="submit">
+                            <i class="fa fa-check"></i>&nbsp; Confirm My Arrival
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <i class="fa fa-exclamation-triangle"></i>
+                Invalid or missing booking reference. Please use the link provided in your confirmation email.
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.getElementById('btn-confirm') && document.getElementById('btn-confirm').addEventListener('click', function () {
+        this.disabled = true;
+        this.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Confirming...';
+    });
+</script>
+}

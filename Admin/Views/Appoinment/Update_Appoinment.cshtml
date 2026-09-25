@@ -1,0 +1,1741 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 08/01/2026 11:54:50 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.AppoinmentModel
+			@{
+			ViewData["Title"] = @Resource.updateappoinment;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_Appoinment", "Appoinment", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updateappoinment</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.Appoinmentid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 patient_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patient">@Resource.appoinment_patient</label>
+										<select name="patient" id="patient" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patient)
+									<div id="patient-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 origin_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="origin">@Resource.appoinment_origin</label>
+										<select name="origin" id="origin" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.origin)
+									<div id="origin-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 bookingreferencenumber_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="bookingreferencenumber">@Resource.appoinment_bookingreferencenumber</label>
+										<select name="bookingreferencenumber" id="bookingreferencenumber" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.bookingreferencenumber)
+									<div id="bookingreferencenumber-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 doctor_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="doctor">@Resource.appoinment_doctor</label>
+										<select name="doctor" id="doctor" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.doctor)
+									<div id="doctor-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 appointmentdate_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="appointmentdate">@Resource.appoinment_appointmentdate</label>
+										<select name="appointmentdate" id="appointmentdate" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.appointmentdate)
+									<div id="appointmentdate-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 task_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="task">@Resource.appoinment_task</label>
+										<select name="task" id="task" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.task)
+									<div id="task-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 duration_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="duration">@Resource.appoinment_duration</label>
+										<select name="duration" id="duration" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.duration)
+									<div id="duration-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 status_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="status">@Resource.appoinment_status</label>
+										<select name="status" id="status" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.status)
+									<div id="status-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updateappoinment</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("Appoinment","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			
+			
+			
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			
+			<script>
+			
+			
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Appoinment")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Appoinment")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updateappoinment;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updateappoinment")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ 
+
+ 
+ 
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ 
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("Appoinment","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "Appoinment")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+					<script>
+					var strpatient;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patient != null && Model.patient.ToString() != "")
+							{
+							<script>
+								 strpatient="@Model.patient"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Appoinment_patient(tenantid) {
+
+					var ddltarget_patient = $('#patient');
+					ddltarget_patient.empty();;
+					ddltarget_patient.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Appoinment_patient")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.patient !== null);
+									data.sort((a, b) =>
+										String(a.patient).toLowerCase().localeCompare(String(b.patient).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].ClinicalAppointmentid;
+									data[i].name = data[i].patient;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Appoinment_patient,
+						 templateSelection: formatSelectSelected_lookup_Appoinment_patient
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatient || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Appoinment_patient")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].ClinicalAppointmentid == strpatient) {
+											var option = new Option(data[i].patient,data[i].ClinicalAppointmentid, true, true);
+											ddltarget_patient.append(option).trigger('update');
+
+											ddltarget_patient.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Appoinment_patient(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.patient) {
+						var textValue = item.patient
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Appoinment_patient(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.patient;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Appoinment_patient(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strorigin;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.origin != null && Model.origin.ToString() != "")
+							{
+							<script>
+								 strorigin="@Model.origin"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Appoinment_origin(tenantid) {
+
+					var ddltarget_origin = $('#origin');
+					ddltarget_origin.empty();;
+					ddltarget_origin.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Appoinment_origin")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.origin !== null);
+									data.sort((a, b) =>
+										String(a.origin).toLowerCase().localeCompare(String(b.origin).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].ClinicalAppointmentid;
+									data[i].name = data[i].origin;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Appoinment_origin,
+						 templateSelection: formatSelectSelected_lookup_Appoinment_origin
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strorigin || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Appoinment_origin")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].ClinicalAppointmentid == strorigin) {
+											var option = new Option(data[i].origin,data[i].ClinicalAppointmentid, true, true);
+											ddltarget_origin.append(option).trigger('update');
+
+											ddltarget_origin.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Appoinment_origin(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.origin) {
+						var textValue = item.origin
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Appoinment_origin(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.origin;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Appoinment_origin(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strbookingreferencenumber;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.bookingreferencenumber != null && Model.bookingreferencenumber.ToString() != "")
+							{
+							<script>
+								 strbookingreferencenumber="@Model.bookingreferencenumber"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Appoinment_bookingreferencenumber(tenantid) {
+
+					var ddltarget_bookingreferencenumber = $('#bookingreferencenumber');
+					ddltarget_bookingreferencenumber.empty();;
+					ddltarget_bookingreferencenumber.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Appoinment_bookingreferencenumber")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.ipdnumber !== null);
+									data.sort((a, b) =>
+										String(a.ipdnumber).toLowerCase().localeCompare(String(b.ipdnumber).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].ClinicalAppointmentid;
+									data[i].name = data[i].ipdnumber+ ' ' + data[i].opdnumber;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Appoinment_bookingreferencenumber,
+						 templateSelection: formatSelectSelected_lookup_Appoinment_bookingreferencenumber
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strbookingreferencenumber || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Appoinment_bookingreferencenumber")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].ClinicalAppointmentid == strbookingreferencenumber) {
+											var option = new Option(data[i].ipdnumber+ ' ' + data[i].opdnumber,data[i].ClinicalAppointmentid, true, true);
+											ddltarget_bookingreferencenumber.append(option).trigger('update');
+
+											ddltarget_bookingreferencenumber.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Appoinment_bookingreferencenumber(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.ipdnumber+ ' ' + item.opdnumber) {
+						var textValue = item.ipdnumber+ ' ' + item.opdnumber
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Appoinment_bookingreferencenumber(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.ipdnumber+ ' ' + item.opdnumber;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Appoinment_bookingreferencenumber(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strdoctor;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.doctor != null && Model.doctor.ToString() != "")
+							{
+							<script>
+								 strdoctor="@Model.doctor"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Appoinment_doctor(tenantid) {
+
+					var ddltarget_doctor = $('#doctor');
+					ddltarget_doctor.empty();;
+					ddltarget_doctor.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Appoinment_doctor")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.practitioner !== null);
+									data.sort((a, b) =>
+										String(a.practitioner).toLowerCase().localeCompare(String(b.practitioner).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].ClinicalAppointmentid;
+									data[i].name = data[i].practitioner;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Appoinment_doctor,
+						 templateSelection: formatSelectSelected_lookup_Appoinment_doctor
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strdoctor || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Appoinment_doctor")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].ClinicalAppointmentid == strdoctor) {
+											var option = new Option(data[i].practitioner,data[i].ClinicalAppointmentid, true, true);
+											ddltarget_doctor.append(option).trigger('update');
+
+											ddltarget_doctor.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Appoinment_doctor(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.practitioner) {
+						var textValue = item.practitioner
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Appoinment_doctor(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.practitioner;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Appoinment_doctor(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strappointmentdate;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.appointmentdate != null && Model.appointmentdate.ToString() != "")
+							{
+							<script>
+								 strappointmentdate="@Model.appointmentdate"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Appoinment_appointmentdate(tenantid) {
+
+					var ddltarget_appointmentdate = $('#appointmentdate');
+					ddltarget_appointmentdate.empty();;
+					ddltarget_appointmentdate.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Appoinment_appointmentdate")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.appointmentdate !== null);
+									data.sort((a, b) =>
+										String(a.appointmentdate).toLowerCase().localeCompare(String(b.appointmentdate).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].ClinicalAppointmentid;
+									data[i].name = data[i].appointmentdate;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Appoinment_appointmentdate,
+						 templateSelection: formatSelectSelected_lookup_Appoinment_appointmentdate
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strappointmentdate || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Appoinment_appointmentdate")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].ClinicalAppointmentid == strappointmentdate) {
+											var option = new Option(data[i].appointmentdate,data[i].ClinicalAppointmentid, true, true);
+											ddltarget_appointmentdate.append(option).trigger('update');
+
+											ddltarget_appointmentdate.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Appoinment_appointmentdate(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.appointmentdate) {
+						var textValue = item.appointmentdate
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Appoinment_appointmentdate(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.appointmentdate;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Appoinment_appointmentdate(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strtask;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.task != null && Model.task.ToString() != "")
+							{
+							<script>
+								 strtask="@Model.task"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Appoinment_task(tenantid) {
+
+					var ddltarget_task = $('#task');
+					ddltarget_task.empty();;
+					ddltarget_task.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Appoinment_task")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.taskname !== null);
+									data.sort((a, b) =>
+										String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].ClinicalAppointmentid;
+									data[i].name = data[i].taskname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Appoinment_task,
+						 templateSelection: formatSelectSelected_lookup_Appoinment_task
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strtask || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Appoinment_task")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].ClinicalAppointmentid == strtask) {
+											var option = new Option(data[i].taskname,data[i].ClinicalAppointmentid, true, true);
+											ddltarget_task.append(option).trigger('update');
+
+											ddltarget_task.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Appoinment_task(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.taskname) {
+						var textValue = item.taskname
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Appoinment_task(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.taskname;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Appoinment_task(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strduration;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.duration != null && Model.duration.ToString() != "")
+							{
+							<script>
+								 strduration="@Model.duration"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Appoinment_duration(tenantid) {
+
+					var ddltarget_duration = $('#duration');
+					ddltarget_duration.empty();;
+					ddltarget_duration.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Appoinment_duration")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.durationfrom !== null);
+									data.sort((a, b) =>
+										String(a.durationfrom).toLowerCase().localeCompare(String(b.durationfrom).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].ClinicalAppointmentid;
+									data[i].name = data[i].durationfrom+ ' ' + data[i].durationto;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Appoinment_duration,
+						 templateSelection: formatSelectSelected_lookup_Appoinment_duration
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strduration || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Appoinment_duration")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].ClinicalAppointmentid == strduration) {
+											var option = new Option(data[i].durationfrom+ ' ' + data[i].durationto,data[i].ClinicalAppointmentid, true, true);
+											ddltarget_duration.append(option).trigger('update');
+
+											ddltarget_duration.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Appoinment_duration(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.durationfrom+ ' ' + item.durationto) {
+						var textValue = item.durationfrom+ ' ' + item.durationto
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Appoinment_duration(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.durationfrom+ ' ' + item.durationto;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Appoinment_duration(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strstatus;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.status != null && Model.status.ToString() != "")
+							{
+							<script>
+								 strstatus="@Model.status"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Appoinment_status(tenantid) {
+
+					var ddltarget_status = $('#status');
+					ddltarget_status.empty();;
+					ddltarget_status.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Appoinment_status")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.status !== null);
+									data.sort((a, b) =>
+										String(a.status).toLowerCase().localeCompare(String(b.status).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].ClinicalAppointmentid;
+									data[i].name = data[i].status;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Appoinment_status,
+						 templateSelection: formatSelectSelected_lookup_Appoinment_status
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strstatus || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Appoinment_status")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].ClinicalAppointmentid == strstatus) {
+											var option = new Option(data[i].status,data[i].ClinicalAppointmentid, true, true);
+											ddltarget_status.append(option).trigger('update');
+
+											ddltarget_status.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Appoinment_status(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.status) {
+						var textValue = item.status
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Appoinment_status(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.status;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Appoinment_status(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_Appoinment_patient($("#tenantid").val())
+lookup_Appoinment_origin($("#tenantid").val())
+lookup_Appoinment_bookingreferencenumber($("#tenantid").val())
+lookup_Appoinment_doctor($("#tenantid").val())
+lookup_Appoinment_appointmentdate($("#tenantid").val())
+lookup_Appoinment_task($("#tenantid").val())
+lookup_Appoinment_duration($("#tenantid").val())
+lookup_Appoinment_status($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script>
+
+
+

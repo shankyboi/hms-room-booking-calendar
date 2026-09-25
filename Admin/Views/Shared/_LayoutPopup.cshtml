@@ -1,0 +1,166 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link type="text/css" rel="stylesheet" href="~/css/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/materialadmin.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="~/css/fontawesome/css/all.css">
+    <link type="text/css" rel="stylesheet" href="~/css/material-design-iconic-font.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="~/css/custom.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/custom_changed.css" />
+    <link type="text/css" rel="stylesheet" href="~/Monochrome.css" />
+    <link type="text/css" rel="stylesheet" href="~/themestyles.css" />
+    <link type="text/css" rel="stylesheet" href="~/appstyles.css" />
+    <link rel="stylesheet" href="~/components/sweetalert2/sweetalert2.min.css">
+    <script src="~/js/jquery-1.11.2.min.js"></script>
+    <script src="~/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="~/components/sweetalert2/sweetalert2.min.js"></script>
+    <script>window.swal = function(opts) { return (typeof Swal !== 'undefined' && Swal.fire) ? Swal.fire({ title: opts.title, text: opts.text, icon: (opts.type || 'info'), confirmButtonText: opts.confirmButtonText || 'OK', allowOutsideClick: opts.allowOutsideClick !== false, allowEscapeKey: opts.allowEscapeKey !== false }) : Promise.resolve(); };</script>
+    <script src="~/components/jquery/jquery.validate.js"></script>
+    <script src="~/components/jquery/additional-methods.min.js"></script>
+    <script src="~/js/id-proof-validation.js"></script>
+    <script>
+        var str_tenantid = "";
+        $(document).ready(function () {
+            if ("@Context.Session.GetString("NalamVazhashowtenant")" == "N") {
+                str_tenantid = "@Context.Session.GetString("NalamVazhachoosedtenantid")";
+                $(".tenantSection").append("<input type='text' id='tenantid' name='tenantid' value='" + str_tenantid + "' />");
+                $(".tenantSection").hide();
+            }
+            if ("@Context.Session.GetString("module")" == "client" && "@Context.Session.GetString("NalamVazhashowtenant")" == "N") {
+                str_tenantid = "@Context.Session.GetString("NalamVazhachoosedtenantid")";
+                $(".tenantSection").empty();
+                $(".tenantSection").append("<input type='text' id='tenantid' name='tenantid' value='" + str_tenantid + "' />");
+            }
+            if ("@Context.Session.GetString("NalamVazhashowtenant")" == "Y" && "@Context.Session.GetString("module")" == "client") {
+                str_tenantid = "@Context.Session.GetString("NalamVazhachoosedtenantid")";
+                $(".tenantSection").append("<input type='text' id='tenantid' name='tenantid' value='" + str_tenantid + "' />");
+                $(".tenantSection").hide();
+            }
+        });
+
+        var typeaheadpagesize = @Configuration.GetSection("settings")["typeaheadpagesize"];
+        var vBaseurl = "@Configuration.GetSection("ApiSettings")["baseURL"]";
+
+        function getAutho(controllername, viewname) {
+            var a = eval("@Context.Session.GetString("NalamVazharole_JSON")".replace(/&quot;/g, '"'));
+            var index = 0;
+            var found;
+            var entry;
+            for (index = 0; index < a.length; ++index) {
+                entry = a[index];
+                if (entry.controllername == controllername && entry.viewname == viewname) {
+                    found = entry;
+                    break;
+                }
+            }
+            return found;
+        }
+
+        function getAuthoController(controllername) {
+            var a = eval("@Context.Session.GetString("NalamVazharole_JSON")".replace(/&quot;/g, '"'));
+            var index = 0;
+            var found = [];
+            var seenAuthoKeys = {};
+            var entry;
+            for (index = 0; index < a.length; ++index) {
+                entry = a[index];
+                if (entry.controllername == controllername) {
+                    // De-dupe duplicate permission rows so action dropdowns don't show
+                    // the same Update/Remove/View link twice.
+                    var authoKey = (entry.viewname || '') + '|' + (entry.actionmethodname || '');
+                    if (seenAuthoKeys[authoKey]) continue;
+                    seenAuthoKeys[authoKey] = true;
+                    found.push(entry);
+                }
+            }
+            return found;
+        }
+
+        function ISOtoSelectedFormat(isoDate) {
+            if (!isoDate) return "";
+            if (/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) {
+                const [year, month, day] = isoDate.split('-').map(Number);
+                const date = new Date(year, month - 1, day);
+                const formattedDate = `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+                return formattedDate;
+            }
+            const date = new Date(isoDate);
+            if (isNaN(date)) return "";
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            return hours || minutes
+                ? `${day}/${month}/${year} ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+                : `${day}/${month}/${year}`;
+        }
+
+        function getSqlDate(dateString) {
+            if (dateString != "") {
+                var str = dateString;
+                var res = str.split("/");
+                return res[2] + '-' + res[1] + '-' + res[0];
+            } else {
+                return "";
+            }
+        }
+
+        function getSqlDateTime(dateString) {
+            if (dateString != "") {
+                var str = dateString.substring(0, 10);
+                var res = str.split("/");
+                var time = dateString.substring(10, 16);
+                return res[2] + '-' + res[1] + '-' + res[0] + time;
+            } else {
+                return "";
+            }
+        }
+
+        function getIconClass(fileName) {
+            var fileExtensionIcons = {
+                ".jpg": "/images/FileImages/image_file.png",
+                ".jpeg": "/images/FileImages/image_file.png",
+                ".png": "/images/FileImages/image_file.png",
+                ".gif": "/images/FileImages/image_file.png",
+                ".bmp": "/images/FileImages/image_file.png",
+                ".svg": "/images/FileImages/image_file.png",
+                ".pdf": "/images/FileImages/pdf_file.png",
+                ".doc": "/images/FileImages/word_file.png",
+                ".docx": "/images/FileImages/word_file.png",
+                ".xls": "/images/FileImages/excel_file.png",
+                ".xlsx": "/images/FileImages/excel_file.png",
+                ".csv": "/images/FileImages/excel_file.png",
+                ".ppt": "/images/FileImages/ppt_file.png",
+                ".pptx": "/images/FileImages/ppt_file.png",
+                ".txt": "/images/FileImages/text_file.png",
+                ".zip": "/images/FileImages/zip_file.png",
+                ".rar": "/images/FileImages/zip_file.png"
+            };
+            var fileExtension = fileName.substr(fileName.lastIndexOf("."));
+            var fileIconClass = fileExtensionIcons[fileExtension.toLowerCase()];
+            return fileIconClass ? fileIconClass : "/images/FileImages/default_file.png";
+        }
+    </script>
+    @RenderSection("Head", required: false)
+</head>
+<body class="popup-form-body">
+    <div class="container-fluid p-3">
+        @RenderBody()
+    </div>
+    @RenderSection("Scripts", required: false)
+    @* <script src="~/js/mobile-numeric-input.js"></script> *@
+</body>
+</html>

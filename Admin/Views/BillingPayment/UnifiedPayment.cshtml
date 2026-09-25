@@ -1,0 +1,2077 @@
+@using Admin
+@using Microsoft.AspNetCore.Http
+@using NalamVazha.Models
+@using System.Linq
+@using System.Globalization
+@model UnifiedPaymentCollectionViewModel
+@{
+    ViewData["Title"] = "Payment Collection";
+    Layout = Context.Request.Query["embed"] == "1"
+        ? "~/Views/Shared/_EmbedLayout.cshtml"
+        : "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .contCard .label,
+    .badge-required,
+    .badge-optional,
+    .badge-split-left,
+    .badge-split-right {
+        font-weight: 600;
+        font-size: 11px;
+        letter-spacing: .2px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        display: inline-block;
+        white-space: nowrap;
+        border: 1px solid transparent;
+    }
+
+    .contCard .label-success  { background: #eaf6ee !important; color: #1e7d43 !important; border-color: #cfead9 !important; }
+    .contCard .label-warning  { background: #fdf3e2 !important; color: #96660c !important; border-color: #f6e2b8 !important; }
+    .contCard .label-info     { background: #eef2f6 !important; color: #51606e !important; border-color: #dde3ea !important; }
+    .contCard .label-primary  { background: #edf0fb !important; color: #3c4bab !important; border-color: #dbe0f5 !important; }
+    .contCard .label-danger   { background: #fbebea !important; color: #a3332c !important; border-color: #f3d3d1 !important; }
+
+    .badge-required { background: #fbebea; color: #a3332c !important; }
+    .badge-optional { background: #eef2f6; color: #51606e !important; }
+    .badge-split-left  { background: #eef2f6; color: #51606e !important; }
+    .badge-split-right { background: #fbebea; color: #a3332c !important; }
+
+    .row-error { border-left: 3px solid #a3332c; }
+    .inline-error { color: #a3332c; font-size: 12px; display: none; }
+    .payment-row-refund { background-color: #fdf3e2 !important; }
+    #tblUnifiedPaymentHistory th { white-space: nowrap; }
+    #payment-history-no-data.unified-payment-inline-alert {
+        align-items: center;
+        gap: 6px;
+    }
+    #payment-history-no-data.unified-payment-inline-alert .fa {
+        display: inline-flex;
+        align-items: center;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+    #payNowMandatorySummary { white-space: nowrap; vertical-align: middle; }
+    .badge-split-pill { display: inline-flex; border-radius: 999px; overflow: hidden; font-size: 12px; font-weight: 600; vertical-align: middle; }
+    .badge-split-pill .badge-split-left,
+    .badge-split-pill .badge-split-right { border-radius: 0; border: none; }
+
+    .bill-main {
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .bill-sub {
+        margin-top: 3px;
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.5;
+    }
+
+    .bill-tag {
+        display: inline-block;
+        padding: 2px 7px;
+        border-radius: 10px;
+        background: #eef2f6;
+        color: #51606e;
+        font-size: 11px;
+        font-weight: 700;
+        margin-left: 4px;
+    }
+
+    /* ── Smaller, quieter headers with a soft icon chip instead of a bare glyph ── */
+    .contCard .card-head header,
+    .contCard .formHdr {
+        font-size: 14px !important;
+        line-height: 18px !important;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .contCard .card-head header i.fa,
+        .contCard .formHdr i.fa {
+            width: 26px;
+            height: 26px;
+            flex: 0 0 26px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--btnprimary, #2d5f44);
+            background: #eef6f0;
+            border-radius: 7px;
+        }
+
+    /* ── Slightly smaller figures/labels so the summary cards read as compact, not heavy ── */
+    .outstanding-card .title,
+    .room-summary-card .title {
+        font-size: 11px;
+    }
+
+    .outstanding-card .value,
+    .room-summary-card .value {
+        font-size: 15px;
+    }
+
+    .contCard table.table th {
+        font-size: 11.5px;
+    }
+
+    .contCard table.table td {
+        font-size: 12.5px;
+    }
+
+    .contCard .form-group label {
+        font-size: 12px !important;
+    }
+
+    .contCard .form-control {
+        font-size: 13px;
+    }
+</style>
+
+@{
+    var isAdmittedIpd = string.Equals(Model.Type, "IPD", StringComparison.OrdinalIgnoreCase)
+        && string.Equals(ViewBag.BookingStatus as string, "Admitted", StringComparison.OrdinalIgnoreCase);
+    var pendingGroups = Model.Bills
+		.Where(x => Math.Abs(x.balance) > 0.009m
+			|| x.amount < -0.009m
+			|| (x.receivablefor ?? "").IndexOf("Booking Deposit", StringComparison.OrdinalIgnoreCase) >= 0
+			|| (x.receivablefor ?? "").StartsWith("Others", StringComparison.OrdinalIgnoreCase))
+        .GroupBy(x => new
+        {
+            BillType = x.amount < 0
+                ? "Discount / Credit"
+                : string.Equals(x.receivablefor, "Room", StringComparison.OrdinalIgnoreCase)
+                ? "Room Charges"
+                : (x.receivablefor ?? "Other Charges"),
+
+            Category = x.category ?? ""
+        })
+        .Select(g => new
+        {
+            BillType = g.Key.BillType,
+            Category = g.Key.Category,
+            BillAmount = g.Sum(x => x.amount),
+            AlreadyAdjusted = g.Sum(x => x.paidamount),
+            AmountDue = g.Sum(x => x.balance),
+            IsMandatory = g.Any(x => x.ismandatory)
+        })
+        .OrderBy(x => isAdmittedIpd
+            ? (x.BillType.IndexOf("Booking Deposit", StringComparison.OrdinalIgnoreCase) >= 0 ? 0
+                : string.Equals(x.BillType, "Package", StringComparison.OrdinalIgnoreCase) ? 1
+                : string.Equals(x.BillType, "Room Charges", StringComparison.OrdinalIgnoreCase) ? 2
+                : 3)
+            : (x.IsMandatory ? 0 : 1))
+        .ThenBy(x => x.BillType)
+        .ToList();
+
+    var totalBillAmount = pendingGroups.Sum(x => x.BillAmount);
+    var totalAdjusted = pendingGroups.Sum(x => x.AlreadyAdjusted);
+    var totalDue = pendingGroups.Sum(x => x.AmountDue);
+    var outstandingCredit = Model.Bills.Where(x => x.balance < 0).Sum(x => x.balance);
+    totalDue = Math.Max(0, totalDue);
+    var mandatoryDue = pendingGroups.Where(x => x.IsMandatory).Sum(x => x.AmountDue);
+    mandatoryDue = Math.Max(0, mandatoryDue + outstandingCredit);
+}
+
+<style>
+    .outstanding-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px 14px;
+        background: #ffffff;
+        margin-bottom: 10px;
+    }
+
+        .outstanding-card .title {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .outstanding-card .value {
+            font-size: 18px;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .outstanding-card.due .value {
+            color: #96660c;
+        }
+
+    .outstanding-help-text {
+        color: #64748b;
+        font-size: 12px;
+        margin-top: -4px;
+        margin-bottom: 12px;
+    }
+
+    .empty-outstanding-box {
+        border: 1px dashed #cbd5e1;
+        background: #f8fafc;
+        border-radius: 8px;
+        padding: 18px;
+        text-align: center;
+        color: #475569;
+        font-size: 14px;
+    }
+
+        .empty-outstanding-box strong {
+            color: #0f172a;
+        }
+
+    .pay-summary-note {
+        border: 1px solid #e5e7eb;
+        border-left: 4px solid #cbd5e1;
+        border-radius: 8px;
+        background: #fff;
+        padding: 10px 14px;
+        margin-bottom: 8px;
+        color: #334155;
+        font-size: 13px;
+    }
+
+        .pay-summary-note strong {
+            color: #0f172a;
+            font-size: 15px;
+        }
+
+        .pay-summary-note--info {
+            border-left-color: #51606e;
+            background: #f7f9fa;
+        }
+
+        .pay-summary-note--success {
+            border-left-color: #1e7d43;
+            background: #f3fbf6;
+        }
+
+            .pay-summary-note--success strong {
+                color: #1e7d43;
+            }
+
+        .pay-summary-note.is-due {
+            border-left-color: #96660c;
+            background: #fdf8ee;
+        }
+
+            .pay-summary-note.is-due strong {
+                color: #96660c;
+            }
+</style>
+@{
+    var outstandingBills = Model.Bills ?? new List<UnifiedReceivableItemModel>();
+    var isIpdOutstanding = string.Equals(Model.Type, "IPD", StringComparison.OrdinalIgnoreCase);
+
+    // Gross means the original positive charges. Discounts/concessions are
+    // adjustments and must not make the deposit or charge total disappear for
+    // IPD. Preserve the existing calculation for every other payment flow.
+    var osGrossTotal = isIpdOutstanding
+        ? outstandingBills.Where(x => x.amount > 0).Sum(x => x.amount)
+        : outstandingBills.Sum(x => x.amount);
+    var osTotalAdjusted = outstandingBills.Sum(x => x.paidamount);
+    var osTotalDue = outstandingBills.Sum(x => x.balance);
+
+    var osNetBalance = osTotalDue > 0 ? osTotalDue : 0;
+    var osAdvanceCredit = osTotalAdjusted > osGrossTotal ? osTotalAdjusted - osGrossTotal : 0;
+
+    var osMandatoryDue = outstandingBills
+        .Where(x => x.ismandatory && x.balance > 0)
+        .Sum(x => x.balance);
+	var hasOutstandingBookingDeposit = outstandingBills.Any(x =>
+		x.balance > 0.009m
+		&& (x.receivablefor ?? "").IndexOf("Booking Deposit", StringComparison.OrdinalIgnoreCase) >= 0);
+
+    var osPendingGroups = outstandingBills
+        .Where(x => x.balance > 0)
+        .GroupBy(x => new
+        {
+            BillType = string.Equals(x.receivablefor, "Room", StringComparison.OrdinalIgnoreCase)
+                ? "Room Charges"
+                : (x.receivablefor ?? "Other Charges"),
+
+            Category = x.category ?? ""
+        })
+        .Select(g => new
+        {
+            BillType = g.Key.BillType,
+            Category = g.Key.Category,
+            BillAmount = g.Sum(x => x.amount),
+            AlreadyAdjusted = g.Sum(x => x.paidamount),
+            AmountDue = g.Sum(x => x.balance),
+            IsMandatory = g.Any(x => x.ismandatory)
+        })
+        .OrderByDescending(x => x.IsMandatory)
+        .ThenBy(x => x.BillType)
+        .ToList();
+}
+<div class="card card-block contCard">
+    <div class="card-head">
+        <header><i class="fa fa-hourglass-half"></i>Pending Payment</header>
+    </div>
+
+    <div class="card-block">
+
+        <div class="outstanding-help-text">
+            This is the current pending bill summary. Payments will be auto-adjusted by the system.
+        </div>
+
+        <div class="row">
+            <div class="col-sm-3 col-xs-12">
+                <div class="outstanding-card">
+                    <div class="title">Gross Total</div>
+                    <div class="value">
+                        ₹ <span id="summaryGrossTotal">@osGrossTotal.ToString("N2")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3 col-xs-12">
+                <div class="outstanding-card">
+                    <div class="title">Total Received</div>
+                    <div class="value">
+                        ₹ <span id="summaryTotalReceived">0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3 col-xs-12">
+                <div class="outstanding-card @(osNetBalance > 0 ? "due" : "")">
+                    <div class="title">Net Balance</div>
+                    <div class="value">
+                        ₹ <span id="summaryNetBalance">@osNetBalance.ToString("N2")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-3 col-xs-12">
+                <div class="outstanding-card @(osAdvanceCredit > 0 ? "credit" : "")">
+                    <div class="title">Advance / Credit</div>
+                    <div class="value">
+                        ₹ <span id="summaryAdvanceCredit">0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (pendingGroups.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" id="tblUnifiedPayments">
+                    <thead>
+                        <tr>
+                            <th>Bill Type</th>
+                            <th>Category</th>
+                            <th class="text-right">Bill Amount</th>
+                            <th class="text-right">Already Adjusted</th>
+                            <th class="text-right">Amount Due</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var bill in pendingGroups)
+                        {
+                            <tr class="payment-row"
+                                data-mandatory="@(bill.IsMandatory ? "1" : "0")"
+                                data-balance="@bill.AmountDue.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                data-paidamount="@bill.AlreadyAdjusted.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                                data-rowamount="@bill.BillAmount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
+
+                                <td>
+                                    <strong>@bill.BillType</strong>
+                                </td>
+
+                                <td>@bill.Category</td>
+
+                                <td class="text-right">
+                                    @((bill.BillAmount < 0 ? Math.Abs(bill.BillAmount) : bill.BillAmount).ToString("N2"))
+                                </td>
+
+                                <td class="text-right">
+                                    @((bill.BillAmount < 0 ? Math.Abs(bill.AlreadyAdjusted) : bill.AlreadyAdjusted).ToString("N2"))
+                                </td>
+
+                                <td class="text-right">
+                                    <strong>@((bill.BillAmount < 0 ? Math.Abs(bill.AmountDue) : bill.AmountDue).ToString("N2"))</strong>
+                                </td>
+
+                                <td>
+                                    @if (bill.BillAmount < 0)
+                                    {
+                                        <span class="label label-warning">
+                                            @(Math.Abs(bill.AmountDue) <= 0.009m ? "Discount Applied" : "Discount / Credit")
+                                        </span>
+                                    }
+                                    else if (bill.AmountDue <= 0.009m)
+                                    {
+                                        <span class="label label-success">Adjusted / Paid</span>
+                                    }
+                                    else if (bill.IsMandatory)
+                                    {
+                                        <span class="badge-required">Required</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge-optional">Optional</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                    <tfoot>
+                        <tr class="active">
+                            <td colspan="2" class="text-right">
+                                <strong>Total Outstanding</strong>
+                            </td>
+
+                            <td class="text-right">
+                                <strong id="payNowTotalAmount">@totalBillAmount.ToString("N2")</strong>
+                            </td>
+
+                            <td class="text-right">
+                                <strong id="payNowTotalPaid">@totalAdjusted.ToString("N2")</strong>
+                            </td>
+
+                            <td class="text-right">
+                                <strong id="payNowGrandTotal">@totalDue.ToString("N2")</strong>
+                            </td>
+
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="empty-outstanding-box">
+                <strong>No pending dues.</strong><br />
+                Any new payment received now will be treated as Advance / Credit.
+            </div>
+
+            <input type="hidden" id="payNowTotalAmount" value="0" />
+            <input type="hidden" id="payNowTotalPaid" value="0" />
+            <input type="hidden" id="payNowGrandTotal" value="0" />
+        }
+
+        <div class="row" style="margin-top:10px;">
+            <div class="col-sm-4">
+                <div class="pay-summary-note pay-summary-note--info">
+                    Mandatory Outstanding:
+                    <strong id="mandatoryOutstanding">@mandatoryDue.ToString("N2")</strong>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="pay-summary-note pay-summary-note--success">
+                    You Are Receiving:
+                    <strong id="youArePaying">0.00</strong>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="pay-summary-note @(totalDue > 0 ? "is-due" : "")">
+                    <span id="remainingAfterPaymentLabel">Balance After Payment:</span>
+                    <strong id="remainingAfterPayment">@totalDue.ToString("N2")</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card card-block contCard" style="margin-top:15px;">
+    <div class="card-head">
+        <header><i class="fa fa-check-circle"></i> Received Payments</header>
+    </div>
+    <div class="card-block">
+        <div id="payment-history-loading" class="text-center" style="padding:20px; display:none;">
+            <i class="fa fa-spinner fa-spin fa-2x"></i>
+            <p>Loading payment history...</p>
+        </div>
+        <div class="table-responsive" id="payment-history-table-container" style="display:none;">
+            <table id="tblUnifiedPaymentHistory" class="table table-bordered table-striped table-hover" style="margin:0;">
+                <thead class="thead-default">
+                    <tr>
+                        <th>#</th>
+                        <th>Receipt No</th>
+                        <th>Received Date</th>
+                        <th class="text-right">Received Amount (₹)</th>
+                        <th class="text-right">Refunded Amt (₹)</th>
+                        <th class="text-right">Net Amount (₹)</th>
+                        <th>Payment Mode</th>
+                        <th>Status</th>
+                        <th>Refund Status</th>
+                        <th>System Adjustment</th>
+                        <th>Collected By</th>
+                        <th>Remarks</th>
+                    </tr>
+                </thead>
+                <tbody id="payment-history-rows"></tbody>
+                <tfoot>
+                    <tr class="active">
+                        <td colspan="5" class="text-right">
+                            <strong>Total Net Received</strong>
+                        </td>
+                        <td class="text-right">
+                            <strong>&#8377; <span id="payment-history-grand-total">0.00</span></strong>
+                        </td>
+                        <td colspan="6"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div id="payment-history-no-data" class="alert alert-info unified-payment-inline-alert" style="display:none;">
+            <i class="fa fa-info-circle"></i> No payments found for this IPD.
+        </div>
+    </div>
+</div>
+@functions {
+    private string Money(decimal value)
+    {
+        return "₹ " + value.ToString("N2", CultureInfo.CreateSpecificCulture("en-IN"));
+    }
+
+    private decimal Positive(decimal value)
+    {
+        return value < 0 ? 0 : value;
+    }
+
+    private decimal UiAdjusted(decimal charge, decimal paid)
+    {
+        charge = Positive(charge);
+        paid = Positive(paid);
+
+        return paid >= charge ? charge : paid;
+    }
+
+    private decimal UiBalance(decimal charge, decimal paid)
+    {
+        charge = Positive(charge);
+        paid = Positive(paid);
+
+        return paid >= charge ? 0 : charge - paid;
+    }
+
+    private decimal UiCredit(decimal charge, decimal paid)
+    {
+        charge = Positive(charge);
+        paid = Positive(paid);
+
+        return paid > charge ? paid - charge : 0;
+    }
+
+    private string NormalizeRoomOccupant(string allottedTo)
+    {
+        allottedTo = (allottedTo ?? "").Trim();
+
+        if (allottedTo.IndexOf("Patient", StringComparison.OrdinalIgnoreCase) >= 0 &&
+            allottedTo.IndexOf("Attendant", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return "Patient + Attendant";
+        }
+
+        if (allottedTo.IndexOf("Attendant", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return "Attendant";
+        }
+
+        if (allottedTo.IndexOf("Patient", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return "Patient";
+        }
+
+        return allottedTo;
+    }
+
+    private string UiRoomStatus(decimal charge, decimal paid)
+    {
+        charge = Positive(charge);
+        paid = Positive(paid);
+
+        if (charge <= 0 && paid <= 0)
+            return "No Charge";
+
+        if (charge <= 0 && paid > 0)
+            return "Credit";
+
+        if (paid <= 0)
+            return "Pending";
+
+        if (paid < charge)
+            return "Partially Adjusted";
+
+        if (paid == charge)
+            return "Paid";
+
+        return "Paid + Credit";
+    }
+
+    private string UiLineStatus(decimal charge, decimal paid)
+    {
+        charge = Positive(charge);
+        paid = Positive(paid);
+
+        if (paid <= 0)
+            return "Pending";
+
+        if (paid < charge)
+            return "Partially Adjusted";
+
+        return "Paid";
+    }
+
+    private string RoomStatusLabelClass(string status)
+    {
+        status = (status ?? "").Trim();
+
+        if (status == "Paid")
+            return "label-success";
+
+        if (status == "Paid + Credit")
+            return "label-primary";
+
+        if (status == "Partially Adjusted")
+            return "label-info";
+
+        if (status == "Credit")
+            return "label-primary";
+
+        if (status == "No Charge")
+            return "label-default";
+
+        if (status == "Pending")
+            return "label-info";
+
+        return "label-warning";
+    }
+}
+
+
+@if (Model.RoomCostSummary != null && Model.RoomCostSummary.Any())
+{
+    var roomRows = Model.RoomCostSummary
+    .Select(x => new
+    {
+        ReceivableDate = x.ReceivableDate,
+        Occupant = NormalizeRoomOccupant(x.AllottedTo),
+        RoomNo = x.RoomNo,
+        CostPerDay = Positive(x.CostPerDay),
+        Charge = Positive(x.LineItemTotal),
+        RawPaid = Positive(x.PaidAmount),
+        Balance = Positive(x.BalanceAmount),
+        Credit = Positive(x.CreditAmount)
+    })
+    .Where(x =>
+        !string.IsNullOrWhiteSpace(x.Occupant)
+        && (
+            x.Charge > 0
+            || x.RawPaid > 0
+            || x.Balance > 0
+            || x.Credit > 0
+        )
+    )
+    .OrderBy(x => x.ReceivableDate)
+    .ThenBy(x => x.Occupant)
+    .ThenBy(x => x.RoomNo)
+    .ToList();
+
+    var roomGroups = roomRows
+        .GroupBy(x => new
+        {
+            x.Occupant,
+            x.RoomNo,
+            x.CostPerDay
+        })
+        .Select(g => new
+        {
+            Occupant = g.Key.Occupant,
+            RoomNo = g.Key.RoomNo,
+            CostPerDay = g.Key.CostPerDay,
+            FromDate = g.Min(x => x.ReceivableDate),
+            ToDate = g.Max(x => x.ReceivableDate),
+            Days = g.Select(x => x.ReceivableDate.Date).Distinct().Count(),
+            TotalCharge = g.Sum(x => x.Charge),
+            RawPaid = g.Sum(x => x.RawPaid),
+            Rows = g.OrderBy(x => x.ReceivableDate).ToList()
+        })
+        .Select(g => new
+        {
+            g.Occupant,
+            g.RoomNo,
+            g.CostPerDay,
+            g.FromDate,
+            g.ToDate,
+            g.Days,
+            g.TotalCharge,
+            Adjusted = UiAdjusted(g.TotalCharge, g.RawPaid),
+            Balance = UiBalance(g.TotalCharge, g.RawPaid),
+            Credit = UiCredit(g.TotalCharge, g.RawPaid),
+            Status = UiRoomStatus(g.TotalCharge, g.RawPaid),
+            g.Rows
+        })
+        .OrderBy(g => g.FromDate)
+        .ThenBy(g => g.Occupant)
+        .ToList();
+
+    var totalRoomCharge = roomGroups.Sum(x => x.TotalCharge);
+    var totalRoomAdjusted = roomGroups.Sum(x => x.Adjusted);
+    var totalRoomBalance = roomGroups.Sum(x => x.Balance);
+    var totalRoomCredit = roomGroups.Sum(x => x.Credit);
+    var showCreditColumn = totalRoomCredit > 0;
+
+    <style>
+        .room-summary-card {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px 14px;
+            background: #ffffff;
+            margin-bottom: 10px;
+            min-height: 74px;
+        }
+
+            .room-summary-card .title {
+                font-size: 12px;
+                color: #64748b;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .room-summary-card .value {
+                font-size: 18px;
+                color: #0f172a;
+                font-weight: 700;
+            }
+
+            .room-summary-card.credit .value {
+                color: #96660c;
+            }
+
+        .room-help-text {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: -4px;
+            margin-bottom: 12px;
+        }
+
+        .room-summary-table th {
+            white-space: nowrap;
+            background: #f8fafc;
+        }
+
+        .room-summary-table td {
+            vertical-align: middle !important;
+        }
+
+        .room-daily-box {
+            background: #fbfdff;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+        }
+
+        .room-daily-table {
+            margin-bottom: 0;
+        }
+
+        .room-period {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .room-sub-text {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        .btn-room-details {
+            padding: 3px 10px;
+            font-size: 12px;
+        }
+
+
+        .room-drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.45);
+            z-index: 1050;
+            display: none;
+        }
+
+            .room-drawer-overlay.open {
+                display: block;
+            }
+
+        .room-drawer {
+            position: fixed;
+            top: 0;
+            right: -900px;
+            width: 900px;
+            max-width: 94vw;
+            height: 100vh;
+            background: #f8fafc;
+            z-index: 1051;
+            box-shadow: -10px 0 28px rgba(15, 23, 42, 0.22);
+            transition: right 0.25s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+            .room-drawer.open {
+                right: 0;
+            }
+
+        .room-drawer-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .room-drawer-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .room-drawer-subtitle {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 3px;
+        }
+
+        .room-drawer-close {
+            border: none;
+            background: #ef4444;
+            color: #fff;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .room-drawer-body {
+            padding: 16px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .room-breakup-header {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            overflow: hidden;
+        }
+
+        .room-breakup-main {
+            padding: 14px 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .room-breakup-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .room-breakup-meta {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .room-breakup-totals {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .room-breakup-total-item {
+            padding: 12px 16px;
+            border-right: 1px solid #e5e7eb;
+        }
+
+            .room-breakup-total-item:last-child {
+                border-right: none;
+            }
+
+            .room-breakup-total-item .label-text {
+                font-size: 11px;
+                color: #64748b;
+                font-weight: 600;
+                margin-bottom: 5px;
+            }
+
+            .room-breakup-total-item .amount {
+                font-size: 18px;
+                color: #0f172a;
+                font-weight: 700;
+            }
+
+            .room-breakup-total-item.balance-due .amount {
+                color: #b45309;
+            }
+
+        .room-daily-table-wrap {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .room-daily-table {
+            margin-bottom: 0;
+        }
+
+            .room-daily-table thead th {
+                background: #f8fafc;
+                color: #334155;
+                font-size: 12px;
+                font-weight: 700;
+                border-bottom: 1px solid #e5e7eb !important;
+                white-space: nowrap;
+            }
+
+            .room-daily-table tbody td {
+                font-size: 13px;
+                vertical-align: middle !important;
+            }
+
+            .room-daily-table tfoot td {
+                background: #f1f5f9;
+                font-weight: 700;
+            }
+
+        body.room-drawer-open {
+            overflow: hidden;
+        }
+
+        @@media (max-width: 768px) {
+            .room-drawer {
+                width: 100vw;
+                max-width: 100vw;
+            }
+
+            .room-breakup-totals {
+                grid-template-columns: 1fr;
+            }
+
+            .room-breakup-total-item {
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+            }
+
+                .room-breakup-total-item:last-child {
+                    border-bottom: none;
+                }
+        }
+    </style>
+
+    <div class="card card-block contCard">
+        <div class="card-head">
+            <header><i class="fa fa-bed"></i> Room Summary</header>
+        </div>
+
+        <div class="card-block">
+
+            <div class="room-help-text">
+                Payment shown here is system-adjusted from received payments. It does not mean the front desk collected payment directly against room.
+            </div>
+
+            <div class="row">
+                <div class="col-sm-3 col-xs-12">
+                    <div class="room-summary-card">
+                        <div class="title">Total Room Charge</div>
+                        <div class="value">@Money(totalRoomCharge)</div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-xs-12">
+                    <div class="room-summary-card">
+                        <div class="title">Adjusted from Payments</div>
+                        <div class="value">@Money(totalRoomAdjusted)</div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3 col-xs-12">
+                    <div class="room-summary-card">
+                        <div class="title">Room Balance</div>
+                        <div class="value">@Money(totalRoomBalance)</div>
+                    </div>
+                </div>
+
+               
+                    <div class="col-sm-3 col-xs-12">
+                        <div class="room-summary-card @(totalRoomCredit > 0 ? "credit" : "")">
+                            <div class="title">Advance / Credit</div>
+                            <div class="value">@Money(totalRoomCredit)</div>
+                        </div>
+                    </div>
+                
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped room-summary-table">
+                    <thead>
+                        <tr>
+                            <th>Stay Period</th>
+                            <th>Occupant</th>
+                            <th>Room No</th>
+                            <th class="text-right">Days</th>
+                            <th class="text-right">Rate / Day</th>
+                            <th class="text-right">Room Charge</th>
+                            <th class="text-right">Adjusted</th>
+                            <th class="text-right">Balance</th>
+                            @if (showCreditColumn)
+                            {
+                                <th class="text-right">Advance / Credit</th>
+                            }
+                            <th>Status</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @{
+                            var groupIndex = 0;
+                        }
+
+                        @foreach (var group in roomGroups)
+                        {
+                            var detailId = "roomDailyBreakupTemplate_" + groupIndex;
+
+                            <tr>
+                                <td>
+                                    <div class="room-period">
+                                        @group.FromDate.ToString("dd/MM/yyyy") - @group.ToDate.ToString("dd/MM/yyyy")
+                                    </div>
+                                    <div class="room-sub-text">
+                                        Daily breakup available
+                                    </div>
+                                </td>
+
+                                <td><strong>@group.Occupant</strong></td>
+
+                                <td>@group.RoomNo</td>
+
+                                <td class="text-right">@group.Days</td>
+
+                                <td class="text-right">@Money(group.CostPerDay)</td>
+
+                                <td class="text-right">
+                                    <strong>@Money(group.TotalCharge)</strong>
+                                </td>
+
+                                <td class="text-right">
+                                    @Money(group.Adjusted)
+                                </td>
+
+                                <td class="text-right">
+                                    @Money(group.Balance)
+                                </td>
+
+                                @if (showCreditColumn)
+                                {
+                                    <td class="text-right">
+                                        @if (group.Credit > 0)
+                                        {
+                                            <strong>@Money(group.Credit)</strong>
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    </td>
+                                }
+
+                                <td>
+                                    <span class="label @RoomStatusLabelClass(group.Status)">
+                                        @group.Status
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button type="button"
+                                            class="btn btn-default btn-room-details"
+                                            data-detail-template="@detailId"
+                                            data-title="@($"{group.Occupant} - Room {group.RoomNo}")">
+                                        View Daily Breakup
+                                    </button>
+                                </td>
+                            </tr>
+
+
+                            groupIndex++;
+                        }
+                    </tbody>
+
+                    <tfoot>
+                        <tr class="active">
+                            <td colspan="5" class="text-right">
+                                <strong>Total</strong>
+                            </td>
+
+                            <td class="text-right">
+                                <strong>@Money(totalRoomCharge)</strong>
+                            </td>
+
+                            <td class="text-right">
+                                <strong>@Money(totalRoomAdjusted)</strong>
+                            </td>
+
+                            <td class="text-right">
+                                <strong>@Money(totalRoomBalance)</strong>
+                            </td>
+
+                            @if (showCreditColumn)
+                            {
+                                <td class="text-right">
+                                    <strong>@Money(totalRoomCredit)</strong>
+                                </td>
+                            }
+
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+
+                @for (var templateIndex = 0; templateIndex < roomGroups.Count; templateIndex++)
+                {
+                    var group = roomGroups[templateIndex];
+                    var detailId = "roomDailyBreakupTemplate_" + templateIndex;
+
+                    <template id="@detailId">
+                        <div class="room-breakup-header">
+                            <div class="room-breakup-main">
+                                <div class="room-breakup-title">
+                                    @group.Occupant - Room @group.RoomNo
+                                </div>
+
+                                <div class="room-breakup-meta">
+                                    Stay Period:
+                                    <strong>@group.FromDate.ToString("dd/MM/yyyy") - @group.ToDate.ToString("dd/MM/yyyy")</strong>
+                                    &nbsp; | &nbsp;
+                                    Days:
+                                    <strong>@group.Days</strong>
+                                    &nbsp; | &nbsp;
+                                    Rate / Day:
+                                    <strong>@Money(group.CostPerDay)</strong>
+                                </div>
+                            </div>
+
+                            <div class="room-breakup-totals">
+                                <div class="room-breakup-total-item">
+                                    <div class="label-text">Total Charge</div>
+                                    <div class="amount">@Money(group.TotalCharge)</div>
+                                </div>
+
+                                <div class="room-breakup-total-item">
+                                    <div class="label-text">Adjusted from Payments</div>
+                                    <div class="amount">@Money(group.Adjusted)</div>
+                                </div>
+
+                                <div class="room-breakup-total-item balance-due">
+                                    <div class="label-text">Balance</div>
+                                    <div class="amount">@Money(group.Balance)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="room-daily-table-wrap">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped room-daily-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Occupant</th>
+                                            <th>Room No</th>
+                                            <th class="text-right">Rate / Day</th>
+                                            <th class="text-right">Charge</th>
+                                            <th class="text-right">Adjusted</th>
+                                            <th class="text-right">Balance</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @foreach (var row in group.Rows)
+                                        {
+                                            var rowAdjusted = UiAdjusted(row.Charge, row.RawPaid);
+                                            var rowBalance = UiBalance(row.Charge, row.RawPaid);
+                                            var rowStatus = UiLineStatus(row.Charge, row.RawPaid);
+
+                                            <tr>
+                                                <td>@row.ReceivableDate.ToString("dd/MM/yyyy")</td>
+                                                <td><strong>@row.Occupant</strong></td>
+                                                <td>@row.RoomNo</td>
+                                                <td class="text-right">@Money(row.CostPerDay)</td>
+                                                <td class="text-right">@Money(row.Charge)</td>
+                                                <td class="text-right">@Money(rowAdjusted)</td>
+                                                <td class="text-right">@Money(rowBalance)</td>
+                                                <td>
+                                                    <span class="label @RoomStatusLabelClass(rowStatus)">
+                                                        @rowStatus
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="4" class="text-right">
+                                                Grand Total
+                                            </td>
+                                            <td class="text-right">@Money(group.TotalCharge)</td>
+                                            <td class="text-right">@Money(group.Adjusted)</td>
+                                            <td class="text-right">@Money(group.Balance)</td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </template>
+                }
+            </div>
+        </div>
+    </div>
+
+
+    <div id="roomDetailOverlay" class="room-drawer-overlay"></div>
+
+    <div id="roomDetailDrawer" class="room-drawer">
+        <div class="room-drawer-header">
+            <div>
+                <h4 class="room-drawer-title" id="roomDetailTitle">Room Daily Breakup</h4>
+                <div class="room-drawer-subtitle">
+                    Date-wise room charge and system adjustment details
+                </div>
+            </div>
+
+            <button type="button" class="room-drawer-close" id="btnCloseRoomDrawer">
+                Close
+            </button>
+        </div>
+
+        <div class="room-drawer-body" id="roomDetailContent">
+        </div>
+    </div>
+}
+@{
+    var paymentModel = new BillingPaymentModel
+    {
+        amount = 0,
+        paymentdate = DateTime.Now,
+        tenantid = Guid.TryParse(Context.Session.GetString("NalamVazhachoosedtenantid"), out var tenantGuid) ? tenantGuid : (Guid?)null,
+        patientname = Model.PatientID,
+        ipdnumber = Model.IPDNo,
+        craftmyapp_actionmethodname = "Add_Billing_Payment"
+    };
+
+
+@functions {
+    private string GetRoomBillRole(string remarks)
+    {
+        remarks = (remarks ?? "").Trim();
+
+        if (remarks.IndexOf("Patient, Attendant", StringComparison.OrdinalIgnoreCase) >= 0)
+            return "Patient + Attendant";
+
+        if (remarks.IndexOf("Attendant", StringComparison.OrdinalIgnoreCase) >= 0)
+            return "Attendant";
+
+        if (remarks.IndexOf("Patient", StringComparison.OrdinalIgnoreCase) >= 0)
+            return "Patient";
+
+        return "";
+    }
+
+    private string GetRoomBillSource(string remarks)
+    {
+        remarks = (remarks ?? "").Trim();
+
+        if (remarks.StartsWith("TransferRoom", StringComparison.OrdinalIgnoreCase))
+            return "Transfer Room";
+
+        if (remarks.StartsWith("AllotRoom", StringComparison.OrdinalIgnoreCase))
+            return "Allotted Room";
+
+        if (remarks.StartsWith("ExtendStay", StringComparison.OrdinalIgnoreCase))
+            return "Extended Stay";
+
+        return remarks;
+    }
+}
+}
+
+@using (Html.BeginForm("UnifiedPayment", "BillingPayment", FormMethod.Post, new { enctype = "multipart/form-data", @id = "formId" }))
+{
+    @Html.HiddenFor(_ => Model.PatientID)
+    @Html.HiddenFor(_ => Model.IPDNo)
+    @Html.HiddenFor(_ => Model.Type)
+    <input type="hidden" id="paymentsJson" name="paymentsJson" />
+    
+
+    <div class="card card-block contCard" style="margin-top:15px;">
+        <div class="mobileHeader">
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <h4 class="formHdr"><i class="fa fa-inr"></i> Receive Payment</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-block">
+            <div class="row">
+                <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+                <div>
+                    <div class="form-group form-group--float-above my-3">
+                        <label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+                       
+                        <input type="hidden" id="tenantid" name="tenantid" value="@Context.Session.GetString("NalamVazhachoosedtenantid")" />
+                    </div>
+                </div>
+                </div>  
+                <div class="col-sm-3 col-xs-12 p-2">
+                    <div class="form-group form-group--float-above my-3">
+                        <label for="patientname">@Resource.billingpayment_patientname</label>
+                        <select disabled name="patientname" id="patientname" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-12 p-2">
+                    <div class="form-group form-group--float-above my-3">
+                        <label for="ipdnumber">@Resource.billingpayment_ipdnumber</label>
+                        <select disabled name="ipdnumber" id="ipdnumber" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-12 p-2">
+                    <div class="form-group form-group--float-above my-3">
+                        <label for="currency">@Resource.billingpayment_currency <b class="iconRed">*</b></label>
+                        <select name="currency" id="currency" class="form-control required"></select>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-12 p-2 receivedamount_craftmyapp_container">
+                    <div class="form-group">
+                        <label for="receivedamount">@Resource.billingpayment_receivedamount</label>
+                        <input type="text" name="receivedamount" id="receivedamount" class="form-control form-control-lg" />
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-12 p-2 conversionrate_craftmyapp_container">
+                    <div class="form-group">
+                        <label for="conversionrate">@Resource.billingpayment_conversionrate</label>
+                        <input type="text" name="conversionrate" id="conversionrate" class="form-control form-control-lg" value="1" />
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-12 p-2">
+                    <div class="form-group">
+                        <label for="amount">@Resource.billingpayment_amount <b class="iconRed">*</b></label>
+                        <input type="text" name="amount" id="amount" class="form-control form-control-lg required" readonly />
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-12 p-2">
+                    <div class="form-group form-group--float-above my-3">
+                        <label for="paymentmode">@Resource.billingpayment_paymentmode <b class="iconRed">*</b></label>
+                        <select name="paymentmode" id="paymentmode" class="form-control select2 select2-list required"></select>
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-12 p-2">
+                    <div class="form-group">
+                        <label for="transactionreference">Payment Reference / Cheque / DD No <b id="transactionreferencerequired" style="display:none" class="iconRed">*</b></label>
+                        <input type="text" name="transactionreference" id="transactionreference" maxlength="128" class="form-control form-control-lg" />
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-12 p-2">
+                    <div class="form-group">
+                        <label for="bankname">@Resource.billingpayment_bankname <b id="banknamerequired" style="display:none" class="iconRed">*</b></label>
+                        <input type="text" name="bankname" id="bankname" maxlength="128" class="form-control form-control-lg" />
+                    </div>
+                </div>
+                <div class="col-sm-3 col-xs-12 p-2 chequedddate_craftmyapp_container">
+                    <div class="form-group form-group--float-above my-2">
+                        <label for="chequedddate">Cheque or DD Date <b id="chequedddaterequired" style="display:none" class="iconRed">*</b></label>
+                        <input type="text" name="chequedddate" id="chequedddate" placeholder="dd/mm/yyyy" autocomplete="off" class="form-control form-control-lg" />
+                    </div>
+                </div>
+                <input type="hidden" name="paymentstatus" id="paymentstatus" value="Success" />
+                <input type="hidden" name="collectedby" id="collectedby" value="@Context.Session.GetString("NalamVazhaloginUserID")" />
+                <input type="hidden" name="counterid" id="counterid" value="Front Desk" />
+                <div class="col-sm-12 col-xs-12 p-2 remarks_craftmyapp_container">
+                    <div class="form-group form-group--float-above my-3">
+                        <label for="remarks">@Resource.billingpayment_remarks</label>
+                        <textarea name="remarks" id="remarks" class="form-control form-control-lg"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="card-block">
+                <button type="button" onclick="window.location.href=document.referrer" class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+                <button type="button" id="btnSubmit" class="btn cma_primary_button cma_save_button waves-effect pull-right">Receive Payment</button>
+            </div>
+        </div>
+    </div>
+}
+
+<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+<script>
+var str_tenantid='@Context.Session.GetString("NalamVazhachoosedtenantid")';
+var strpatientname='@Model.PatientID';
+var stripdnumber='@(Model.IPDNo?.ToString() ?? "")';
+
+    var currentPendingBalance = @osNetBalance.ToString(
+        "0.00",
+            System.Globalization.CultureInfo.InvariantCulture
+        );
+var currentGrossTotal = @osGrossTotal.ToString(
+        "0.00",
+        System.Globalization.CultureInfo.InvariantCulture
+    );
+var useIpdLedgerGrossTotal = @(isIpdOutstanding ? "true" : "false");
+var strBookingStatus='@(ViewBag.BookingStatus ?? "")';
+var hasOutstandingBookingDeposit = @(hasOutstandingBookingDeposit ? "true" : "false");
+var outstandingCredit = @outstandingCredit.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+var existingAdvanceCredit = @osAdvanceCredit.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+function parseNum(v){ var n = parseFloat(String(v == null ? 0 : v).replace(/,/g,'')); return isNaN(n)?0:n; }
+function fmtComma(v){ return parseNum(v).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtAmount(v){ return fmtComma(v); }
+function htmlEncode(v){ return $('<div/>').text(v == null ? '' : v).html(); }
+function recalcTotal(){
+    var total = 0;
+    var totalPaid = 0;
+    var totalAmount = 0;
+    var mandatory = 0;
+    var hasRequired = false;
+    var hasOptional = false;
+    $('#tblUnifiedPayments tbody tr.payment-row').each(function(){
+        var bal = parseNum($(this).attr('data-balance'));
+        var paid = parseNum($(this).attr('data-paidamount'));
+        var amt = parseNum($(this).attr('data-rowamount'));
+        total += bal;
+        totalPaid += paid;
+        totalAmount += amt;
+        if(($(this).data('mandatory') === 1 || $(this).data('mandatory') === '1')){
+            mandatory += bal;
+            hasRequired = true;
+        } else {
+            hasOptional = true;
+        }
+    });
+    total = Math.max(0, total);
+    mandatory = Math.max(0, mandatory + outstandingCredit);
+    $('#payNowGrandTotal').text(fmtComma(total));
+    $('#payNowTotalPaid').text(fmtComma(totalPaid));
+    $('#payNowTotalAmount').text(fmtComma(totalAmount));
+    $('#mandatoryOutstanding').text(fmtComma(mandatory));
+    var summaryHtml;
+    if (hasRequired && hasOptional) {
+        summaryHtml = '<span class="badge-split-pill"><span class="badge-split-left">Optional</span><span class="badge-split-right">Required</span></span>';
+    } else if (hasRequired) {
+        summaryHtml = '<span class="badge-required">Required</span>';
+    } else {
+        summaryHtml = '<span class="badge-optional">Optional</span>';
+    }
+    $('#payNowMandatorySummary').html(summaryHtml);
+    var paying = parseNum($("#receivedamount").val());
+    $("#amount").val(paying.toFixed(2));   /* keep plain number — form field */
+    $('#youArePaying').text(fmtComma(paying));
+    var remaining = total - paying;
+    var overpaid = remaining < -0.009 ? Math.abs(remaining) : 0;
+    if (overpaid > 0) {
+        $('#remainingAfterPaymentLabel').text('Overpaid / Refund Due:');
+        $('#remainingAfterPayment').text(fmtComma(overpaid));
+        $('#remainingAfterPayment').closest('.pay-summary-note').removeClass('is-due').addClass('pay-summary-note--success');
+    } else {
+        remaining = Math.max(0, remaining);
+        $('#remainingAfterPaymentLabel').text('Balance After Payment:');
+        $('#remainingAfterPayment').text(fmtComma(remaining));
+        $('#remainingAfterPayment').closest('.pay-summary-note').toggleClass('is-due', remaining > 0).removeClass('pay-summary-note--success');
+    }
+    $('#summaryAdvanceCredit').text(fmtComma(existingAdvanceCredit + overpaid));
+}
+function validateMandatoryRows(){
+    var mandatory = parseNum($('#mandatoryOutstanding').text());
+    if(mandatory <= 0) return true;
+    var paying = parseNum($("#receivedamount").val());
+    return paying + 0.009 >= mandatory;
+}
+function buildPaymentsPayload(){
+    return [];
+}
+    function loadUnifiedPaymentHistory() {
+    var isIpd = ('@Model.Type' || '').toUpperCase() === 'IPD';
+
+    if (!isIpd || !stripdnumber) {
+    $('#payment-history-no-data').css('display', 'flex');
+    return;
+    }
+
+    $('#payment-history-loading').show();
+    $('#payment-history-table-container').hide();
+    $('#payment-history-no-data').hide();
+
+    $.ajax({
+    url: '@Url.Action("Get_Cancel_IPD_Payment_History_Data", "IPDApplicationForm")',
+    dataType: 'json',
+    data: { IPDApplicationFormid: stripdnumber },
+
+    success: function (response) {
+    $('#payment-history-loading').hide();
+
+    var records = $.isArray(response)
+    ? response
+    : ((response && response.detail) ? response.detail : []);
+
+    var receiptMap = {};
+
+    (records || []).forEach(function (r) {
+    r = r || {};
+
+    var receiptNo = r.receiptno || '-';
+    var paymentDate = r.paymentdate || '-';
+    var paymentMode = r.paymentmode || '-';
+    var paymentStatus = r.paymentstatus || '-';
+    var collectedBy = r.collectedby_master || '-';
+    var remarks = r.remarks || '-';
+
+    /*
+    Group only by receipt-level fields.
+    Do not group by receivablefor.
+    One receipt can be system-adjusted against multiple bill types.
+    */
+    var key = [
+    receiptNo,
+    paymentDate,
+    paymentMode,
+    paymentStatus,
+    collectedBy,
+    remarks
+    ].join('|');
+
+    if (!receiptMap[key]) {
+    receiptMap[key] = {
+    receiptno: receiptNo,
+    paymentdate: paymentDate,
+    paymentmode: paymentMode,
+    paymentstatus: paymentStatus,
+    collectedby: collectedBy,
+    remarks: remarks,
+    receivedamount: 0,
+    refundedamount: 0,
+    refundstatus: '',
+    adjustments: {}
+    };
+    }
+
+    var receivableFor = r.receivablefor || 'General IPD Payment';
+    var amount = parseNum(r.amount);
+    var refundedAmount = parseNum(r.refundedamount);
+
+    var isRefundRow =
+    String(receivableFor).toLowerCase() === 'cancellation refund' ||
+    amount < 0;
+
+    /*
+    If refund comes as separate negative row, treat it as refunded amount.
+    If refund comes in refundedamount column, keep the maximum to avoid double-counting
+    when the same receipt has multiple allocation rows.
+    */
+    if (isRefundRow) {
+    receiptMap[key].refundedamount += Math.abs(amount);
+    } else {
+    receiptMap[key].receivedamount += amount;
+
+    var displayFor = normalizeAdjustmentName(receivableFor);
+
+    if (!receiptMap[key].adjustments[displayFor]) {
+    receiptMap[key].adjustments[displayFor] = 0;
+    }
+
+    receiptMap[key].adjustments[displayFor] += amount;
+    }
+
+    if (refundedAmount > receiptMap[key].refundedamount) {
+    receiptMap[key].refundedamount = refundedAmount;
+    }
+
+    if (r.refundstatus && r.refundstatus !== '-') {
+    receiptMap[key].refundstatus = r.refundstatus;
+    }
+    });
+
+    var groupedRecords = Object.keys(receiptMap).map(function (k) {
+    return receiptMap[k];
+    });
+
+    var $tbody = $('#payment-history-rows');
+    $tbody.empty();
+
+    if (!groupedRecords || groupedRecords.length === 0) {
+    $('#payment-history-no-data').css('display', 'flex');
+    $('#payment-history-grand-total').text('0.00');
+
+    updateMainPaymentSummary(0);
+
+    return;
+    }
+
+    var grandNetTotal = 0;
+
+    for (var i = 0; i < groupedRecords.length; i++) {
+    var r = groupedRecords[i];
+
+    var receivedAmount = parseNum(r.receivedamount);
+    var refundedAmount = parseNum(r.refundedamount);
+    var netAmount = receivedAmount - refundedAmount;
+
+    grandNetTotal += netAmount;
+
+    var status = r.paymentstatus || '-';
+
+    var statusBadge = status === 'Success'
+    ? '<span class="label label-success">Success</span>'
+    : '<span class="label label-warning">' + htmlEncode(status) + '</span>';
+
+    var refundStatusHtml = r.refundstatus
+    ? '<span class="label label-info">' + htmlEncode(r.refundstatus) + '</span>'
+    : '-';
+
+    var adjustmentHtml = buildAdjustmentHtml(r.adjustments);
+
+    var rowClass = refundedAmount > 0 ? 'payment-row-refund' : '';
+
+    $tbody.append(
+    '<tr class="' + rowClass + '">' +
+
+    '<td>' + (i + 1) + '</td>' +
+
+    '<td><strong>' + htmlEncode(r.receiptno || '-') + '</strong></td>' +
+
+    '<td>' + htmlEncode(r.paymentdate || '-') + '</td>' +
+
+    '<td class="text-right">' +
+    fmtAmount(receivedAmount) +
+    '</td>' +
+
+    '<td class="text-right">' +
+    (refundedAmount > 0 ? fmtAmount(refundedAmount) : '-') +
+    '</td>' +
+
+    '<td class="text-right"><strong>' +
+    fmtAmount(netAmount) +
+    '</strong></td>' +
+
+    '<td>' + htmlEncode(r.paymentmode || '-') + '</td>' +
+
+    '<td>' + statusBadge + '</td>' +
+
+    '<td>' + refundStatusHtml + '</td>' +
+
+    '<td>' + adjustmentHtml + '</td>' +
+
+    '<td>' + htmlEncode(r.collectedby || '-') + '</td>' +
+
+    '<td>' + htmlEncode(r.remarks || '-') + '</td>' +
+
+    '</tr>'
+    );
+    }
+
+    $('#payment-history-grand-total').text(fmtAmount(grandNetTotal));
+    updateMainPaymentSummary(grandNetTotal);
+    $('#payment-history-table-container').show();
+    },
+
+    error: function () {
+    $('#payment-history-loading').hide();
+    $('#payment-history-no-data')
+    .html('<i class="fa fa-exclamation-circle text-danger"></i> Failed to load payment history.')
+    .show();
+    }
+    });
+    }
+    function updateMainPaymentSummary(totalReceived) {
+    totalReceived = parseNum(totalReceived);
+
+    var pendingBalance = parseNum(currentPendingBalance);
+
+    var grossTotal = useIpdLedgerGrossTotal
+        ? currentGrossTotal
+        : pendingBalance + totalReceived;
+
+    var advanceCredit = 0;
+
+    var netBalance = pendingBalance;
+
+    $('#summaryGrossTotal').text(fmtComma(grossTotal));
+    $('#summaryTotalReceived').text(fmtComma(totalReceived));
+    $('#summaryNetBalance').text(fmtComma(netBalance));
+    $('#summaryAdvanceCredit').text(fmtComma(advanceCredit));
+    }
+    function normalizeAdjustmentName(receivableFor) {
+    receivableFor = receivableFor || '';
+
+    if (String(receivableFor).toLowerCase() === 'room') {
+    return 'Room Charges';
+    }
+
+    if (String(receivableFor).toLowerCase() === 'ipd booking deposit') {
+    return 'Booking Deposit';
+    }
+
+    return receivableFor || 'General IPD Payment';
+    }
+
+    function buildAdjustmentHtml(adjustments) {
+    var keys = Object.keys(adjustments || {});
+
+    if (keys.length === 0) {
+    return '<span class="text-muted">General IPD Payment</span>';
+    }
+
+    var html = [];
+
+    keys.forEach(function (key) {
+    var amount = parseNum(adjustments[key]);
+
+    if (amount === 0) {
+    return;
+    }
+
+    html.push(
+    '<span class="label label-info" style="display:inline-block;margin:2px 4px 2px 0;">' +
+    htmlEncode(key) + ': ₹ ' + fmtAmount(amount) +
+    '</span>'
+    );
+    });
+
+    return html.length > 0
+    ? html.join(' ')
+    : '<span class="text-muted">General IPD Payment</span>';
+    }
+$(document).ready(function(){
+
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $('#chequedddate').datetimepicker({timepicker:false,scrollInput:false,format:"d/m/Y",formatDate:"d/m/Y"});
+    recalcTotal();
+    loadUnifiedPaymentHistory();
+    // Pre-fill with sum of all mandatory outstanding bills
+    var defAmt = parseNum($('#mandatoryOutstanding').text());
+    if(defAmt > 0){ $("#receivedamount").val(defAmt.toFixed(2)); recalcTotal(); }
+    $("#receivedamount").on('input', function(){ recalcTotal(); });
+    $("#amount").on('change', function(){ recalcTotal(); });
+
+    $(".chequedddate_craftmyapp_container").hide();
+    $("#paymentmode").change(function(){
+        $('#transactionreference').attr('required', false); $('#transactionreferencerequired').hide();
+        $(".chequedddate_craftmyapp_container").hide(); $('#chequedddate').attr('required', false); $('#chequedddaterequired').hide();
+        if($("#paymentmode").val()!='Cash'){ $('#transactionreference').attr('required', true); $('#transactionreferencerequired').show(); }
+        if($("#paymentmode").val()=='Cheque' || $("#paymentmode").val()=='Demand Draft (DD)'){ $(".chequedddate_craftmyapp_container").show(); $('#chequedddate').attr('required', true); $('#chequedddaterequired').show(); }
+    });
+
+    $.ajax({
+        url:'@Url.Action("get_lookups_by_entity","lookups")',
+        dataType:'json', data:{id:'BillingPayment'},
+        success:function(data){
+            $.each(data, function(_, f){
+                if(f.fieldname=="currency"){ $("#currency").empty().append("<option value=''>Choose</option>"); f.fielddesc.split(',').forEach(function(o){ $("#currency").append('<option '+(o=="INR"?"selected ":"")+'value="'+o+'">'+o+'</option>'); }); }
+                if(f.fieldname=="paymentmode"){ $("#paymentmode").empty().append("<option value=''>Choose</option>"); f.fielddesc.split(',').forEach(function(o){ $("#paymentmode").append('<option value="'+o+'">'+o+'</option>'); }); $("#paymentmode").val('Cash').trigger('change').select2(); }
+            });
+        }
+    });
+
+    function formatBillingPaymentName(item, suffixField) {
+        if (!item) { return ''; }
+        return [item.firstname, item.lastname, suffixField ? item[suffixField] : null]
+            .filter(function(value){ return value !== null && value !== undefined && String(value).trim() !== ''; })
+            .join(' ');
+    }
+
+    function lookup_BillingPayment_patientname(tenantid) {
+        var ddl = $('#patientname'); ddl.empty();
+        ddl.select2({
+            ajax:{
+                url:'@Url.Action("lookup_BillingPayment_patientname","BillingPayment")',
+                dataType:'json',
+                data:function(p){return{"tenantid":tenantid,'searchterm':p.term||'','pagesize':typeaheadpagesize,'pagenumber':p.page||1};},
+                delay:500,
+                processResults:function(data){
+                    if(data.length>0){data=data.filter(function(i){return i.firstname!==null;});}
+                    for(var i=0;i<data.length;i++){data[i].id=data[i].PatientProfileid;}
+                    return{results:data,pagination:{more:data!=null&&data.length==typeaheadpagesize}};
+                }
+            },
+            placeholder:'Choose',
+            minimumResultsForSearch:typeaheadpagesize,
+            templateResult:function(i){return i.loading?i.text:formatBillingPaymentName(i, 'mobilenumber');},
+            templateSelection:function(i){return !i?'Choose':(i.text||formatBillingPaymentName(i, 'mobilenumber'));}
+        });
+        $.ajax({
+            url:'@Url.Action("lookup_BillingPayment_patientname","BillingPayment")',
+            dataType:'json',
+            data:{"tenantid":tenantid,'searchterm':strpatientname,'pagesize':typeaheadpagesize,'pagenumber':1},
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    if(data[i].PatientProfileid==strpatientname){
+                        var label = formatBillingPaymentName(data[i], 'mobilenumber');
+                        var o = new Option(label,data[i].PatientProfileid,true,true);
+                        ddl.append(o).trigger('change');
+                    }
+                }
+            }
+        });
+    }
+
+    function lookup_BillingPayment_ipdnumber(tenantid,patientname) {
+        var ddl = $('#ipdnumber'); ddl.empty();
+        ddl.select2({
+            ajax:{
+                url:'@Url.Action("lookup_BillingPayment_ipdnumber","BillingPayment")',
+                dataType:'json',
+                data:function(p){return{"tenantid":tenantid,"patientname":patientname,'searchterm':p.term||'','pagesize':typeaheadpagesize,'pagenumber':p.page||1};},
+                delay:500,
+                processResults:function(data){
+                    if(data.length>0){data=data.filter(function(i){return i.firstname!==null;});}
+                    for(var i=0;i<data.length;i++){data[i].id=data[i].IPDApplicationFormid;}
+                    return{results:data,pagination:{more:data!=null&&data.length==typeaheadpagesize}};
+                }
+            },
+            placeholder:'Choose',
+            minimumResultsForSearch:typeaheadpagesize,
+            templateResult:function(i){return i.loading?i.text:formatBillingPaymentName(i, 'bookingreferencenumber');},
+            templateSelection:function(i){return !i?'Choose':(i.text||formatBillingPaymentName(i, 'bookingreferencenumber'));}
+        });
+        if(!stripdnumber){ return; }
+        $.ajax({
+            url:'@Url.Action("lookup_BillingPayment_ipdnumber","BillingPayment")',
+            dataType:'json',
+            data:{"tenantid":tenantid,"patientname":patientname,'searchterm':stripdnumber,'pagesize':typeaheadpagesize,'pagenumber':1},
+            success:function(data){
+                for(var i=0;i<data.length;i++){
+                    if(data[i].IPDApplicationFormid==stripdnumber){
+                        var label = formatBillingPaymentName(data[i], 'bookingreferencenumber');
+                        var o = new Option(label,data[i].IPDApplicationFormid,true,true);
+                        ddl.append(o).trigger('change');
+                    }
+                }
+            }
+        });
+    }
+
+    setTimeout(function(){
+        lookup_BillingPayment_patientname(str_tenantid);
+        lookup_BillingPayment_ipdnumber(str_tenantid,strpatientname);
+    }, 1000);
+
+    function submitUnifiedPayment(skipIncompletePaymentConfirmation){
+		if(parseNum($("#amount").val())<=0){
+			swal({title:'Validation Failed',text:'Enter Pay Now amount for at least one bill.',type:'error',buttonsStyling:false,confirmButtonClass:'btn btn-primary'});
+			return;
+		}
+		if(!validateMandatoryRows() && !skipIncompletePaymentConfirmation){
+			if(!hasOutstandingBookingDeposit){
+				swal({title:'Validation Failed',text:'Mandatory outstanding amount should be fully covered.',type:'error',buttonsStyling:false,confirmButtonClass:'btn btn-primary'});
+				return;
+			}
+			swal({
+				title:'Incomplete Payment',
+				text:'The required payment has not been completed. Are you sure you want to continue?',
+				type:'warning',
+				showCancelButton:true,
+				confirmButtonText:'Yes, continue',
+				cancelButtonText:'Cancel',
+				buttonsStyling:false,
+				confirmButtonClass:'btn btn-primary',
+				cancelButtonClass:'btn btn-secondary'
+			}).then(function(result){
+				if(result.value) submitUnifiedPayment(true);
+			});
+            return;
+        }
+        var payload = {
+            PatientID: '@Model.PatientID',
+            IPDNo: '@(Model.IPDNo?.ToString() ?? "")' === '' ? null : '@(Model.IPDNo?.ToString() ?? "")',
+            Type: '@Model.Type',
+            tenantid: $("#tenantid").val(),
+            currency: $("#currency").val(),
+            receivedamount: parseNum($("#receivedamount").val()),
+            conversionrate: parseNum($("#conversionrate").val()),
+            paymentmode: $("#paymentmode").val(),
+            transactionreference: $("#transactionreference").val(),
+            bankname: $("#bankname").val(),
+            chequedddate: $("#chequedddate").val(),
+            paymentstatus: $("#paymentstatus").val(),
+            collectedby: $("#collectedby").val(),
+            counterid: $("#counterid").val(),
+            remarks: $("#remarks").val(),
+            Payments: buildPaymentsPayload()
+        };
+        $(".page-loader").show();
+        $.ajax({
+            url:'@Url.Action("UnifiedPayment","BillingPayment")',
+            type:'POST',
+            data: payload,
+            success:function(data){
+                $(".page-loader").hide();
+                if(data==="Success"){
+                    window.location= "@Url.Action("Dashboard", "FrontDesk")";
+
+                
+                }
+                else{ swal({title:"Error !!",text:data,type:"error",showCancelButton:false,confirmButtonText:"OK"}); }
+            },
+            error:function(jqXHR){
+                $(".page-loader").hide();
+                swal({title:'Contact Administrator !',text:jqXHR.responseText,type:'error',buttonsStyling:false,confirmButtonClass:'btn btn-primary'});
+            }
+        });
+	}
+
+	$("#btnSubmit").click(function(){
+		submitUnifiedPayment(false);
+	});
+});
+
+// Update page header: Patient Name / Booking Ref (Duration of Stay)
+function _hdrToDmyUnifiedPayment(s) {
+    if (!s) return '';
+    s = s.toString().trim();
+    var _months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var _d, _m, _y;
+    if (s.indexOf('/') >= 0) {
+        var _p = s.split('/');
+        _d = parseInt(_p[0], 10); _m = parseInt(_p[1], 10) - 1; _y = parseInt(_p[2], 10);
+    } else if (s.indexOf('-') >= 0 && s.length >= 10) {
+        var _p2 = s.substring(0, 10).split('-');
+        _y = parseInt(_p2[0], 10); _m = parseInt(_p2[1], 10) - 1; _d = parseInt(_p2[2], 10);
+    } else {
+        var _dt = new Date(s);
+        if (isNaN(_dt.getTime())) return '';
+        _d = _dt.getDate(); _m = _dt.getMonth(); _y = _dt.getFullYear();
+    }
+    if (isNaN(_d) || isNaN(_m) || isNaN(_y) || !_months[_m]) return '';
+    return (_d < 10 ? '0' : '') + _d + '-' + _months[_m] + '-' + _y;
+}
+
+
+function updatePaymentHeader() {
+    var sel = $('#ipdnumber').select2('data');
+    var item = (sel && sel.length) ? sel[0] : null;
+    var _name = '', _ref = '', _id = '';
+    if (item) {
+        _id = item.id || '';
+        if (item.firstname) {
+            _name = [item.firstname, item.lastname].filter(Boolean).join(' ');
+            _ref  = item.bookingreferencenumber || '';
+        } else if (item.text) {
+            var parts = item.text.trim().split(/\s+/);
+            var last  = parts[parts.length - 1] || '';
+            if (parts.length > 1 && /\d/.test(last)) {
+                _ref  = last;
+                _name = parts.slice(0, -1).join(' ');
+            } else {
+                _name = item.text;
+            }
+        }
+    }
+    if (!_name && !_ref) return;
+    var _backBtn  = '<a href="javascript:void(0);" onclick="window.location.href = document.referrer"><i class="fa fa-angle-left" aria-hidden="true"></i></a>';
+    var _nameHtml = _name ? '<span class="ipd-header-name">' + _name + '</span>' : '';
+    var _refHtml  = _ref ? ' / <span class="ipd-header-ref ipd-header-bookingref">' + _ref + '</span>' : '';
+    $("div.page-header-box h1").html(_backBtn + _nameHtml + _refHtml);
+    if (_id) {
+        $.ajax({
+            url: '@Url.Action("getById_allinfo_IPDApplicationForm", "IPDApplicationForm")',
+            dataType: 'json',
+            data: { IPDApplicationFormid: _id },
+            success: function(data) {
+                try {
+                    var obj = (data && data.length) ? eval(data[0]) : null;
+                    if (!obj) return;
+                    var prefDatesRaw = obj['automaton_IPDApplicationForm_preferreddatesofadmission'];
+                    var totalDays = 0, stayFrom = '', stayTo = '';
+                    if (prefDatesRaw) {
+                        var arr = typeof prefDatesRaw === 'string' ? JSON.parse(prefDatesRaw) : prefDatesRaw;
+                        if (Array.isArray(arr)) {
+                            arr.forEach(function(dr, idx) {
+                                var d = parseInt(dr.daysofstay || dr.Daysofstay || dr['Days of Stay'] || 0, 10);
+                                if (!isNaN(d)) totalDays += d;
+                                if (idx === 0) {
+                                    stayFrom = _hdrToDmyUnifiedPayment(dr.dateofarrival || dr.Dateofarrival || dr['Date of Arrival']);
+                                    stayTo   = _hdrToDmyUnifiedPayment(dr.dateofdeparture || dr.Dateofdeparture || dr['Date of Departure']);
+                                }
+                            });
+                        }
+                    }
+                    var _durHtml = totalDays > 0 ? '<span class="patient-header-dos">DOS - ' + totalDays + (totalDays === 1 ? ' Day' : ' Days') + ((stayFrom && stayTo) ? ': ' + stayFrom + ' - ' + stayTo : '') + '</span>' : '';
+                    $("div.page-header-box h1").html(_backBtn + _nameHtml + _refHtml + _durHtml);
+                } catch (ex) {}
+            }
+        });
+    }
+}
+$(document).on('select2:select', '#ipdnumber', updatePaymentHeader);
+$(document).on('change', '#ipdnumber', function() { setTimeout(updatePaymentHeader, 200); });
+
+
+    $(document).on('click', '.btn-room-details', function () {
+    var templateId = $(this).data('detail-template');
+    var title = $(this).data('title') || 'Room Daily Breakup';
+
+    var template = document.getElementById(templateId);
+
+    if (!template) {
+    return;
+    }
+
+    $('#roomDetailTitle').text(title);
+    $('#roomDetailContent').html(template.innerHTML);
+
+    $('#roomDetailOverlay').addClass('open');
+    $('#roomDetailDrawer').addClass('open');
+    $('body').addClass('room-drawer-open');
+    });
+
+    function closeRoomDrawer() {
+    $('#roomDetailOverlay').removeClass('open');
+    $('#roomDetailDrawer').removeClass('open');
+    $('body').removeClass('room-drawer-open');
+    }
+
+    $(document).on('click', '#btnCloseRoomDrawer', closeRoomDrawer);
+    $(document).on('click', '#roomDetailOverlay', closeRoomDrawer);
+
+    $(document).on('keydown', function (e) {
+    if (e.key === 'Escape') {
+    closeRoomDrawer();
+    }
+    });
+</script>
+
+<style>
+    .ipd-header-name { font-weight: 700; font-size: 20px; text-transform: capitalize; letter-spacing: 0.5px; }
+
+    .ipd-header-ref {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d5f44;
+    letter-spacing: 0.5px;
+    margin-left: 4px;
+    }
+
+    .ipd-header-bookingref {
+    font-weight: 700;
+    font-size: 18px;
+    color: #2f6b4f;
+    }
+</style>

@@ -1,0 +1,1403 @@
+@*
+  ═══════════════════════════════════════════════════════════════
+  Reusable Patient Search Control  (partial view)
+  ───────────────────────────────────────────────────────────────
+  Outlook-style search panel with mandatory patient fields,
+  inline type-ahead results, Quick-Add (+) modal.
+
+  Usage in any form:
+      @await Html.PartialAsync("_PatientSearchControl")
+
+  JavaScript hooks (fire after a patient is selected):
+      $(document).on('psc:patientSelected', function(e, data) {
+          // data = full patient object from getById_allinfo_PatientProfile
+      });
+      $(document).on('psc:patientCleared', function(e) { ... });
+
+  Public API:
+      PatientSearchControl.getSelectedPatient()
+      PatientSearchControl.getSelectedId()
+      PatientSearchControl.clear()
+      PatientSearchControl.setPatient(patientId)
+  ═══════════════════════════════════════════════════════════════
+*@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IConfiguration Configuration
+
+<link rel="stylesheet" href="~/css/patient-search-control.css" />
+
+<!-- ══════════ MAIN CONTROL ══════════ -->
+<div class="psc-container" id="pscContainer">
+
+    <!-- ── Selected patient chip (shown after pick) ── -->
+    <div class="psc-selected-chip" id="pscSelectedChip">
+        <div class="psc-result-avatar" id="pscChipAvatar"><span>?</span></div>
+        <div style="flex:1;min-width:0;">
+            <div class="psc-selected-name" id="pscChipName">—</div>
+            <div class="psc-selected-meta" id="pscChipMeta"></div>
+        </div>
+        <button type="button" class="psc-selected-clear" id="pscChipClear" title="Clear selection"><i class="fa fa-times"></i></button>
+    </div>
+
+    <!-- ── Search bar (hidden when a patient is selected) ── -->
+    <div class="psc-wrap" id="pscWrap">
+        <div class="psc-search-bar">
+            <input type="text" class="psc-input" id="pscInput" placeholder="Search patient by name, mobile, ID..." autocomplete="off" />
+            <button type="button" class="psc-search-btn" id="pscSearchBtn" title="Search"><i class="fa fa-search"></i></button>
+            <button type="button" class="psc-filter-toggle" id="pscFilterToggle" title="Advanced filters">
+                <i class="fa fa-sliders-h"></i>
+            </button>
+        </div>
+        <button type="button" class="psc-add-btn" id="pscQuickAddBtn" title="Add new patient"><i class="fa fa-plus"></i></button>
+    </div>
+
+    <!-- ── Outlook-style Filter Panel ── -->
+    <div class="psc-filter-panel" id="pscFilterPanel">
+        <div class="psc-filter-header">
+            <span class="psc-filter-title"><i class="fa fa-filter"></i> Patient Search</span>
+            <button type="button" class="psc-filter-close" id="pscFilterClose" title="Close filters"><i class="fa fa-times"></i></button>
+        </div>
+        <div class="psc-filter-body">
+            <div class="psc-filter-grid">
+                <input type="text" class="form-control psc-filter-input" id="pscFltName" placeholder="Name" autocomplete="off" />
+                <input type="tel" class="form-control psc-filter-input" id="pscFltMobile" placeholder="Mobile" autocomplete="off" maxlength="20" />
+                <input type="email" class="form-control psc-filter-input" id="pscFltEmail" placeholder="Email" autocomplete="off" />
+                <select class="form-control psc-filter-input" id="pscFltGender">
+                    <option value="">Gender</option>
+                </select>
+                <select class="form-control psc-filter-input" id="pscFltIdProofType">
+                    <option value="">ID Proof Type</option>
+                </select>
+                <input type="text" class="form-control psc-filter-input" id="pscFltIdProofNumber" placeholder="ID Proof Number" autocomplete="off" />
+            </div>
+        </div>
+        <div class="psc-filter-footer">
+            <button type="button" class="btn btn-sm cma_primary_button" id="pscFilterSearch"><i class="fa fa-search"></i> Search</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="pscFilterClear">Clear filters</button>
+        </div>
+    </div>
+
+    <!-- ── Inline dropdown results (type-ahead / filter results) ── -->
+    <div class="psc-results-dropdown" id="pscResultsDropdown">
+        <div class="psc-results-loading" id="pscLoading" style="display:none;"><i class="fa fa-spinner fa-spin"></i> Searching&hellip;</div>
+        <div class="psc-results-empty" id="pscEmpty" style="display:none;">No patients found.</div>
+        <div id="pscResultsList"></div>
+    </div>
+</div>
+
+<!-- ══════════ QUICK-ADD MODAL ══════════ -->
+<div class="psc-modal-overlay" id="pscModalOverlay">
+    <div class="psc-modal">
+        <div class="psc-modal__header">
+            <h5 class="psc-modal__title"><i class="fa fa-user-plus"></i> Quick Add Patient</h5>
+            <button type="button" class="psc-modal__close" id="pscModalClose"><i class="fas fa-xmark"></i></button>
+        </div>
+        <div class="psc-modal__body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="required-label">First Name</label>
+                        <input type="text" class="form-control" id="pscQaFirstname" maxlength="128" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" id="pscQaLastname" maxlength="128" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="required-label">Gender</label>
+                        <select class="form-control" id="pscQaGender">
+                            <option value="">Choose</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="required-label">Date of Birth</label>
+                        <input type="text" class="form-control psc-datepicker" id="pscQaDob" placeholder="dd/mm/yyyy" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="required-label">Age</label>
+                        <input type="text" class="form-control" id="pscQaAge" inputmode="numeric" maxlength="2" pattern="[0-9]{1,2}" autocomplete="off" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label>Blood Group</label>
+                        <select class="form-control" id="pscQaBloodGroup">
+                            <option value="">Choose</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="required-label">Mobile Number</label>
+                        <input type="tel" class="form-control" id="pscQaMobile_ip" />
+                        <input type="hidden" id="pscQaMobile" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="required-label">WhatsApp Number</label>
+                        <input type="tel" class="form-control" id="pscQaWhatsapp_ip" />
+                        <input type="hidden" id="pscQaWhatsapp" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="required-label">Email Address</label>
+                        <input type="email" class="form-control" id="pscQaEmail" maxlength="128" />
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="required-label">Nationality</label>
+                        <select class="form-control" id="pscQaNationality">
+                            <option value="">Choose</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-6" id="pscQaCountryOriginWrap" style="display:none;">
+                    <div class="form-group">
+                        <label class="required-label">Country of Origin</label>
+                        <select class="form-control" id="pscQaCountryOfOrigin">
+                            <option value="">Choose</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="required-label">ID Proof Type</label>
+                        <select class="form-control" id="pscQaIdProofType">
+                            <option value="">Choose</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="required-label">ID Proof Number</label>
+                        <input type="text" class="form-control" id="pscQaIdProofNumber" maxlength="128" />
+                        <span id="pscQaIdProofNumber-error" class="field-validation-valid text-danger" data-valmsg-for="pscQaIdProofNumber"></span>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="required-label">Address Line 1</label>
+                        <input type="text" class="form-control" id="pscQaAddress" maxlength="256" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="required-label">PIN Code</label>
+                        <input type="text" class="form-control" id="pscQaPincode" inputmode="numeric" maxlength="8" autocomplete="postal-code" />
+                    </div>
+                </div>
+                <div class="col-sm-6 col-xs-12 p-2 uploadidproof_craftmyapp_container list_card_section list_card_tablet">
+                    <div>
+
+                        <div class="form-group form-group--float-above my-3">
+                            <label for="uploadidproof">Upload ID Proof <b class="iconRed">*</b></label>
+                            <div class="input-file">
+                                <input type="hidden" id="uploadidproof_existing" name="uploadidproof_existing">
+                                <div id="dropZoneuploadidproof" class="drop-zone">
+                                    <input type="file" multiple accept="application/pdf,image/*" id="uploadidproof" name="uploadidproof" class="attachments file-browse" @if (Model == null || Model.uploadidproof == null){
+                                    <text>required</text>
+                                                                        }
+>
+                                    <label for="uploadidproof">Browse</label>
+                                    <span class="uploadidprooffilebtn filebtn"></span>
+
+
+                                </div>
+                                <div id="attachmentDisp" href="">
+                                    <span id="uploadidproofshowFiles" class="btn-sm btn-default showFiles" data-toggle="modal" data-target="#uploadidproofModalotherdocuments"></span>
+                                </div>
+                            </div>
+                            <!--uploaded files-->
+                            <!-- Modal content-->
+                            <div class="modal-content uploaded_files" id="uploadidproofModalotherdocuments">
+                                <div class="modal-header">
+                                    <h4 class="modal-title"><img src="~/images/upload-file.png" alt="file" /><span>Uploaded Files</span></h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="uploadidproofAttachedFiles">
+                                        <table id="uploadidprooffilesTab" class="table table-striped"></table>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div id="pscQaError" class="alert alert-danger mt-2" style="display:none; font-size:13px;"></div>
+        </div>
+        <div class="psc-modal__footer">
+            <button type="button" class="btn btn-outline-secondary" id="pscModalCancel">Cancel</button>
+            <button type="button" class="btn cma_primary_button" id="pscModalSave"><i class="fa fa-check"></i> Save & Select</button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════ HIDDEN FIELD (binds to parent form) ══════════ -->
+<input type="hidden" name="patientname" id="patientname" />
+<script>
+    var uploadidproofuploaded_attachments=[];
+
+</script>
+@if (Model != null)
+{
+    if (Model.uploadidproof != null && Model.uploadidproof.ToString() != "")
+    {
+        <script>
+             uploadidproofuploaded_attachments= "@Model.uploadidproof".split('|').filter(Boolean);
+            $("#uploadidproof_existing").val("@Model.uploadidproof")
+        </script>
+    }
+}
+
+<script>
+
+
+    var fileInputuploadidproof = document.getElementById('uploadidproof');
+
+    var filesTabuploadidproof = $('#uploadidprooffilesTab');
+    var uploadernameuploadidproof = document.querySelector(".uploadidprooffilebtn");
+    var uploadidproofselectedFiles = [];
+    var uploadidproofexistingFiles = uploadidproofuploaded_attachments;
+    renderExistingFileListOfuploadidproof();
+    updateFileCountofuploadidproof();
+    var lastActiveDropZone = null;
+    var uploadIdProofAllowedExtensions = ['.pdf', '.png', '.jpg', '.jpeg', '.gif', '.bmp', '.webp'];
+
+    function isAllowedUploadIdProofFile(file) {
+        if (!file || !file.name) return false;
+        var fileName = file.name.toLowerCase();
+        var ext = fileName.substring(fileName.lastIndexOf('.'));
+        return (file.type && file.type.indexOf('image/') === 0) || file.type === 'application/pdf' || uploadIdProofAllowedExtensions.indexOf(ext) > -1;
+    }
+
+    function addUploadIdProofFiles(files) {
+        var accepted = [];
+        var rejected = [];
+        Array.prototype.slice.call(files || []).forEach(function (file) {
+            if (isAllowedUploadIdProofFile(file)) {
+                accepted.push(file);
+            } else {
+                rejected.push(file.name || 'Unsupported file');
+            }
+        });
+        if (accepted.length > 0) {
+            uploadidproofselectedFiles.push.apply(uploadidproofselectedFiles, accepted);
+            renderFileListofuploadidproof();
+            updateFileCountofuploadidproof();
+        }
+        if (rejected.length > 0) {
+            $('#pscQaError').html('Upload ID Proof accepts PDF or image files only.<br>Rejected: ' + rejected.join(', ')).show();
+        } else if (accepted.length > 0 && $('#pscQaError').text().indexOf('Upload ID Proof accepts PDF or image files only') > -1) {
+            $('#pscQaError').hide().text('');
+        }
+    }
+
+    fileInputuploadidproof.addEventListener('change', function (e) {
+        addUploadIdProofFiles(e.target.files);
+        e.target.value = '';
+    });
+
+    // Drag & Drop and Paste functionality
+    var dropZone = document.getElementById('dropZoneuploadidproof');
+
+    // Click to paste functionality
+    dropZone.addEventListener('click', function () {
+        lastActiveDropZone = 'uploadidproof';
+        // Try to read from clipboard
+        if (navigator.clipboard && navigator.clipboard.read) {
+            navigator.clipboard.read().then(items => {
+                items.forEach(item => {
+                    if (item.types.includes('image/png') || item.types.includes('image/jpeg')) {
+                        item.getType(item.types[0]).then(blob => {
+                            var file = new File([blob], "pasted_image.png", { type: blob.type });
+                            addUploadIdProofFiles([file]);
+                            clearClipboard();
+                        });
+                    }
+                });
+            }).catch(err => {
+                console.error('Failed to read clipboard contents: ', err);
+            });
+        }
+    });
+
+    // Drag over event
+    dropZone.addEventListener('dragover', function (event) {
+        event.preventDefault();
+        dropZone.classList.add('dragover');
+        lastActiveDropZone = 'uploadidproof';
+    });
+
+    // Drag leave event
+    dropZone.addEventListener('dragleave', function (event) {
+        event.preventDefault();
+        dropZone.classList.remove('dragover');
+    });
+
+    // Drop event
+    dropZone.addEventListener('drop', function (event) {
+        event.preventDefault();
+        dropZone.classList.remove('dragover');
+        addUploadIdProofFiles(event.dataTransfer.files);
+    });
+
+    // Global paste event
+    document.addEventListener('paste', function (event) {
+        if (lastActiveDropZone === 'uploadidproof') {
+            var items = event.clipboardData.items;
+            for (var i = 0; i < items.length; i++) {
+                if (items[i].kind === 'file') {
+                    var file = items[i].getAsFile();
+                    addUploadIdProofFiles([file]);
+                    clearClipboard();
+                } else if (items[i].kind === 'string') {
+                    items[i].getAsString(function (text) {
+                        // Check if it's an image URL
+                        if (text.match(/\.(jpeg|jpg|gif|png)$/) != null) {
+                            var img = new Image();
+                            img.onload = function () {
+                                var canvas = document.createElement('canvas');
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                var ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0);
+                                canvas.toBlob(function (blob) {
+                                    var file = new File([blob], "pasted_image.png", { type: blob.type });
+                                    addUploadIdProofFiles([file]);
+                                    clearClipboard();  // Clear the clipboard after processing the image
+                                }, 'image/png');
+                            };
+                            img.src = text;
+                        }
+                    });
+                }
+            }
+        }
+        });
+
+    function renderExistingFileListOfuploadidproof() {
+        // Remove all <tr> elements with the class name existingFile
+        filesTabuploadidproof.find('tr.existingFile').remove();
+
+
+        // Render the updated file list
+        for (var i = 0; i < uploadidproofexistingFiles.length; i++) {
+            var file = uploadidproofexistingFiles[i];
+
+            var fileName = file;
+            var icon_Class = getIconClass(fileName);
+              var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + fileName + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+            var row = $('<tr>').attr('id', 'fileuploadidproof' + i).attr('class', 'existingFile');
+            row.append($('<td>').addClass('ico_lst').html('<img src="' + vBaseurl + '' + icon_Class + '" alt="icon"/>'));
+            row.append($('<td>').addClass('cont_lst').html('<a href="' + filepath + '" target="_blank" id="' + fileName + '" class="filedisplay" title="' + fileName + '"><span>' + fileName + '</span></a>'));
+            row.append($('<td>').addClass('delete_lst').html('<span class="btn btn-sm deleteAttach delexistinguploadidproof' + i + '"><img src="' + vBaseurl + '/images/delete.png" alt="icon"></span>'));
+
+            filesTabuploadidproof.append(row);
+
+            // Bind the click event for the delete button using a function
+            bindDeleteExistingEventuploadidproof(i);
+        }
+    }
+
+    function renderFileListofuploadidproof() {
+        // Remove all <tr> elements with the class name newFile
+        filesTabuploadidproof.find('tr.newFile').remove();
+
+        // Render the updated file list
+        for (var i = 0; i < uploadidproofselectedFiles.length; i++) {
+            var file = uploadidproofselectedFiles[i];
+
+            var fileName = file.name;
+            var icon_Class = getIconClass(fileName);
+
+            var row = $('<tr>').attr('id', 'fileuploadidproof' + i).attr('class', 'newFile');
+            row.append($('<td>').addClass('ico_lst').html('<img src="' + vBaseurl + '' + icon_Class + '" alt="icon"/>'));
+            row.append($('<td>').addClass('cont_lst').html('<a href="' + URL.createObjectURL(file) + '" target="_blank" id="' + fileName + '" class="filedisplay" title="' + fileName + '"><span>' + fileName + '</span></a>'));
+            row.append($('<td>').addClass('delete_lst').html('<span class="btn btn-sm deleteAttach deluploadidproof' + i + '"><img src="' + vBaseurl + '/images/delete.png" alt="icon"></span>'));
+
+            filesTabuploadidproof.append(row);
+
+            // Bind the click event for the delete button using a function
+            bindDeleteEventuploadidproof(i);
+        }
+    }
+
+    function bindDeleteEventuploadidproof(index) {
+        $(".deluploadidproof" + index).click(function () {
+            // Remove the file from the selected files array
+            uploadidproofselectedFiles.splice(index, 1);
+
+            // Re-render the file list
+            renderFileListofuploadidproof();
+
+            // Update the file count
+            updateFileCountofuploadidproof();
+        });
+    }
+    function bindDeleteExistingEventuploadidproof(index) {
+        $(".delexistinguploadidproof" + index).click(function () {
+            // Remove the file from the selected files array
+            uploadidproofexistingFiles.splice(index, 1);
+
+            $("#uploadidproof_existing").val(uploadidproofexistingFiles.join('|'))
+
+            // Re-render the file list
+            renderExistingFileListOfuploadidproof();
+
+            // Update the file count
+            updateFileCountofuploadidproof();
+        });
+    }
+    function updateFileCountofuploadidproof() {
+        // Display the file count
+        uploadernameuploadidproof.innerHTML = uploadidproofselectedFiles.length + uploadidproofexistingFiles.length + ' files selected';
+
+    }
+    function clearClipboard() {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText('').then(function () {
+                console.log('Clipboard cleared');
+            }, function (err) {
+                console.error('Could not clear clipboard: ', err);
+            });
+        }
+    }
+
+
+</script>
+<script>
+/*  ═══════════════════════════════════════════════════════
+    Patient Search Control – self-contained JS
+    ═══════════════════════════════════════════════════════ */
+(function ($) {
+    'use strict';
+
+    /* ── Config / URLs ── */
+    var LOOKUP_URL       = '@Url.Action("lookup_IPDApplicationForm_patientname", "IPDApplicationForm")';
+    var LIST_URL         = '@Url.Action("get_Patient_Profile_List", "PatientProfile")';
+    var DETAIL_URL       = '@Url.Action("getById_allinfo_PatientProfile", "PatientProfile")';
+    var QUICKADD_URL     = '@Url.Action("QuickAdd_Patient_Profile", "PatientProfile")';
+    var LOOKUPS_URL      = '@Url.Action("get_lookups_by_entity", "lookups")';
+    var COUNTRY_ORIGIN_URL = '@Url.Action("lookup_PatientProfile_countryoforigin", "PatientProfile")';
+    var PAGE_SIZE        = 25;
+    var DEBOUNCE_MS      = 400;
+    var _itiMobile = null, _itiWhatsapp = null;
+
+    /* ── DOM refs ── */
+    var $wrap            = $('#pscWrap');
+    var $chip            = $('#pscSelectedChip');
+    var $input           = $('#pscInput');
+    var $searchBtn       = $('#pscSearchBtn');
+    var $filterToggle    = $('#pscFilterToggle');
+    var $filterPanel     = $('#pscFilterPanel');
+    var $dropdown        = $('#pscResultsDropdown');
+    var $resultsList     = $('#pscResultsList');
+    var $loading         = $('#pscLoading');
+    var $empty           = $('#pscEmpty');
+    var $hidden          = $('#patientname');
+
+    /* ── State ── */
+    var _searchTimer     = null;
+    var _selectedPatient = null;
+    var _lookupsLoaded   = false;
+    var _filterLookupsLoaded = false;
+
+    /* ══════════════════════════════════════
+       Helper – tenant id
+       ══════════════════════════════════════ */
+    function getTenantId() {
+        return (typeof str_tenantid !== 'undefined' && str_tenantid) ? str_tenantid : ($('#tenantid').val() || '');
+    }
+
+    /* ══════════════════════════════════════
+       Filter panel toggle
+       ══════════════════════════════════════ */
+    function openFilterPanel() {
+        loadFilterLookups();
+        $filterPanel.addClass('is-open');
+        $filterToggle.addClass('active');
+        closeDropdown();
+        initFilterDatepickers();
+    }
+
+    function closeFilterPanel() {
+        $filterPanel.removeClass('is-open');
+        $filterToggle.removeClass('active');
+    }
+
+    function toggleFilterPanel() {
+        if ($filterPanel.hasClass('is-open')) {
+            closeFilterPanel();
+        } else {
+            openFilterPanel();
+        }
+    }
+
+    /* ══════════════════════════════════════
+       Load lookup values for filter dropdowns
+       ══════════════════════════════════════ */
+    function loadFilterLookups() {
+        if (_filterLookupsLoaded) return;
+        $.ajax({
+            url: LOOKUPS_URL,
+            dataType: 'json',
+            data: { id: 'PatientProfile' },
+            success: function (data) {
+                _filterLookupsLoaded = true;
+                $.each(data, function (_, item) {
+                    if (item.fieldname === 'gender') populateSelect('#pscFltGender', item.fielddesc, null, true);
+                    if (item.fieldname === 'idprooftype') populateSelect('#pscFltIdProofType', item.fielddesc, null, true);
+                });
+            }
+        });
+    }
+
+    function initFilterDatepickers() {
+        /* reserved for future date filters */
+    }
+
+    /* ══════════════════════════════════════
+       Filtered search (Outlook-style panel)
+       ══════════════════════════════════════ */
+    function doFilteredSearch() {
+        var firstname = $.trim($('#pscFltName').val());
+        var mobile = $.trim($('#pscFltMobile').val());
+        var email = $.trim($('#pscFltEmail').val());
+        var gender = $('#pscFltGender').val();
+        var idProofType = $('#pscFltIdProofType').val();
+        var idProofNumber = $.trim($('#pscFltIdProofNumber').val());
+
+        /* At least one filter must be filled */
+        if (!firstname && !mobile && !email && !gender && !idProofType && !idProofNumber) {
+            showDropdown(); showEmpty('Please enter at least one search filter.');
+            return;
+        }
+
+        showDropdown(); showLoading();
+
+        $.ajax({
+            url: LIST_URL,
+            dataType: 'json',
+            data: {
+                tenantid: getTenantId(),
+                firstname: firstname,
+                mobilenumber: mobile,
+                emailaddress: email,
+                idprooftype: idProofType,
+                idproofnumber: idProofNumber,
+                /* Apply gender in SQL before pagination. Filtering only the
+                   first client page omitted valid patients on later pages. */
+                searchterm: gender || '',
+                pagesize: PAGE_SIZE,
+                pagenumber: 0
+            },
+            success: function (data) {
+                /* API returns { count, detail: [...] } wrapper */
+                var rows = (data && data.detail) ? data.detail : (Array.isArray(data) ? data : []);
+                if (!rows || rows.length === 0) { showEmpty(); return; }
+                /* Filter by gender client-side if set (API may not support gender filter) */
+                if (gender) {
+                    rows = rows.filter(function (d) {
+                        return (d.gender || '').toLowerCase() === gender.toLowerCase();
+                    });
+                }
+                if (rows.length === 0) { showEmpty(); return; }
+                rows.sort(function (a, b) { return String(a.firstname || '').toLowerCase().localeCompare(String(b.firstname || '').toLowerCase()); });
+                /* Hide filter panel so results are visible */
+                closeFilterPanel();
+                renderResults(rows.map(function (d) {
+                    return {
+                        id: d.patientprofileid || d.PatientProfileid,
+                        firstname: d.firstname || '',
+                        lastname: d.lastname || '',
+                        mobilenumber: d.mobilenumber || '',
+                        gender: d.gender || '',
+                        dateofbirth: d.dateofbirth || '',
+                        age: d.age,
+                        emailaddress: d.emailaddress || '',
+                        blacklisted: d.blacklisted || '',
+                        deceased: d.deceased,
+                        patientcategoryname: d.patientcategoryname || ''
+                    };
+                }));
+            },
+            error: function () { showEmpty('Search failed. Please try again.'); }
+        });
+    }
+
+    function parseDobToSql(str) {
+        if (!str) return '';
+        var parts = str.split('/');
+        if (parts.length !== 3) return '';
+        return parts[2] + '-' + parts[1] + '-' + parts[0]; /* YYYY-MM-DD */
+    }
+
+    function clearFilters() {
+        $('#pscFltName, #pscFltMobile, #pscFltEmail, #pscFltIdProofNumber').val('');
+        $('#pscFltGender, #pscFltIdProofType').val('');
+        closeDropdown();
+    }
+
+    /* ══════════════════════════════════════
+       Inline type-ahead search (quick search)
+       Supports: name · mobile number · gender · ID proof number
+       ══════════════════════════════════════ */
+    function doInlineSearch() {
+        var term = $.trim($input.val());
+        if (term.length < 1) { closeDropdown(); return; }
+        closeFilterPanel();
+        showDropdown(); showLoading();
+
+        var lowerTerm = term.toLowerCase();
+
+        /* ── Detect input type ─────────────────────────────────────── */
+        /* Phone: 5+ digit characters (allows spaces, dashes, +, parens) */
+        var digitOnly = term.replace(/\D/g, '');
+        var isPhone   = digitOnly.length >= 5 && /^[+\d\s\-()]+$/.test(term);
+        /* Gender: exact keyword */
+        var isGender  = (lowerTerm === 'male' || lowerTerm === 'female' || lowerTerm === 'other');
+
+        /* ── Normalise API response ─────────────────────────────────── */
+        function normaliseRows(data) {
+            var rows = (data && data.detail) ? data.detail : (Array.isArray(data) ? data : []);
+            return rows.map(function (d) {
+                return {
+                    id:           d.patientprofileid || d.PatientProfileid,
+                    firstname:    d.firstname    || '',
+                    lastname:     d.lastname     || '',
+                    mobilenumber: d.mobilenumber || '',
+                    gender:       d.gender       || '',
+                    dateofbirth:  d.dateofbirth  || '',
+                    age:          d.age,
+                    emailaddress: d.emailaddress || '',
+                    blacklisted:  d.blacklisted || '',
+                    deceased:     d.deceased,
+                    patientcategoryname: d.patientcategoryname || ''
+                };
+            });
+        }
+
+        function finish(rows) {
+            if (!rows || rows.length === 0) { showEmpty(); return; }
+            rows.sort(function (a, b) {
+                return String(a.firstname || '').toLowerCase()
+                           .localeCompare(String(b.firstname || '').toLowerCase());
+            });
+            renderResults(rows);
+        }
+
+        /* ── Route to the right API call ───────────────────────────── */
+        if (isPhone) {
+            /* Search by mobile number */
+            $.ajax({
+                url: LIST_URL, dataType: 'json',
+                data: { tenantid: getTenantId(), mobilenumber: term, pagesize: PAGE_SIZE, pagenumber: 0 },
+                success: function (data) { finish(normaliseRows(data)); },
+                error: function () { showEmpty('Search failed.'); }
+            });
+
+        } else if (isGender) {
+            /* Gender keyword typed — constrain in SQL before pagination and
+               retain the exact client-side match as a defensive check. */
+            $.ajax({
+                url: LIST_URL, dataType: 'json',
+                data: { tenantid: getTenantId(), searchterm: term, pagesize: PAGE_SIZE, pagenumber: 0 },
+                success: function (data) {
+                    var rows = normaliseRows(data).filter(function (r) {
+                        return (r.gender || '').toLowerCase() === lowerTerm;
+                    });
+                    finish(rows);
+                },
+                error: function () { showEmpty('Search failed.'); }
+            });
+
+        } else {
+            /* Name search via LOOKUP_URL (existing behaviour);
+               if zero results, fall back to ID proof number search */
+            $.ajax({
+                url: LOOKUP_URL, dataType: 'json',
+                data: { tenantid: getTenantId(), searchterm: term, pagesize: PAGE_SIZE, pagenumber: 1 },
+                success: function (data) {
+                    var rows = normaliseRows(data);
+                    if (rows.length > 0) { finish(rows); return; }
+                    /* No name match — retry as ID proof number */
+                    $.ajax({
+                        url: LIST_URL, dataType: 'json',
+                        data: { tenantid: getTenantId(), idproofnumber: term, pagesize: PAGE_SIZE, pagenumber: 0 },
+                        success: function (d2) { finish(normaliseRows(d2)); },
+                        error: function () { showEmpty('No patients found.'); }
+                    });
+                },
+                error: function () { showEmpty('Search failed.'); }
+            });
+        }
+    }
+
+    /* ══════════════════════════════════════
+       Render inline result rows
+       ══════════════════════════════════════ */
+    function esc(s) { return $('<span>').text(s || '').html(); }
+
+    function buildStatusBadges(p) {
+        var badges = [];
+        var blacklisted = (p.blacklisted || '').toString().toLowerCase();
+        var category = $.trim((p.patientcategoryname || '').toString());
+        if (blacklisted === 'yes') {
+            badges.push('<span class="psc-patient-badge psc-patient-badge--danger"><i class="fa fa-ban"></i> Blacklisted</span>');
+        }
+        if (p.deceased === true || p.deceased === 'True' || p.deceased === 'true') {
+            badges.push('<span class="psc-patient-badge psc-patient-badge--dark"><i class="fa fa-cross"></i> Deceased</span>');
+        }
+        if (category && category !== 'Not Categorized') {
+            badges.push('<span class="psc-patient-badge psc-patient-badge--category"><i class="fa fa-tag"></i> ' + esc(category) + '</span>');
+        }
+        return badges.length ? '<div class="psc-patient-badges">' + badges.join('') + '</div>' : '';
+    }
+
+    function renderResults(items) {
+        $loading.hide(); $empty.hide();
+        $resultsList.empty();
+        if (!items || items.length === 0) { showEmpty(); return; }
+        items.forEach(function (p) {
+            var fullName = $.trim((p.firstname || '') + ' ' + (p.lastname || '')) || '—';
+            var initials = ((p.firstname || '?').charAt(0) + (p.lastname || '').charAt(0)).toUpperCase();
+            var meta = [];
+            if (p.mobilenumber) meta.push('<span><i class="fa fa-phone"></i> ' + esc(p.mobilenumber) + '</span>');
+            if (p.gender) meta.push('<span><i class="fa fa-venus-mars"></i> ' + esc(p.gender) + '</span>');
+            if (p.age != null && p.age !== '') meta.push('<span><i class="fa fa-birthday-cake"></i> ' + esc(String(p.age)) + 'y</span>');
+            var statusBadges = buildStatusBadges(p);
+
+            var html = '<div class="psc-result-item" data-id="' + esc(p.id) + '">' +
+                '<div class="psc-result-avatar"><span>' + esc(initials) + '</span></div>' +
+                '<div class="psc-result-info">' +
+                    '<div class="psc-result-name">' + esc(fullName) + '</div>' +
+                    '<div class="psc-result-meta">' + meta.join('') + '</div>' +
+                    statusBadges +
+                '</div>' +
+                '<span class="psc-result-select-hint">Select</span>' +
+            '</div>';
+            $resultsList.append(html);
+        });
+    }
+
+    /* ══════════════════════════════════════
+       Select a patient (from any source)
+       ══════════════════════════════════════ */
+    function selectPatient(patientId) {
+        closeDropdown();
+        closeFilterPanel();
+        $.ajax({
+            url: DETAIL_URL,
+            data: { PatientProfileid: patientId },
+            dataType: 'json',
+            success: function (data) {
+                if (!data || data.length === 0) return;
+                var p = data[0];
+                _selectedPatient = p;
+                $hidden.val(patientId);
+
+                /* Show chip */
+                var fullName = $.trim((p.firstname || '') + ' ' + (p.lastname || ''));
+                var initials = ((p.firstname || '?').charAt(0) + (p.lastname || '').charAt(0)).toUpperCase();
+                $('#pscChipAvatar').html('<span>' + esc(initials) + '</span>');
+                $('#pscChipName').text(fullName || '—');
+                var metaParts = [];
+                if (p.mobilenumber) metaParts.push(p.mobilenumber);
+                if (p.gender) metaParts.push(p.gender);
+                if (p.age != null) metaParts.push(p.age + 'y');
+                var chipMeta = esc(metaParts.join(' · '));
+                var chipBadges = buildStatusBadges(p);
+                $('#pscChipMeta').html(chipMeta + chipBadges);
+                $chip.addClass('is-visible');
+                $wrap.hide();
+
+                /* Fire event so the parent form can auto-populate fields */
+                $(document).trigger('psc:patientSelected', [p]);
+            }
+        });
+    }
+
+    function clearSelection() {
+        _selectedPatient = null;
+        $hidden.val('');
+        $chip.removeClass('is-visible');
+        $wrap.show();
+        $input.val('').focus();
+        $(document).trigger('psc:patientCleared');
+    }
+
+    /* ══════════════════════════════════════
+       Dropdown helpers
+       ══════════════════════════════════════ */
+    function showDropdown()  { $dropdown.addClass('is-open'); }
+    function closeDropdown() { $dropdown.removeClass('is-open'); $resultsList.empty(); $loading.hide(); $empty.hide(); }
+    function showLoading()   { $resultsList.empty(); $loading.show(); $empty.hide(); }
+    function showEmpty(msg)  { $loading.hide(); $resultsList.empty(); $empty.text(msg || 'No patients found.').show(); }
+
+    /* ══════════════════════════════════════
+       Event bindings – inline search
+       ══════════════════════════════════════ */
+    $input.on('input', function () {
+        clearTimeout(_searchTimer);
+        _searchTimer = setTimeout(doInlineSearch, DEBOUNCE_MS);
+    });
+    $input.on('keydown', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); clearTimeout(_searchTimer); doInlineSearch(); }
+        if (e.key === 'Escape') { closeDropdown(); }
+    });
+    $searchBtn.on('click', function () { clearTimeout(_searchTimer); doInlineSearch(); });
+
+    /* ── Filter panel bindings ── */
+    $filterToggle.on('click', toggleFilterPanel);
+    $('#pscFilterClose').on('click', function () { clearFilters(); closeFilterPanel(); });
+    $('#pscFilterSearch').on('click', doFilteredSearch);
+    $('#pscFilterClear').on('click', clearFilters);
+
+    /* Enter key in filter fields triggers search */
+    $('#pscFilterPanel').on('keydown', 'input', function (e) {
+        if (e.key === 'Enter') { e.preventDefault(); doFilteredSearch(); }
+    });
+
+    /* Click an inline result row */
+    $(document).on('click', '.psc-result-item', function () {
+        selectPatient($(this).data('id'));
+    });
+
+    /* Clear selection chip */
+    $('#pscChipClear').on('click', clearSelection);
+
+    /* Close dropdown on outside click */
+    $(document).on('mousedown', function (e) {
+        if (!$(e.target).closest('#pscContainer').length) {
+            closeDropdown();
+        }
+    });
+
+    /* ══════════════════════════════════════
+       Listen for selection from side pane
+       ══════════════════════════════════════ */
+    document.addEventListener('psc:panePatientSelected', function (e) {
+        var patientId = e.detail && e.detail.patientId;
+        if (patientId) {
+            selectPatient(patientId);
+        }
+    });
+
+    /* ══════════════════════════════════════
+       Quick-Add Modal
+       ══════════════════════════════════════ */
+    function loadLookups() {
+        if (_lookupsLoaded) return;
+        $.ajax({
+            url: LOOKUPS_URL,
+            dataType: 'json',
+            data: { id: 'PatientProfile' },
+            success: function (data) {
+                _lookupsLoaded = true;
+                $.each(data, function (_, item) {
+                    if (item.fieldname === 'gender') populateSelect('#pscQaGender', item.fielddesc);
+                    if (item.fieldname === 'nationality') populateSelect('#pscQaNationality', item.fielddesc, 'Indian');
+                    if (item.fieldname === 'idprooftype') populateSelect('#pscQaIdProofType', item.fielddesc);
+                    if (item.fieldname === 'bloodgroup') populateSelect('#pscQaBloodGroup', item.fielddesc);
+                });
+                toggleQuickAddCountryOrigin();
+            }
+        });
+        loadCountryOriginLookup();
+    }
+
+    function isForeign(value) {
+        var text = (value || '').toString().trim().toLowerCase();
+        return text === 'foreign';
+    }
+
+    function toggleQuickAddCountryOrigin() {
+        var needsCountryOrigin = isForeign($('#pscQaNationality').val());
+        $('#pscQaCountryOriginWrap').toggle(needsCountryOrigin);
+        if (!needsCountryOrigin) {
+            $('#pscQaCountryOfOrigin').val('');
+        }
+    }
+
+    function loadCountryOriginLookup() {
+        var $country = $('#pscQaCountryOfOrigin');
+        if ($country.data('loaded')) return;
+        $.ajax({
+            url: COUNTRY_ORIGIN_URL,
+            dataType: 'json',
+            success: function (data) {
+                $country.empty().append('<option value="">Choose</option>');
+                (data || []).forEach(function (item) {
+                    var id = item.Countryid || item.countryid || item.id || '';
+                    var name = item.countryname || item.Countryname || item.name || '';
+                    if (id && name) $country.append('<option value="' + esc(id) + '">' + esc(name) + '</option>');
+                });
+                $country.data('loaded', true);
+            }
+        });
+    }
+
+    function populateSelect(sel, csv, defaultVal, keepFirst) {
+        var $sel = $(sel);
+        var current = $sel.find('option:first').clone();
+        $sel.empty().append(current);
+        var opts = csv.split(',').sort(function (a, b) { return a.localeCompare(b); });
+        opts.forEach(function (o) {
+            var selected = (defaultVal && o.trim() === defaultVal) ? ' selected' : '';
+            $sel.append('<option value="' + o.trim() + '"' + selected + '>' + o.trim() + '</option>');
+        });
+    }
+
+    function openModal() {
+        loadLookups();
+        $('#pscModalOverlay').addClass('is-open');
+        setTimeout(function () { $('#pscQaFirstname').focus(); }, 200);
+        initModalDatepickers();
+    }
+
+    function closeModal() {
+        $('#pscModalOverlay').removeClass('is-open');
+        resetModalForm();
+    }
+
+    function resetModalForm() {
+        $('#pscModalOverlay').find('input').val('');
+        $('#pscModalOverlay').find('.input-validation-error').removeClass('input-validation-error');
+        $('#pscModalOverlay').find('.psc-required-error').remove();
+        $('#pscQaGender').val('');
+        $('#pscQaBloodGroup').val('');
+        $('#pscQaNationality').val('Indian');
+        $('#pscQaCountryOfOrigin').val('');
+        toggleQuickAddCountryOrigin();
+        $('#pscQaIdProofType').val('');
+        clearQuickAddIdProofError();
+        $('#pscQaError').hide().text('');
+        if (_itiMobile) { _itiMobile.setNumber(''); }
+        if (_itiWhatsapp) { _itiWhatsapp.setNumber(''); }
+    }
+
+    function initModalDatepickers() {
+        if ($.fn.datetimepicker) {
+            $('#pscQaDob').datetimepicker({
+                timepicker: false,
+                scrollInput: false,
+                format: 'd/m/Y',
+                maxDate: new Date(),
+                onChangeDateTime: function (dp, $el) { calcAge($el.val()); }
+            });
+        }
+    }
+
+    function calcAge(dobStr) {
+        if (!dobStr) return;
+        var parts = dobStr.split('/');
+        if (parts.length !== 3) return;
+        var dob = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        var today = new Date();
+        var age = today.getFullYear() - dob.getFullYear();
+        var m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+        $('#pscQaAge').val(age >= 0 && age <= 99 ? age : '');
+    }
+
+    function setQuickAddIdProofError(message) {
+        $('#pscQaIdProofNumber').removeClass('input-validation-error');
+        $('#pscQaIdProofNumber-error')
+            .removeClass('field-validation-valid')
+            .addClass('field-validation-error')
+            .text(message || 'Invalid ID Proof Number');
+    }
+
+    function clearQuickAddIdProofError() {
+        $('#pscQaIdProofNumber').removeClass('input-validation-error');
+        $('#pscQaIdProofNumber-error')
+            .removeClass('field-validation-error')
+            .addClass('field-validation-valid')
+            .text('');
+    }
+
+    function validateQuickAddIdProof(showError) {
+        var idProofType = $('#pscQaIdProofType').val();
+        var idProofNumber = $('#pscQaIdProofNumber').val();
+        if (window.IdProofValidation) {
+            var idProofResult = window.IdProofValidation.validate(idProofType, idProofNumber);
+            $('#pscQaIdProofNumber').val(idProofResult.value);
+            if (!$.trim(idProofResult.value)) {
+                if (showError) setQuickAddIdProofError('ID Proof Number is required');
+                return { isValid: false, message: 'ID Proof Number is required' };
+            }
+            if (!idProofResult.isValid) {
+                if (showError) setQuickAddIdProofError(idProofResult.message);
+                return { isValid: false, message: idProofResult.message };
+            }
+            clearQuickAddIdProofError();
+            return { isValid: true, message: '' };
+        }
+
+        if (!$.trim(idProofNumber)) {
+            if (showError) setQuickAddIdProofError('ID Proof Number is required');
+            return { isValid: false, message: 'ID Proof Number is required' };
+        }
+        clearQuickAddIdProofError();
+        return { isValid: true, message: '' };
+    }
+
+    function validateQuickAdd() {
+        var errors = [];
+        function showRequiredError(selector, message, anchorSelector) {
+            var fieldId = selector.replace('#', '');
+            var $existing = $('.psc-required-error[data-for="' + fieldId + '"]');
+            if ($existing.length) {
+                $existing.text(message);
+                return;
+            }
+            var $anchor = anchorSelector ? $(anchorSelector) : $(selector);
+            $('<span class="field-validation-error text-danger red-important psc-required-error" data-for="' + fieldId + '"></span>')
+                .text(message)
+                .insertAfter($anchor);
+        }
+
+        function clearRequiredError(selector) {
+            var fieldId = selector.replace('#', '');
+            $('.psc-required-error[data-for="' + fieldId + '"]').remove();
+        }
+
+        function required(selector, message, anchorSelector) {
+            var isMissing = !$.trim($(selector).val());
+            $(selector).removeClass('input-validation-error');
+            if (isMissing) {
+                showRequiredError(selector, message, anchorSelector);
+                errors.push(message);
+            } else {
+                clearRequiredError(selector);
+            }
+            return !isMissing;
+        }
+
+        required('#pscQaFirstname', 'First Name is required');
+        required('#pscQaGender', 'Gender is required');
+        required('#pscQaDob', 'Date of Birth is required');
+        if (required('#pscQaAge', 'Age is required')) {
+            var ageValue = $.trim($('#pscQaAge').val());
+            if (!/^\d{1,2}$/.test(ageValue)) {
+                showRequiredError('#pscQaAge', 'Age must be a 1 or 2 digit number');
+                errors.push('Age must be a 1 or 2 digit number');
+            }
+        }
+        var mobileVal = $('#pscQaMobile').val();
+        $('#pscQaMobile_ip').removeClass('input-validation-error').closest('.iti').removeClass('input-validation-error');
+        if (!mobileVal) {
+            showRequiredError('#pscQaMobile_ip', 'Mobile Number is required', $('#pscQaMobile_ip').closest('.iti'));
+            errors.push('Mobile Number is required');
+        } else if (mobileVal === 'invalid') {
+            showRequiredError('#pscQaMobile_ip', 'Mobile Number is invalid', $('#pscQaMobile_ip').closest('.iti'));
+            errors.push('Mobile Number is invalid');
+        } else clearRequiredError('#pscQaMobile_ip');
+        var whatsappVal = $('#pscQaWhatsapp').val();
+        $('#pscQaWhatsapp_ip').removeClass('input-validation-error').closest('.iti').removeClass('input-validation-error');
+        if (!whatsappVal) {
+            showRequiredError('#pscQaWhatsapp_ip', 'WhatsApp Number is required', $('#pscQaWhatsapp_ip').closest('.iti'));
+            errors.push('WhatsApp Number is required');
+        } else if (whatsappVal === 'invalid') {
+            showRequiredError('#pscQaWhatsapp_ip', 'WhatsApp Number is invalid', $('#pscQaWhatsapp_ip').closest('.iti'));
+            errors.push('WhatsApp Number is invalid');
+        } else clearRequiredError('#pscQaWhatsapp_ip');
+        required('#pscQaEmail', 'Email Address is required');
+        required('#pscQaNationality', 'Nationality is required');
+        if (isForeign($('#pscQaNationality').val())) {
+            required('#pscQaCountryOfOrigin', 'Country of Origin is required');
+        } else {
+            $('#pscQaCountryOfOrigin').removeClass('input-validation-error');
+            clearRequiredError('#pscQaCountryOfOrigin');
+        }
+        required('#pscQaIdProofType', 'ID Proof Type is required');
+        var idProofValidation = validateQuickAddIdProof(true);
+        if (!idProofValidation.isValid) errors.push(idProofValidation.message);
+        required('#pscQaAddress', 'Address Line 1 is required');
+        if (required('#pscQaPincode', 'PIN Code is required')) {
+            var pincodeValue = $.trim($('#pscQaPincode').val());
+            if (!/^\d{1,8}$/.test(pincodeValue) || parseInt(pincodeValue, 10) <= 0) {
+                showRequiredError('#pscQaPincode', 'Enter a valid PIN Code');
+                errors.push('Enter a valid PIN Code');
+            }
+        }
+        var uploadMissing = uploadidproofselectedFiles.length + uploadidproofexistingFiles.length === 0;
+        $('#dropZoneuploadidproof').removeClass('input-validation-error');
+        if (uploadMissing) {
+            showRequiredError('#uploadidproof', 'ID Proof document is required', '#dropZoneuploadidproof');
+            errors.push('ID Proof document is required');
+        } else clearRequiredError('#uploadidproof');
+        return errors;
+    }
+
+      function saveQuickAdd() {
+        var errors = validateQuickAdd();
+
+        if (errors.length > 0) {
+            $('#pscQaError').hide();
+
+            swal({
+                title: 'Please Check the Form',
+                html: 'Please complete all mandatory fields and correct the fields highlighted in red.',
+                type: 'warning',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary'
+            });
+
+            return;
+        }
+
+        $('#pscQaError').hide();
+
+        var $saveBtn = $('#pscModalSave');
+        $saveBtn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Saving...');
+
+        var dobParts = $('#pscQaDob').val().split('/');
+        var dobFormatted = (dobParts.length === 3)
+            // Submit an unambiguous ISO date. MM/dd/yyyy was parsed as dd/MM/yyyy
+            // by the server and could turn a valid past DOB into a future date.
+            ? dobParts[2] + '-' + dobParts[1].padStart(2, '0') + '-' + dobParts[0].padStart(2, '0')
+            : '';
+
+        var formData = new FormData();
+
+        formData.append('firstname', $.trim($('#pscQaFirstname').val()));
+        formData.append('lastname', $.trim($('#pscQaLastname').val()));
+        formData.append('gender', $('#pscQaGender').val());
+        formData.append('dateofbirth', dobFormatted);
+        formData.append('age', $('#pscQaAge').val());
+        formData.append('mobilenumber', $.trim($('#pscQaMobile').val()));
+        formData.append('whatsappnumber', $.trim($('#pscQaWhatsapp').val()));
+        formData.append('emailaddress', $.trim($('#pscQaEmail').val()));
+        formData.append('nationality', $('#pscQaNationality').val());
+        formData.append('countryoforigin', $('#pscQaCountryOfOrigin').val());
+        formData.append('bloodgroup', $('#pscQaBloodGroup').val());
+        formData.append('idprooftype', $('#pscQaIdProofType').val());
+        formData.append('idproofnumber', $.trim($('#pscQaIdProofNumber').val()));
+        formData.append('paddressline1', $.trim($('#pscQaAddress').val()));
+        formData.append('pzip', $.trim($('#pscQaPincode').val()));
+        formData.append('sameaspermanentaddress', 'true');
+        formData.append('caddressline1', $.trim($('#pscQaAddress').val()));
+        formData.append('czip', $.trim($('#pscQaPincode').val()));
+        formData.append('craftmyapp_actionmethodname', 'Add_Patient_Profile');
+        formData.append('tenantid', getTenantId());
+
+        formData.delete('uploadidproof');
+
+        for (var i = 0; i < uploadidproofselectedFiles.length; i++) {
+            formData.append('uploadidproof', uploadidproofselectedFiles[i]);
+        }
+
+        $.ajax({
+            url: QUICKADD_URL,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function (raw) {
+                $saveBtn.prop('disabled', false).html('<i class="fa fa-check"></i> Save & Select');
+
+                var rawText = '';
+
+                if (typeof raw === 'string') {
+                    rawText = $.trim(raw);
+                }
+
+                // Direct success response from server
+                if (rawText === '201.1') {
+                    closeModal();
+
+                    swal({
+                        title: 'Success',
+                        text: 'Patient created.',
+                        type: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    return;
+                }
+
+                var resp = null;
+
+                try {
+                    resp = (typeof raw === 'string') ? JSON.parse(raw) : raw;
+                } catch (e) {
+                    swal({
+                        title: 'Quick Add Patient Failed',
+                        text: rawText || 'Unexpected response from server.',
+                        type: 'error'
+                    });
+
+                    return;
+                }
+
+                // JSON success response
+                if (
+                    resp &&
+                    (
+                        resp.success === true ||
+                        resp.code === '201.1' ||
+                        resp.message === '201.1'
+                    )
+                ) {
+                    closeModal();
+
+                    if (resp.patientProfileId) {
+                        selectPatient(resp.patientProfileId);
+                    }
+
+                    swal({
+                        title: 'Success',
+                        text: resp.displayMessage || 'Patient created.',
+                        type: 'success',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    return;
+                }
+
+                // JSON failure response
+                swal({
+                    title: 'Quick Add Patient Failed',
+                    text: (resp && (resp.message || resp.error)) || 'Failed to create patient.',
+                    type: 'error'
+                });
+            },
+
+            error: function (xhr) {
+                $saveBtn.prop('disabled', false).html('<i class="fa fa-check"></i> Save & Select');
+
+                var message = xhr.responseText || 'Network error. Please try again.';
+
+                try {
+                    var errResp = JSON.parse(xhr.responseText);
+                    message = errResp.message || errResp.error || message;
+                } catch (e) {
+                    // keep plain responseText
+                }
+
+                swal({
+                    title: 'Quick Add Patient Failed',
+                    text: message,
+                    type: 'error'
+                });
+            }
+        });
+    }
+
+    /* Modal bindings */
+    $('#pscQuickAddBtn').on('click', openModal);
+    $('#pscModalClose, #pscModalCancel').on('click', closeModal);
+    $('#pscModalOverlay').on('click', function (e) { if (e.target === this) closeModal(); });
+    $('#pscModalSave').on('click', saveQuickAdd);
+    $('#pscQaNationality').on('change', toggleQuickAddCountryOrigin);
+    $('#pscQaIdProofType, #pscQaIdProofNumber').on('change blur', function () { validateQuickAddIdProof(true); });
+    $('#pscQaIdProofNumber').on('input', function () { validateQuickAddIdProof(false); });
+    $('#pscModalOverlay').on('input change', 'input, select', function () {
+        $(this).removeClass('input-validation-error');
+        $(this).closest('.iti').removeClass('input-validation-error');
+        $('.psc-required-error[data-for="' + this.id + '"]').remove();
+    });
+    $('#uploadidproof').on('change', function () {
+        if (uploadidproofselectedFiles.length + uploadidproofexistingFiles.length > 0) {
+            $('#dropZoneuploadidproof').removeClass('input-validation-error');
+            $('.psc-required-error[data-for="uploadidproof"]').remove();
+        }
+    });
+
+    /* DOB → Age auto-calc in modal */
+    $(document).on('change', '#pscQaDob', function () { calcAge($(this).val()); });
+
+    $(document).on('input', '#pscQaAge', function () {
+        this.value = this.value.replace(/\D/g, '').slice(0, 2);
+    });
+
+    /* intlTelInput — Mobile */
+    (function () {
+        var mobileEl = document.querySelector('#pscQaMobile_ip');
+        if (mobileEl && window.intlTelInput) {
+            _itiMobile = window.intlTelInput(mobileEl, {
+                nationalMode: true,
+                initialCountry: 'in',
+                preferredCountries: ['us', 'in', 'sg']
+            });
+            function syncMobile() {
+                var num = _itiMobile.getNumber();
+                $('#pscQaMobile').val(num ? (_itiMobile.isValidNumber() ? num : 'invalid') : '');
+            }
+            mobileEl.addEventListener('change', syncMobile);
+            mobileEl.addEventListener('keyup', syncMobile);
+            mobileEl.addEventListener('countrychange', function () {
+                $('#pscQaMobile_ip').val('');
+                $('#pscQaMobile').val('');
+            });
+        }
+    })();
+
+    /* intlTelInput — WhatsApp */
+    (function () {
+        var waEl = document.querySelector('#pscQaWhatsapp_ip');
+        if (waEl && window.intlTelInput) {
+            _itiWhatsapp = window.intlTelInput(waEl, {
+                nationalMode: true,
+                initialCountry: 'in',
+                preferredCountries: ['us', 'in', 'sg']
+            });
+            function syncWhatsapp() {
+                var num = _itiWhatsapp.getNumber();
+                $('#pscQaWhatsapp').val(num ? (_itiWhatsapp.isValidNumber() ? num : 'invalid') : '');
+            }
+            waEl.addEventListener('change', syncWhatsapp);
+            waEl.addEventListener('keyup', syncWhatsapp);
+            waEl.addEventListener('countrychange', function () {
+                $('#pscQaWhatsapp_ip').val('');
+                $('#pscQaWhatsapp').val('');
+            });
+        }
+    })();
+
+    /* Copy mobile to whatsapp if whatsapp is empty */
+    $('#pscQaMobile_ip').on('blur', function () {
+        if (!$.trim($('#pscQaWhatsapp_ip').val()) && _itiMobile && _itiWhatsapp) {
+            var num = _itiMobile.getNumber();
+            if (num && _itiMobile.isValidNumber()) {
+                _itiWhatsapp.setNumber(num);
+                $('#pscQaWhatsapp').val(num);
+            }
+        }
+    });
+
+    /* ══════════════════════════════════════
+       Public API
+       ══════════════════════════════════════ */
+    window.PatientSearchControl = {
+        getSelectedPatient: function () { return _selectedPatient; },
+        getSelectedId: function () { return $hidden.val(); },
+        clear: clearSelection,
+        setPatient: function (patientId) { selectPatient(patientId); }
+    };
+
+})(jQuery);
+</script>

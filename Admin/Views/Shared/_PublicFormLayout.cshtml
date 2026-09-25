@@ -1,0 +1,227 @@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    var publicTenantId = (ViewBag.DefaultTenantId as string) ?? Context.Request.Query["tenantid"].ToString();
+    var publicTenantRouteValue = string.IsNullOrWhiteSpace(publicTenantId) ? null : publicTenantId;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] — NalamVazha</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="~/css/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/variables.css" />
+    <link rel="icon" type="image/x-icon" href="~/images/Logo/White-fav.svg" />
+    <script src="~/components/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="~/libs/intl-tel-input-master/build/css/intlTelInput.css">
+    <script src="~/libs/intl-tel-input-master/build/js/intlTelInput.min.js"></script>
+    <script src="~/libs/intl-tel-input-master/build/js/utils.js"></script>
+    <script src="~/components/jquery/jquery.validate.js"></script>
+    <script src="~/components/jquery/additional-methods.min.js"></script>
+    <style>
+        * { box-sizing: border-box; }
+        body.public-form-body {
+            margin: 0; padding: 0;
+            font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+        /* Top header bar */
+        .public-form-header {
+            background: var(--btnprimary, #2d5f44);
+            padding: 0.6rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+        .public-form-header-logo {
+            height: 42px;
+            max-width: 220px;
+            object-fit: contain;
+        }
+        .public-form-header-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .public-form-header-nav a {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .public-form-header-nav a:hover { color: #fff; }
+        .public-form-header-nav a i { margin-right: 4px; }
+
+        /* Main content area */
+        .public-form-container {
+            max-width: 960px;
+            margin: 1.5rem auto 2rem;
+            padding: 0 1rem;
+        }
+        .public-form-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .public-form-card-header {
+            background: linear-gradient(135deg, var(--btnprimary, #2d5f44) 0%, #1a3d2a 100%);
+            padding: 1.2rem 2rem;
+            color: #fff;
+        }
+        .public-form-card-header h2 {
+            margin: 0;
+            font-size: 1.35rem;
+            font-weight: 600;
+        }
+        .public-form-card-header p {
+            margin: 0.3rem 0 0;
+            font-size: 0.85rem;
+            opacity: 0.85;
+        }
+        .public-form-card-body {
+            padding: 1.5rem 2rem 2rem;
+        }
+        /* Section dividers */
+        .public-form-section {
+            margin-bottom: 1.5rem;
+        }
+        .public-form-section-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--btnprimary, #2d5f44);
+            border-bottom: 2px solid var(--btnprimary, #2d5f44);
+            padding-bottom: 0.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .public-form-section-title i {
+            font-size: 0.9rem;
+        }
+        /* Form styling */
+        .public-form-card label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #444;
+            margin-bottom: 0.3rem;
+        }
+        .public-form-card .form-control {
+            border-radius: 6px;
+            border: 1px solid #d0d5dd;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .public-form-card .form-control:focus {
+            border-color: var(--btnprimary, #2d5f44);
+            box-shadow: 0 0 0 3px rgba(45,95,68,0.12);
+        }
+        .required-star { color: #e53e3e; font-weight: 700; }
+        .form-group { margin-bottom: 1rem; }
+        /* Validation error messages — red */
+        .public-form-card .error,
+        .public-form-card label.error {
+            color: #c00 !important;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+        .public-form-card .form-control.error,
+        .public-form-card .form-control.input-validation-error {
+            border-color: #c00;
+        }
+        /* Toggle switch */
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #ccc; border-radius: 24px;
+            transition: 0.3s;
+        }
+        .toggle-slider:before {
+            content: "";
+            position: absolute; height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background: #fff; border-radius: 50%;
+            transition: 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--btnprimary, #2d5f44);
+        }
+        .toggle-switch input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+        /* Submit button */
+        .btn-submit-enquiry {
+            background: var(--btnprimary, #2d5f44);
+            color: #fff;
+            border: none;
+            padding: 0.7rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-submit-enquiry:hover {
+            background: #1a3d2a;
+            color: #fff;
+        }
+        .btn-submit-enquiry:active { transform: scale(0.98); }
+        .btn-submit-enquiry:disabled { opacity: 0.6; cursor: not-allowed; }
+        /* Footer */
+        .public-form-footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.8rem;
+            color: #888;
+        }
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .public-form-container { margin: 1rem auto; }
+            .public-form-card-body { padding: 1rem; }
+            .public-form-header { padding: 0.5rem 1rem; }
+        }
+        /* intl-tel-input full width fix */
+        .iti { width: 100%; }
+    </style>
+</head>
+<body class="public-form-body">
+    <!-- Header Bar -->
+    <header class="public-form-header">
+        <img src="~/images/logo/Nalam_Primary_White_Transparent_fromDarkLogo-01.png" alt="NalamVazha" class="public-form-header-logo" />
+        <nav class="public-form-header-nav">
+            <a href="@Url.Action("Login", "users", new { tenantid = publicTenantRouteValue })"><i class="fa fa-sign-in-alt"></i> Login</a>
+            <a href="@Url.Action("Login", "users", new { tenantid = publicTenantRouteValue })"><i class="fa fa-user-plus"></i> Registration</a>
+        </nav>
+    </header>
+
+    <!-- Content -->
+    <div class="public-form-container">
+        @RenderBody()
+    </div>
+
+    <footer class="public-form-footer">
+        Build @Configuration.GetSection("settings")["versionnumber"] &bull; NalamVazha
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    @RenderSection("Scripts", required: false)
+    @* <script src="~/js/mobile-numeric-input.js"></script> *@
+</body>
+</html>

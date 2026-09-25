@@ -1,0 +1,1095 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:20 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.ShiftModel
+			@{
+			ViewData["Title"] = @Resource.updateshift;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_Shift", "Shift", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updateshift</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.Shiftid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								 
+				<div class="col-sm-12 col-xs-12 mt-3 ShiftDetails_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.shiftdetails</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 shiftcode_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="shiftcode">@Resource.shift_shiftcode</label>
+											@Html.TextBoxFor(m => m.shiftcode, new {@placeholder="Auto Number YYYY-MM-9999" ,@maxlength="128", @readonly="readonly", @class = "form-control form-control-lg " })
+
+										</div>
+									</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 shiftname_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="shiftname">@Resource.shift_shiftname <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.shiftname, new {@type="text",@maxlength="128", @class = "form-control form-control-lg mahat_transliterate required" })
+
+								 @Html.ValidationMessageFor(model => model.shiftname)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 shiftstarttime_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="shiftstarttime">@Resource.shift_shiftstarttime <b class="iconRed">*</b></label>
+											@Html.TextBoxFor(m => m.shiftstarttime, new {@type="time",@maxlength="256", @class = "form-control form-control-lg mahat_transliterate required" })
+
+											<i class="form-group__bar" ></i>
+										</div>
+										@Html.ValidationMessageFor(model => model.shiftstarttime)
+										<div id="shiftstarttime-error" class="help-block" style="display: none" role="alert"></div>
+									</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 shiftendtime_craftmyapp_container">
+									<div>
+										<div class="form-group form-group--float-above my-2" > 
+											<label for="shiftendtime">@Resource.shift_shiftendtime <b class="iconRed">*</b></label>
+											@Html.TextBoxFor(m => m.shiftendtime, new {@type="time",@maxlength="256", @class = "form-control form-control-lg mahat_transliterate required" })
+
+											<i class="form-group__bar" ></i>
+										</div>
+										@Html.ValidationMessageFor(model => model.shiftendtime)
+										<div id="shiftendtime-error" class="help-block" style="display: none" role="alert"></div>
+									</div>
+								</div>
+<div class="col-sm-3 col-xs-12 p-2 shifthours_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="shifthours">@Resource.shift_shifthours <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.shifthours, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg required" })
+
+								 @Html.ValidationMessageFor(model => model.shifthours)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-12 col-xs-12 p-2 description_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="description">@Resource.shift_description</label>
+										@Html.TextAreaFor(m => m.description, new {@minlength="0",@maxlength="256", @class = "form-control form-control-lg mahat_transliterate " })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.description)
+									<div id="description-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ <div class="col-sm-12 col-xs-12 mt-3 breakdurationdetails_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Break Duration Details Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.breakdurationdetails
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-breakdurationdetails pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="breakdurationdetailsContainer" class="breakdurationdetailsContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Break Duration Details Containder Block-->
+					
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 ShiftSummary_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.shiftsummary</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 totalbreakinmins_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-2" > 
+										<label for="totalbreakinmins">@Resource.shift_totalbreakinmins <b class="iconRed">*</b></label><br>
+										@Html.TextBoxFor(m => m.totalbreakinmins, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg required" })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.totalbreakinmins)
+									<div id="totalbreakinmins-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 totalbreakinhrs_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="totalbreakinhrs">@Resource.shift_totalbreakinhrs <b class="iconRed">*</b></label>
+								@Html.TextBoxFor(m => m.totalbreakinhrs, new {@type="text",@min="0",@max="9999999999999999", @class = "form-control form-control-lg required" })
+
+								 @Html.ValidationMessageFor(model => model.totalbreakinhrs)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 workhours_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-2" > 
+										<label for="workhours">@Resource.shift_workhours <b class="iconRed">*</b></label><br>
+										@Html.TextBoxFor(m => m.workhours, new {@readonly="readonly",@maxlength="256", @class = "form-control form-control-lg required" })
+
+										<i class="form-group__bar" ></i>
+									</div>
+									@Html.ValidationMessageFor(model => model.workhours)
+									<div id="workhours-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updateshift</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("Shift","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<script>
+$(document).ready(function () {
+$("#shifthours").autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '99999999.00'})
+})
+</script>
+<script>
+$(document).ready(function () {
+$('body').on('change', '.durationinmin', function() {
+							var aggregatevalue = 0;
+							$('.durationinmin').each(function(){
+												const iterationalaggregatevalue = parseFloat($(this).val().trim());
+												if(!isNaN(iterationalaggregatevalue)){
+													aggregatevalue += iterationalaggregatevalue; 
+												}							                
+											});
+							$("#totalbreakinmins").val(aggregatevalue.toFixed(2))
+							$("#totalbreakinmins").trigger('change')
+
+							})
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#totalbreakinhrs").autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '9999999999999999.00'})
+})
+</script>
+<script>
+$(document).ready(function () {
+$("#shifthours, #totalbreakinhrs").change(function(){
+    var shiftHrs = parseFloat($("#shifthours").autoNumeric('get')) || 0;
+    var breakHrs = parseFloat($("#totalbreakinhrs").autoNumeric('get')) || 0;
+    $("#workhours").val((shiftHrs - breakHrs).toFixed(2));
+    $("#workhours").trigger('change'); 
+});
+})
+</script>
+
+			
+			
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-breakdurationdetails", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".breakdurationdetails").removeClass('showthelables');
+			   $(".btn-remove-row-breakdurationdetails").removeClass('btn-remove-row');
+				$("#breakdurationdetailsContainer").prepend(
+				'<div class="row m-t-10 breakdurationdetails dependentContainerBorder" id="breakdurationdetails' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 breakname_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="breakname">@Resource.shift_breakdurationdetails_breakname <b class="iconRed">*</b></label>'+
+									'<input  name="breakname' + index + '" id="breakname' + index + '"  type="text"  maxlength="128" class="breakname form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 starttime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="starttime">@Resource.shift_breakdurationdetails_starttime <b class="iconRed">*</b></label>'+
+											'<input  name="starttime' + index + '" id="starttime' + index + '"  type="time"  maxlength="256" class="starttime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="starttime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 endtime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="endtime">@Resource.shift_breakdurationdetails_endtime <b class="iconRed">*</b></label>'+
+											'<input  name="endtime' + index + '" id="endtime' + index + '"  type="time"  maxlength="256" class="endtime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="endtime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 durationinmin_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="durationinmin">@Resource.shift_breakdurationdetails_durationinmin <b class="iconRed">*</b></label>'+
+									'<input   name="durationinmin' + index + '" id="durationinmin' + index + '"  type="text" min="0" max="9999999999999999" class="durationinmin form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-breakdurationdetails"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#breakdurationdetailsContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('breakdurationdetails', '')).addClass('btn-remove-row');
+				
+				
+				if ($("#durationinmin" + index).data('autoNumeric') == undefined)
+$("#durationinmin" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '9999999999999999.00'})
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-breakdurationdetails', function (e) {
+					 
+					 $('#totalbreakinmins').val('0')
+$('.totalbreakinmins').trigger('change')
+$('#totalbreakinmins').trigger('change')
+$('#durationinmin').val('0')
+$('.durationinmin').trigger('change')
+$('#durationinmin').trigger('change')
+
+					
+					var breakdurationdetailsRow = $(this).closest(".breakdurationdetails");
+					var index = breakdurationdetailsRow.attr("id").replace("breakdurationdetails", "");
+					breakdurationdetailsRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+				@if (Model != null)
+				{
+					<script>
+						$(document).ready(function () {
+							var resultSet = ("@Model.breakdurationdetails" ? @Html.Raw(Json.Serialize(@Model.breakdurationdetails)) :[]);
+							$.each(resultSet, function(key, obj) {
+			
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+				$(".breakdurationdetails").removeClass('showthelables');
+			   $(".btn-remove-row-breakdurationdetails").removeClass('btn-remove-row');
+				$("#breakdurationdetailsContainer").prepend(
+				'<div class="row m-t-10 breakdurationdetails dependentContainerBorder" id="breakdurationdetails' + index + '">' +
+				'<input type="hidden" class="Shift_breakdurationdetailsid" value="' + obj.Shift_breakdurationdetailsid + '">'+
+
+				'<div class="col-sm-2 col-xs-12 p-2 breakname_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="breakname">@Resource.shift_breakdurationdetails_breakname <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.breakname?obj.breakname:'')+'" name="breakname' + index + '" id="breakname' + index + '"  type="text"  maxlength="128" class="breakname form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 starttime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="starttime">@Resource.shift_breakdurationdetails_starttime <b class="iconRed">*</b></label>'+
+											'<input value="'+(obj.starttime?obj.starttime:'')+'" name="starttime' + index + '" id="starttime' + index + '"  type="time"  maxlength="256" class="starttime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="starttime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 endtime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="endtime">@Resource.shift_breakdurationdetails_endtime <b class="iconRed">*</b></label>'+
+											'<input value="'+(obj.endtime?obj.endtime:'')+'" name="endtime' + index + '" id="endtime' + index + '"  type="time"  maxlength="256" class="endtime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="endtime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 durationinmin_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="durationinmin">@Resource.shift_breakdurationdetails_durationinmin <b class="iconRed">*</b></label>'+
+									'<input  value="'+(obj.durationinmin?obj.durationinmin:'')+'" name="durationinmin' + index + '" id="durationinmin' + index + '"  type="text" min="0" max="9999999999999999" class="durationinmin form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1  detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger btn-remove-row-breakdurationdetails"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				);
+					
+				  var cmafirstcontainer = $('.breakdurationdetailsContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('breakdurationdetails', '')).addClass('btn-remove-row');
+
+				if ($("#durationinmin" + index).data('autoNumeric') == undefined)
+$("#durationinmin" + index).autoNumeric('init',{aSep: '',vMin: '0.00',vMax: '9999999999999999.00'})
+ 
+				
+				
+
+				
+				
+ 
+	});
+ 
+						})
+					</script>
+				}
+			
+
+			<script>
+			
+			  function getbreakdurationdetails() {
+		 
+					$("#breakdurationdetails").val("");
+					var breakdurationdetailsModel = [];
+
+				
+					
+					
+					var el = $('.breakdurationdetailsContainer .breakdurationdetails');
+					
+					el.each(function (cnt) {
+					
+							breakdurationdetailsAttributes = {}
+							
+							 breakdurationdetailsAttributes['breakname']=($(this).find('.breakname').val() ? $(this).find('.breakname').val().toString() :'')
+breakdurationdetailsAttributes['starttime']=($(this).find('.starttime').val() ? $(this).find('.starttime').val().toString() :'')
+breakdurationdetailsAttributes['endtime']=($(this).find('.endtime').val() ? $(this).find('.endtime').val().toString() :'')
+breakdurationdetailsAttributes['durationinmin']=$(this).find('.durationinmin').val() ? $(this).find('.durationinmin').val():0
+breakdurationdetailsAttributes['Shift_breakdurationdetailsid']=($(this).find('.Shift_breakdurationdetailsid').val() != undefined ? $(this).find('.Shift_breakdurationdetailsid').val().toString() : "00000000-0000-0000-0000-000000000000")
+breakdurationdetailsAttributes['craftmyapp_actionmethodname']='Update_Shift'
+breakdurationdetailsAttributes['record_order']=cnt
+breakdurationdetailsAttributes['cma_client_row_id']=$(this).attr("id").replace("breakdurationdetails","")
+
+							
+							breakdurationdetailsModel.push(breakdurationdetailsAttributes);
+					
+					
+					
+					});
+					 
+					return breakdurationdetailsModel
+				
+				
+				}
+
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Shift")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Shift")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updateshift;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updateshift")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ var breakdurationdetailsModel=getbreakdurationdetails()
+if(breakdurationdetailsModel.length ==0)
+							{
+									swal({
+									title: 'Validation !',
+									text: "Please add Break Duration Details",
+									type: 'error',
+									buttonsStyling: false,
+									confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+									})
+
+									return;
+							}
+
+
+ 
+ 
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ for (var i = 0; i < breakdurationdetailsModel.length; i++) {
+formdata.append("breakdurationdetails[" + i + "].breakname", breakdurationdetailsModel[i].breakname)
+formdata.append("breakdurationdetails[" + i + "].record_order", breakdurationdetailsModel[i].record_order)
+formdata.append("breakdurationdetails[" + i + "].cma_client_row_id", breakdurationdetailsModel[i].cma_client_row_id)
+formdata.append("breakdurationdetails[" + i + "].starttime", breakdurationdetailsModel[i].starttime)
+formdata.append("breakdurationdetails[" + i + "].endtime", breakdurationdetailsModel[i].endtime)
+formdata.append("breakdurationdetails[" + i + "].durationinmin", breakdurationdetailsModel[i].durationinmin)
+formdata.append("breakdurationdetails[" + i + "].Shift_breakdurationdetailsid", breakdurationdetailsModel[i].Shift_breakdurationdetailsid)
+formdata.append("breakdurationdetails[" + i + "].Shiftid", $("#Shiftid").val())
+
+formdata.append("breakdurationdetails[" + i + "].craftmyapp_actionmethodname", 'Update_Shift')
+}
+
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("Shift","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "Shift")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 
+						})
+					
+
+					});
+					</script>
+
+
+
+<script>
+					
+
+$(document).ready(function () {
+
+    $('#shiftstarttime, #shiftendtime').on('change', function () {
+        calculateShiftHours();
+    });
+
+    function calculateShiftHours() {
+        const startTime = $('#shiftstarttime').val();
+        const endTime = $('#shiftendtime').val();
+
+        if (startTime && endTime) {
+            const [startH, startM] = startTime.split(':').map(Number);
+            const [endH, endM] = endTime.split(':').map(Number);
+
+            let startMinutes = startH * 60 + startM;
+            let endMinutes = endH * 60 + endM;
+
+            // Handle overnight shifts (e.g., 10 PM to 6 AM)
+            if (endMinutes < startMinutes) {
+                endMinutes += 24 * 60;
+            }
+
+            const diffMinutes = endMinutes - startMinutes;
+
+            // Shift Hours is a decimal number of hours (matches Total Break in Hrs, e.g.
+            // 30 minutes = 0.50), not "hours.minutes" concatenated -- that previously made
+            // a 1h30m shift compute to "1.30" instead of "1.50", and since the field's
+            // autoNumeric config had no decimal places configured, it then got rounded
+            // down to a whole number, dropping the half hour entirely.
+            const shiftHours = (diffMinutes / 60).toFixed(2);
+
+           if ($("#shifthours").data('autoNumeric') != undefined) {
+    $("#shifthours").autoNumeric('set', shiftHours);
+} else {
+    $("#shifthours").val(shiftHours);
+}
+$("#shifthours").trigger('change');
+        }
+    }
+
+});
+</script>
+
+
+
+
+<script>
+$(document).ready(function () {
+    $('body').on('change', '.starttime, .endtime', function () {
+        var row = $(this).closest('.breakdurationdetails');
+        var startTime = row.find('.starttime').val();
+        var endTime = row.find('.endtime').val();
+
+        if (startTime && endTime) {
+            var [startH, startM] = startTime.split(':').map(Number);
+            var [endH, endM] = endTime.split(':').map(Number);
+
+            var startMinutes = startH * 60 + startM;
+            var endMinutes = endH * 60 + endM;
+
+            // Handle overnight breaks
+            if (endMinutes < startMinutes) {
+                endMinutes += 24 * 60;
+            }
+
+            var diffMinutes = endMinutes - startMinutes;
+
+            var durationInput = row.find('.durationinmin');
+            if (durationInput.data('autoNumeric') != undefined) {
+                durationInput.autoNumeric('set', diffMinutes.toFixed(2));
+            } else {
+                durationInput.val(diffMinutes.toFixed(2));
+            }
+            durationInput.trigger('change');
+        }
+    });
+});
+</script>
+
+<script>
+$(document).ready(function () {
+    $('body').on('change', '#totalbreakinmins', function () {
+        var mins = parseFloat($(this).val()) || 0;
+        var hrs = (mins / 60).toFixed(2);
+
+        if ($("#totalbreakinhrs").data('autoNumeric') != undefined) {
+            $("#totalbreakinhrs").autoNumeric('set', hrs);
+        } else {
+            $("#totalbreakinhrs").val(hrs);
+        }
+        $("#totalbreakinhrs").trigger('change');
+    });
+});
+</script>

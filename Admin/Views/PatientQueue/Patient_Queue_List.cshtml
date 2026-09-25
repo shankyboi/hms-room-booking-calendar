@@ -1,0 +1,2164 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/30/2026 16:16:45 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.PatientQueueModel
+					@{
+					ViewData["Title"] = @Resource.patientqueuelist;
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="card " style="padding:20px;">
+					<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<h3 class="formHdr">@Resource.patientqueuelist</h3>
+					</div>
+					</div>
+					</div><!--form_card_header-->
+					<div class="card-body" style="padding:1px;padding-top:0px;">
+
+					@if(TempData["errMessage"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["errMessage"]
+					</div>
+					</div>
+					</div>
+					}
+
+					@if(TempData["message"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["message"]
+					</div>
+					</div>
+					</div>
+					}
+
+					<input type="hidden" id="PatientQueueid" name="PatientQueueid"/>
+					<div class="row">
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+								<div class="form-group form-group--float-above my-3" > 
+								<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+								<select name="tenantid" id="tenantid" class="form-control">
+								</select>
+								<i class="form-group__bar"></i>
+								</div>
+
+								<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2 patientvisit_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientvisit">@Resource.patientqueue_patientvisit</label>
+										<select name="patientvisit" id="patientvisit" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientvisit)
+									<div id="patientvisit-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2">
+						<div>
+							<div class="form-group form-group--float-above my-2" >
+								<label>@Resource.patientqueue_visitdatetime @Resource.from</label>
+								<input type="text" id="visitdatetime_automatonfrom" placeholder="dd/mm/yyyy HH:mm" autocomplete="off" class="form-control form-control-lg" />
+								<i class="form-group__bar"></i>
+							</div>
+						</div>
+					</div>
+<div class="col-sm-2 col-xs-12 p-2">
+						<div>
+							<div class="form-group form-group--float-above my-2" >
+								<label>@Resource.patientqueue_visitdatetime @Resource.to</label>
+								<input type="text" id="visitdatetime_automatonto" placeholder="dd/mm/yyyy HH:mm" autocomplete="off" class="form-control form-control-lg" />
+								<i class="form-group__bar"></i>
+							</div>
+						</div>
+					</div>
+<div class="col-sm-2 col-xs-12 p-2 d-flex align-items-end pb-3">
+	<div>
+		<button type="button" id="btnToday" class="btn btn-info btn--icon-text mr-1" title="Today"><i class="fa fa-calendar-check-o"></i> Today</button>
+		<button type="button" id="btnThisWeek" class="btn btn-outline-secondary btn--icon-text" title="This Week"><i class="fa fa-calendar"></i> Week</button>
+	</div>
+</div>
+
+<div class="col-sm-2 col-xs-12 p-2 patientname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientname">@Resource.patientqueue_patientname</label>
+										<select name="patientname" id="patientname"  class="form-control select2 select2-list  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientname)
+									<div id="patientname-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2 queuename_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="queuename">@Resource.patientqueue_queuename</label>
+										<select name="queuename" id="queuename" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.queuename)
+									<div id="queuename-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2 queuestatus_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="queuestatus">@Resource.patientqueue_queuestatus</label>
+										<select name="queuestatus" id="queuestatus" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.queuestatus)
+									<div id="queuestatus-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 p-2">
+
+												<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+
+												</div>
+								</div>
+
+					<!-- ═══ View Toggle ═══ -->
+					<div class="row mb-2 mt-1">
+						<div class="col-sm-12 text-left">
+							<div class="btn-group shadow-sm pq-view-toggle">
+								<button class="btn btn-sm pq-view-btn is-active" data-pq-view="table"><i class="fa fa-table"></i> Table</button>
+								<button class="btn btn-sm pq-view-btn" data-pq-view="board"><i class="fa fa-columns"></i> Queue Board</button>
+							</div>
+						</div>
+					</div>
+
+					<!-- ═══ Queue Board View ═══ -->
+					<div id="queueBoardContainer" style="display:none;">
+						<!-- Date toolbar -->
+						<div class="pqb-toolbar">
+							<div class="pqb-toolbar__left">
+								<span class="pqb-toolbar__date-icon"><i class="fa fa-calendar"></i></span>
+								<span class="pqb-toolbar__date-label" id="pqbDateLabel"></span>
+								<button type="button" class="pqb-toolbar__btn" id="pqbToday">Today</button>
+							</div>
+							<div class="pqb-toolbar__right">
+								<div class="pqb-summary" id="pqbSummary"></div>
+							</div>
+						</div>
+						<!-- Board lanes -->
+						<div class="pqb-board" id="pqBoard">
+							<div class="pqb-loading"><i class="fa fa-spinner fa-spin"></i> Loading queues...</div>
+						</div>
+					</div>
+
+					<div id="tableViewContainer">
+					<div class="row"><div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+					<table id="tblPatientQueue" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+					<thead class="thead-default">
+					<tr>
+					
+					<th>@Resource.patientqueue_patientvisit</th>
+<th>@Resource.patientqueue_visitdatetime</th>
+<th>@Resource.patientqueue_patientname</th>
+<th>@Resource.patientqueue_queuename</th>
+<th>@Resource.patientqueue_queuestatus</th>
+<th>@Resource.patientqueue_priority</th>
+<th>@Resource.patientqueue_checkintime</th>
+<th>@Resource.patientqueue_endtime</th>
+<th>@Resource.tenantdisplayname</th>
+
+					<th class="all">Action</th>
+					
+
+					</tr>
+					</thead>
+					<tbody></tbody>
+					
+					</table>
+					</div>
+
+					</div>
+
+
+					</div>
+					</div><!-- /tableViewContainer -->
+
+					</div>
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					
+					 <script src="~/js/dtpager.js"></script>
+
+					<script type="text/javascript">
+
+					var arr_selected_for_verification = [];
+
+					function fill_PatientQueue()
+					{
+
+						var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"patientvisit":$("#patientvisit").val(),
+"visitdatetime_automatonfrom":getSqlDateTime($("#visitdatetime_automatonfrom").val()),"visitdatetime_automatonto":getSqlDateTime($("#visitdatetime_automatonto").val()),
+"patientname":$("#patientname").val(),
+"queuename":$("#queuename").val(),
+"queuestatus":$("#queuestatus").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+						
+
+					
+
+					
+
+
+					
+		 dataTableId="#tblPatientQueue";
+		 reachedEOF = false;
+		 totalRecordsCount = 0;
+		 currentPageNumber = 1;
+		 fetchingDataFromApi = false;
+	
+		var pagerControlsTemplate = "<div id='pager_container' class='dataTables_paginate'>"
+			+ "<button type='button' id='pager_btn_previous' onClick='pager_gotoPreviousPage(this);' class='paginate_button previous'>Previous</button>"
+			+ "<span>Page <input type='number' id='pager_txt_currentpage' min='1' max='^MAXPAGE^' maxlength='10' size='10' onFocus='this.oldValue=this.value;' onChange='pager_gotoPage(this);'/> of <span id='pager_lbl_pagecount'></span></span>"
+			+ "<select id='pager_ddl_pagesize' onChange='pager_pageSizeChanged(this);'>"
+			+ "<option value='50' selected>50 rows</option>"
+			+ "<option value='100'>100 rows</option>"
+			+ "<option value='200'>200 rows</option>"
+			+ "<option value='500'>500 rows</option>"
+			+ "<option value='^Everything^'>Everything</option>"
+			+ "</select>"
+			+ "<button type='button' id='pager_btn_next' onClick='pager_gotoNextPage(this);' class='paginate_button next'>Next</button>"
+			+ "</div>";
+
+	var table=$("#tblPatientQueue").DataTable({
+	columnDefs: [{ 
+	 targets: -1,
+	 title: '<i class="fa fa-pencil fa-lg"></i>'
+  }],
+	paging:false,
+	destroy:true,
+	serverSide: true,
+	filter: true,
+	"orderMulti": false,
+	searchDelay: 2000,
+	autoWidth: false,
+	"order": [[1, "asc"]],"aaSorting": [[1, "asc"]],
+	autoWidth: !1,responsive:!0,
+	language: {
+	searchPlaceholder: "Search for records..."
+	},
+	 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+	dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+  
+	buttons: [{
+	extend: "excelHtml5",
+	title: "List Of PatientQueue Data"
+	}, {
+	extend: "csvHtml5",
+	title: "List Of PatientQueue Data"
+	}, {
+	extend: "print",
+	title: "List Of PatientQueue Data"
+	}],
+ initComplete: function(a, b) {
+
+
+
+	  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+	  
+		if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+	 $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+		<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+	  `);
+		 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+			$("#cma_card_tab_action_container").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			`);
+		}
+ }
+count_of_PatientQueue_queuestatus(($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),sendFilterData)
+var Actions=getAutho("PatientQueue","create")
+		if(Actions != undefined){
+			var create_URL = "@Url.Action("entry.viewname", "PatientQueue")"
+			create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+			
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`   
+
+	   
+		<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.patientqueue_patientvisit
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_visitdatetime
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_patientname
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_queuename
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_queuestatus
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_priority
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_checkintime
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_endtime
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+
+		 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+		</div>
+	  `.replace("create_URL", create_URL))
+}
+	$("#cma_card_tab_action_container .card-lst").remove();
+	$("#cma_card_tab_action_container_action_btn").empty()
+	$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+	   
+
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+			else{
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(` 
+		
+		
+		<div class="dataTables_buttons actions">
+		 <div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.patientqueue_patientvisit
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_visitdatetime
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_patientname
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_queuename
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_queuestatus
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_priority
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_checkintime
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.patientqueue_endtime
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+		</div>
+	  `)
+}
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+if (!$(pagerContainerId).length) {
+		$(dataTableId + '_info').parent().append(
+					pagerControlsTemplate.replace('^Everything^', totalRecordsCount).replace('^MAXPAGE^', pager_getPageCount())
+				);
+}
+				//$(dataTableId + '_info').hide();
+				$(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+				pager_setCurrentPageNumber(1);
+				pager_onPageChanged();
+
+			
+
+	}
+	 ,columns: [
+		 
+		{data: 'patientvisit_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('PatientVisit','detail')
+ if(row["patientvisit_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "PatientVisit")?PatientVisitid=" + row['patientvisit']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["patientvisit_master"]+ '</a>' 
+}else {
+ 
+return row['patientvisit_master'] 
+}
+}
+}},
+{data: 'visitdatetime'},
+{data: 'patientname_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('PatientProfile','detail')
+ if(row["patientname_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "PatientProfile")?PatientProfileid=" + row['patientname']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["patientname_master"]+ '</a>' 
+}else {
+ 
+return row['patientname_master'] 
+}
+}
+}},
+{data: 'queuename_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('Queue','detail')
+ if(row["queuename_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Queue")?Queueid=" + row['queuename']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["queuename_master"]+ '</a>' 
+}else {
+ 
+return row['queuename_master'] 
+}
+}
+}},
+{data: 'queuestatus'},
+{data: 'priority'},
+{data: 'checkintime'},
+{data: 'endtime'},
+{data: '_tenantname'},
+
+		{
+					"sName": "patientqueueid",
+					"bSearchable": false,
+					"bSortable": false,
+					data: 'patientqueueid', "className": "dt-center",
+					mRender: function(data, type, row) {
+					var Actions=getAuthoController("PatientQueue")
+					var appendMessage='';
+					if(Actions !=undefined)
+					{
+					for (var index = 0; index < Actions.length; ++index) {
+					var entry = Actions[index];
+			 
+					if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+					var URL = "@Url.Action("entry.viewname", "PatientQueue")?PatientQueueid=" + row["patientqueueid"]
+					URL = URL.replace("entry.viewname", entry.actionmethodname);
+			 
+					if(entry.viewname=="delete")
+					{
+						
+						appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>' 	
+				   
+				
+					}
+					
+					else if(entry.viewname=="detail")
+					{
+						var DETAIL_URL = "@Url.Action("entry.actionmethodname", "PatientQueue")?PatientQueueid=" + row["patientqueueid"]
+						DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+						appendMessage+='<a href="' + DETAIL_URL + '" class="dropdown-item">View</a>' 			
+ }
+					else
+					{
+					 
+						appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>' 
+					}
+			 
+					}					 
+						 
+					}
+								
+					if(appendMessage =="")
+					{
+					return '-'
+
+					}
+					else
+					{
+					return '<div class="dropdown actions__item">' +
+					'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+					'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+		 
+
+					'</div>' +
+					'</div>'
+					}
+
+
+
+					}
+					else
+					{
+					return '-'
+
+					}
+
+
+					}
+					}
+	
+
+	 ],
+
+		ajax: function (data, callback, settings) {
+		fetchingDataFromApi = true;
+		sendFilterData.searchterm = data.search.value; 
+		sendFilterData.pagesize = pageSize;    
+		sendFilterData.pagenumber =  (currentPageNumber - 1);   
+		var sortParams = [];
+		for (var i = 0; i < data.order.length; i++) {
+			var colIndex = data.order[i].column;
+			var sortDirection = data.order[i].dir;
+			var columnName = data.columns[colIndex].data;
+
+			var sortParam = {};
+			sortParam["col"] = columnName;
+			sortParam["dir"] = sortDirection;
+
+			sortParams.push(sortParam);
+		}
+		sendFilterData.sortFieldsJson =  JSON.stringify(sortParams);
+		$.ajax({
+		url: "@Url.Action("get_Patient_Queue_List", "PatientQueue")",
+		type: 'GET',
+		dataType: 'json',
+		data: sendFilterData,
+
+		success: function(responsedata) {
+
+				 fetchingDataFromApi = false;
+				//to let grid say no data available and all other flows get through
+				if (responsedata.detail == null) {
+					responsedata.detail = [];
+				}
+				totalRecordsCount = responsedata.count;
+				if (responsedata.detail.length < pageSize) {
+					reachedEOF = true;
+				}
+		
+				setTimeout(function () {
+				callback({
+					data: responsedata.detail,
+					recordsTotal: responsedata.count
+				  });
+				}, 50);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			fetchingDataFromApi = false;
+
+			if (JSON.stringify(jqXHR.responseText) == "API Authorization failed") {
+					swal({
+					title: 'Failed!',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+					 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function() {
+					window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+			}
+			else
+			{
+					swal({
+					title: 'Contact Administrator !',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+			}
+		}
+		});
+		},
+		"infoCallback": function(settings, start, end, max, total, pre)
+		{
+				var startRowCount = (pageSize * currentPageNumber) - pageSize + 1;
+				var endRowCount = $(dataTableId).DataTable().rows().count() + startRowCount - 1;
+				var pagingInfo = 'Showing ' + startRowCount + ' to ' + endRowCount + ' of ' + totalRecordsCount + ' entries';
+
+				return pagingInfo;
+		}
+
+
+})
+	 
+	  
+ $('body').on('click', '.ColVis_collection li', function(a) {
+	event.stopPropagation();
+  });
+ 
+ $('body').on('change', '.colvis_switch', function(a) {
+	var column = table.column($(this).attr('data-column'));
+	column.visible(!column.visible());
+  });
+
+
+ 
+
+  
+	 
+
+
+	
+
+
+							
+					}
+	  function fill_pagination(callback) {
+		if ((reachedEOF || fetchingDataFromApi) && currentPageNumber !=1) {
+			return;
+		}
+		fetchingDataFromApi = true;
+		 var order = $(dataTableId).DataTable().order();
+			var sortParams = [];
+
+			for (var i = 0; i < order.length; i++) {
+				var colIndex = order[i][0];
+				var sortDirection = order[i][1];
+				var columnName = $(dataTableId).DataTable().settings()[0].aoColumns[colIndex].data;
+
+				var sortParam = {
+					col: columnName,
+					dir: sortDirection
+				};
+
+				sortParams.push(sortParam);
+			}
+			var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"patientvisit":$("#patientvisit").val(),
+"visitdatetime_automatonfrom":getSqlDateTime($("#visitdatetime_automatonfrom").val()),"visitdatetime_automatonto":getSqlDateTime($("#visitdatetime_automatonto").val()),
+"patientname":$("#patientname").val(),
+"queuename":$("#queuename").val(),
+"queuestatus":$("#queuestatus").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+			sendFilterData.searchterm = $(".dt-global-search").val();
+		sendFilterData.sortFieldsJson= JSON.stringify(sortParams);
+		var currentPage = $(dataTableId).DataTable().page();
+  
+		$.ajax({
+			url: "@Url.Action("get_Patient_Queue_List", "PatientQueue")",
+			type: 'GET',
+			dataType: 'json',
+			data: sendFilterData,
+			success: function (responsedata) {
+				if (responsedata != null && responsedata.detail.length > 0) {
+					if (responsedata.detail.length < pageSize) {
+						reachedEOF = true;
+					}
+
+					api_response_data = responsedata.detail;
+					var table = $(dataTableId).DataTable();
+					table.rows().remove();
+					table.rows.add(responsedata.detail).draw();
+				}
+				else {
+					reachedEOF = true;
+				}
+				fetchingDataFromApi = false;
+				if (callback != undefined) {
+					callback();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				fetchingDataFromApi = false;
+				if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+					swal({
+						title: 'Failed!',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+												allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function () {
+						window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+				}
+				else {
+					swal({
+						title: 'Contact Administrator !',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+				}
+			}
+		});
+
+
+	}
+
+
+
+						
+
+					$(document).ready(function () {
+					$('body').on('change', '.dt-global-search', function(event) {
+					  reachedEOF = false;
+
+					  pager_setCurrentPageNumber(1);
+					  fill_pagination(pager_onPageChanged);
+
+					  $(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+					});
+
+					/* Default date range to today before first load */
+					$('#visitdatetime_automatonfrom').val(moment().startOf('day').format('DD/MM/YYYY') + ' 00:00');
+					$('#visitdatetime_automatonto').val(moment().endOf('day').format('DD/MM/YYYY') + ' 23:59');
+
+					fill_PatientQueue()
+
+
+					var Actions=getAutho("PatientQueue","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}
+
+
+
+
+					});
+					
+
+					$("body").on("click", "[data-table-action]", function(a) {
+					a.preventDefault();
+					var b = $(this).data("table-action");
+					console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+					if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+					var c = $(this).closest(".card");
+					c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+					}
+					});
+					</script>
+					<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+<script>
+$(document).ready(function () {
+	$('#visitdatetime_automatonfrom').datetimepicker({
+		format: "d/m/Y H:i",
+		formatDate: "d/m/Y H:i",
+		timepicker: true,
+		value: moment().startOf('day').format('DD/MM/YYYY HH:mm')
+	});
+	$('#visitdatetime_automatonto').datetimepicker({
+		format: "d/m/Y H:i",
+		formatDate: "d/m/Y H:i",
+		timepicker: true,
+		value: moment().endOf('day').format('DD/MM/YYYY') + ' 23:59'
+	});
+
+	$('#btnToday').on('click', function () {
+		$('#visitdatetime_automatonfrom').val(moment().startOf('day').format('DD/MM/YYYY') + ' 00:00');
+		$('#visitdatetime_automatonto').val(moment().endOf('day').format('DD/MM/YYYY') + ' 23:59');
+		fill_PatientQueue();
+	});
+
+	$('#btnThisWeek').on('click', function () {
+		$('#visitdatetime_automatonfrom').val(moment().startOf('isoWeek').format('DD/MM/YYYY') + ' 00:00');
+		$('#visitdatetime_automatonto').val(moment().endOf('isoWeek').format('DD/MM/YYYY') + ' 23:59');
+		fill_PatientQueue();
+	});
+})
+</script>
+<script>
+var strqueuestatus;
+</script>
+@if (Model != null)
+{
+if (Model.queuestatus != null && Model.queuestatus.ToString() != "")
+{
+<script>
+strqueuestatus = "@Model.queuestatus";
+</script>
+}
+}
+
+					<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'PatientQueue' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="queuestatus"){
+												var ddltarget_queuestatus = "#queuestatus"
+												$(ddltarget_queuestatus).empty();
+												$(ddltarget_queuestatus).append("<option value=''>Choose</option>")
+												var options_queuestatus = optionDataInner.fielddesc.split(',');
+												options_queuestatus.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_queuestatus.forEach(function(option_queuestatus){
+													if(strqueuestatus== option_queuestatus){
+													$(ddltarget_queuestatus).append('<option selected value="' + option_queuestatus + '">' + option_queuestatus+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_queuestatus).append('<option  value="' + option_queuestatus + '">' + option_queuestatus+ '</option>')
+													  
+												})  
+ 
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+					
+					
+								<script>
+								$(document).ready(function () {
+								$("#tenantid").change(function(){
+								fill_PatientQueue();
+								})
+
+								$("#btnFilter").click(function(){
+								fill_PatientQueue();
+								})
+								});
+								</script> 
+
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+
+
+					
+					
+					 
+					
+					<script>
+					var strpatientvisit;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientvisit != null && Model.patientvisit.ToString() != "")
+							{
+							<script>
+								 strpatientvisit="@Model.patientvisit"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_PatientQueue_patientvisit(tenantid) {
+
+					var ddltarget_patientvisit = $('#patientvisit');
+					ddltarget_patientvisit.empty();;
+					ddltarget_patientvisit.select2({
+						ajax: {
+							url: '@Url.Action("lookup_PatientQueue_patientvisit")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.visitnumber !== null);
+									data.sort((a, b) =>
+										String(a.visitnumber).toLowerCase().localeCompare(String(b.visitnumber).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientVisitid;
+									data[i].name = data[i].visitnumber;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_PatientQueue_patientvisit,
+						 templateSelection: formatSelectSelected_lookup_PatientQueue_patientvisit
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientvisit || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_PatientQueue_patientvisit")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientVisitid == strpatientvisit) {
+											var option = new Option(data[i].visitnumber,data[i].PatientVisitid, true, true);
+											ddltarget_patientvisit.append(option).trigger('update');
+
+											ddltarget_patientvisit.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_PatientQueue_patientvisit(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.visitnumber) {
+						var textValue = item.visitnumber
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_PatientQueue_patientvisit(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.visitnumber;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_PatientQueue_patientvisit(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strpatientname;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientname != null && Model.patientname.ToString() != "")
+							{
+							<script>
+								 strpatientname="@Model.patientname"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_PatientQueue_patientname(tenantid) {
+
+					var ddltarget_patientname = $('#patientname');
+					ddltarget_patientname.empty();;
+					ddltarget_patientname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_PatientQueue_patientname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientProfileid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname+ ' ' + data[i].mobilenumber;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_PatientQueue_patientname,
+						 templateSelection: formatSelectSelected_lookup_PatientQueue_patientname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_PatientQueue_patientname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientProfileid == strpatientname) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname+ ' ' + data[i].mobilenumber,data[i].PatientProfileid, true, true);
+											ddltarget_patientname.append(option).trigger('update');
+
+											ddltarget_patientname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_PatientQueue_patientname(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname+ ' ' + item.mobilenumber) {
+						var textValue = item.firstname+ ' ' + item.lastname+ ' ' + item.mobilenumber
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_PatientQueue_patientname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname+ ' ' + item.mobilenumber;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_PatientQueue_patientname(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+var strqueuename;
+</script>
+	@if (Model != null)
+	{
+		if(Model.queuename != null && Model.queuename.ToString() != "")
+		{
+		<script>
+			 strqueuename="@Model.queuename"
+		</script>
+		}
+	}
+<script>
+function lookup_PatientQueue_queuename(tenantid) {
+
+var sendFilterData = {
+	"tenantid":tenantid
+}
+
+$.ajax({
+url: '@Url.Action("lookup_PatientQueue_queuename")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.queuename !== null);
+			data.sort((a, b) =>
+				String(a.queuename).toLowerCase().localeCompare(String(b.queuename).toLowerCase()) 
+			);
+		}
+	   var ddltarget_queuename="#queuename"
+		$(ddltarget_queuename).empty();
+		
+		$(ddltarget_queuename).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					if(strqueuename== optionDataInner.Queueid){
+					$(ddltarget_queuename).append('<option selected value="' + optionDataInner.Queueid + '">' + optionDataInner.queuename+ '</option>')
+					 
+                   }
+					else
+					$(ddltarget_queuename).append('<option  value="' + optionDataInner.Queueid+ '">' + optionDataInner.queuename+ '</option>')
+
+
+		});
+
+		
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							lookup_PatientQueue_queuename(str_tenantid)
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_PatientQueue_patientvisit($("#tenantid").val())
+lookup_PatientQueue_patientname($("#tenantid").val())
+lookup_PatientQueue_queuename($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script>
+
+<script>
+var strqueuestatus;
+</script>
+	@if (Model != null)
+	{
+		if(Model.queuestatus != null && Model.queuestatus.ToString() != "")
+		{
+		<script>
+			 strqueuestatus="@Model.queuestatus"
+		</script>
+		}
+	}
+<script>
+
+function count_of_PatientQueue_queuestatus(tenantid,globalFilterData) {
+
+
+
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'PatientQueue' },
+success: function(data) {
+
+			$.each(data, function(index, optionDataInner) {
+
+				
+											if(optionDataInner.fieldname=="queuestatus"){
+
+
+				$.ajax({
+					url: '@Url.Action("count_of_PatientQueue_queuestatus")',
+					dataType: 'json',
+					data: globalFilterData,
+					success: function(rowData) {
+						 
+						var countofstatus = '';
+						var num = 0;
+
+						// Create status cards
+						var options_queuestatus = optionDataInner.fielddesc.split(',');
+						$.each(options_queuestatus, function(index, optionDataInner) {
+							var queuestatus = optionDataInner;
+							var valueToCheck = optionDataInner;
+							
+							var found = 0;
+							var statecount = 0;
+
+							$.each(rowData, function(index_count, optionDataInner_count) {
+									if (optionDataInner_count.queuestatus == valueToCheck) {
+									found = 1;
+									statecount = Number(optionDataInner_count.count);
+									num += statecount;
+								}
+							});
+
+							var queuestatusclass = queuestatus.replace(/[\s-]/g, '').toLowerCase();
+										var backgroundcolor=getFixedColor(index);
+							countofstatus += `<div class="col-sm-2">
+										<div class="list list_status ${queuestatusclass}" style="background-color:${backgroundcolor}"  id="${valueToCheck}">
+									<span><p class="tlt-txt">${queuestatus}</p></span>
+									<div class="lst-num">
+										<label>${statecount}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+									</div>
+								</div>
+							</div>`;
+						});
+
+						// Add 'All' total card + individual state counts to top bar
+						$(".dataTables__top .card-lst").remove();
+						$(".dataTables__top").prepend(
+							`<div class="card-lst">
+								<div class="col-sm-2">
+									<div class="list list_status all" id="">
+										<span><p class="tlt-txt">All</p></span>
+										<div class="lst-num">
+											<label>${num}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+										</div>
+									</div>
+								</div>
+								${countofstatus}
+							</div>`
+						);
+					}
+				});
+
+		}
+
+
+
+		});
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+
+
+<script>$(document).ready(function () {
+
+$('body').on('click', '.list_status', function(a) {
+	$("#queuestatus").val($(this).attr('id'))
+	fill_PatientQueue();
+	// Also refresh board if visible
+	if ($('#queueBoardContainer').is(':visible')) renderQueueBoard();
+});
+
+});</script>
+
+<!-- ═══════════════════════════════════════════════════
+     QUEUE BOARD — CSS
+     ═══════════════════════════════════════════════════ -->
+<style>
+/* ═══ View toggle ═══ */
+.pq-view-toggle { border-radius: 8px; overflow: hidden; }
+.pq-view-btn {
+	padding: 6px 16px; font-size: 12.5px; font-weight: 600;
+	color: #475569; background: #f1f5f9; border: 1px solid #e2e8f0;
+	transition: all .2s; cursor: pointer;
+}
+.pq-view-btn:hover { background: #e2e8f0; color: #1e293b; }
+.pq-view-btn.is-active {
+	background: linear-gradient(135deg, #1a3d2b, #1e4d35);
+	color: #fff; border-color: #1a3d2b;
+}
+
+/* ═══ Toolbar ═══ */
+.pqb-toolbar {
+	display: flex; align-items: center; justify-content: space-between;
+	flex-wrap: wrap; gap: 10px;
+	padding: 12px 18px; margin-bottom: 0;
+	background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+	border: 1px solid #e2e8f0; border-bottom: none;
+	border-radius: 10px 10px 0 0;
+}
+.pqb-toolbar__left { display: flex; align-items: center; gap: 10px; }
+.pqb-toolbar__right { display: flex; align-items: center; }
+.pqb-toolbar__date-icon {
+	width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center;
+	background: linear-gradient(135deg, #1e3a5f, #1b3060); color: #fff;
+	border-radius: 8px; font-size: 15px;
+}
+.pqb-toolbar__date-label {
+	font-size: 15px; font-weight: 700; color: #1e293b; letter-spacing: .2px;
+}
+.pqb-toolbar__btn {
+	padding: 5px 14px; font-size: 12px; font-weight: 600;
+	border: 1px solid #cbd5e1; border-radius: 6px;
+	background: #fff; color: #475569; cursor: pointer;
+	transition: all .15s;
+}
+.pqb-toolbar__btn:hover { background: #e2e8f0; color: #1e293b; }
+
+/* ═══ Summary chips ═══ */
+.pqb-summary { display: flex; gap: 6px; flex-wrap: wrap; }
+.pqb-summary__chip {
+	display: inline-flex; align-items: center; gap: 6px;
+	padding: 5px 12px; border-radius: 20px;
+	font-size: 12px; font-weight: 600;
+	border: 1px solid #e2e8f0; background: #fff;
+}
+.pqb-summary__chip-dot {
+	width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+}
+.pqb-summary__chip--total   .pqb-summary__chip-dot { background: #475569; }
+.pqb-summary__chip--waiting .pqb-summary__chip-dot { background: #f59e0b; }
+.pqb-summary__chip--serving .pqb-summary__chip-dot { background: #3b82f6; }
+.pqb-summary__chip--done    .pqb-summary__chip-dot { background: #22c55e; }
+.pqb-summary__chip-num { font-weight: 800; font-size: 13px; }
+.pqb-summary__chip--total   .pqb-summary__chip-num { color: #1e293b; }
+.pqb-summary__chip--waiting .pqb-summary__chip-num { color: #d97706; }
+.pqb-summary__chip--serving .pqb-summary__chip-num { color: #2563eb; }
+.pqb-summary__chip--done    .pqb-summary__chip-num { color: #16a34a; }
+
+/* ═══ Board layout ═══ */
+.pqb-board {
+	display: flex; gap: 16px; padding: 18px;
+	overflow-x: auto; min-height: 400px;
+	align-items: stretch;
+	background: #f1f5f9;
+	border: 1px solid #e2e8f0; border-top: none;
+	border-radius: 0 0 10px 10px;
+	justify-content: flex-start;
+}
+.pqb-loading, .pqb-empty {
+	width: 100%; text-align: center; padding: 80px 20px;
+	color: #94a3b8; font-size: 14px;
+}
+.pqb-empty i { font-size: 40px; display: block; margin-bottom: 12px; opacity: .45; }
+
+/* ═══ Lane ═══ */
+.pqb-lane {
+	min-width: 310px; max-width: 360px; flex: 1 0 310px;
+	background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+	display: flex; flex-direction: column;
+	box-shadow: 0 2px 8px rgba(0,0,0,.04);
+	max-height: 68vh;
+}
+.pqb-lane__header {
+	display: flex; align-items: center; gap: 10px;
+	padding: 14px 16px;
+	background: linear-gradient(135deg, #1e3a5f 0%, #1b3060 100%);
+	color: #fff; border-radius: 12px 12px 0 0;
+}
+.pqb-lane__icon { font-size: 17px; color: #93c5fd; }
+.pqb-lane__name {
+	font-size: 14px; font-weight: 700; flex: 1;
+	white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+	letter-spacing: .3px;
+}
+.pqb-lane__count {
+	display: inline-flex; align-items: center; justify-content: center;
+	min-width: 26px; height: 26px; padding: 0 8px;
+	border-radius: 999px; background: rgba(255,255,255,.2);
+	color: #93c5fd; font-size: 13px; font-weight: 800;
+}
+.pqb-lane__body {
+	flex: 1; overflow-y: auto; padding: 12px;
+	display: flex; flex-direction: column; gap: 10px;
+}
+.pqb-lane__empty {
+	text-align: center; padding: 40px 10px; color: #cbd5e1; font-size: 13px;
+}
+.pqb-lane__empty i { display: block; font-size: 28px; margin-bottom: 8px; opacity: .4; }
+
+/* ═══ Patient card ═══ */
+.pqb-card {
+	background: #fff; border-radius: 10px; padding: 12px 14px;
+	border-left: 5px solid #cbd5e1;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	cursor: pointer; transition: all .18s;
+}
+.pqb-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.1); transform: translateY(-2px); }
+.pqb-card--waiting   { border-left-color: #f59e0b; background: #fffdf5; }
+.pqb-card--inprogress, .pqb-card--in-progress, .pqb-card--serving { border-left-color: #3b82f6; background: #f8fbff; }
+.pqb-card--completed, .pqb-card--done { border-left-color: #22c55e; background: #f8fdf9; }
+.pqb-card--cancelled, .pqb-card--skipped, .pqb-card--noshow { border-left-color: #ef4444; background: #fefafa; }
+
+.pqb-card__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+.pqb-card__name {
+	font-size: 13.5px; font-weight: 700; color: #1e293b;
+	overflow: hidden; text-overflow: ellipsis;
+	display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+	line-height: 1.3; flex: 1;
+}
+.pqb-card__name i { color: #94a3b8; margin-right: 4px; font-size: 12px; }
+.pqb-card__priority {
+	font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .6px;
+	padding: 3px 8px; border-radius: 5px; white-space: nowrap; flex-shrink: 0;
+}
+.pqb-card__priority--high, .pqb-card__priority--urgent, .pqb-card__priority--emergency {
+	background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;
+}
+.pqb-card__priority--normal, .pqb-card__priority--medium {
+	background: #fffbeb; color: #d97706; border: 1px solid #fde68a;
+}
+.pqb-card__priority--low {
+	background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;
+}
+
+.pqb-card__visit {
+	font-size: 12px; color: #64748b; margin-bottom: 8px;
+	display: flex; align-items: center; gap: 4px;
+}
+.pqb-card__visit i { font-size: 11px; opacity: .55; }
+
+.pqb-card__footer {
+	display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+	padding-top: 8px; border-top: 1px solid #f1f5f9;
+}
+.pqb-card__status {
+	font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+	padding: 3px 10px; border-radius: 5px;
+}
+.pqb-card__status--waiting   { background: #fef3c7; color: #92400e; }
+.pqb-card__status--inprogress, .pqb-card__status--in-progress, .pqb-card__status--serving { background: #dbeafe; color: #1e40af; }
+.pqb-card__status--completed, .pqb-card__status--done { background: #dcfce7; color: #166534; }
+.pqb-card__status--cancelled, .pqb-card__status--skipped, .pqb-card__status--noshow { background: #fee2e2; color: #991b1b; }
+
+.pqb-card__time {
+	font-size: 11.5px; color: #94a3b8;
+	display: inline-flex; align-items: center; gap: 3px;
+}
+.pqb-card__time i { font-size: 10px; }
+.pqb-card__wait {
+	margin-left: auto;
+	font-size: 11px; font-weight: 700;
+	display: inline-flex; align-items: center; gap: 3px;
+	padding: 2px 8px; border-radius: 4px;
+}
+.pqb-card__wait--ok   { background: #f0fdf4; color: #16a34a; }
+.pqb-card__wait--warn { background: #fffbeb; color: #d97706; }
+.pqb-card__wait--long { background: #fef2f2; color: #dc2626; }
+</style>
+
+<!-- ═══════════════════════════════════════════════════
+     QUEUE BOARD — JS
+     ═══════════════════════════════════════════════════ -->
+<script>
+$(document).ready(function () {
+
+	/* ── Cached queue name list ── */
+	var _pqQueueList = [];   // [{id, name}]
+	var _pqQueuesLoaded = false;
+
+	/* ── Update the date label ── */
+	function updatePqbDateLabel() {
+		var fromVal = $('#visitdatetime_automatonfrom').val();
+		var toVal   = $('#visitdatetime_automatonto').val();
+		var label = '';
+		if (fromVal && toVal) {
+			var fromDate = fromVal.split(' ')[0];
+			var toDate   = toVal.split(' ')[0];
+			if (fromDate === toDate) {
+				label = fromDate;
+			} else {
+				label = fromDate + '  —  ' + toDate;
+			}
+		} else if (fromVal) {
+			label = 'From ' + fromVal.split(' ')[0];
+		} else if (toVal) {
+			label = 'Until ' + toVal.split(' ')[0];
+		} else {
+			label = 'All Dates';
+		}
+		$('#pqbDateLabel').text(label);
+	}
+
+	/* ── View Toggle ── */
+	$('.pq-view-toggle').on('click', '.pq-view-btn', function () {
+		var view = $(this).data('pq-view');
+		$('.pq-view-btn').removeClass('is-active');
+		$(this).addClass('is-active');
+		$('#tableViewContainer').toggle(view === 'table');
+		$('#queueBoardContainer').toggle(view === 'board');
+		if (view === 'board') {
+			updatePqbDateLabel();
+			if (!_pqQueuesLoaded) {
+				loadQueueListThenRender();
+			} else {
+				renderQueueBoard();
+			}
+		}
+	});
+
+	/* ── Load queue names, then render ── */
+	function loadQueueListThenRender() {
+		var tid = ($("#tenantid").val() ? $("#tenantid").val() : str_tenantid);
+		$('#pqBoard').html('<div class="pqb-loading"><i class="fa fa-spinner fa-spin"></i> Loading queues...</div>');
+
+		$.ajax({
+			url: '@Url.Action("lookup_PatientQueue_queuename")',
+			dataType: 'json',
+			data: { tenantid: tid },
+			success: function (data) {
+				_pqQueueList = (data || []).map(function (q) {
+					return {
+						id: (q.Queueid || q.queueid || '').toString(),
+						name: q.queuename || q.Queuename || 'Unnamed Queue'
+					};
+				});
+				_pqQueuesLoaded = true;
+				renderQueueBoard();
+			},
+			error: function () {
+				$('#pqBoard').html('<div class="pqb-empty"><i class="fa fa-exclamation-triangle"></i>Failed to load queue data.</div>');
+			}
+		});
+	}
+
+	/* ── Fetch current queue data & render board ── */
+	window.renderQueueBoard = function () {
+		var tid = ($("#tenantid").val() ? $("#tenantid").val() : str_tenantid);
+		var boardEl = document.getElementById('pqBoard');
+		if (!boardEl) return;
+
+		updatePqbDateLabel();
+
+		var filterData = {
+			tenantid: tid,
+			patientvisit: $("#patientvisit").val() || '',
+			visitdatetime_automatonfrom: getSqlDateTime($("#visitdatetime_automatonfrom").val()),
+			visitdatetime_automatonto:   getSqlDateTime($("#visitdatetime_automatonto").val()),
+			patientname: $("#patientname").val() || '',
+			queuename:   $("#queuename").val() || '',
+			queuestatus: $("#queuestatus").val() || '',
+			pagesize: 10000,
+			pagenumber: 0
+		};
+
+		boardEl.innerHTML = '<div class="pqb-loading"><i class="fa fa-spinner fa-spin"></i> Loading queue board...</div>';
+
+		$.ajax({
+			url: '@Url.Action("get_Patient_Queue_List", "PatientQueue")',
+			type: 'GET',
+			dataType: 'json',
+			data: filterData,
+			success: function (responsedata) {
+				var records = (responsedata && responsedata.detail) ? responsedata.detail : [];
+				buildBoard(records);
+			},
+			error: function () {
+				boardEl.innerHTML = '<div class="pqb-empty"><i class="fa fa-exclamation-triangle"></i>Failed to load queue data.</div>';
+			}
+		});
+	};
+
+	/* ── Build the Kanban board ── */
+	function buildBoard(records) {
+		var boardEl = document.getElementById('pqBoard');
+		var esc = function (s) { return (s + '').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+
+		// Group records by queue name (GUID)
+		var queueMap = {};
+		records.forEach(function (r) {
+			var qId = (r.queuename || '').toString();
+			if (!queueMap[qId]) queueMap[qId] = [];
+			queueMap[qId].push(r);
+		});
+
+		// Build list of queues: all known + any extras from data
+		var queuesToShow = _pqQueueList.map(function (q) { return { id: q.id, name: q.name }; });
+		var knownIds = {};
+		queuesToShow.forEach(function (q) { knownIds[q.id.toUpperCase()] = true; });
+		Object.keys(queueMap).forEach(function (qId) {
+			if (!knownIds[qId.toUpperCase()]) {
+				queuesToShow.push({
+					id: qId,
+					name: (queueMap[qId][0] || {}).queuename_master || 'Unknown Queue'
+				});
+			}
+		});
+
+		// Resolve display names from records
+		var queueIdToName = {};
+		records.forEach(function (r) {
+			var qId = (r.queuename || '').toString().toUpperCase();
+			if (r.queuename_master && !queueIdToName[qId]) queueIdToName[qId] = r.queuename_master;
+		});
+		queuesToShow.forEach(function (q) {
+			var resolved = queueIdToName[q.id.toUpperCase()];
+			if (resolved) q.name = resolved;
+		});
+
+		if (queuesToShow.length === 0) {
+			boardEl.innerHTML = '<div class="pqb-empty"><i class="fa fa-inbox"></i>No queues found.<br/>Please create queues first.</div>';
+			$('#pqbSummary').empty();
+			return;
+		}
+
+		// Summary counts
+		var totalCount = records.length;
+		var waitingCount = 0, servingCount = 0, doneCount = 0;
+		records.forEach(function (r) {
+			var st = (r.queuestatus || '').toString().toLowerCase().replace(/[\s-]/g, '');
+			if (st === 'waiting' || st === 'queued' || st === 'checkedin') waitingCount++;
+			else if (st === 'inprogress' || st === 'serving') servingCount++;
+			else if (st === 'completed' || st === 'done') doneCount++;
+		});
+
+		$('#pqbSummary').html(
+			'<span class="pqb-summary__chip pqb-summary__chip--total"><span class="pqb-summary__chip-dot"></span><span class="pqb-summary__chip-num">' + totalCount + '</span> Total</span>' +
+			'<span class="pqb-summary__chip pqb-summary__chip--waiting"><span class="pqb-summary__chip-dot"></span><span class="pqb-summary__chip-num">' + waitingCount + '</span> Waiting</span>' +
+			'<span class="pqb-summary__chip pqb-summary__chip--serving"><span class="pqb-summary__chip-dot"></span><span class="pqb-summary__chip-num">' + servingCount + '</span> In Progress</span>' +
+			'<span class="pqb-summary__chip pqb-summary__chip--done"><span class="pqb-summary__chip-dot"></span><span class="pqb-summary__chip-num">' + doneCount + '</span> Completed</span>'
+		);
+
+		// Sort queues alphabetically, but put queues with patients first
+		queuesToShow.sort(function (a, b) {
+			var aCount = (queueMap[a.id] || []).length;
+			var bCount = (queueMap[b.id] || []).length;
+			if (aCount > 0 && bCount === 0) return -1;
+			if (aCount === 0 && bCount > 0) return 1;
+			return (a.name || '').localeCompare(b.name || '');
+		});
+
+		var html = [];
+
+		queuesToShow.forEach(function (queue) {
+			var qRecords = queueMap[queue.id] || [];
+
+			// Sort: Waiting/active first, then by priority, then checkintime
+			var statusOrder = { 'waiting': 0, 'queued': 0, 'checkedin': 0, 'inprogress': 1, 'serving': 1 };
+			var prioOrder   = { 'emergency': 0, 'urgent': 1, 'high': 2, 'normal': 3, 'medium': 3, 'low': 4 };
+			qRecords.sort(function (a, b) {
+				var sa = statusOrder[(a.queuestatus || '').toString().toLowerCase().replace(/[\s-]/g, '')];
+				var sb = statusOrder[(b.queuestatus || '').toString().toLowerCase().replace(/[\s-]/g, '')];
+				if (sa === undefined) sa = 9;
+				if (sb === undefined) sb = 9;
+				if (sa !== sb) return sa - sb;
+				var pa = prioOrder[(a.priority || '').toString().toLowerCase()] || 5;
+				var pb = prioOrder[(b.priority || '').toString().toLowerCase()] || 5;
+				if (pa !== pb) return pa - pb;
+				return (a.checkintime || '').localeCompare(b.checkintime || '');
+			});
+
+			// Count active patients for header badge
+			var activeCount = qRecords.filter(function (r) {
+				var st = (r.queuestatus || '').toString().toLowerCase().replace(/[\s-]/g, '');
+				return st === 'waiting' || st === 'queued' || st === 'checkedin' || st === 'inprogress' || st === 'serving';
+			}).length;
+
+			html.push('<div class="pqb-lane" data-queue-id="' + esc(queue.id) + '">');
+			html.push(
+				'<div class="pqb-lane__header">' +
+					'<i class="fa fa-users pqb-lane__icon"></i>' +
+					'<span class="pqb-lane__name">' + esc(queue.name) + '</span>' +
+					'<span class="pqb-lane__count" title="' + activeCount + ' active / ' + qRecords.length + ' total">' + qRecords.length + '</span>' +
+				'</div>'
+			);
+			html.push('<div class="pqb-lane__body">');
+
+			if (qRecords.length === 0) {
+				html.push('<div class="pqb-lane__empty"><i class="fa fa-check-circle"></i>No patients in queue</div>');
+			} else {
+				qRecords.forEach(function (r, idx) {
+					var status      = (r.queuestatus || '').toString().trim();
+					var statusKey   = status.toLowerCase().replace(/[\s-]/g, '');
+					var priority    = (r.priority || '').toString().trim();
+					var prioKey     = priority.toLowerCase().replace(/[\s-]/g, '');
+					var patientName = r.patientname_master || '-';
+					var visitNum    = r.patientvisit_master || '';
+					var checkin     = r.checkintime || '';
+					var endtime     = r.endtime || '';
+					var visitDt     = r.visitdatetime || '';
+					var recordId    = r.patientqueueid || '';
+
+					var cardClass = 'pqb-card pqb-card--' + statusKey;
+					html.push('<div class="' + cardClass + '" data-queue-record-id="' + esc(recordId) + '">');
+
+					// Top: patient name + priority
+					html.push('<div class="pqb-card__top">');
+					html.push('<span class="pqb-card__name"><i class="fa fa-user-circle-o"></i>' + esc(patientName) + '</span>');
+					if (priority) {
+						html.push('<span class="pqb-card__priority pqb-card__priority--' + prioKey + '">' + esc(priority) + '</span>');
+					}
+					html.push('</div>');
+
+					// Visit number + datetime
+					if (visitNum || visitDt) {
+						var visitLine = '';
+						if (visitNum) visitLine += '<i class="fa fa-ticket"></i> ' + esc(visitNum);
+						if (visitDt)  visitLine += (visitNum ? '  &middot;  ' : '') + '<i class="fa fa-clock-o"></i> ' + esc(visitDt);
+						html.push('<div class="pqb-card__visit">' + visitLine + '</div>');
+					}
+
+					// Footer: status + times + wait
+					html.push('<div class="pqb-card__footer">');
+					html.push('<span class="pqb-card__status pqb-card__status--' + statusKey + '">' + esc(status) + '</span>');
+
+					if (checkin) {
+						html.push('<span class="pqb-card__time"><i class="fa fa-sign-in"></i> ' + esc(checkin) + '</span>');
+					}
+					if (endtime) {
+						html.push('<span class="pqb-card__time"><i class="fa fa-sign-out"></i> ' + esc(endtime) + '</span>');
+					}
+
+					// Live wait time for active patients
+					if (checkin && !endtime && (statusKey === 'waiting' || statusKey === 'queued' || statusKey === 'checkedin' || statusKey === 'inprogress' || statusKey === 'serving')) {
+						var waitMins = calcWaitMinutes(checkin);
+						if (waitMins !== null && waitMins >= 0) {
+							var waitLabel = waitMins < 60 ? waitMins + 'm' : Math.floor(waitMins / 60) + 'h ' + (waitMins % 60) + 'm';
+							var waitClass = waitMins > 30 ? 'pqb-card__wait--long' : waitMins > 15 ? 'pqb-card__wait--warn' : 'pqb-card__wait--ok';
+							html.push('<span class="pqb-card__wait ' + waitClass + '"><i class="fa fa-hourglass-half"></i> ' + waitLabel + '</span>');
+						}
+					}
+
+					html.push('</div>'); // footer
+					html.push('</div>'); // card
+				});
+			}
+
+			html.push('</div></div>'); // lane body + lane
+		});
+
+		boardEl.innerHTML = html.join('');
+	}
+
+	/* ── Wait time calculator ── */
+	function calcWaitMinutes(checkinStr) {
+		if (!checkinStr) return null;
+		// checkintime is typically HH:mm format
+		var parts = checkinStr.split(':');
+		if (parts.length < 2) return null;
+		var now = new Date();
+		var checkinDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(),
+			parseInt(parts[0], 10), parseInt(parts[1], 10), 0);
+		var diffMs = now - checkinDate;
+		if (diffMs < 0) return null;
+		return Math.floor(diffMs / 60000);
+	}
+
+	/* ── Card click → open detail/update ── */
+	$('#pqBoard').on('click', '.pqb-card', function () {
+		var recordId = $(this).data('queue-record-id');
+		if (!recordId) return;
+		var Actions = getAutho("PatientQueue", "update");
+		if (Actions != undefined) {
+			var URL = '@Url.Action("Update_Patient_Queue", "PatientQueue")' + '?PatientQueueid=' + encodeURIComponent(recordId);
+			window.location = URL;
+		} else {
+			var ViewActions = getAutho("PatientQueue", "detail");
+			if (ViewActions != undefined) {
+				var VURL = '@Url.Action("View_Patient_Queue", "PatientQueue")' + '?PatientQueueid=' + encodeURIComponent(recordId);
+				window.location = VURL;
+			}
+		}
+	});
+
+	/* ── Board "Today" button ── */
+	$('#pqbToday').on('click', function () {
+		$('#visitdatetime_automatonfrom').val(moment().startOf('day').format('DD/MM/YYYY') + ' 00:00');
+		$('#visitdatetime_automatonto').val(moment().endOf('day').format('DD/MM/YYYY') + ' 23:59');
+		renderQueueBoard();
+		// Also refresh the table data in background
+		fill_PatientQueue();
+	});
+
+	/* ── Auto-refresh board when filters change ── */
+	$('#btnFilter').on('click.pqboard', function () {
+		setTimeout(function () {
+			if ($('#queueBoardContainer').is(':visible')) renderQueueBoard();
+		}, 300);
+	});
+	$('#btnToday, #btnThisWeek').on('click.pqboard', function () {
+		setTimeout(function () {
+			if ($('#queueBoardContainer').is(':visible')) renderQueueBoard();
+		}, 300);
+	});
+
+});
+</script>

@@ -1,0 +1,200 @@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@ViewBag.Title – Issue Tracker</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- ── Core fonts ──────────────────────────────────────────────── -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css' />
+
+    <!-- ── Local CSS (no session required) ─────────────────────────── -->
+    <link rel="stylesheet" href="~/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/materialadmin.css" />
+    <link rel="stylesheet" href="~/css/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/custom.css" />
+    <link rel="stylesheet" href="~/css/custom_changed.css" />
+    <link rel="stylesheet" href="~/themestyles.css" />
+    <link rel="stylesheet" href="~/appstyles.css" />
+
+    <!-- ── Theme (loaded dynamically from localStorage – same as main layout) -->
+    <link rel="stylesheet" href="~/Monochrome.css" id="theme-stylesheet-fallback" />
+    <script>
+        (function () {
+            var theme = localStorage.getItem('theme') || 'variables';
+            var link  = document.createElement('link');
+            link.rel  = 'stylesheet';
+            link.type = 'text/css';
+            link.href = '@Configuration.GetSection("ApiSettings")["baseURL"]' + '/' + theme + '.css';
+            link.id   = 'it-theme-stylesheet';
+            link.onload = function () {
+                var fallback = document.getElementById('theme-stylesheet-fallback');
+                if (fallback) fallback.remove();
+            };
+            document.head.appendChild(link);
+        })();
+    </script>
+
+    <!-- ── SweetAlert ──────────────────────────────────────────────── -->
+    <link rel="stylesheet" href="~/components/sweetalert2/sweetalert2.min.css">
+
+    <!-- ── Favicon ─────────────────────────────────────────────────── -->
+    <link rel="shortcut icon" href="~/images/Logo/White-fav.svg" />
+
+    <!-- ── jQuery (must be before </head> so inline scripts work) ──── -->
+    <script src="~/js/jquery-1.11.2.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/components/sweetalert2/sweetalert2.min.js"></script>
+
+    <!-- ── Layout-specific styles ──────────────────────────────────── -->
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Source Sans 3', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--body-background, #f4f6f9);
+            color: var(--colorblack, #000);
+            margin: 0; padding: 0;
+            font-size: 14px;
+        }
+
+        /* ── Top nav bar ──────────────────────────────────────────── */
+        .it-topbar {
+            background: var(--card-head-header, #2F6B4F);
+            color: var(--card-head-text, #fff);
+            height: 56px;
+            display: flex; align-items: center;
+            padding: 0 24px; gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.18);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .it-topbar-logo {
+            display: flex; align-items: center; gap: 10px;
+            font-size: 16px; font-weight: 700; letter-spacing: .3px;
+            text-decoration: none;
+            color: var(--card-head-text, #fff);
+        }
+        .it-topbar-logo:hover { color: var(--card-head-text, #fff); text-decoration: none; }
+        .it-topbar-logo .it-logo-icon {
+            width: 34px; height: 34px; border-radius: 8px;
+            background: rgba(255,255,255,.2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px;
+        }
+        .it-topbar-divider {
+            width: 1px; height: 28px;
+            background: rgba(255,255,255,.25);
+        }
+        .it-topbar-title {
+            font-size: 14px; font-weight: 600; opacity: .9;
+        }
+        .it-topbar-spacer { flex: 1; }
+        .it-topbar-back {
+            display: flex; align-items: center; gap: 6px;
+            color: rgba(255,255,255,.85); font-size: 13px;
+            text-decoration: none; padding: 5px 14px;
+            border: 1px solid rgba(255,255,255,.3);
+            border-radius: 20px; transition: all .18s;
+        }
+        .it-topbar-back:hover {
+            background: rgba(255,255,255,.12);
+            color: #fff; text-decoration: none;
+        }
+        .it-anon-badge {
+            background: rgba(255,255,255,.15); border-radius: 12px;
+            padding: 3px 12px; font-size: 11px; font-weight: 600;
+            letter-spacing: .3px; opacity: .85;
+        }
+
+        /* ── Page wrapper ─────────────────────────────────────────── */
+        .it-page-wrapper {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 16px 60px;
+        }
+
+        /* ── Footer ───────────────────────────────────────────────── */
+        .it-footer {
+            text-align: center;
+            font-size: 11px;
+            color: var(--card-head-header, #2F6B4F);
+            opacity: .55;
+            padding: 16px 0 32px;
+            border-top: 1px solid var(--input-border, #E5E5E5);
+            margin-top: 40px;
+        }
+
+        /* ── Page loader ──────────────────────────────────────────── */
+        .it-loader {
+            position: fixed; inset: 0;
+            background: rgba(255,255,255,.7);
+            z-index: 9998;
+            display: none;
+            align-items: center; justify-content: center;
+        }
+        .it-loader.active { display: flex; }
+        .it-loader-spin {
+            width: 44px; height: 44px;
+            border: 4px solid var(--input-border, #ddd);
+            border-top-color: var(--btnprimary, #2F6B4F);
+            border-radius: 50%;
+            animation: it-spin .7s linear infinite;
+        }
+        @@keyframes it-spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Top navigation bar ────────────────────────────────────────── -->
+    <nav class="it-topbar">
+        <a class="it-topbar-logo" href="/IssueTracker/Index">
+            <span class="it-logo-icon"><i class="fa fa-bug"></i></span>
+            Issue Tracker
+        </a>
+        <span class="it-topbar-divider"></span>
+        <span class="it-topbar-title">@(ViewData["Title"] ?? "")</span>
+        <span class="it-topbar-spacer"></span>
+        <span class="it-anon-badge"><i class="fa fa-unlock-alt mr-1"></i>Anonymous</span>
+        <a class="it-topbar-back ml-2" href="javascript:history.back()">
+            <i class="fa fa-arrow-left"></i> Back
+        </a>
+    </nav>
+
+    <!-- ── Page loader ───────────────────────────────────────────────── -->
+    <div class="it-loader" id="itPageLoader">
+        <div class="it-loader-spin"></div>
+    </div>
+
+    <!-- ── Main content ──────────────────────────────────────────────── -->
+    <div class="it-page-wrapper">
+        @RenderBody()
+
+        <div class="it-footer">
+            Issue Tracker &nbsp;·&nbsp;
+            Anonymous Access &nbsp;·&nbsp;
+            @DateTime.Now.Year
+        </div>
+    </div>
+
+    <!-- ── Scripts ───────────────────────────────────────────────────── -->
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        // Expose a page-loader helper matching the main layout convention
+        function showLoader()  { document.getElementById('itPageLoader').classList.add('active'); }
+        function hideLoader()  { document.getElementById('itPageLoader').classList.remove('active'); }
+
+        // Consistent swal defaults (matching main app)
+        if (typeof swal === 'undefined' && typeof Swal !== 'undefined') {
+            window.swal = function(opts) {
+                return Swal.fire(opts);
+            };
+        }
+    </script>
+   @*  <script src="~/js/mobile-numeric-input.js"></script> *@
+</body>
+</html>

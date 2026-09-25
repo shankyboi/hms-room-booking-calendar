@@ -1,0 +1,136 @@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@(ViewBag.Title ?? "My Health Portal")</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Health Seeker Portal">
+    <!-- Stylesheets (same CDN/local as main layout) -->
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css' />
+    <link type="text/css" rel="stylesheet" href="~/css/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="~/css/fontawesome/css/all.css">
+    <link type="text/css" rel="stylesheet" href="~/Monochrome.css" />
+    <link rel="stylesheet" href="~/components/sweetalert2/sweetalert2.min.css">
+    <script src="~/js/jquery-1.11.2.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <style>
+    /* ═══════════════════════════════════════════
+       Health Seeker Portal – Base Layout
+       ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #f0f4f8; font-family: 'Source Sans 3', sans-serif; color: #1e293b; min-height: 100vh; }
+
+    /* Top Nav */
+    .hs-nav {
+        position: sticky; top: 0; z-index: 1000;
+        background: #fff;
+        border-bottom: 2px solid #e2e8f0;
+        box-shadow: 0 2px 12px rgba(0,0,0,.07);
+        padding: 0 24px;
+        display: flex; align-items: center; justify-content: space-between;
+        height: 62px;
+    }
+    .hs-nav__brand {
+        display: flex; align-items: center; gap: 10px;
+        font-size: 18px; font-weight: 800; color: #166534; text-decoration: none;
+        letter-spacing: -.3px;
+    }
+    .hs-nav__brand img { height: 36px; border-radius: 6px; }
+    .hs-nav__brand-text span { color: #2d5f44; }
+    .hs-nav__right { display: flex; align-items: center; gap: 10px; }
+    .hs-nav__user {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 13.5px; font-weight: 600; color: #334155;
+    }
+    .hs-nav__avatar {
+        width: 36px; height: 36px; border-radius: 50%;
+        background: linear-gradient(135deg,#2d5f44,#16a34a);
+        color: #fff; font-weight: 800; font-size: 14px;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+    }
+    .hs-nav__btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 7px 15px; border-radius: 8px; font-size: 13px; font-weight: 600;
+        text-decoration: none; border: none; cursor: pointer;
+        transition: background .15s, transform .1s;
+    }
+    .hs-nav__btn:hover { transform: translateY(-1px); text-decoration: none; }
+    .hs-nav__btn--primary { background: #2d5f44; color: #fff; }
+    .hs-nav__btn--primary:hover { background: #166534; color: #fff; }
+    .hs-nav__btn--outline { background: #f0fdf4; color: #2d5f44; border: 1.5px solid #bbf7d0; }
+    .hs-nav__btn--outline:hover { background: #dcfce7; color: #166534; }
+    .hs-nav__btn--ghost { background: transparent; color: #64748b; border: 1.5px solid #e2e8f0; }
+    .hs-nav__btn--ghost:hover { background: #f8fafc; color: #334155; }
+
+    /* Main content wrapper */
+    .hs-main { max-width: 1200px; margin: 0 auto; padding: 28px 20px 60px; }
+
+    /* Footer */
+    .hs-footer {
+        text-align: center; padding: 20px;
+        font-size: 12px; color: #94a3b8;
+        border-top: 1px solid #e2e8f0; background: #fff;
+    }
+    </style>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+
+<!-- ── Top Navigation ── -->
+<nav class="hs-nav">
+    <a class="hs-nav__brand" href="@Url.Action("Index","PatientDashboard")">
+        @{
+            var logo = Context.Session.GetString("NalamVazhacloudpath");
+        }
+        <i class="fa fa-heartbeat" style="font-size:22px;color:#2d5f44;"></i>
+        <span class="hs-nav__brand-text">Health <span>Seeker</span> Portal</span>
+    </a>
+
+    <div class="hs-nav__right">
+        <!-- New IPD Booking -->
+        <a href="@Url.Action("Add_IPD_Application_Form","IPDApplicationForm")" class="hs-nav__btn hs-nav__btn--primary">
+            <i class="fa fa-plus-circle"></i> New IPD Booking
+        </a>
+        <!-- Profile -->
+        <a href="@Url.Action("Update_Patient_Profile","PatientProfile")?PatientProfileid=@Context.Session.GetString("NalamVazhaloginUserID")" class="hs-nav__btn hs-nav__btn--outline">
+            <i class="fa fa-user-circle"></i> My Profile
+        </a>
+        <!-- Logout -->
+        <a href="@Url.Action("Logout","users")" class="hs-nav__btn hs-nav__btn--ghost">
+            <i class="fa fa-sign-out"></i> Logout
+        </a>
+
+        <div class="hs-nav__user">
+            <div class="hs-nav__avatar">
+                @{
+                    var uname = Context.Session.GetString("NalamVazhausername") ?? "HS";
+                    var initials = uname.Length >= 2 ? uname.Substring(0,2).ToUpper() : uname.ToUpper();
+                }
+                @initials
+            </div>
+            <span>@uname</span>
+        </div>
+    </div>
+</nav>
+
+<!-- ── Page Content ── -->
+<main class="hs-main">
+    @RenderBody()
+</main>
+
+<!-- ── Footer ── -->
+<footer class="hs-footer">
+    &copy; @DateTime.Now.Year &nbsp;·&nbsp; NalamVazha Health Kendra &nbsp;·&nbsp; Your Health Journey, Simplified.
+</footer>
+
+<script src="~/components/sweetalert2/sweetalert2.min.js"></script>
+@RenderSection("Scripts", required: false)
+   @*  <script src="~/js/mobile-numeric-input.js"></script> *@
+</body>
+</html>

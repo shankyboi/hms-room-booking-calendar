@@ -1,0 +1,1853 @@
+<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 02/06/2026 11:14:15 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			 @using Admin;
+			@model NalamVazha.Models.RoomModel
+@{
+	ViewData["Title"] = @Resource.roomlist;
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="mobileHeader">
+	<!--form_card_header-->
+	<div class="row">
+		<div class="col-sm-12 col-xs-12">
+			<h3 class="formHdr">@Resource.roomlist</h3>
+		</div>
+	</div>
+</div><!--form_card_header-->
+@if (TempData["message"] != null)
+{
+	<div class="row">
+		<div class="col-sm-12 col-xs-12">
+			<div class="alert alert-success alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+				</button>
+				Info :  @TempData["message"]
+			</div>
+		</div>
+	</div>
+}
+<div class="row">
+	<div class="col-sm-2 col-xs-12 p-2">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+				<select name="tenantid" id="tenantid" class="form-control">
+				</select>
+				<i class="form-group__bar"></i>
+			</div>
+
+			<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+
+
+
+	<div class="col-sm-2 col-xs-12 p-2 block_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="block">@Resource.room_block</label>
+				<select name="block" id="block" class="form-control  "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.block)
+			<div id="block-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+	<div class="col-sm-2 col-xs-12 p-2 building_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="building">@Resource.room_building</label>
+				<select name="building" id="building" class="form-control  "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.building)
+			<div id="building-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+	<div class="col-sm-2 col-xs-12 p-2 floor_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="floor">@Resource.room_floor</label>
+				<select name="floor" id="floor" class="form-control  "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.floor)
+			<div id="floor-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+	<div class="col-sm-2 col-xs-12 p-2 roomtype_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="roomtype">@Resource.room_roomtype</label>
+				<select name="roomtype" id="roomtype" class="form-control  "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.roomtype)
+			<div id="roomtype-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+	<div class="col-sm-2 col-xs-12 p-2 nextdaycheckin_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="nextdaycheckin">@Resource.room_nextdaycheckin</label>
+				<select name="nextdaycheckin" id="nextdaycheckin" class="form-control  "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.nextdaycheckin)
+			<div id="nextdaycheckin-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+	<div class="col-sm-2 col-xs-12 p-2 nextdaycheckout_craftmyapp_container">
+		<div>
+			<div class="form-group form-group--float-above my-3">
+				<label for="nextdaycheckout">@Resource.room_nextdaycheckout</label>
+				<select name="nextdaycheckout" id="nextdaycheckout" class="form-control  "></select>
+
+			</div>
+			@Html.ValidationMessageFor(model => model.nextdaycheckout)
+			<div id="nextdaycheckout-error" class="help-block" style="display: none" role="alert"></div>
+		</div>
+	</div>
+	<div class="col-sm-2 p-2">
+
+		<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+
+	</div>
+</div>
+
+
+<style>
+/* ══════════════════════════════════════════════════
+   Room List – Gallery-style product cards
+   ══════════════════════════════════════════════════ */
+.rlc-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+	gap: 24px;
+	padding: 8px 0;
+}
+
+.rlc-card {
+	background: #fff;
+	border-radius: 14px;
+	overflow: hidden;
+	border: 1px solid #e5e7eb;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+	transition: transform 0.2s, box-shadow 0.2s;
+	display: flex;
+	flex-direction: column;
+}
+
+.rlc-card:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+/* ── Image section ── */
+.rlc-card__img-wrap {
+	position: relative;
+	width: 100%;
+	aspect-ratio: 16 / 10;
+	background: #f1f5f9;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.rlc-card__img-wrap img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.35s;
+}
+
+.rlc-card:hover .rlc-card__img-wrap img {
+	transform: scale(1.05);
+}
+
+.rlc-card__no-img {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 100%;
+	color: #cbd5e1;
+	font-size: 48px;
+	background:var(--btnprimary) !important;
+}
+
+/* Image count badge */
+.rlc-card__img-count {
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
+	background: rgba(0,0,0,0.55);
+	color: #fff;
+	font-size: 11px;
+	font-weight: 600;
+	padding: 3px 10px;
+	border-radius: 12px;
+	backdrop-filter: blur(4px);
+}
+
+/* ── Card body ── */
+.rlc-card__body {
+	padding: 16px 18px 14px;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.rlc-card__header {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	margin-bottom: 8px;
+}
+
+.rlc-card__title {
+	font-size: 16px;
+	font-weight: 700;
+	color: #1e293b;
+	margin: 0;
+	line-height: 1.3;
+}
+
+.rlc-card__subtitle {
+	font-size: 12px;
+	color: #64748b;
+	margin-top: 2px;
+}
+
+.rlc-card__price {
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--btnprimary, #2d5f44);
+	white-space: nowrap;
+	margin-left: 12px;
+}
+
+.rlc-card__price small {
+	font-size: 10px;
+	font-weight: 400;
+	color: #94a3b8;
+	display: block;
+	text-align: right;
+}
+
+/* ── Status badges ── */
+.rlc-card__badges {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	margin-bottom: 12px;
+}
+
+.rlc-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 3px 10px;
+	border-radius: 20px;
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.rlc-badge--occupancy   { background: #e8f5e9; color: #2e7d32; }
+.rlc-badge--maintenance { background: #fff3e0; color: #e65100; }
+.rlc-badge--housekeeping { background: #e3f2fd; color: #1565c0; }
+.rlc-badge--housekeeping-clean { background: #bbf7d0; color: #166534; border: 1px solid #86efac; }
+.rlc-badge--housekeeping-requires-cleaning { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+/* Table: housekeeping status badges */
+.room-status-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+.room-status--clean { background: #bbf7d0; color: #166534; border: 1px solid #86efac; }
+.room-status--requires-cleaning { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+
+/* ── Detail rows ── */
+.rlc-card__details {
+	border-top: 1px solid #f1f5f9;
+	padding-top: 10px;
+	margin-top: auto;
+	display:flex;
+	flex-wrap:wrap;
+}
+
+.rlc-detail-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 4px 0;
+	font-size: 12px;
+	color: #475569;
+	width:50%;
+}
+
+.rlc-detail-row i {
+	font-size: 13px;
+	width: 18px;
+	text-align: center;
+	color: #94a3b8;
+}
+
+.rlc-detail-row a {
+	color: var(--btnprimary, #2d5f44);
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.rlc-detail-row a:hover {
+	text-decoration: underline;
+}
+
+/* ── Card action menu ── */
+.rlc-card__actions {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 2;
+}
+
+.rlc-card__actions .btn-icon-toggle {
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: rgba(255,255,255,0.85);
+	backdrop-filter: blur(4px);
+	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #334155;
+	font-size: 18px;
+	cursor: pointer;
+	box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+	transition: background 0.2s;
+}
+
+.rlc-card__actions .btn-icon-toggle:hover {
+	background: #fff;
+}
+
+.rlc-card__actions .dropdown-menu {
+	font-size: 13px;
+	min-width: 140px;
+	border-radius: 8px;
+	box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+}
+
+/* ── Responsive ── */
+@@media (max-width: 767px) {
+	.rlc-grid {
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+}
+</style>
+
+<div class="card tab-card">
+	<div class="card-head" id="nav-tabs-room">
+		<ul class="nav nav-tabs" data-toggle="tabs">
+			<li class="active cma_fill_tab"><a href="#cma_card_tab"><i class="fa fa-address-card"></i></a></li>
+			<li class="cma_fill_tab"><a href="#cma_table_tab"><i class="fa fa-table"></i></a></li>
+		</ul>
+	</div>
+	<!--end .card-head -->
+	<div class="card-body tab-content pt-0">
+
+		<div class="tab-pane active" id="cma_card_tab">
+			<div class="dataTables_wrapper dicover-engae-wrap" style="min-height:0px">
+
+				<div class="dataTables__top" id="cma_card_tab_action_container">
+
+					<div class="dataTables_buttons actions" id="cma_card_tab_action_container_action_btn">
+					</div>
+				</div>
+			</div>
+			<div class="rlc-grid" id="RoomContainer">
+			</div>
+		</div>
+		<!--end #cma_card_tab -->
+
+		<div class="tab-pane" id="cma_table_tab">
+
+			<div class="row automaton_table">
+				<div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+						<table id="tblRoom" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+							<thead class="thead-default">
+								<tr>
+
+									<th>@Resource.room_roomcode</th>
+									<th>@Resource.room_block</th>
+									<th>@Resource.room_building</th>
+									<th>@Resource.room_floor</th>
+									<th>@Resource.room_roomtype</th>
+									<th>@Resource.room_costperday</th>
+									<th>@Resource.room_roomgroup</th>
+									<th>@Resource.room_roomnumber</th>
+									<th>@Resource.room_roomimage</th>
+									<th>@Resource.room_nextdaycheckin</th>
+									<th>@Resource.room_nextdaycheckout</th>
+
+									<th class="all">Action</th>
+
+
+								</tr>
+							</thead>
+							<tbody></tbody>
+
+						</table>
+					</div>
+				</div>
+			</div>
+			<!--end #cma_table_tab -->
+
+		</div>
+		<!--end .card-body -->
+	</div>
+	<!--end .tab-card -->
+
+
+	<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+	<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+
+	<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+
+
+	<script type="text/javascript">
+			var arr_selected_for_verification = [];
+		 function sortRoomDataByCreatedOrder(data)
+		 {
+			if (!$.isArray(data)) return data;
+
+			return data.sort(function (a, b) {
+				var ac = (a.roomcode || '').toString();
+				var bc = (b.roomcode || '').toString();
+				var codeCompare = ac.localeCompare(bc, undefined, { numeric: true, sensitivity: 'base' });
+
+				if (codeCompare !== 0) {
+					return codeCompare;
+				}
+
+				var ad = new Date(a.createddate || 0).getTime();
+				var bd = new Date(b.createddate || 0).getTime();
+
+				return ad - bd;
+			});
+		 }
+
+		 function fill_Room()
+		 {
+
+			 var sendFilterData = {
+																	"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+																	"block":$("#block").val(),
+		"building":$("#building").val(),
+		"floor":$("#floor").val(),
+		"roomtype":$("#roomtype").val(),
+		"nextdaycheckin":$("#nextdaycheckin").val(),
+		"nextdaycheckout":$("#nextdaycheckout").val(),
+
+																}
+		var Roomdata;
+			 $.ajax({
+		type: "GET",
+		url: "@Url.Action("get_Room_List", "Room")",
+			data: sendFilterData,
+			contentType: "application/json; charset=utf-8",
+			 dataType: "Json",
+			 async: false,
+			success: function(data) {
+			var resultSet = sortRoomDataByCreatedOrder(data);
+			Roomdata = resultSet;
+		if (Roomdata.length > 0)
+		{
+		$("#RoomContainer").empty()
+		}
+		else
+		{
+		$("#RoomContainer").empty()
+		$("#RoomContainer").append('<div class="col-md-4 col-sm-6 col-xs-12">No Data</div>'); return;
+		}
+			 $.each(resultSet, function(key, obj) {
+
+		/* ── Colorbox gallery binding ── */
+		$('body').on('click', 'a.img' + obj.roomid + '', function(e) {
+			e.preventDefault();
+			$('.img' + obj.roomid + '').colorbox({rel: '.img' + obj.roomid, width: "90%", height: "80%" });
+			$.colorbox({open: true });
+		});
+
+		/* ── Parse images ── */
+		var imageUrls = [];
+		var firstImgUrl = '';
+		if ((obj.roomimage ? obj.roomimage : "") !== "") {
+			var uploaded_roomimage = obj.roomimage.split('|');
+			for (var i = 0; i < uploaded_roomimage.length; i++) {
+				if (uploaded_roomimage[i] !== "") {
+					var fp = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_roomimage[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+					imageUrls.push(fp);
+				}
+			}
+			if (imageUrls.length > 0) firstImgUrl = imageUrls[0];
+		}
+
+		/* ── Image section HTML ── */
+		var imgHtml = '';
+		if (firstImgUrl) {
+			imgHtml = '<img src="' + firstImgUrl + '" alt="Room" />';
+			if (imageUrls.length > 1) {
+				imgHtml += '<span class="rlc-card__img-count"><i class="fa fa-images"></i> ' + imageUrls.length + '</span>';
+			}
+		} else {
+			imgHtml = '<div class="rlc-card__no-img"><i class="fa fa-image"></i></div>';
+		}
+
+		/* Hidden colorbox links for multi-image gallery */
+		var cbLinks = '';
+		for (var ci = 0; ci < imageUrls.length; ci++) {
+			cbLinks += '<a href="' + imageUrls[ci] + '" class="img' + obj.roomid + '" style="display:none;"></a>';
+		}
+
+		/* ── Action menu ── */
+		var Actions = getAuthoController("Room");
+		var actionMenuHtml = '';
+		if (Actions != undefined) {
+			var hasValidActions = false;
+			var menuItems = '';
+			for (var index = 0; index < Actions.length; ++index) {
+				var entry = Actions[index];
+				if (entry.viewname != "bulkdelete" && entry.viewname != "compare" && entry.viewname != "bulkaction" && entry.viewname != "upload" && entry.viewname != "versionhistory" && entry.viewname != "list" && entry.viewname != "list_verify_approved" && entry.viewname != "list_verify" && entry.viewname != "post" && entry.viewname != "getall" && entry.viewname != "get" && entry.viewname != "create" && entry.viewname != "check_user" && entry.viewname != "change_password") {
+					hasValidActions = true;
+					var URL = "@Url.Action("entry.viewname", "Room")?Roomid=" + obj.roomid;
+					URL = URL.replace("entry.viewname", entry.actionmethodname);
+					if (entry.viewname == "delete") {
+						menuItems += '<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">' + entry.actiondisplayname + '</a>';
+					} else {
+						menuItems += '<a href="' + URL + '" class="dropdown-item">' + entry.actiondisplayname + '</a>';
+					}
+				}
+			}
+			if (hasValidActions) {
+				actionMenuHtml = '<div class="rlc-card__actions"><div class="btn-group">' +
+					'<a href="#" class="btn-icon-toggle dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>' +
+					'<div class="dropdown-menu dropdown-menu-right">' + menuItems + '</div>' +
+					'</div></div>';
+			}
+		}
+
+		/* ── Detail links ── */
+		var BlockDetailAction = getAutho('Block','detail');
+		var BuildingDetailAction = getAutho('Building','detail');
+		var FloorDetailAction = getAutho('Floor','detail');
+		var RoomTypeDetailAction = getAutho('RoomType','detail');
+		var blockDetailUrl = (BlockDetailAction && obj.block) ? ("@Url.Action("Actions_.actionmethodname", "Block")?Blockid=" + obj.block).replace("Actions_.actionmethodname", BlockDetailAction.actionmethodname) : '';
+		var buildingDetailUrl = (BuildingDetailAction && obj.building) ? ("@Url.Action("Actions_.actionmethodname", "Building")?Buildingid=" + obj.building).replace("Actions_.actionmethodname", BuildingDetailAction.actionmethodname) : '';
+		var floorDetailUrl = (FloorDetailAction && obj.floor) ? ("@Url.Action("Actions_.actionmethodname", "Floor")?Floorid=" + obj.floor).replace("Actions_.actionmethodname", FloorDetailAction.actionmethodname) : '';
+		var roomtypeDetailUrl = (RoomTypeDetailAction && obj.roomtype) ? ("@Url.Action("Actions_.actionmethodname", "RoomType")?RoomTypeid=" + obj.roomtype).replace("Actions_.actionmethodname", RoomTypeDetailAction.actionmethodname) : '';
+		var blockDisplay = (obj.block_master && blockDetailUrl) ? '<a href="' + blockDetailUrl + '">' + obj.block_master + '</a>' : (obj.block_master || '-');
+		var buildingDisplay = (obj.building_master && buildingDetailUrl) ? '<a href="' + buildingDetailUrl + '">' + obj.building_master + '</a>' : (obj.building_master || '-');
+		var floorDisplay = (obj.floor_master && floorDetailUrl) ? '<a href="' + floorDetailUrl + '">' + obj.floor_master + '</a>' : (obj.floor_master || '-');
+		var roomtypeDisplay = (obj.roomtype_master && roomtypeDetailUrl) ? '<a href="' + roomtypeDetailUrl + '">' + obj.roomtype_master + '</a>' : (obj.roomtype_master || '-');
+
+		 let userRole = "@Context.Session.GetString("NalamVazhauserrole")";
+
+		 
+		/* ── Price / deposit ── */
+		var priceHtml = '';
+		if (obj.bookingdeposit != null && obj.bookingdeposit !== '') {
+			if (obj.deposittype === 'Variable') {
+				priceHtml = '<div class="rlc-card__price"><i class="fa fa-percent"></i> ' + parseFloat(obj.bookingdeposit).toLocaleString('en-IN') + '%<small>Deposit</small></div>';
+			} else {
+				priceHtml = '<div class="rlc-card__price"><i class="fa fa-rupee-sign"></i> ' + parseFloat(obj.bookingdeposit).toLocaleString('en-IN') + '<small>Deposit</small></div>';
+			}
+		}
+
+		/* ══════════ BUILD CARD ══════════ */
+		var card =
+			'<div class="rlc-card">' +
+				/* Image */
+				'<div class="rlc-card__img-wrap" data-roomid="' + obj.roomid + '">' +
+					imgHtml +
+					actionMenuHtml +
+				'</div>' +
+				cbLinks +
+				/* Body */
+				'<div class="rlc-card__body">' +
+					'<div class="rlc-card__header">' +
+						'<div>' +
+							'<h4 class="rlc-card__title">' + (obj.roomnumber || '-') + '</h4>' +
+							'<div class="rlc-card__subtitle">' + (obj.roomcode || '') + (obj.roomtype_master ? ' &middot; ' + obj.roomtype_master : '') + '</div>' +
+						'</div>' +
+						priceHtml +
+					'</div>' +
+					
+					'<div class="rlc-card__details">' +
+						'<div class="rlc-detail-row"><i class="fa fa-building"></i> ' + blockDisplay + '</div>' +
+						'<div class="rlc-detail-row"><i class="fa fa-city"></i> ' + buildingDisplay + '</div>' +
+						'<div class="rlc-detail-row"><i class="fa fa-layer-group"></i> ' + floorDisplay + '</div>' +
+						'<div class="rlc-detail-row"><i class="fa fa-bed"></i> ' + roomtypeDisplay + '</div>' +
+					'</div>' +
+				'</div>' +
+			'</div>';
+
+		$("#RoomContainer").append(card);
+
+			});
+			},
+			error: function () {
+		$("#RoomContainer").empty()
+			$("#RoomContainer").append('No Data');
+			}
+			});
+
+
+
+			var table=$("#tblRoom").DataTable({
+		columnDefs: [{
+			 targets: -1,
+			 title: '<i class="fa fa-pencil fa-lg"></i>'
+		  }],
+				destroy:true,
+			"orderMulti": false,
+		"order": [],
+		"aaSorting": [],
+			autoWidth: !1,responsive:!0,
+			lengthMenu: [
+			[15, 30, 45, -1],
+			["15 Rows", "30 Rows", "45 Rows", "Everything"]
+			],
+			language: {
+			searchPlaceholder: "Search for records..."
+			},
+			 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+			dom: "Bfrtip",
+			   sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+			buttons: [{
+			extend: "excelHtml5",
+			title: "List Of Room Data"
+			}, {
+			extend: "csvHtml5",
+			title: "List Of Room Data"
+			}, {
+			extend: "print",
+			title: "List Of Room Data"
+			}],
+		 initComplete: function(a, b) {
+
+				 $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+
+				if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+			 $(this).closest(".dataTables_wrapper").find(".dataTables_length").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			  `);
+
+				 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+					$("#cma_card_tab_action_container").prepend(`
+						<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+					`);
+				}
+		 }
+
+		var Actions=getAutho("Room","create")
+				if(Actions != undefined){
+					var create_URL = "@Url.Action("entry.viewname", "Room")"
+					create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+
+		if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+					  $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+
+
+				<div class="dataTables_buttons actions">
+				<div class="input-group prefix">
+									<span class="input-group-addon">
+									<i class="material-icons">search</i>
+									</span>
+									<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+								</div>
+				  <div class="dropdown actions__item cma_top_icon">
+					<i data-toggle="dropdown" class="material-icons">share</i>
+					<ul class="dropdown-menu dropdown-menu-right">
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+					</ul>
+				  </div>
+				  <div class="dropdown actions__item cma_top_icon">
+											<i data-toggle="dropdown" class="material-icons">settings</i>
+											<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+											<li>
+																		<label> @Resource.room_roomcode
+		 <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_block
+		 <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_building
+		 <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_floor
+		 <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_roomtype
+		 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																	  </li>
+			<li><label> @Resource.room_costperday
+		 <input type="checkbox" class="colvis_switch" data-column="5" checked /></label></li>
+		<li><label> @Resource.room_roomgroup
+		 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label></li>
+		<li><label> @Resource.room_roomnumber
+		 <input type="checkbox" class="colvis_switch" data-column="7" checked /></label></li>
+		<li><label> @Resource.room_roomimage
+		 <input type="checkbox" class="colvis_switch" data-column="8" checked /></label></li>
+		<li><label> @Resource.room_nextdaycheckin
+		 <input type="checkbox" class="colvis_switch" data-column="9" checked /></label></li>
+		<li><label> @Resource.room_nextdaycheckout
+		 <input type="checkbox" class="colvis_switch" data-column="10" checked /></label></li>
+
+											</ul>
+											</div>
+				 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+				</div>
+			  `.replace("create_URL", create_URL))
+		}
+
+				$("#cma_card_tab_action_container .card-lst").remove();
+				$("#cma_card_tab_action_container_action_btn").empty()
+				$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+
+
+
+					if ($(this).hasClass('make-active')) {
+				$('tbody', $(this)).children('tr').first().addClass('active-row');
+				setTimeout(() => {
+				  $('.active-row td:visible:last').addClass('last-active-td');
+				}, 200);
+			  }
+			  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+				table.search(this.value).draw();
+			  });
+				}else{
+		if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+					$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+
+				<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+									<span class="input-group-addon">
+									<i class="material-icons">search</i>
+									</span>
+									<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+								</div>
+				  <div class="dropdown actions__item cma_top_icon">
+					<i data-toggle="dropdown" class="material-icons">share</i>
+					<ul class="dropdown-menu dropdown-menu-right">
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+					  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+					</ul>
+				  </div>
+				 <div class="dropdown actions__item cma_top_icon">
+											<i data-toggle="dropdown" class="material-icons">settings</i>
+											<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+											<li>
+																		<label> @Resource.room_roomcode
+		 <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_block
+		 <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_building
+		 <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_floor
+		 <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_roomtype
+		 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_bookingdeposit
+		 <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_roomnumber
+		 <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_roomimage
+		 <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+																	  </li>
+		 
+		<li>
+																		<label> @Resource.room_nextdaycheckin
+		 <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+																	  </li>
+		<li>
+																		<label> @Resource.room_nextdaycheckout
+		 <input type="checkbox" class="colvis_switch" data-column="12" checked /></label>
+																	  </li>
+
+											</ul>
+											</div>
+				</div>
+			  `)
+		}
+		if ($(this).hasClass('make-active')) {
+				$('tbody', $(this)).children('tr').first().addClass('active-row');
+				setTimeout(() => {
+				  $('.active-row td:visible:last').addClass('last-active-td');
+				}, 200);
+			  }
+			  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+				table.search(this.value).draw();
+			  });
+
+				}
+
+
+
+
+
+			}
+			  ,columns: [
+
+				{data: 'roomcode'},
+		{data: 'block_master',
+		mRender: function (data, type, row) {
+		var Actions_=getAutho('Block','detail')
+		 if(row["block_master"]==null) {
+		 return '-'
+		}else {
+
+		if(Actions_ !=  undefined)
+		{
+		var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Block")?Blockid=" + row['block']
+		DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+		return '<a  href="' + DETAIL_URL  + '">'+ row["block_master"]+ '</a>'
+		}else {
+
+		return row['block_master']
+		}
+		}
+		}},
+		{data: 'building_master',
+		mRender: function (data, type, row) {
+		var Actions_=getAutho('Building','detail')
+		 if(row["building_master"]==null) {
+		 return '-'
+		}else {
+
+		if(Actions_ !=  undefined)
+		{
+		var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Building")?Buildingid=" + row['building']
+		DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+		return '<a  href="' + DETAIL_URL  + '">'+ row["building_master"]+ '</a>'
+		}else {
+
+		return row['building_master']
+		}
+		}
+		}},
+		{data: 'floor_master',
+		mRender: function (data, type, row) {
+		var Actions_=getAutho('Floor','detail')
+		 if(row["floor_master"]==null) {
+		 return '-'
+		}else {
+
+		if(Actions_ !=  undefined)
+		{
+		var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Floor")?Floorid=" + row['floor']
+		DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+		return '<a  href="' + DETAIL_URL  + '">'+ row["floor_master"]+ '</a>'
+		}else {
+
+		return row['floor_master']
+		}
+		}
+		}},
+		{data: 'roomtype_master',
+		mRender: function (data, type, row) {
+		var Actions_=getAutho('RoomType','detail')
+		 if(row["roomtype_master"]==null) {
+		 return '-'
+		}else {
+
+		if(Actions_ !=  undefined)
+		{
+		var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "RoomType")?RoomTypeid=" + row['roomtype']
+		DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+		return '<a  href="' + DETAIL_URL  + '">'+ row["roomtype_master"]+ '</a>'
+		}else {
+
+		return row['roomtype_master']
+		}
+		}
+		}},
+			{data: 'costperday',mRender: function (data, type, row) {
+		var costPerDay = row["costperday"];
+		var numericCost = parseFloat((costPerDay == null ? '' : costPerDay.toString()).replace(/[^0-9.-]/g, ''));
+
+		if (type === 'sort' || type === 'type') {
+			return isNaN(numericCost) ? Number.NEGATIVE_INFINITY : numericCost;
+		}
+
+		if (costPerDay == null || costPerDay === '') {
+			return '-';
+		}
+
+		return '&#8377;' + costPerDay;
+		}},
+		{data: 'roomgroup_master',
+		mRender: function (data, type, row) {
+		var Actions_=getAutho('RoomGroup','detail')
+		 if(row["roomgroup_master"]==null) {
+		 return '-'
+		}else {
+		if(Actions_ !=  undefined)
+		{
+		var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "RoomGroup")?RoomGroupid=" + row['roomgroup']
+		DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+		return '<a  href="' + DETAIL_URL  + '">'+ row["roomgroup_master"]+ '</a>'
+		}else {
+		return row['roomgroup_master']
+		}
+		}
+		}},
+		{data: 'roomnumber'},
+		{data: 'roomimage',mRender: function (data, type, row) {if(row["roomimage"]==null) {
+		 return '-'
+		}else {
+
+		var uploaded_roomimage = row["roomimage"].split('|');
+		var iterate = 1;
+													var collect_files="";
+													var random_num=Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+													for (var i = 0; i < uploaded_roomimage.length; i++) {
+
+
+														if (uploaded_roomimage[i] != "") {
+		var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_roomimage[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+		if(iterate==1)
+		collect_files+='<a class="img'+random_num+'" href=' + filepath + '><img  class="disp_image '+random_num+'" style="width: 75px; height: 75px" src="' + filepath + '"; alt="img"></a>'
+		else
+		collect_files+='<a class="img'+random_num+'" href=' + filepath + '><img class="disp_image '+random_num+'" style="display:none;width: 75px; height: 75px" src="' + filepath + '"; alt="img"></a>'
+		iterate = iterate + 1;
+														}
+
+
+													}
+		$('body').on('click', 'a.img' + random_num + '', function(e) {
+		e.preventDefault();
+		$('.img' + random_num + '').colorbox({rel: $(this).attr('href'), width: "90%", height: "80%" });
+		$.colorbox({open: true });
+		});
+		return collect_files;  }}},
+		{data: 'nextdaycheckin'},
+		{data: 'nextdaycheckout'},
+
+				{
+							"sName": "roomid",
+							"bSearchable": false,
+							"bSortable": false,
+							data: 'roomid', "className": "dt-center",
+							mRender: function(data, type, row) {
+							var Actions=getAuthoController("Room")
+							var appendMessage='';
+							if(Actions !=undefined)
+							{
+							for (var index = 0; index < Actions.length; ++index) {
+							var entry = Actions[index];
+
+							if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+							var URL = "@Url.Action("entry.viewname", "Room")?Roomid=" + row["roomid"]
+							URL = URL.replace("entry.viewname", entry.actionmethodname);
+
+							if(entry.viewname=="delete")
+							{
+
+								appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>'
+
+
+							}
+
+							else if(entry.viewname=="detail")
+							{
+								var DETAIL_URL = "@Url.Action("entry.actionmethodname", "Room")?Roomid=" + row["roomid"]
+								DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+								appendMessage+='<a href="' + DETAIL_URL + '" class="dropdown-item">View</a>'
+		 }
+							else
+							{
+
+								appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>'
+							}
+
+							}
+
+							}
+
+							if(appendMessage =="")
+							{
+							return '-'
+
+							}
+							else
+							{
+							return '<div class="dropdown actions__item">' +
+							'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+							'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+
+
+							'</div>' +
+							'</div>'
+							}
+
+
+
+							}
+							else
+							{
+							return '-'
+
+							}
+
+
+							}
+							}
+
+			 ],
+			data:Roomdata
+			})
+
+		 $('body').on('click', '.ColVis_collection li', function(a) {
+			event.stopPropagation();
+		  });
+
+		 $('body').on('change', '.colvis_switch', function(a) {
+			var column = table.column($(this).attr('data-column'));
+			column.visible(!column.visible());
+		  });
+
+
+
+
+		  $(".dataTables_filter input[type=search]").focus(function() {
+			$(this).closest(".dataTables_filter").addClass("dataTables_filter--toggled")
+		  }), $(".dataTables_filter input[type=search]").blur(function() {
+			$(this).closest(".dataTables_filter").removeClass("dataTables_filter--toggled")
+		  })
+
+
+
+
+
+
+		}
+
+
+		$(document).ready(function () {
+
+			
+		 let userRole = "@Context.Session.GetString("NalamVazhauserrole")";
+
+		 
+		
+	 
+		 fill_Room()
+		 if(userRole =="Health Seeker"){
+			$("#nav-tabs-room").hide()
+			$("#cma_card_tab_action_container_action_btn").hide()
+			$(".automatonShowFilter").hide()
+		}
+				 $(".cma_fill_tab").click(function(){
+						fill_Room()
+				})
+				var Actions=getAutho("Room","list")
+				if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+		/* Card image click → open colorbox gallery */
+		$(document).on('click', '.rlc-card__img-wrap', function (e) {
+			if ($(e.target).closest('.rlc-card__actions').length) return; /* don't trigger on action menu click */
+			var roomid = $(this).data('roomid');
+			if (!roomid) return;
+			var $links = $(this).closest('.rlc-card').find('a.img' + roomid);
+			if ($links.length) {
+				$links.colorbox({ rel: '.img' + roomid, width: "90%", height: "80%" });
+				$links.first().colorbox({ open: true });
+			}
+		});
+
+		});
+
+		  $("body").on("click", "[data-table-action]", function(a) {
+			a.preventDefault();
+			var b = $(this).data("table-action");
+		   // console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+			if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+			  var c = $(this).closest(".card");
+			  c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+			}
+		  });
+	</script>
+	
+	<script>
+		var strroomtransfercost;
+		var strnextdaycheckin;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.nextdaycheckin != null && Model.nextdaycheckin.ToString() != "")
+		{
+			<script>
+				strnextdaycheckin = "@Model.nextdaycheckin";
+			</script>
+		}
+	}
+	<script>
+		var strnextdaycheckout;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.nextdaycheckout != null && Model.nextdaycheckout.ToString() != "")
+		{
+			<script>
+				strnextdaycheckout = "@Model.nextdaycheckout";
+			</script>
+		}
+	}
+
+	<script>
+		$(document).ready(function () {
+		$.ajax({
+		url: '@Url.Action("get_lookups_by_entity", "lookups")',
+		dataType: 'json',
+		data:{id: 'Room' },
+		success: function(data) {
+
+
+
+				$.each(data, function(index, optionDataInner) {
+
+
+													
+
+												if(optionDataInner.fieldname=="roomtransfercost"){
+									var ddltarget_roomtransfercost = "#roomtransfercost"
+									$(ddltarget_roomtransfercost).empty();
+									$(ddltarget_roomtransfercost).append("<option value=''>Choose</option>")
+									var options_roomtransfercost = optionDataInner.fielddesc.split(',');
+									options_roomtransfercost.sort(function (a, b) {
+														return a.localeCompare(b);
+									});
+									options_roomtransfercost.forEach(function(option_roomtransfercost){
+										if(strroomtransfercost== option_roomtransfercost){
+										 $(ddltarget_roomtransfercost).append('<option selected value="' + option_roomtransfercost + '">' + option_roomtransfercost+ '</option>')
+
+										 }
+										else
+										  $(ddltarget_roomtransfercost).append('<option  value="' + option_roomtransfercost + '">' + option_roomtransfercost+ '</option>')
+
+
+									})
+									 $(ddltarget_roomtransfercost).select2();
+								}
+
+													
+
+													if(optionDataInner.fieldname=="nextdaycheckin"){
+														var ddltarget_nextdaycheckin = "#nextdaycheckin"
+														$(ddltarget_nextdaycheckin).empty();
+														$(ddltarget_nextdaycheckin).append("<option value=''>Choose</option>")
+														var options_nextdaycheckin = optionDataInner.fielddesc.split(',');
+														options_nextdaycheckin.sort(function (a, b) {
+																				return a.localeCompare(b);
+															});
+														options_nextdaycheckin.forEach(function(option_nextdaycheckin){
+															if(strnextdaycheckin== option_nextdaycheckin){
+															$(ddltarget_nextdaycheckin).append('<option selected value="' + option_nextdaycheckin + '">' + option_nextdaycheckin+ '</option>')
+
+															}
+															else
+															$(ddltarget_nextdaycheckin).append('<option  value="' + option_nextdaycheckin + '">' + option_nextdaycheckin+ '</option>')
+
+														})
+
+													}
+
+													if(optionDataInner.fieldname=="nextdaycheckout"){
+														var ddltarget_nextdaycheckout = "#nextdaycheckout"
+														$(ddltarget_nextdaycheckout).empty();
+														$(ddltarget_nextdaycheckout).append("<option value=''>Choose</option>")
+														var options_nextdaycheckout = optionDataInner.fielddesc.split(',');
+														options_nextdaycheckout.sort(function (a, b) {
+																				return a.localeCompare(b);
+															});
+														options_nextdaycheckout.forEach(function(option_nextdaycheckout){
+															if(strnextdaycheckout== option_nextdaycheckout){
+															$(ddltarget_nextdaycheckout).append('<option selected value="' + option_nextdaycheckout + '">' + option_nextdaycheckout+ '</option>')
+
+															}
+															else
+															$(ddltarget_nextdaycheckout).append('<option  value="' + option_nextdaycheckout + '">' + option_nextdaycheckout+ '</option>')
+
+														})
+
+													}
+
+
+
+				});
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+		})
+
+	</script>
+
+
+	<script>
+		$(document).ready(function () {
+
+			$("#tenantid").change(function(){
+
+				fill_Room();
+
+			})
+
+
+			$("#btnFilter").click(function(){
+
+				$("#RoomContainer").empty()
+
+				fill_Room();
+			})
+
+				var Actions_=getAutho("Room","create")
+				if(Actions_ !=  undefined)
+				{
+					var create_URL = "@Url.Action("entry.viewname", "Room")"
+					create_URL = create_URL.replace("entry.viewname", Actions_.actionmethodname);
+					$(".btnCreate").attr('href',create_URL)
+					$(".btnCreate").show()
+				}
+
+
+		});
+	</script>
+
+	<script>
+
+
+		// Function to create the option elements
+		function createOptionElement(value, label, className) {
+			var option = document.createElement("option");
+			option.value = value;
+			option.textContent = label;
+			option.className = className;
+			return option;
+		}
+
+		// Function to populate the dropdown
+		function populateDropdown(data) {
+			var dropdown = document.getElementById("tenantid");
+			dropdown.innerHTML = '<option value=""> Choose </option>';
+
+			// Create a dictionary to store child options grouped by parentid
+			var groupedOptions = { };
+
+						// Filter out duplicate entries with the same businessname
+						var filteredData = [];
+						var uniqueNames = new Set();
+
+						data.forEach(function(item) {
+							if (!uniqueNames.has(item.businessname))
+							{
+								filteredData.push(item);
+								uniqueNames.add(item.businessname);
+							}
+						});
+
+						// Group child options under corresponding parent options
+						filteredData.forEach(function(item) {
+							if (!item.parentid)
+							{
+								dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+							}
+							else
+							{
+								if (!groupedOptions[item.parentid])
+								{
+									groupedOptions[item.parentid] = [];
+								}
+								groupedOptions[item.parentid].push(item);
+							}
+						});
+
+						// Add child options to their corresponding parent options
+						Object.keys(groupedOptions).forEach(function(parentid) {
+							var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+							groupedOptions[parentid].forEach(function(childOption) {
+								parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+							});
+						});
+
+						filteredData.forEach(function (item) {
+							if (!item.parentid && !groupedOptions[item.tenantid]) {
+								var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+								if(item.natureofbusiness?.indexOf("Lead") !== -1)
+								parentOption.classList.add("optionNoChildLead");
+								else
+								parentOption.classList.add("optionNoChild");
+							}
+						});
+
+						$("#tenantid").val(str_tenantid);
+						$("#tenantid").select2()
+						var space = '&nbsp;&nbsp;&nbsp;'
+						$("#tenantid").find('.optionChild').prepend(space);
+
+
+					}
+		$(document).ready(function () {
+		 if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+		 {
+		$.ajax({
+		url: '@Url.Action("get_project_tenant", "tenant")',
+		dataType: 'json',
+		data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+		success: function(data) {
+
+			populateDropdown(data);
+
+
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+		}else
+		{
+
+			$(".tenant_display").hide()
+		}
+		});
+	</script>
+
+
+
+
+	<script>
+		var strblock;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.block != null && Model.block.ToString() != "")
+		{
+			<script>
+				strblock="@Model.block"
+			</script>
+		}
+	}
+	<script>
+		function lookup_Room_block(tenantid) {
+
+		var sendFilterData = {
+			"tenantid":tenantid
+		}
+
+		$.ajax({
+		url: '@Url.Action("lookup_Room_block")',
+		dataType: 'json',
+		data: sendFilterData,
+		success: function(data) {
+
+				if (data.length > 0) {
+					data = data.filter(item => item.blockcode !== null);
+					data.sort((a, b) =>
+						String(a.blockcode).toLowerCase().localeCompare(String(b.blockcode).toLowerCase())
+					);
+				}
+			   var ddltarget_block="#block"
+				$(ddltarget_block).empty();
+
+				$(ddltarget_block).append("<option value=''>Choose</option>");
+
+
+
+
+				$.each(data, function(index, optionDataInner) {
+
+							if(strblock== optionDataInner.Blockid){
+							$(ddltarget_block).append('<option selected value="' + optionDataInner.Blockid + '">' + optionDataInner.blockcode+ ' ' + optionDataInner.blockname+ '</option>')
+
+						   }
+							else
+							$(ddltarget_block).append('<option  value="' + optionDataInner.Blockid+ '">' + optionDataInner.blockcode+ ' ' + optionDataInner.blockname+ '</option>')
+
+
+				});
+
+
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+
+		}
+	</script>
+	<script>
+		$(document).ready(function(){
+
+			lookup_Room_block(str_tenantid)
+
+
+
+		})
+
+	</script>
+
+
+	<script>
+		var strbuilding;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.building != null && Model.building.ToString() != "")
+		{
+			<script>
+				strbuilding="@Model.building"
+			</script>
+		}
+	}
+	<script>
+		function lookup_Room_building(tenantid,block) {
+
+		var sendFilterData = {
+			"tenantid":tenantid,
+		"block":block
+		}
+
+		$.ajax({
+		url: '@Url.Action("lookup_Room_building")',
+		dataType: 'json',
+		data: sendFilterData,
+		success: function(data) {
+
+				if (data.length > 0) {
+					data = data.filter(item => item.buildingcode !== null);
+					data.sort((a, b) =>
+						String(a.buildingcode).toLowerCase().localeCompare(String(b.buildingcode).toLowerCase())
+					);
+				}
+			   var ddltarget_building="#building"
+				$(ddltarget_building).empty();
+
+				$(ddltarget_building).append("<option value=''>Choose</option>");
+
+
+
+
+				$.each(data, function(index, optionDataInner) {
+
+							if(strbuilding== optionDataInner.Buildingid){
+							$(ddltarget_building).append('<option selected value="' + optionDataInner.Buildingid + '">' + optionDataInner.buildingcode+ ' ' + optionDataInner.buildingname+ '</option>')
+
+						   }
+							else
+							$(ddltarget_building).append('<option  value="' + optionDataInner.Buildingid+ '">' + optionDataInner.buildingcode+ ' ' + optionDataInner.buildingname+ '</option>')
+
+
+				});
+
+
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+
+		}
+	</script>
+	<script>
+		$(document).ready(function(){
+
+			lookup_Room_building(str_tenantid,strblock)
+			$("#block").change(function(){
+
+
+
+
+						lookup_Room_building($("#tenantid").val(),$("#block").val())
+
+
+
+
+					})
+
+
+		})
+
+	</script>
+
+
+	<script>
+		var strfloor;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.floor != null && Model.floor.ToString() != "")
+		{
+			<script>
+				strfloor="@Model.floor"
+			</script>
+		}
+	}
+	<script>
+		function lookup_Room_floor(tenantid,block,building) {
+
+		var sendFilterData = {
+			"tenantid":tenantid,
+		"block":block,
+		"building":building
+		}
+
+		$.ajax({
+		url: '@Url.Action("lookup_Room_floor")',
+		dataType: 'json',
+		data: sendFilterData,
+		success: function(data) {
+
+				if (data.length > 0) {
+					data = data.filter(item => item.floorname !== null);
+					data.sort((a, b) =>
+						String(a.floorname).toLowerCase().localeCompare(String(b.floorname).toLowerCase())
+					);
+				}
+			   var ddltarget_floor="#floor"
+				$(ddltarget_floor).empty();
+
+				$(ddltarget_floor).append("<option value=''>Choose</option>");
+
+
+
+
+				$.each(data, function(index, optionDataInner) {
+
+							if(strfloor== optionDataInner.Floorid){
+							$(ddltarget_floor).append('<option selected value="' + optionDataInner.Floorid + '">' + optionDataInner.floorname+ '</option>')
+
+						   }
+							else
+							$(ddltarget_floor).append('<option  value="' + optionDataInner.Floorid+ '">' + optionDataInner.floorname+ '</option>')
+
+
+				});
+
+
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+
+		}
+	</script>
+	<script>
+		$(document).ready(function(){
+
+			lookup_Room_floor(str_tenantid,strblock,strbuilding)
+			$("#block,#building").change(function(){
+
+
+
+
+						lookup_Room_floor($("#tenantid").val(),$("#block").val(),$("#building").val())
+
+
+
+
+					})
+
+
+		})
+
+	</script>
+
+
+	<script>
+		var strroomtype;
+	</script>
+	@if (Model != null)
+	{
+		if (Model.roomtype != null && Model.roomtype.ToString() != "")
+		{
+			<script>
+				strroomtype="@Model.roomtype"
+			</script>
+		}
+	}
+	<script>
+		function lookup_Room_roomtype(tenantid) {
+
+		var sendFilterData = {
+			"tenantid":tenantid
+		}
+
+		$.ajax({
+		url: '@Url.Action("lookup_Room_roomtype")',
+		dataType: 'json',
+		data: sendFilterData,
+		success: function(data) {
+
+				if (data.length > 0) {
+					data = data.filter(item => item.name !== null);
+					data.sort((a, b) =>
+						String(a.name).toLowerCase().localeCompare(String(b.name).toLowerCase())
+					);
+				}
+			   var ddltarget_roomtype="#roomtype"
+				$(ddltarget_roomtype).empty();
+
+				$(ddltarget_roomtype).append("<option value=''>Choose</option>");
+
+
+
+
+				$.each(data, function(index, optionDataInner) {
+
+							if(strroomtype== optionDataInner.RoomTypeid){
+							$(ddltarget_roomtype).append('<option selected value="' + optionDataInner.RoomTypeid + '">' + optionDataInner.name+ '</option>')
+
+						   }
+							else
+							$(ddltarget_roomtype).append('<option  value="' + optionDataInner.RoomTypeid+ '">' + optionDataInner.name+ '</option>')
+
+
+				});
+
+
+
+
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+		if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+		{
+		swal({
+		title: 'Failed!',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		}).then(function() {
+		window.location = "@Url.Action("AuthorizationFailed", "users")"
+		})
+		}
+		else
+		{
+		swal({
+		title: 'Contact Administrator !',
+		text: jqXHR.responseText,
+		type: 'error',
+		buttonsStyling: false,
+		confirmButtonClass: 'btn btn-primary',
+		allowOutsideClick: false,
+		allowEscapeKey: false,
+		allowEnterKey: false
+		})
+		}
+		}
+		})
+
+		}
+	</script>
+	<script>
+		$(document).ready(function(){
+
+			lookup_Room_roomtype(str_tenantid)
+
+
+
+		})
+
+	</script>
+
+	<script>
+							$(document).ready(function () {
+
+								$("#tenantid").change(function(){
+										 lookup_Room_block($("#tenantid").val())
+		lookup_Room_building($("#tenantid").val(),$("#block").val())
+		lookup_Room_floor($("#tenantid").val(),$("#block").val(),$("#building").val())
+		lookup_Room_roomtype($("#tenantid").val())
+
+								})
+
+
+							});
+	</script>

@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a5c3a;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2d7a50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1b6b42;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4ecca3;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#2d5f44;stop-opacity:0.1" />
+    </linearGradient>
+    <linearGradient id="glow1" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#7ee8b5;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#2d5f44;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bg1)"/>
+  <!-- Decorative circles -->
+  <circle cx="900" cy="200" r="300" fill="url(#accent1)" opacity="0.5"/>
+  <circle cx="150" cy="650" r="200" fill="url(#accent1)" opacity="0.3"/>
+  <circle cx="1050" cy="600" r="150" fill="url(#glow1)" opacity="0.4"/>
+  <!-- Dotted pattern -->
+  <g opacity="0.08" fill="#fff">
+    <circle cx="100" cy="100" r="3"/><circle cx="160" cy="100" r="3"/><circle cx="220" cy="100" r="3"/><circle cx="280" cy="100" r="3"/><circle cx="340" cy="100" r="3"/>
+    <circle cx="100" cy="160" r="3"/><circle cx="160" cy="160" r="3"/><circle cx="220" cy="160" r="3"/><circle cx="280" cy="160" r="3"/><circle cx="340" cy="160" r="3"/>
+    <circle cx="100" cy="220" r="3"/><circle cx="160" cy="220" r="3"/><circle cx="220" cy="220" r="3"/><circle cx="280" cy="220" r="3"/><circle cx="340" cy="220" r="3"/>
+    <circle cx="800" cy="500" r="3"/><circle cx="860" cy="500" r="3"/><circle cx="920" cy="500" r="3"/><circle cx="980" cy="500" r="3"/><circle cx="1040" cy="500" r="3"/>
+    <circle cx="800" cy="560" r="3"/><circle cx="860" cy="560" r="3"/><circle cx="920" cy="560" r="3"/><circle cx="980" cy="560" r="3"/><circle cx="1040" cy="560" r="3"/>
+    <circle cx="800" cy="620" r="3"/><circle cx="860" cy="620" r="3"/><circle cx="920" cy="620" r="3"/><circle cx="980" cy="620" r="3"/><circle cx="1040" cy="620" r="3"/>
+  </g>
+  <!-- Hospital building icon -->
+  <g transform="translate(480, 180)" opacity="0.12" fill="#fff">
+    <rect x="0" y="80" width="240" height="200" rx="8"/>
+    <rect x="80" y="0" width="80" height="280" rx="8"/>
+    <rect x="100" y="30" width="40" height="40" rx="4" fill="#1a5c3a"/>
+    <line x1="120" y1="35" x2="120" y2="65" stroke="#fff" stroke-width="4"/>
+    <line x1="105" y1="50" x2="135" y2="50" stroke="#fff" stroke-width="4"/>
+    <rect x="30" y="120" width="30" height="30" rx="3" fill="#1a5c3a"/>
+    <rect x="80" y="120" width="30" height="30" rx="3" fill="#1a5c3a"/>
+    <rect x="130" y="120" width="30" height="30" rx="3" fill="#1a5c3a"/>
+    <rect x="180" y="120" width="30" height="30" rx="3" fill="#1a5c3a"/>
+    <rect x="30" y="180" width="30" height="30" rx="3" fill="#1a5c3a"/>
+    <rect x="80" y="180" width="30" height="30" rx="3" fill="#1a5c3a"/>
+    <rect x="130" y="180" width="30" height="30" rx="3" fill="#1a5c3a"/>
+    <rect x="180" y="180" width="30" height="30" rx="3" fill="#1a5c3a"/>
+    <rect x="90" y="230" width="60" height="50" rx="4" fill="#1a5c3a"/>
+  </g>
+  <!-- Leaf decorations -->
+  <g transform="translate(100, 350)" opacity="0.1">
+    <path d="M0,60 Q30,-10 80,0 Q30,30 0,60Z" fill="#7ee8b5"/>
+    <path d="M80,0 Q50,70 0,60" fill="none" stroke="#7ee8b5" stroke-width="2"/>
+  </g>
+  <g transform="translate(950, 150) rotate(45)" opacity="0.1">
+    <path d="M0,60 Q30,-10 80,0 Q30,30 0,60Z" fill="#7ee8b5"/>
+  </g>
+  <g transform="translate(750, 500) rotate(-30)" opacity="0.08">
+    <path d="M0,80 Q40,-15 110,0 Q40,40 0,80Z" fill="#7ee8b5"/>
+  </g>
+  <!-- Heartbeat line -->
+  <polyline points="50,420 200,420 230,380 260,460 290,400 320,440 350,420 600,420" fill="none" stroke="#4ecca3" stroke-width="2.5" opacity="0.15"/>
+  <!-- Stethoscope icon outline -->
+  <g transform="translate(820, 250)" opacity="0.08" fill="none" stroke="#fff" stroke-width="5">
+    <path d="M0,0 C0,60 -30,100 -30,140 C-30,180 0,200 30,200 C60,200 90,180 90,140 C90,100 60,60 60,0"/>
+    <circle cx="30" cy="220" r="25"/>
+    <circle cx="30" cy="220" r="10" fill="#fff"/>
+  </g>
+  <!-- Waves at bottom -->
+  <path d="M0,750 Q150,720 300,740 T600,730 T900,745 T1200,725 V800 H0 Z" fill="#fff" opacity="0.04"/>
+  <path d="M0,770 Q200,745 400,760 T800,750 T1200,760 V800 H0 Z" fill="#fff" opacity="0.03"/>
+</svg>

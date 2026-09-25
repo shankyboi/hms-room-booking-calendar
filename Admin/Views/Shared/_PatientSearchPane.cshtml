@@ -1,0 +1,503 @@
+@* Common Patient Search – side pane (open from header icon). Quick search by name/mobile, results as same cards as Patient_Profile_List. *@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IConfiguration Configuration
+<div id="patientSearchPaneOverlay" class="cma-patient-search-overlay"></div>
+<div id="patientSearchPane" class="cma-patient-search-pane">
+	<div class="cma-patient-search-pane__header">
+		<h2 class="cma-patient-search-pane__title"><i class="fa fa-user-injured"></i> Patient Search</h2>
+		<button type="button" class="cma-patient-search-pane__close" id="patientSearchPaneClose" aria-label="Close"><i class="fa fa-times"></i></button>
+	</div>
+	<div class="cma-patient-search-pane__body">
+		<div class="cma-patient-search-pane__form">
+			<div class="form-group">
+				<label class="small font-weight-600">Name</label>
+				<input type="text" id="cmaPatientSearchName" class="form-control form-control-sm" placeholder="Name..." maxlength="128" />
+			</div>
+			@* <div class="form-group">
+				<label class="small font-weight-600">DOB From</label>
+				<input type="text" id="cmaPatientSearchDobFrom" class="form-control form-control-sm" placeholder="dd/mm/yyyy" autocomplete="off" />
+			</div>
+			<div class="form-group">
+				<label class="small font-weight-600">DOB To</label>
+				<input type="text" id="cmaPatientSearchDobTo" class="form-control form-control-sm" placeholder="dd/mm/yyyy" autocomplete="off" />
+			</div> *@
+			<div class="form-group">
+				<label class="small font-weight-600">Mobile</label>
+				<input type="text" id="cmaPatientSearchMobile" class="form-control form-control-sm" placeholder="Mobile..." maxlength="32" />
+			</div>
+			<div class="form-group">
+				<label class="small font-weight-600">ID Proof Type</label>
+				<input type="text" id="cmaPatientSearchIdProofType" class="form-control form-control-sm" placeholder="e.g. Aadhaar, Passport" maxlength="128" />
+			</div>
+			<div class="form-group">
+				<label class="small font-weight-600">ID Proof Number</label>
+				<input type="text" id="cmaPatientSearchIdProofNumber" class="form-control form-control-sm" placeholder="ID number" maxlength="128" />
+			</div>
+			<button type="button" id="cmaPatientSearchBtn" class="btn btn-primary btn-sm btn-block cma_primary_button">
+				<i class="fa fa-search"></i> Search
+			</button>
+		</div>
+		<div class="cma-patient-search-pane__results-wrap">
+			<div id="cmaPatientSearchResults" class="cma-patient-search-pane__results"></div>
+			<div id="cmaPatientSearchLoading" class="cma-patient-search-pane__loading" style="display:none;"><i class="fa fa-spinner fa-spin"></i> Searching...</div>
+			<div id="cmaPatientSearchEmpty" class="cma-patient-search-pane__empty text-muted small" style="display:none;">Enter criteria and click Search.</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.cma-patient-search-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0,0,0,0.35);
+		z-index: 1040;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.25s ease, visibility 0.25s ease;
+	}
+	.cma-patient-search-overlay.is-open {
+		opacity: 1;
+		visibility: visible;
+	}
+	.cma-patient-search-pane {
+		position: fixed;
+		top: 0;
+		right: 0;
+		width: 100%;
+		max-width: 420px;
+		height: 100%;
+		background: #fff;
+		z-index: 1050;
+		box-shadow: -4px 0 20px rgba(0,0,0,0.12);
+		transform: translateX(100%);
+		transition: transform 0.3s ease;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+	}
+	.cma-patient-search-pane.is-open {
+		transform: translateX(0);
+	}
+	.cma-patient-search-pane__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 14px 16px;
+		border-bottom: 1px solid #e8ecf1;
+		background: #f8fafc;
+		flex-shrink: 0;
+	}
+	.cma-patient-search-pane__title {
+		margin: 0;
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: #1e293b;
+	}
+	.cma-patient-search-pane__title i { margin-right: 8px; color: var(--btnprimary, #2d5f44); }
+	.cma-patient-search-pane__close {
+		width: 36px;
+		height: 36px;
+		border: none;
+		background: transparent;
+		color: #64748b;
+		border-radius: 6px;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background 0.2s, color 0.2s;
+	}
+	.cma-patient-search-pane__close:hover {
+		background: #e2e8f0;
+		color: #1e293b;
+	}
+	.cma-patient-search-pane__body {
+		flex: 1;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		padding: 12px;
+	}
+	.cma-patient-search-pane__form {
+		flex-shrink: 0;
+		margin-bottom: 12px;
+	}
+	.cma-patient-search-pane__form .form-group { margin-bottom: 10px; }
+	.cma-patient-search-pane__results-wrap {
+		flex: 1;
+		overflow-y: auto;
+		min-height: 120px;
+		position: relative;
+	}
+	.cma-patient-search-pane__results {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+	.cma-patient-search-pane__loading,
+	.cma-patient-search-pane__empty {
+		text-align: center;
+		padding: 24px 12px;
+	}
+	/* Same card style as Patient_Profile_List */
+	.cma-patient-search-pane__results .pp-card {
+		background: var(--cardbackground, #fff);
+		border: 1px solid var(--input-border, #e5e7eb);
+		border-radius: 12px;
+		overflow: hidden;
+		transition: box-shadow 0.2s;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		font-family: var(--app-font, 'Roboto', 'Segoe UI', sans-serif);
+	}
+	.cma-patient-search-pane__results .pp-card:hover {
+		box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+	}
+	.cma-patient-search-pane__results .pp-card__actions {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		z-index: 5;
+	}
+	.cma-patient-search-pane__results .pp-card__actions .btn-icon-toggle {
+		background: rgba(255,255,255,0.9);
+		border-radius: 50%;
+		width: 32px;
+		height: 32px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 14px;
+		color: #666;
+		border: 1px solid #e5e7eb;
+		text-decoration: none;
+	}
+	.cma-patient-search-pane__results .pp-card__header {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 1rem 1rem 0.75rem;
+		border-bottom: 1px solid #f0f0f0;
+	}
+	.cma-patient-search-pane__results .pp-card__avatar {
+		width: 52px;
+		height: 52px;
+		min-width: 52px;
+		border-radius: 50%;
+		overflow: hidden;
+		background: linear-gradient(135deg, var(--btnprimary, #2d5f44), #198754);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+	.cma-patient-search-pane__results .pp-card__avatar img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.cma-patient-search-pane__results .pp-card__initials {
+		color: #fff;
+		font-weight: 700;
+		font-size: 14px;
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 100%;
+	}
+	.cma-patient-search-pane__results .pp-card__name-block { min-width: 0; flex: 1; }
+	.cma-patient-search-pane__results .pp-card__name {
+		font-size: 16px;
+		font-weight: 700;
+		color: #1e293b;
+		margin: 0;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.cma-patient-search-pane__results .pp-card__regid {
+		font-size: 12px;
+		color: #64748b;
+		display: inline-flex;
+		align-items: center;
+		margin-top: 3px;
+		background: #f1f5f9;
+		padding: 1px 7px;
+		border-radius: 4px;
+		font-weight: 500;
+	}
+	.cma-patient-search-pane__results .pp-card__regid i { margin-right: 4px; }
+	.cma-patient-search-pane__results .pp-card__badges { display: flex; gap: 0.35rem; margin-top: 5px; flex-wrap: wrap; }
+	.cma-patient-search-pane__results .pp-card__badge {
+		font-size: 12px;
+		font-weight: 600;
+		padding: 2px 8px;
+		border-radius: 4px;
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+	}
+	.cma-patient-search-pane__results .pp-card__badge--danger { background: #fee2e2; color: #b91c1c; }
+	.cma-patient-search-pane__results .pp-card__badge--dark { background: #e2e8f0; color: #334155; }
+	.cma-patient-search-pane__results .pp-card__body { padding: 0.75rem 1rem; flex: 1; }
+	.cma-patient-search-pane__results .pp-card__info-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.55rem 0.75rem;
+	}
+	.cma-patient-search-pane__results .pp-card__info {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.45rem;
+		font-size: 13px;
+		color: #334155;
+		min-width: 0;
+		line-height: 1.45;
+	}
+	.cma-patient-search-pane__results .pp-card__info i {
+		color: var(--btnprimary, #2d5f44);
+		font-size: 0.85em;
+		margin-top: 3px;
+		min-width: 15px;
+		opacity: 0.75;
+	}
+	.cma-patient-search-pane__results .pp-card__info a {
+		color: var(--btnprimary, #2d5f44);
+		text-decoration: none;
+		font-weight: 500;
+	}
+	.cma-patient-search-pane__results .pp-card__footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.6rem 1rem;
+		border-top: 1px solid #f0f0f0;
+		background: #f8fafc;
+		gap: 0.5rem;
+	}
+	.cma-patient-search-pane__results .pp-card__nationality {
+		font-size: 12px;
+		color: #64748b;
+		display: flex;
+		align-items: center;
+		gap: 4px;
+	}
+	@@media (max-width: 460px) {
+		.cma-patient-search-pane { max-width: 100%; }
+		.cma-patient-search-pane__results .pp-card__info-grid { grid-template-columns: 1fr; }
+	}
+</style>
+
+<script>
+	(function () {
+		var overlay = document.getElementById('patientSearchPaneOverlay');
+		var pane = document.getElementById('patientSearchPane');
+		var btnOpen = document.getElementById('btnOpenPatientSearch');
+		var btnClose = document.getElementById('patientSearchPaneClose');
+		var btnSearch = document.getElementById('cmaPatientSearchBtn');
+		var inputName = document.getElementById('cmaPatientSearchName');
+		var inputDobFrom = document.getElementById('cmaPatientSearchDobFrom');
+		var inputDobTo = document.getElementById('cmaPatientSearchDobTo');
+		var inputMobile = document.getElementById('cmaPatientSearchMobile');
+		var inputIdProofType = document.getElementById('cmaPatientSearchIdProofType');
+		var inputIdProofNumber = document.getElementById('cmaPatientSearchIdProofNumber');
+		var resultsEl = document.getElementById('cmaPatientSearchResults');
+		var loadingEl = document.getElementById('cmaPatientSearchLoading');
+		var emptyEl = document.getElementById('cmaPatientSearchEmpty');
+
+		var apiUrl = '@Url.Action("get_Patient_Profile_List", "PatientProfile")';
+		var viewUrl = '@Url.Action("View_Patient_Profile", "PatientProfile")';
+		var vBaseurl = (typeof vBaseurl !== 'undefined' && vBaseurl) ? vBaseurl : '@(Configuration.GetSection("ApiSettings")["baseURL"] ?? "")';
+		var cloudPath = '@(Context.Session.GetString("NalamVazhacloudpath") ?? "")';
+		var sasToken = '@(Context.Session.GetString("NalamVazhaSAStoken") ?? "")';
+
+		function getSqlDate(dateString) {
+			if (!dateString || (dateString = (dateString + '').trim()) === '') return '';
+			var res = dateString.split('/');
+			if (res.length !== 3) return '';
+			return res[2] + '-' + res[1] + '-' + res[0];
+		}
+		function esc(s) { return (s || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+		function buildCard(obj) {
+			 
+			var id = (obj.patientprofileid || obj.PatientProfileid || '').toString();
+			var firstName = (obj.firstname || '').toString();
+			var lastName = (obj.lastname || '').toString();
+			var fullName = (firstName + ' ' + lastName).trim() || '-';
+			var photoUrl = vBaseurl + '/images/blank.jpg';
+			if ((obj.photo || '').toString()) {
+				var parts = obj.photo.split('|');
+				for (var i = 0; i < parts.length; i++) {
+					if (parts[i]) {
+						photoUrl = cloudPath + '/' + parts[i] + sasToken;
+						break;
+					}
+				}
+			}
+			var initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase() || '?';
+			var statusBadges = '';
+			if (obj.blacklisted && (obj.blacklisted + '').toLowerCase() === 'yes') statusBadges += '<span class="pp-card__badge pp-card__badge--danger"><i class="fa fa-ban"></i> Blacklisted</span>';
+			if (obj.deceased === true || obj.deceased === 'True') statusBadges += '<span class="pp-card__badge pp-card__badge--dark"><i class="fa fa-cross"></i> Deceased</span>';
+			var viewLink = viewUrl + '?PatientProfileid=' + encodeURIComponent(id);
+			var actionMenu = '<div class="pp-card__actions"><a href="' + esc(viewLink) + '" class="btn btn-icon-toggle" title="View"><i class="fa fa-eye"></i></a></div>';
+			var regId = (obj.registrationid || '').toString() || '-';
+			var gender = esc(obj.gender || '-');
+			var dob = esc(obj.dateofbirth || '-');
+			var age = (obj.age != null && obj.age !== '') ? (obj.age + 'y') : '-';
+			var mobile = (obj.mobilenumber || '').toString();
+			var mobileHtml = mobile ? '<a href="tel:' + esc(mobile) + '">' + esc(mobile) + '</a>' : '-';
+			var email = (obj.emailaddress || '').toString();
+			var emailHtml = email ? '<a href="mailto:' + esc(email) + '">' + esc(email) + '</a>' : '-';
+			var nationality = esc(obj.nationality || '-');
+			return '<div class="pp-card">' +
+				actionMenu +
+				'<div class="pp-card__header">' +
+					'<div class="pp-card__avatar">' +
+						'<img src="' + esc(photoUrl) + '" onerror="this.style.display=\'none\';var n=this.nextElementSibling;if(n)n.style.display=\'flex\';" alt="" />' +
+						'<span class="pp-card__initials" style="display:none;">' + esc(initials) + '</span>' +
+					'</div>' +
+					'<div class="pp-card__name-block">' +
+						'<h6 class="pp-card__name">' + esc(fullName) + '</h6>' +
+						'<span class="pp-card__regid"><i class="fa fa-id-badge"></i> ' + esc(regId) + '</span>' +
+						(statusBadges ? '<div class="pp-card__badges">' + statusBadges + '</div>' : '') +
+					'</div>' +
+				'</div>' +
+				'<div class="pp-card__body">' +
+					'<div class="pp-card__info-grid">' +
+						'<div class="pp-card__info"><i class="fa fa-venus-mars"></i><span>' + gender + '</span></div>' +
+						'<div class="pp-card__info"><i class="fa fa-birthday-cake"></i><span>' + dob + ' (' + age + ')</span></div>' +
+						'<div class="pp-card__info"><i class="fa fa-phone"></i><span>' + mobileHtml + '</span></div>' +
+						'<div class="pp-card__info"><i class="fa fa-envelope"></i><span>' + emailHtml + '</span></div>' +
+					'</div>' +
+				'</div>' +
+				'<div class="pp-card__footer">' +
+					'<span class="pp-card__nationality"><i class="fa fa-globe"></i> ' + nationality + '</span>' +
+					// '<button type="button" class="btn btn-sm cma_primary_button pp-card__select-btn" data-patient-id="' + esc(id) + '" style="font-size:12px; padding:3px 14px;"><i class="fa fa-check"></i> Select</button>' +
+				'</div>' +
+			'</div>';
+		}
+
+		function openPane() {
+			if (overlay) overlay.classList.add('is-open');
+			if (pane) pane.classList.add('is-open');
+			if (inputName) setTimeout(function () { inputName.focus(); }, 200);
+			if (emptyEl && resultsEl && !resultsEl.innerHTML) {
+				emptyEl.textContent = 'Enter criteria and click Search.';
+				emptyEl.style.display = 'block';
+			}
+		}
+		function closePane() {
+			if (overlay) overlay.classList.remove('is-open');
+			if (pane) pane.classList.remove('is-open');
+		}
+
+		function runSearch() {
+			var name = (inputName && inputName.value) ? inputName.value.trim() : '';
+			var dobFrom = (inputDobFrom && inputDobFrom.value) ? inputDobFrom.value.trim() : '';
+			var dobTo = (inputDobTo && inputDobTo.value) ? inputDobTo.value.trim() : '';
+			var mobile = (inputMobile && inputMobile.value) ? inputMobile.value.trim() : '';
+			var idProofType = (inputIdProofType && inputIdProofType.value) ? inputIdProofType.value.trim() : '';
+			var idProofNumber = (inputIdProofNumber && inputIdProofNumber.value) ? inputIdProofNumber.value.trim() : '';
+			var tenantId = (typeof str_tenantid !== 'undefined' && str_tenantid) ? str_tenantid : '';
+
+			if (resultsEl) resultsEl.innerHTML = '';
+			if (emptyEl) emptyEl.style.display = 'none';
+			if (loadingEl) loadingEl.style.display = 'block';
+
+			var params = {
+				tenantid: tenantId,
+				firstname: name || '',
+				dateofbirth_automatonfrom: getSqlDate(dobFrom),
+				dateofbirth_automatonto: getSqlDate(dobTo),
+				emailaddress: '',
+				mobilenumber: mobile || '',
+				whatsappnumber: '',
+				idprooftype: idProofType || '',
+				idproofnumber: idProofNumber || '',
+				pzip: '',
+				blacklisted: '',
+				deceased: false,
+				pagesize: 25,
+				pagenumber: 0 
+			};
+
+			fetch(apiUrl + '?' + Object.keys(params).map(function (k) {
+				return encodeURIComponent(k) + '=' + encodeURIComponent(params[k] === null || params[k] === undefined ? '' : params[k]);
+			}).join('&'), { method: 'GET', headers: { 'Accept': 'application/json' }, credentials: 'same-origin' })
+				.then(function (r) { return r.text(); })
+				.then(function (t) {
+					try {
+						var data = JSON.parse(t);
+						if (typeof data === 'string') data = JSON.parse(data);
+						return data;
+					} catch (e) { return { detail: [] }; }
+				})
+				.then(function (data) {
+					if (loadingEl) loadingEl.style.display = 'none';
+					var list = (data && (data.detail || data.Detail)) ? (data.detail || data.Detail) : [];
+					if (!Array.isArray(list)) list = [];
+					if (list.length === 0) {
+						if (emptyEl) {
+							emptyEl.textContent = (name || mobile || dobFrom || dobTo || idProofNumber) ? 'No patients found.' : 'Enter criteria and click Search.';
+							emptyEl.style.display = 'block';
+						}
+						return;
+					}
+					list.forEach(function (obj) {
+						var div = document.createElement('div');
+						div.innerHTML = buildCard(obj);
+						if (resultsEl) resultsEl.appendChild(div.firstElementChild || div);
+					});
+				})
+				.catch(function () {
+					if (loadingEl) loadingEl.style.display = 'none';
+					if (emptyEl) {
+						emptyEl.textContent = 'Search failed. Try again.';
+						emptyEl.style.display = 'block';
+					}
+				});
+		}
+
+		if (btnOpen) btnOpen.addEventListener('click', function () { openPane(); });
+		if (btnClose) btnClose.addEventListener('click', closePane);
+		if (overlay) overlay.addEventListener('click', closePane);
+		if (btnSearch) btnSearch.addEventListener('click', runSearch);
+		function onEnterSearch(e) { if (e.key === 'Enter') { e.preventDefault(); runSearch(); } }
+		if (inputName) inputName.addEventListener('keydown', onEnterSearch);
+		if (inputDobFrom) inputDobFrom.addEventListener('keydown', onEnterSearch);
+		if (inputDobTo) inputDobTo.addEventListener('keydown', onEnterSearch);
+		if (inputMobile) inputMobile.addEventListener('keydown', onEnterSearch);
+		if (inputIdProofType) inputIdProofType.addEventListener('keydown', onEnterSearch);
+		if (inputIdProofNumber) inputIdProofNumber.addEventListener('keydown', onEnterSearch);
+
+		/* ── Select patient from card ── */
+		document.addEventListener('click', function (e) {
+			var btn = e.target.closest('.pp-card__select-btn');
+			if (!btn) return;
+			e.preventDefault();
+			var patientId = btn.getAttribute('data-patient-id');
+			if (patientId) {
+				/* Fire custom event so _PatientSearchControl can pick it up */
+				var evt = new CustomEvent('psc:panePatientSelected', { detail: { patientId: patientId } });
+				document.dispatchEvent(evt);
+				closePane();
+			}
+		});
+
+		/* ── Expose pane API globally ── */
+		window.PatientSearchPane = {
+			open:  openPane,
+			close: closePane,
+			search: runSearch
+		};
+	})();
+</script>

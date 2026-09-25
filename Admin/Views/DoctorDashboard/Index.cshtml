@@ -1,0 +1,3279 @@
+﻿@using Microsoft.AspNetCore.Http
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Dashboard";
+    var uname = Context.Session.GetString("NalamVazhausername") ?? "Doctor";
+}
+
+<script src="~/js/nv-clinical-calendar-colors.js"></script>
+
+<style>
+    /* ══════════════════════════════════════════════════════════════════
+           Doctor Dashboard  – Split Layout (Day left | Week right)
+           ══════════════════════════════════════════════════════════════════ */
+    :root {
+        --doc-green: #2d5f44;
+        --doc-blue: #1d4ed8;
+        --doc-amber: #d97706;
+        --doc-red: #dc2626;
+    }
+
+    .doc-wrap {
+        padding: 0 0 40px;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+        margin-top: 12px;
+    }
+
+    .doc-header__title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1e293b;
+        flex: 1;
+        min-width: 180px;
+    }
+
+        .doc-header__title small {
+            font-size: 17px;
+            font-weight: 400;
+            color: #64748b;
+            margin-left: 6px;
+        }
+
+    /* ── Stat bar ── */
+    .doc-stats {
+        display: none;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+    }
+
+    .doc-stat {
+        flex: 1;
+        min-width: 100px;
+        background: #fff;
+        border-radius: 12px;
+        padding: 12px 14px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 1px 4px rgba(0,0,0,.06);
+        text-align: center;
+    }
+
+    .doc-stat__val {
+        font-size: 22px;
+        font-weight: 800;
+        color: #1e293b;
+        line-height: 1;
+    }
+
+    .doc-stat__lbl {
+        font-size: 10px;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-top: 4px;
+        letter-spacing: .4px;
+    }
+
+    .doc-stat--today .doc-stat__val {
+        color: var(--doc-blue);
+    }
+
+    .doc-stat--inprog .doc-stat__val {
+        color: var(--doc-amber);
+    }
+
+    .doc-stat--done .doc-stat__val {
+        color: var(--doc-green);
+    }
+
+    .doc-stat--cancel .doc-stat__val {
+        color: var(--doc-red);
+    }
+
+    /* ── Controls bar ── */
+    .doc-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+    }
+
+    .doc-filter-wrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+    }
+
+        .doc-filter-wrap select, .doc-filter-wrap input {
+            height: 32px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 7px;
+            padding: 0 10px;
+            font-size: 12.5px;
+            color: #334155;
+            outline: none;
+        }
+
+            .doc-filter-wrap select:focus, .doc-filter-wrap input:focus {
+                border-color: var(--doc-green);
+            }
+
+    .doc-today-btn {
+        padding: 6px 14px;
+        border-radius: 7px;
+        background: var(--doc-green);
+        color: #fff;
+        border: none;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .doc-date-nav {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .doc-date-nav__btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        border: 1.5px solid #e2e8f0;
+        background: #fff;
+        cursor: pointer;
+        font-size: 13px;
+        color: #334155;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .doc-date-nav__btn:hover {
+            background: #f8fafc;
+        }
+
+    .doc-date-label {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1e293b;
+        min-width: 140px;
+        text-align: center;
+    }
+
+    /* ══ SPLIT LAYOUT ══════════════════════════════════════════════════ */
+    .doc-split {
+        display: grid;
+        grid-template-columns: 380px 1fr;
+        gap: 16px;
+        align-items: start;
+    }
+    @@media (max-width: 900px) {
+        .doc-split
+
+    {
+        grid-template-columns: 1fr;
+    }
+
+    }
+
+    /* ── LEFT: Day panel ── */
+    .doc-day-panel {
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+
+    .doc-day-panel__title {
+        padding: 12px 14px;
+        background: linear-gradient(135deg,#f0fdf4,#f8fafc);
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .doc-day-panel__title h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+            flex: 1;
+        }
+
+        .doc-day-panel__title .doc-day-date {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+    /* Tab bar */
+    .doc-tab-bar {
+        display: flex;
+        border-bottom: 2px solid #e2e8f0;
+        background: #fff;
+    }
+
+    .doc-tab-btn {
+        padding: 10px 16px;
+        font-size: 12px;
+        font-weight: 700;
+        border: none;
+        background: none;
+        color: #94a3b8;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        transition: color .15s,border-color .15s;
+        white-space: nowrap;
+    }
+
+        .doc-tab-btn.active {
+            color: var(--doc-green);
+            border-bottom-color: var(--doc-green);
+        }
+
+        .doc-tab-btn:hover:not(.active) {
+            color: #334155;
+        }
+
+    .doc-day-slots {
+        max-height: 680px;
+        overflow-y: auto;
+    }
+
+    /* Slot cards */
+    .doc-day-slot-card {
+        margin: 8px 10px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        transition: border-color .2s,box-shadow .2s;
+    }
+
+        .doc-day-slot-card:hover {
+            border-color: var(--doc-green);
+            box-shadow: 0 2px 8px rgba(45,95,68,.12);
+        }
+
+    .doc-day-slot__time {
+        padding: 5px 10px;
+        font-size: 11px;
+        font-weight: 700;
+        color: #475569;
+        background: #f8fafc;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+    .doc-day-slot__items {
+        padding: 6px 10px;
+    }
+
+    .doc-day-slot__footer {
+        padding: 6px 10px;
+        border-top: 1px solid #f1f5f9;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--doc-green);
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+        .doc-day-slot__footer:hover {
+            background: #f0fdf4;
+        }
+
+    /* Day items */
+    .doc-day-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 7px 0;
+        border-bottom: 1px solid #f8fafc;
+    }
+
+        .doc-day-item:last-child {
+            border-bottom: none;
+        }
+
+    .doc-day-item__row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .doc-day-item__avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #e0e7ff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: #4f46e5;
+        flex-shrink: 0;
+    }
+
+    .doc-day-item__text {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .doc-day-item__name {
+        font-size: 12px;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    .doc-day-item__meta {
+        font-size: 10px;
+        color: #64748b;
+    }
+
+    .doc-day-item__badge {
+        font-size: 9px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 10px;
+        flex-shrink: 0;
+    }
+
+    .doc-day-item__badge--done {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .doc-day-item__badge--inprogress {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .doc-day-item__badge--upcoming {
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .doc-day-item__badge--cancelled {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+
+    .doc-day-item__badge--rescheduled {
+        background: #ede9fe;
+        color: #6d28d9;
+    }
+
+    .doc-day-item__badge--confirmed {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .doc-day-item__badge--requested {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .doc-day-item__actions {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-left: 36px;
+    }
+
+    .doc-day-item__btn {
+        width: 28px;
+        height: 28px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: #fff;
+        color: #475569;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        transition: background .15s,color .15s,border-color .15s;
+    }
+
+        .doc-day-item__btn:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .doc-day-item__btn[data-action="done"]:hover {
+            background: #d1fae5;
+            color: #047857;
+            border-color: #a7f3d0;
+        }
+
+        .doc-day-item__btn[data-action="inprogress"]:hover {
+            background: #fef3c7;
+            color: #b45309;
+            border-color: #fde68a;
+        }
+
+        .doc-day-item__btn[data-action="cancel"]:hover {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .doc-day-item__btn:disabled {
+            opacity: .4;
+            cursor: default;
+            pointer-events: none;
+        }
+
+    /* ── RIGHT: Week panel ── */
+    .doc-week-panel {
+        background: #fff;
+        border-radius: 14px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+
+    .doc-week-panel__title {
+        padding: 12px 14px;
+        background: linear-gradient(135deg,#f0fdf4,#f8fafc);
+        border-bottom: 1px solid #e2e8f0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .doc-week-panel__title h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0;
+            flex: 1;
+        }
+
+    .doc-week-nav {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .doc-week-nav .doc-date-nav__btn {
+            width: 26px;
+            height: 26px;
+            font-size: 11px;
+        }
+
+    .doc-week-range {
+        font-size: 12px;
+        font-weight: 600;
+        color: #475569;
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .doc-week-head {
+        display: grid;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .doc-week-head-time {
+        background: #f8fafc;
+        padding: 8px 4px;
+        font-size: 10px;
+        font-weight: 700;
+        color: #94a3b8;
+        text-align: center;
+        border-right: 1px solid #e2e8f0;
+    }
+
+    .doc-week-head-day {
+        padding: 8px 4px;
+        text-align: center;
+        border-right: 1px solid #f1f5f9;
+    }
+
+        .doc-week-head-day .dow {
+            font-size: 10px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        .doc-week-head-day .dom {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1e293b;
+            line-height: 1.2;
+        }
+
+        .doc-week-head-day.is-today .dom {
+            background: var(--doc-green);
+            color: #fff;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    .doc-week-body {
+        max-height: 680px;
+        overflow-y: auto;
+    }
+
+    .doc-week-row {
+        display: grid;
+        border-bottom: 1px solid #f1f5f9;
+        min-height: 44px;
+    }
+
+        .doc-week-row:hover {
+            background: #fafafa;
+        }
+
+    .doc-week-time {
+        padding: 6px 4px;
+        font-size: 9.5px;
+        font-weight: 700;
+        color: #94a3b8;
+        border-right: 1px solid #f1f5f9;
+        display: flex;
+        align-items: flex-start;
+        padding-top: 8px;
+        white-space: nowrap;
+    }
+
+    .doc-week-cell {
+        padding: 3px 4px;
+        border-right: 1px solid #f1f5f9;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        min-width: 0;
+    }
+
+    /* Week appointment cards */
+    .doc-appt-card {
+        border-radius: 6px;
+        padding: 4px 7px;
+        font-size: 10.5px;
+        font-weight: 600;
+        color: #1e293b;
+        background: #f0fdf4;
+        border-left: 3px solid var(--doc-green);
+        cursor: pointer;
+        transition: box-shadow .15s,transform .1s;
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        word-break: break-word;
+    }
+
+        .doc-appt-card:hover {
+            box-shadow: 0 3px 10px rgba(0,0,0,.12);
+            transform: translateY(-1px);
+        }
+
+    /* ── Drag & Drop ── */
+    .doc-draggable {
+        cursor: grab;
+    }
+    .doc-draggable:active {
+        cursor: grabbing;
+    }
+    .doc-dragging {
+        opacity: 0.45;
+        transform: scale(0.97);
+        box-shadow: 0 6px 18px rgba(0,0,0,.18) !important;
+    }
+    .doc-week-cell.doc-drop-target {
+        background: rgba(4,146,123,0.09) !important;
+        outline: 2px dashed #04927B;
+        outline-offset: -2px;
+        border-radius: 6px;
+        transition: background .12s;
+    }
+    .doc-drag-hint {
+        position: absolute;
+        top: 3px;
+        right: 5px;
+        font-size: 9px;
+        color: #94a3b8;
+        opacity: 0;
+        transition: opacity .15s;
+        pointer-events: none;
+        line-height: 1;
+    }
+    .doc-draggable:hover .doc-drag-hint {
+        opacity: 1;
+    }
+
+    .doc-appt-time {
+        font-size: 9px;
+        color: inherit;
+        font-weight: 700;
+        margin-bottom: 1px;
+    }
+
+    .doc-appt-patient {
+        font-size: 11px;
+        font-weight: 700;
+        color: inherit;
+        white-space: normal; /* allow wrapping */
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* max 2 lines */
+        -webkit-box-orient: vertical;
+    }
+
+    .doc-appt-type {
+        font-size: 9px;
+        color: inherit;
+    }
+
+    .doc-appt-token {
+        font-size: 8px;
+        font-weight: 800;
+        color: inherit;
+        opacity: .78;
+    }
+    .doc-priority-badge {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid;
+        border-radius: 999px;
+        padding: 1px 6px;
+        font-size: 9px;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-top: 3px;
+        width: max-content;
+    }
+
+    .doc-appt-actions {
+        display: flex;
+        gap: 3px;
+        margin-top: 4px;
+        flex-wrap: wrap;
+    }
+
+    .doc-act-btn {
+        font-size: 9px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        transition: background .15s,color .15s;
+        white-space: normal;
+    }
+
+    .doc-act-btn--inprog {
+        background: rgba(217,119,6,.15);
+        color: #92400e;
+    }
+
+        .doc-act-btn--inprog:hover {
+            background: #d97706;
+            color: #fff;
+        }
+
+    .doc-act-btn--close {
+        background: rgba(22,163,74,.15);
+        color: #166534;
+    }
+
+        .doc-act-btn--close:hover {
+            background: #16a34a;
+            color: #fff;
+        }
+
+    .doc-act-btn--cancel {
+        background: rgba(220,38,38,.12);
+        color: #991b1b;
+    }
+
+        .doc-act-btn--cancel:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+    .doc-act-btn:disabled {
+        opacity: .45;
+        cursor: default;
+    }
+
+    /* ── Shared ── */
+    .doc-empty {
+        text-align: center;
+        padding: 40px 20px;
+        color: #94a3b8;
+    }
+
+        .doc-empty i {
+            font-size: 28px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+    .doc-loading {
+        text-align: center;
+        padding: 32px;
+        color: #94a3b8;
+        font-size: 13px;
+    }
+
+    .doc-status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    /* ══ TOP-LEVEL NAVIGATION TABS ═════════════════════════════════════ */
+    .doc-main-tabs {
+        display: flex;
+        gap: 0;
+        border-bottom: 2px solid #e2e8f0;
+        margin-bottom: 20px;
+        background: #fff;
+        border-radius: 12px 12px 0 0;
+        overflow: hidden;
+    }
+    .doc-main-tab {
+        padding: 14px 24px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #94a3b8;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+        transition: color .2s, border-color .2s, background .2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+    }
+    .doc-main-tab:hover:not(.is-active) { color: #475569; background: #f8fafc; }
+    .doc-main-tab.is-active {
+        color: var(--doc-green);
+        border-bottom-color: var(--doc-green);
+        background: rgba(45,95,68,.04);
+    }
+    .doc-main-tab i { font-size: 14px; }
+    .doc-main-tab__badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 22px;
+        height: 22px;
+        border-radius: 11px;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 0 7px;
+        background: #e5e7eb;
+        color: #64748b;
+        transition: background .2s, color .2s;
+    }
+    .doc-main-tab.is-active .doc-main-tab__badge {
+        background: var(--doc-green);
+        color: #fff;
+    }
+    .doc-main-tab-content { display: none; }
+    .doc-main-tab-content.is-visible { display: block; }
+    .doc-period-filter.is-hidden { display: none !important; }
+
+    /* ══ IPD / OPD LIST STYLES ═════════════════════════════════════════ */
+    .doc-list-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 10px rgba(0,0,0,.05);
+        overflow: hidden;
+    }
+    .doc-list-toolbar {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        border-bottom: 1px solid #f1f5f9;
+        background: linear-gradient(135deg,#f0fdf4 0%,#f8fafc 100%);
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .doc-list-toolbar__title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #1e293b;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .doc-list-toolbar__title i { color: var(--doc-green); }
+    .doc-list-search-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 6px 12px;
+        min-width: 240px;
+        transition: border-color .2s;
+    }
+    .doc-list-search-box:focus-within { border-color: var(--doc-green); }
+    .doc-list-search-box i { color: #94a3b8; font-size: 13px; flex-shrink: 0; }
+    .doc-list-search-box input {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 13px;
+        color: #1e293b;
+        flex: 1;
+        min-width: 0;
+    }
+    .doc-list-search-box input::placeholder { color: #94a3b8; }
+
+    /* Table */
+    .doc-list-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .doc-list-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    #docOPDTable { min-width: 1080px; }
+    .doc-list-consultation { white-space: nowrap; }
+    .doc-list-consultation__date { font-weight: 600; color: #0f172a; }
+    .doc-list-consultation__time { margin-top: 2px; font-size: 11px; color: #64748b; }
+    .doc-list-table th {
+        text-align: left;
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        padding: 12px 16px;
+        border-bottom: 2px solid #e5e7eb;
+        background: #fafbfc;
+        white-space: nowrap;
+    }
+    .doc-list-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 13px;
+        color: #334155;
+        vertical-align: middle;
+    }
+    .doc-list-table tbody tr { transition: background .15s; cursor: default; }
+    .doc-list-table tbody tr:hover { background: #f8fafc; }
+    .doc-list-table tbody tr:last-child td { border-bottom: none; }
+
+    /* Patient cell */
+    .doc-list-patient {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .doc-list-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+    .doc-list-avatar--m { background: #dbeafe; color: #2563eb; }
+    .doc-list-avatar--f { background: #fce7f3; color: #db2777; }
+    .doc-list-patient__name { font-weight: 600; color: #0f172a; }
+    .doc-list-patient__meta { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+
+    /* Pills / badges */
+    .doc-list-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .doc-list-pill--blue   { background: #dbeafe; color: #1d4ed8; }
+    .doc-list-pill--green  { background: #dcfce7; color: #15803d; }
+    .doc-list-pill--purple { background: #f3e8ff; color: #7c3aed; }
+    .doc-list-pill--amber  { background: #fef3c7; color: #92400e; }
+    .doc-list-pill--red    { background: #fee2e2; color: #b91c1c; }
+    .doc-list-pill--gray   { background: #f1f5f9; color: #64748b; }
+
+    /* Action buttons */
+    .doc-list-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        min-width: 120px;
+    }
+    .doc-list-action {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform .12s, box-shadow .15s;
+        white-space: nowrap;
+    }
+    .doc-list-action:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,.1); }
+    tr[data-href] { cursor: pointer; }
+    .doc-list-action--review    { background: #dbeafe; color: #1d4ed8; }
+    .doc-list-action--screening { background: #e0e7ff; color: #4338ca; }
+    .doc-list-action--consult   { background: #f0fdf4; color: #166534; }
+    .doc-list-action--billing   { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .doc-list-action--payments  { background: #fef3c7; color: #92400e; }
+
+    .doc-opdact-wrap { display:inline-flex; position:relative; min-width:130px; }
+    .doc-opdact-trigger {
+        width:100%; display:inline-flex; align-items:center; justify-content:space-between; gap:8px;
+        padding:5px 11px; border:1px solid #cbd5e1; border-radius:6px;
+        background:#f1f5f9; color:#334155; font-size:11.5px; font-weight:600;
+        cursor:pointer; white-space:nowrap;
+    }
+    .doc-opdact-trigger:hover { background:#e2e8f0; }
+    .doc-opdact-trigger .doc-opdact-chevron { font-size:10px; transition:transform .2s; }
+    .doc-opdact-trigger.open .doc-opdact-chevron { transform:rotate(180deg); }
+    .doc-opdact-menu {
+        display:none; position:fixed; z-index:1055; min-width:190px; padding:4px;
+        flex-direction:column; gap:2px; background:#fff; border:1px solid #e2e8f0;
+        border-radius:8px; box-shadow:0 6px 24px rgba(0,0,0,.13);
+    }
+    .doc-opdact-menu.open { display:flex; }
+    .doc-opdact-menu .doc-list-action { width:100%; box-sizing:border-box; border-radius:5px; }
+
+    /* Booking ref */
+    .doc-list-booking-ref { font-weight: 700; color: #0f172a; font-size: 12.5px; }
+    .doc-list-room-type   { font-size: 11px; color: #64748b; margin-top: 2px; }
+
+    /* Empty state */
+    .doc-list-empty {
+        text-align: center;
+        padding: 48px 20px;
+        color: #94a3b8;
+    }
+    .doc-list-empty i {
+        font-size: 36px;
+        display: block;
+        margin-bottom: 10px;
+        opacity: 0.35;
+    }
+    .doc-list-empty span {
+        font-size: 13px;
+        display: block;
+    }
+
+    @@media (max-width: 1200px) and (min-width: 901px) {
+        .doc-split
+
+    {
+        grid-template-columns: 300px 1fr;
+    }
+
+    }
+
+    /* ── Hide action buttons in week view when columns are very narrow ── */
+    @@media (max-width: 1100px) {
+        .doc-week-cell .doc-appt-actions
+
+    {
+        display: none;
+    }
+
+    .doc-week-cell .doc-appt-patient {
+        -webkit-line-clamp: 1;
+    }
+
+    }
+
+    @@media (max-width: 768px) {
+        .doc-main-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap; }
+        .doc-main-tabs::-webkit-scrollbar { height: 0; }
+        .doc-main-tab { padding: 11px 14px; font-size: 12px; flex-shrink: 0; }
+        .doc-list-search-box { min-width: 160px; }
+        .doc-list-table th, .doc-list-table td { padding: 8px 10px; font-size: 12px; }
+        .doc-list-actions { flex-direction: column; }
+        .doc-stats { gap: 8px; flex-wrap: wrap; }
+        .doc-stat { padding: 10px 12px; min-width: 0; }
+        .doc-stat__val { font-size: 18px; }
+        .doc-stat__lbl { font-size: 10px; }
+    }
+    @@media (max-width: 576px) {
+        .doc-main-tab { padding: 10px 10px; font-size: 11.5px; gap: 4px; }
+        .doc-main-tab i { font-size: 13px; }
+        .doc-list-toolbar { flex-direction: column; gap: 8px; align-items: stretch; }
+        .doc-list-search-box { min-width: 100%; }
+        .doc-list-table th, .doc-list-table td { padding: 7px 8px; font-size: 11.5px; }
+        .doc-list-action { padding: 3px 7px; font-size: 10.5px; }
+        .doc-list-avatar { width: 28px; height: 28px; font-size: 10px; }
+        #docOPDTable { min-width: 940px; }
+    }
+</style>
+
+<div class="doc-wrap">
+
+    <!-- Header -->
+  @*   <div class="doc-header">
+        <div class="doc-header__title">
+            <i class="fa fa-calendar-check" style="color:var(--doc-green);"></i>
+            Hi
+            <small id="docDoctorName"></small>
+        </div>
+    </div>
+ *@
+    <!-- Stats -->
+    <div class="doc-stats">
+        <div class="doc-stat doc-stat--today">
+            <div class="doc-stat__val" id="docStatTotal">—</div>
+            <div class="doc-stat__lbl">Today's Appointments</div>
+        </div>
+        <div class="doc-stat doc-stat--inprog">
+            <div class="doc-stat__val" id="docStatInProg">—</div>
+            <div class="doc-stat__lbl">In Progress</div>
+        </div>
+        <div class="doc-stat doc-stat--done">
+            <div class="doc-stat__val" id="docStatDone">—</div>
+            <div class="doc-stat__lbl">Completed</div>
+        </div>
+        <div class="doc-stat doc-stat--cancel">
+            <div class="doc-stat__val" id="docStatCancel">—</div>
+            <div class="doc-stat__lbl">Cancelled</div>
+        </div>
+    </div>
+
+    <!-- ══ TOP-LEVEL TAB NAVIGATION ══ -->
+    <div class="doc-main-tabs">
+        <button class="doc-main-tab is-active" data-main-tab="therapy">
+            <i class="fa fa-calendar-check-o"></i> Schedule
+        </button>
+        <button class="doc-main-tab" data-main-tab="ipd">
+            <i class="fa fa-bed"></i> IPD List
+            <span class="doc-main-tab__badge" id="docTabCountIPD">0</span>
+        </button>
+        <button class="doc-main-tab" data-main-tab="opd">
+            <i class="fa fa-stethoscope"></i> OPD List
+            <span class="doc-main-tab__badge" id="docTabCountOPD">0</span>
+        </button>
+        <div id="reportrange" class="reportrange doc-period-filter is-hidden">
+            <div>
+                <label for="period" class="control-label">Period</label>
+
+                <div class="form-group form-group--float-above my-2">
+                    <div id="period">
+                        <img src="~/images/calender_ico.png"> <span>May 7, 2026 - Jun 5, 2026</span> <i class="fa fa-care   t-down"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         TAB 1: THERAPY SCHEDULE
+         ══════════════════════════════════════════════════════════════════ -->
+    <div class="doc-main-tab-content is-visible" id="docTabTherapy">
+
+        <!-- Controls -->
+        <div class="doc-controls" style="display:none">
+            <div class="doc-filter-wrap">
+                <select id="docFilterDoctor" title="Filter by doctor" style="min-width:180px;display:none;">
+                    <option value="">All Doctors</option>
+                </select>
+                <select id="docFilterStatus" onchange="docRefresh()">
+                    <option value="">All Statuses</option>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="Re-Sheduled">Re-Scheduled</option>
+                    <option value="Requested">Requested</option>
+                </select>
+                <button class="doc-today-btn" style="background:#475569;display:none" onclick="docRefresh()">
+                    <i class="fa fa-refresh"></i> Refresh
+                </button>
+            </div>
+        </div>
+
+        <!-- ══ SPLIT LAYOUT ══ -->
+        <div class="doc-split">
+
+            <!-- LEFT: Day schedule -->
+            <div class="doc-day-panel">
+                <div class="doc-day-panel__title">
+                    <h3><i class="fa fa-list-ul" style="color:var(--doc-green);margin-right:6px;"></i>Today's Schedule</h3>
+                    <span class="doc-day-date" id="docDayTitle">&mdash;</span>
+                </div>
+                <div class="doc-tab-bar">
+                    <button class="doc-tab-btn active" id="tabActive" onclick="docSetTab('active')">
+                        In Progress &amp; Scheduled
+                    </button>
+                    <button class="doc-tab-btn" id="tabDone" onclick="docSetTab('done')">
+                        Completed &amp; Cancelled
+                    </button>
+                </div>
+                <div class="doc-day-slots" id="docDaySlots">
+                    <div class="doc-loading"><i class="fa fa-spinner fa-spin"></i> Loading appointments&hellip;</div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Week schedule -->
+            <div class="doc-week-panel">
+                <div class="doc-week-panel__title">
+                    <h3><i class="fa fa-calendar" style="color:var(--doc-green);margin-right:6px;"></i>Week's Schedule</h3>
+                    <div class="doc-week-nav">
+                        <button class="doc-date-nav__btn" onclick="docNavWeek(-1)"><i class="fa fa-chevron-left"></i></button>
+                        <span class="doc-week-range" id="docWeekLabel">&mdash;</span>
+                        <button class="doc-date-nav__btn" onclick="docNavWeek(1)"><i class="fa fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="doc-week-head" id="docWeekHead"></div>
+                <div class="doc-week-body" id="docWeekBody">
+                    <div class="doc-loading"><i class="fa fa-spinner fa-spin"></i> Loading&hellip;</div>
+                </div>
+            </div>
+
+        </div><!-- /.doc-split -->
+    </div><!-- /#docTabTherapy -->
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         TAB 2: IPD LIST
+         ══════════════════════════════════════════════════════════════════ -->
+    <div class="doc-main-tab-content" id="docTabIPD">
+        <div class="doc-list-card">
+            <div class="doc-list-toolbar">
+                <div class="doc-list-toolbar__title">
+                    <i class="fa fa-bed"></i> In-Patient Department
+                </div>
+                <div class="doc-list-search-box">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="docIPDSearch" placeholder="Search patient name, booking ID, room..." />
+                </div>
+                <select id="docIPDDoctorFilter" class="form-control" title="Filter IPD patients by allotted doctor" style="min-width:190px;max-width:240px;">
+                    <option value="">All Doctors</option>
+                    <option value="__unassigned__">Not Allotted</option>
+                </select>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="doc-list-table" id="docIPDTable">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Booking ID</th>
+                            <th>Allocated Rooms</th>
+                            <th>Allotted Doctor</th>
+                            <th>Arrival Date</th>
+                            <th>Workflow Status</th>
+                            <th>Room Status</th>
+                            <th>Verified Status</th>
+                           
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="docIPDList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /#docTabIPD -->
+
+    <!-- ══════════════════════════════════════════════════════════════════
+         TAB 3: OPD LIST
+         ══════════════════════════════════════════════════════════════════ -->
+    <div class="doc-main-tab-content" id="docTabOPD">
+        <div class="doc-list-card">
+            <div class="doc-list-toolbar">
+                <div class="doc-list-toolbar__title">
+                    <i class="fa fa-stethoscope"></i> Out-Patient Department
+                </div>
+                <div class="doc-list-search-box">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="docOPDSearch" placeholder="Search patient, consultation, status, doctor or date..." />
+                </div>
+            </div>
+            <div class="doc-list-scroll">
+                <table class="doc-list-table" id="docOPDTable">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Consultation</th>
+                            <th>Consultation Date</th>
+                            <th>Appointment Status</th>
+                            <th>Preferred Doctor</th>
+                            <th>Verified Status</th>
+                            <th>Financial Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="docOPDList"></tbody>
+                </table>
+            </div>
+        </div>
+    </div><!-- /#docTabOPD -->
+
+</div>
+<script>
+    /* ════════════════════════════════════════════════════════════════
+       Doctor Dashboard JS  –  Split Layout
+       ════════════════════════════════════════════════════════════════ */
+    var DOC_TENANT_ID  = '@(ViewBag.TenantId ?? "")';
+    var DOC_LOGIN_ID   = '@(ViewBag.LoginUserId ?? "")';
+    var DOC_ROLE       = '@(ViewBag.UserRole ?? "")';
+    var DOC_LOGIN_NAME = '@uname';
+    var DOC_BUSINESS_DATE = '@DateTime.Today.ToString("yyyy-MM-dd")';
+    /* JSON endpoint used by the schedule and IPD doctor-assignment maps.
+       Clinical_Slot returns the calendar HTML view and cannot be parsed as appointment data. */
+    var DOC_APPT_URL   = '@Url.Action("get_Clinical_Appointment_List", "ClinicalAppointment")';
+    var DOC_STATUS_URL = '@Url.Action("UpdateAppointmentStatus", "ClinicalAppointment")';
+    var DOC_PRACT_URL  = '@Url.Action("lookup_ClinicalAppointment_practitioner", "ClinicalAppointment")';
+    var DOC_PATIENT_URL = '@Url.Action("View_Patient_Profile", "PatientProfile")';
+
+    var _docDate    = new Date(); _docDate.setHours(0,0,0,0);
+    var _docWeekDate = new Date(_docDate);   /* independent week navigator */
+    var _docTab     = 'active';
+    var _docAppts   = [];
+    var _docPractId = '';
+    var _docOwnPeopleId = ''; /* resolved Peopleid for the logged-in doctor */
+    var _docIpdClinicalApptMap = {}; /* bookingid_lower -> practitioner peopleid (uuid) for origin=IPD appointments */
+    var _docIpdAllottedDoctorMap = {}; /* bookingid_lower -> latest/current IPD doctor assignment, including completed appointments */
+    var _docIpdReviewApptMap = {};   /* bookingid_lower -> active assigned IP Rounds/IP Discharge appointment */
+    var _docIpdScreeningDateMap = {}; /* bookingid_lower -> active IP Screening appointment date */
+    var _docIpdConsultationDateMap = {}; /* bookingid_lower -> active Consultation appointment date */
+    var _docIpdScreeningDoctorMap = {}; /* bookingid_lower -> allotted screening doctor Peopleid */
+    var _docIpdConsultationDoctorMap = {}; /* bookingid_lower -> allotted consultation doctor Peopleid */
+    var _docIpdScreeningAppointmentMap = {}; /* bookingid_lower -> selected current screening appointment */
+    var _docIpdConsultationAppointmentMap = {}; /* bookingid_lower -> selected current consultation appointment */
+    var _docDoctorNameMap = {};      /* Peopleid_lower -> doctor display name */
+    var DOC_PEOPLEID_URL = '@Url.Action("GetPeopleIdByUserId", "ClinicalAppointment")';
+
+    /* ── Time slots (07:00 – 21:00) ── */
+    var DOC_SLOTS = [];
+    for (var _h = 7; _h <= 21; _h++) {
+        DOC_SLOTS.push((_h < 10 ? '0' : '') + _h + ':00');
+        if (_h < 21) DOC_SLOTS.push((_h < 10 ? '0' : '') + _h + ':30');
+    }
+
+    var DOC_DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var DOC_MONTHS = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+
+    /* ── Helpers ── */
+    function docFmtDate(d) {
+        return DOC_DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + DOC_MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    }
+    function docFmtRange(start, days) {
+        var end = new Date(start); end.setDate(end.getDate() + days - 1);
+        return start.getDate() + ' – ' + end.getDate() + ' ' + DOC_MONTHS[start.getMonth()] + ' ' + start.getFullYear();
+    }
+    function docApiDate(d) {
+        var y = d.getFullYear(), m = d.getMonth()+1, dd = d.getDate();
+        return y + '-' + (m<10?'0':'')+m + '-' + (dd<10?'0':'')+dd;
+    }
+    function docParseDate(s) {
+        if (!s) return null;
+        var str = s.toString().substring(0, 10);
+        if (str.indexOf('/') !== -1) {
+            var p = str.split('/');
+            if (p.length !== 3) return null;
+            return new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
+        }
+        var p = str.split('-');
+        if (p.length !== 3) return null;
+        return new Date(parseInt(p[0]), parseInt(p[1])-1, parseInt(p[2]));
+    }
+    function docTimeCmp(t) {
+        if (!t) return 0;
+        var p = t.toString().split(':');
+        return parseInt(p[0]||0)*60 + parseInt(p[1]||0);
+    }
+    function docSlotForTime(t) {
+        var mins = docTimeCmp(t);
+        var slotMins = Math.floor(mins/30)*30;
+        var h = Math.floor(slotMins/60), m = slotMins%60;
+        return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
+    }
+    function docStatusCls(s) {
+        var l = (s||'').toLowerCase().replace(/[\s\-]/g,'');
+        if (l==='inprogress')                    return 'inprogress';
+        if (l==='completed' || l==='closed')     return 'closed';
+        if (l==='cancelled' || l==='canceled' || l==='cancelledbypatient' || l==='cancelledbyfrontdesk' || l==='admittedcancelled') return 'cancelled';
+        if (l==='rescheduled'||l==='resheduled') return 'rescheduled';
+        if (l==='confirmed')                     return 'confirmed';
+        if (l==='requested')                     return 'requested';
+        return 'scheduled';
+    }
+    function docEsc(s) {
+        return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function docTaskTypeColor(taskType) {
+        return window.NVClinicalCalendarColors.taskTypeColor(taskType);
+    }
+    function docNormalizePriority(priority) {
+        return window.NVClinicalCalendarColors.normalizePriority(priority);
+    }
+    function docPriorityColors(priority) {
+        return window.NVClinicalCalendarColors.priorityColors(priority);
+    }
+    function docPriorityBadge(priority) {
+        var label = docNormalizePriority(priority);
+        var c = docPriorityColors(label);
+        return '<span class="doc-priority-badge" style="background:' + c.bg + ';color:' + c.fg + ';border-color:' + c.border + ';">' + label + '</span>';
+    }
+
+    /* ── Badge / label maps ── */
+    var DOC_BADGE_MAP = {
+        'closed'      : 'doc-day-item__badge--done',
+        'inprogress'  : 'doc-day-item__badge--inprogress',
+        'cancelled'   : 'doc-day-item__badge--cancelled',
+        'rescheduled' : 'doc-day-item__badge--rescheduled',
+        'confirmed'   : 'doc-day-item__badge--confirmed',
+        'requested'   : 'doc-day-item__badge--requested'
+    };
+    var DOC_LABEL_MAP = {
+        'closed'      : 'Completed',
+        'inprogress'  : 'In Progress',
+        'cancelled'   : 'Cancelled',
+        'rescheduled' : 'Re-Scheduled',
+        'confirmed'   : 'Confirmed',
+        'requested'   : 'Requested'
+    };
+
+    /* ════════════════════════════════════════════════════════════════
+       WEEK VIEW
+       ════════════════════════════════════════════════════════════════ */
+    function docCardCls(s) { return 'doc-appt-card'; }
+
+    /* ── Drag & Drop helpers ── */
+    var _docDragId = null;
+
+    function docOnDragStart(e, id) {
+        _docDragId = id;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', id);
+        /* Mark card as dragging after next paint so the ghost still looks normal */
+        setTimeout(function () {
+            var el = document.querySelector('.doc-draggable[data-id="' + id + '"]');
+            if (el) el.classList.add('doc-dragging');
+        }, 0);
+    }
+
+    function docOnDragEnd(e) {
+        /* Remove dragging style from whichever card fired dragend */
+        var el = e.currentTarget || e.target;
+        if (el) el.classList.remove('doc-dragging');
+        /* Also sweep any orphaned drag styles */
+        document.querySelectorAll('.doc-dragging').forEach(function (n) { n.classList.remove('doc-dragging'); });
+        document.querySelectorAll('.doc-drop-target').forEach(function (n) { n.classList.remove('doc-drop-target'); });
+    }
+
+    function docOnDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        e.currentTarget.classList.add('doc-drop-target');
+    }
+
+    function docOnDragLeave(e) {
+        /* Only remove highlight when truly leaving the cell (not a child element) */
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+            e.currentTarget.classList.remove('doc-drop-target');
+        }
+    }
+
+    function docOnDrop(e) {
+        e.preventDefault();
+        var cell = e.currentTarget;
+        cell.classList.remove('doc-drop-target');
+
+        var id      = e.dataTransfer.getData('text/plain') || _docDragId;
+        var newDate = cell.getAttribute('data-date');   /* yyyy-MM-dd */
+        var newTime = cell.getAttribute('data-time');   /* HH:mm      */
+        _docDragId  = null;
+
+        if (!id || !newDate || !newTime) return;
+
+        /* Find the appointment */
+        var appt = _docAppts.find(function (a) { return a.ClinicalAppointmentid === id; });
+        if (!appt) return;
+
+        /* Guard: completed / cancelled must not be dragged */
+        var sc = docStatusCls(appt.status);
+        if (sc === 'closed' || sc === 'cancelled') return;
+
+        /* Skip no-op (same date + same slot) */
+        var curDate = docApiDate(docParseDate(appt.appointmentdate));
+        if (curDate === newDate && appt.durationfrom === newTime) return;
+
+        /* Guard: conflict — another appointment already occupies the same date + overlapping time.
+           The drop target is a 30-min cell, but whatever is already in that cell might be much
+           shorter (e.g. a 10-min appointment) -- so a conflict at the exact cell start shouldn't
+           immediately block the drop. Instead, try snapping to right after the conflicting
+           appointment ends, as long as that still fits inside the same 30-min cell. */
+        var dragDuration = docTimeCmp(appt.durationto) - docTimeCmp(appt.durationfrom);
+        if (dragDuration <= 0) dragDuration = 30;
+        var newFromMinsTmp = docTimeCmp(newTime);
+        var newToMinsTmp   = newFromMinsTmp + dragDuration;
+        var cellEndMinsTmp = newFromMinsTmp + 30;
+
+        function docFindConflict(fromMins, toMins) {
+            return _docAppts.find(function (other) {
+                if (other.ClinicalAppointmentid === id) return null;         /* skip self */
+                var osc = docStatusCls(other.status);
+                if (osc === 'closed' || osc === 'cancelled') return null;    /* done/cancelled don't block */
+                var otherDate = docApiDate(docParseDate(other.appointmentdate));
+                if (otherDate !== newDate) return null;                      /* different date */
+                var otherFrom = docTimeCmp(other.durationfrom);
+                var otherTo   = docTimeCmp(other.durationto);
+                if (otherTo <= otherFrom) otherTo = otherFrom + 30;          /* guard bad data */
+                return fromMins < otherTo && toMins > otherFrom;             /* overlap? */
+            }) || null;
+        }
+
+        var conflict = docFindConflict(newFromMinsTmp, newToMinsTmp);
+        if (conflict) {
+            var conflictFrom = docTimeCmp(conflict.durationfrom);
+            var conflictTo   = docTimeCmp(conflict.durationto);
+            if (conflictTo <= conflictFrom) conflictTo = conflictFrom + 30;
+
+            var adjustedFrom = conflictTo;
+            var adjustedTo   = adjustedFrom + dragDuration;
+            var fitsInCell   = adjustedFrom >= newFromMinsTmp && adjustedTo <= cellEndMinsTmp;
+
+            if (fitsInCell && !docFindConflict(adjustedFrom, adjustedTo)) {
+                newFromMinsTmp = adjustedFrom;
+                newToMinsTmp   = adjustedTo;
+                newTime = (Math.floor(newFromMinsTmp / 60) < 10 ? '0' : '') + Math.floor(newFromMinsTmp / 60) + ':' +
+                          (newFromMinsTmp % 60 < 10 ? '0' : '') + (newFromMinsTmp % 60);
+            } else {
+                swal({ title: 'Info', text: 'You already have an appointment at that date and time.', type: 'warning' });
+                return;
+            }
+        }
+
+        /* Preserve appointment duration */
+        var fromMins = docTimeCmp(appt.durationfrom);
+        var toMins   = docTimeCmp(appt.durationto);
+        var duration = toMins - fromMins;
+        if (duration <= 0) duration = 30;
+
+        var newFromMins = docTimeCmp(newTime);
+        var newToMins   = newFromMins + duration;
+        var newTo = (Math.floor(newToMins / 60) < 10 ? '0' : '') + Math.floor(newToMins / 60) + ':' +
+                    (newToMins % 60 < 10 ? '0' : '') + (newToMins % 60);
+
+        /* Optimistic update — show immediately, revert on failure */
+        var prevDate = appt.appointmentdate;
+        var prevFrom = appt.durationfrom;
+        var prevTo   = appt.durationto;
+        appt.appointmentdate = newDate;
+        appt.durationfrom    = newTime;
+        appt.durationto      = newTo;
+        docRenderWeek();
+        docRenderDay();
+
+        /* Call Reschedule API */
+        fetch('@Url.Action("Reschedule_Clinical_Appointment", "ClinicalAppointment")', {
+            method : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body   : JSON.stringify({
+                ClinicalAppointmentid : id,
+                appointmentdate       : newDate,
+                durationfrom          : newTime,
+                durationto            : newTo
+            })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+            if (res && res.success) {
+                swal({
+                    title: 'Rescheduled',
+                    text : 'Appointment moved to ' + newDate + ' at ' + newTime + '.',
+                    type : 'success',
+                    timer: 2200,
+                    showConfirmButton: false
+                });
+            } else {
+                /* Revert */
+                appt.appointmentdate = prevDate;
+                appt.durationfrom    = prevFrom;
+                appt.durationto      = prevTo;
+                docRenderWeek();
+                docRenderDay();
+                var rescheduleError = (res && res.message) || 'Reschedule failed.';
+                if (/front\s*desk/i.test(rescheduleError)) {
+                    rescheduleError = 'Please contact the Front Desk to make changes to this appointment.';
+                }
+                swal({ title: 'Unable to Reschedule Appointment', text: rescheduleError, type: 'error' });
+            }
+        })
+        .catch(function () {
+            /* Revert on network failure */
+            appt.appointmentdate = prevDate;
+            appt.durationfrom    = prevFrom;
+            appt.durationto      = prevTo;
+            docRenderWeek();
+            docRenderDay();
+            swal({ title: 'Unable to Reschedule Appointment', text: 'Network error. Appointment was not rescheduled.', type: 'error' });
+        });
+    }
+
+    function docBuildCard(a) {
+        var statusCls  = docStatusCls(a.status);
+        var isTerminal = statusCls === 'closed' || statusCls === 'cancelled' || statusCls === 'rescheduled';
+        var inProg     = statusCls === 'inprogress';
+
+        var apptDate   = docApiDate(docParseDate(a.appointmentdate));
+        var todayDate  = docApiDate(new Date());
+        var isToday    = apptDate === todayDate;
+        var isPastAppt = apptDate < todayDate;
+         var btnInProg = isToday && !inProg && !isTerminal
+            ? `<button class="doc-act-btn doc-act-btn--inprog" onclick="docUpdateStatus(event, '${a.ClinicalAppointmentid}', 'In Progress')">▶ In Progress</button>`
+            : '';
+            var btnClose = isToday && ( !isTerminal || statusCls === 'inprogress')
+      ? `<button class="doc-act-btn doc-act-btn--close" onclick="docConfirmComplete(event, '${a.ClinicalAppointmentid}')">&#10003; Complete</button>`
+      : '';
+
+    var btnCancel = isToday && !isTerminal
+      ? `<button class="doc-act-btn doc-act-btn--cancel" onclick="docUpdateStatus(event, '${a.ClinicalAppointmentid}', 'Cancelled')">&#10005; Cancel</button>`
+      : '';
+
+        var draggableAttr = (!isTerminal && !isPastAppt)
+            ? 'draggable="true" ' +
+              'ondragstart="docOnDragStart(event,\'' + a.ClinicalAppointmentid + '\')" ' +
+              'ondragend="docOnDragEnd(event)"'
+            : '';
+        var dragHint = (!isTerminal && !isPastAppt)
+            ? '<span class="doc-drag-hint" title="Drag to reschedule"><i class="fa fa-arrows-alt"></i></span>'
+            : '';
+        var taskColor = docTaskTypeColor(a.tasktype_master || a.tasktype);
+        var cardStyle = 'style="background:' + taskColor + ';border-left-color:' + taskColor + ';color:#fff;"';
+
+        var tt = (a.tasktype_master || a.tasktype || '').toLowerCase().trim();
+        var isIPRoundsOrDischarge = tt === 'ip rounds' || tt === 'ip discharge';
+        var isNonIPD = (a.origin || '').toUpperCase() !== 'IPD';
+        var isDirectAdmissionIpNew = docIsDirectAdmissionIpNew(a);
+        var btnReviewAssessment = isToday && !isTerminal && isDirectAdmissionIpNew && a.bookingid
+            ? `<button class="doc-act-btn doc-act-btn--inprog" onclick="event.stopPropagation(); openDoctorReviewAssessment('${docEsc(a.bookingid)}', 'IPD Consultation', '${a.ClinicalAppointmentid}'); return false;"><i class="fa fa-clipboard"></i> Review Assessment</button>`
+            : '';
+
+        var shownButtons = '';
+        if (isNonIPD || isDirectAdmissionIpNew) {
+            shownButtons = btnReviewAssessment + btnInProg + btnClose + btnCancel;
+        } else if (isIPRoundsOrDischarge) {
+            shownButtons = btnClose + btnCancel;
+        }
+
+        return '<div class="' + docCardCls(a.status) + (!isTerminal ? ' doc-draggable' : '') + '" ' +
+            cardStyle + ' ' + draggableAttr + ' data-id="' + a.ClinicalAppointmentid + '" ' +
+            'data-from="' + docEsc(a.durationfrom) + '" data-to="' + docEsc(a.durationto) + '">' +
+            dragHint +
+            '<div class="doc-appt-token">#' + docEsc(a.tokennumber) + '</div>' +
+            '<div class="doc-appt-time">' + docEsc(a.durationfrom) + ' \u2013 ' + docEsc(a.durationto) + '</div>' +
+            '<div class="doc-appt-patient">' + docEsc(a.patient_master) + '</div>' +
+            '<div class="doc-appt-type">' + docEsc(a.origin) +' - '+ docEsc(a.tasktype_master || a.tasktype) + '</div>' +
+            docPriorityBadge(a.taskpriority) +
+            (shownButtons
+                ? '<div class="doc-appt-actions">' + shownButtons + '</div>'
+                : '<div style="font-size:9px;color:inherit;opacity:.78;margin-top:2px;">' + docEsc(a.status) + '</div>') +
+            '</div>';
+    }
+
+    function docIsDirectAdmissionIpNew(a) {
+        var taskName = ((a && (a.tasktype_master || a.tasktype)) || '').toString().toLowerCase().trim();
+        var verifiedStatus = ((a && (a.verifiedstatus || a.verifiedStatus || a.VerifiedStatus)) || '').toString().toLowerCase().trim();
+        return taskName === 'ip new' && verifiedStatus === 'direct admission';
+    }
+
+    function docIsPreAdmissionConsultation(a) {
+        var origin = ((a && a.origin) || '').toString().toLowerCase().trim();
+        var taskName = ((a && (a.tasktype_master || a.tasktype)) || '')
+            .toString().toLowerCase().replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
+        return origin === 'ipd' &&
+            (taskName === 'ip new' || taskName === 'pre admission consultation');
+    }
+
+    function docWeekStart(d) {
+        var dow = d.getDay();
+        var mon = new Date(d);
+        mon.setDate(d.getDate() - (dow === 0 ? 6 : dow - 1));
+        mon.setHours(0,0,0,0);
+        return mon;
+    }
+
+    function docRenderWeek() {
+        var monday = docWeekStart(_docWeekDate);
+        var days = [];
+        for (var i = 0; i < 7; i++) {
+            var d = new Date(monday); d.setDate(monday.getDate() + i);
+            days.push(d);
+        }
+        document.getElementById('docWeekLabel').textContent = docFmtRange(monday, 7);
+
+        var headHtml = '<div class="doc-week-head-time"></div>';
+        var today = DOC_BUSINESS_DATE;
+        days.forEach(function(d){
+            var isToday = docApiDate(d) === today;
+            headHtml += '<div class="doc-week-head-day'+(isToday?' is-today':'')+'">'+
+                '<div class="dow">'+DOC_DAYS[d.getDay()]+'</div>'+
+                '<div class="dom">'+d.getDate()+'</div></div>';
+        });
+        var headEl = document.getElementById('docWeekHead');
+        headEl.style.gridTemplateColumns = '44px repeat(7,1fr)';
+        headEl.innerHTML = headHtml;
+
+        /* Compute earliest hour from actual appointments so early-morning slots are visible */
+        var minHour = 7;
+        _docAppts.forEach(function(a) {
+            if (a.durationfrom) {
+                var h = parseInt((a.durationfrom + ':00').split(':')[0], 10);
+                if (!isNaN(h) && h < minHour) minHour = h;
+            }
+        });
+        var localSlots = [];
+        for (var _sh = minHour; _sh <= 21; _sh++) {
+            localSlots.push((_sh < 10 ? '0' : '') + _sh + ':00');
+            if (_sh < 21) localSlots.push((_sh < 10 ? '0' : '') + _sh + ':30');
+        }
+
+        var map = {};
+        localSlots.forEach(function(s){ map[s] = {}; for(var i=0;i<7;i++) map[s][i]=[]; });
+        days.forEach(function(d, di){
+            docApptsForDate(d).forEach(function(a){
+                var slot = docSlotForTime(a.durationfrom);
+                if (!map[slot]) { map[slot] = {}; for(var i=0;i<7;i++) map[slot][i]=[]; }
+                if (!map[slot][di]) map[slot][di] = [];
+                map[slot][di].push(a);
+            });
+        });
+
+        var bodyHtml = '';
+        localSlots.forEach(function(slot){
+            bodyHtml += '<div class="doc-week-row" style="grid-template-columns:44px repeat(7,1fr);">';
+            bodyHtml += '<div class="doc-week-time">'+slot+'</div>';
+            days.forEach(function(d, di){
+                var cellDate = docApiDate(d);
+                var isCellPast = cellDate < docApiDate(new Date());
+                bodyHtml += '<div class="doc-week-cell' + (isCellPast ? ' doc-week-cell--past' : '') + '"' +
+                    ' data-date="' + cellDate + '"' +
+                    ' data-time="' + slot + '"' +
+                    (!isCellPast ? ' ondragover="docOnDragOver(event)"' +
+                    ' ondragleave="docOnDragLeave(event)"' +
+                    ' ondrop="docOnDrop(event)"' : '') + '>';
+                (map[slot][di]||[]).forEach(function(a){ bodyHtml += docBuildCard(a); });
+                bodyHtml += '</div>';
+            });
+            bodyHtml += '</div>';
+        });
+
+        document.getElementById('docWeekBody').innerHTML = bodyHtml ||
+            '<div class="doc-empty"><i class="fa fa-calendar-o"></i>No appointments this week</div>';
+    }
+
+    function docNavWeek(delta) {
+        _docWeekDate.setDate(_docWeekDate.getDate() + delta * 7);
+        /* fetch data covering the new week range */
+        var mon = docWeekStart(_docWeekDate);
+        var sun = new Date(mon); sun.setDate(mon.getDate()+6);
+        docFetchAppts(docApiDate(_docDate), docApiDate(_docDate),
+                      docApiDate(mon), docApiDate(sun));
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       DAY VIEW
+       ════════════════════════════════════════════════════════════════ */
+    function docSetTab(tab) {
+        _docTab = tab;
+        document.getElementById('tabActive').classList.toggle('active', tab === 'active');
+        document.getElementById('tabDone').classList.toggle('active',   tab === 'done');
+        docRenderDay();
+    }
+
+    function docApptsForDate(d) {
+        var ds = docApiDate(d);
+        return _docAppts.filter(function(a){
+            var ad = docParseDate(a.appointmentdate);
+            if (!ad || docApiDate(ad) !== ds) return false;
+            if (_docPractId && a.practitioner !== _docPractId) return false;
+            var sf = document.getElementById('docFilterStatus').value;
+            if (sf && a.status !== sf) return false;
+            return true;
+        });
+    }
+
+    function docRenderDay() {
+        document.getElementById('docDayTitle').textContent = docFmtDate(_docDate);
+
+        var activeStatuses = ['scheduled','confirmed','inprogress','requested'];
+        var doneStatuses   = ['closed','cancelled','rescheduled'];
+
+        var allAppts = docApptsForDate(_docDate).sort(function(a,b){
+            return docTimeCmp(a.durationfrom) - docTimeCmp(b.durationfrom);
+        });
+        var appts = allAppts.filter(function(a){
+            var sc = docStatusCls(a.status);
+            return _docTab === 'active' ? activeStatuses.indexOf(sc) !== -1
+                                        : doneStatuses.indexOf(sc) !== -1;
+        });
+
+        var slotsEl = document.getElementById('docDaySlots');
+        if (appts.length === 0) {
+            var msg = _docTab === 'active'
+                ? 'No active appointments for this day'
+                : 'No completed or cancelled appointments for this day';
+            slotsEl.innerHTML = '<div class="doc-empty"><i class="fa fa-calendar-o"></i>' + msg + '</div>';
+            return;
+        }
+
+        var slotMap = {}, slotOrder = [];
+        appts.forEach(function(a){
+            var key = (a.durationfrom||'').trim() || '--:--';
+            if (!slotMap[key]) { slotMap[key]=[]; slotOrder.push(key); }
+            slotMap[key].push(a);
+        });
+
+        var html = '';
+        slotOrder.forEach(function(timeKey){
+            var items = slotMap[timeKey];
+            var tp = timeKey.split(':');
+            var hh = parseInt(tp[0]||0), mm = tp[1]||'00';
+            var ampm = hh >= 12 ? 'PM' : 'AM';
+            var h12  = hh % 12 || 12;
+            var timeLabel = h12 + ':' + mm + ' ' + ampm;
+
+            html += '<div class="doc-day-slot-card">';
+            html += '<div class="doc-day-slot__time">' + docEsc(timeLabel) + '</div>';
+            html += '<div class="doc-day-slot__items">';
+
+            items.forEach(function(a){
+                var sc         = docStatusCls(a.status);
+                var badge      = DOC_BADGE_MAP[sc] || 'doc-day-item__badge--upcoming';
+                var label      = DOC_LABEL_MAP[sc] || 'Scheduled';
+                var name       = (a.patient_master||'').trim() || '-';
+                var inits      = name.split(' ').map(function(w){ return w[0]||''; }).join('').substring(0,2).toUpperCase() || '--';
+                var meta       = docEsc(a.tasktype_master||a.tasktype||'-') +
+                                 (a.tokennumber ? ' &middot; #' + docEsc(a.tokennumber) : '');
+                var id         = docEsc(a.ClinicalAppointmentid);
+                var isTerminal = sc === 'closed' || sc === 'cancelled' || sc === 'rescheduled';
+
+                html += '<div class="doc-day-item">';
+                html +=   '<div class="doc-day-item__row">';
+                html +=     '<span class="doc-day-item__avatar">' + inits + '</span>';
+                html +=     '<div class="doc-day-item__text">';
+                html +=       '<div class="doc-day-item__name">' + docEsc(name) + '</div>';
+                html +=       '<div class="doc-day-item__meta">' + meta + '</div>';
+                html +=     '</div>';
+                html +=     '<span class="doc-day-item__badge ' + badge + '">' + label + '</span>';
+                html +=   '</div>';
+
+                var att = (a.tasktype_master || a.tasktype || '').toLowerCase().trim();
+                var isIPRD = att === 'ip rounds' || att === 'ip discharge';
+                var isNonIPDOrigin = (a.origin || '').toUpperCase() !== 'IPD';
+                var isDirectAdmissionIpNew = docIsDirectAdmissionIpNew(a);
+                if (!isTerminal && (isNonIPDOrigin || isIPRD || isDirectAdmissionIpNew)) {
+                    html += '<div class="doc-day-item__actions">';
+                    if (isDirectAdmissionIpNew && a.bookingid) {
+                        html += '<button type="button" class="doc-day-item__btn" title="Review Assessment" onclick="event.stopPropagation(); openDoctorReviewAssessment(\'' + docEsc(a.bookingid) + '\', \'IPD Consultation\', \'' + id + '\'); return false;"><i class="fa fa-clipboard"></i></button>';
+                    }
+                    html +=   '<button type="button" class="doc-day-item__btn" title="Mark Completed" data-action="done"   data-id="' + id + '"><i class="fa fa-check"></i></button>';
+                    if (isNonIPDOrigin || isDirectAdmissionIpNew) {
+                        html += '<button type="button" class="doc-day-item__btn" title="Mark In Progress" data-action="inprogress" data-id="' + id + '"><i class="fa fa-spinner"></i></button>';
+                    }
+                    html +=   '<button type="button" class="doc-day-item__btn" title="Cancel"         data-action="cancel" data-id="' + id + '"><i class="fa fa-trash"></i></button>';
+                    /* Reschedule button hidden for now */
+                    html +=   '<button type="button" class="doc-day-item__btn" title="Reschedule"     data-action="reschedule" data-id="' + id + '" style="display:none;"><i class="fa fa-calendar"></i></button>';
+                    html += '</div>';
+                }
+                html += '</div>';
+            });
+
+            html += '</div>'; /* doc-day-slot__items */
+            var firstPatientId = items.length > 0 ? docEsc(items[0].patient || '') : '';
+            html += '<div class="doc-day-slot__footer" data-patient="' + firstPatientId + '"><i class="fa fa-arrow-right"></i> View patient</div>';
+            html += '</div>'; /* doc-day-slot-card */
+        });
+
+        slotsEl.innerHTML = html;
+
+        /* Delegated click handler */
+        slotsEl.onclick = function(e) {
+            /* Footer → view patient */
+            var footer = e.target.closest('.doc-day-slot__footer');
+            if (footer) {
+                var pid = footer.getAttribute('data-patient');
+                if (pid) window.location.href = DOC_PATIENT_URL + '?PatientProfileid=' + encodeURIComponent(pid);
+                return;
+            }
+            /* Action buttons */
+            var btn = e.target.closest('.doc-day-item__btn');
+            if (!btn) return;
+            e.stopPropagation();
+            var action = btn.getAttribute('data-action');
+            var apptId = btn.getAttribute('data-id');
+            if (action === 'reschedule') return;
+            var statusMap = { 'done':'Completed', 'inprogress':'In Progress', 'cancel':'Cancelled' };
+            var newStatus = statusMap[action];
+            if (!newStatus) return;
+            if (newStatus === 'Completed') {
+                docConfirmComplete({ stopPropagation: function(){}, target: btn }, apptId);
+                return;
+            }
+            if (action === 'cancel') {
+                swal({
+                    title: 'Cancel this appointment?',
+                    text: 'This will cancel the appointment. This action cannot be undone.',
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, cancel it',
+                    cancelButtonText: 'No, keep it',
+                    buttonsStyling: false,
+                    confirmButtonClass: 'btn btn-danger',
+                    cancelButtonClass: 'btn btn-secondary'
+                }).then(function (result) {
+                    if (!result || result.dismiss || result.value === false) return;
+                    docUpdateStatus({ stopPropagation: function(){}, target: btn }, apptId, newStatus);
+                });
+                return;
+            }
+            docUpdateStatus({ stopPropagation: function(){}, target: btn }, apptId, newStatus);
+        };
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       STATUS UPDATE
+       ════════════════════════════════════════════════════════════════ */
+    function docConfirmComplete(e, id) {
+        if (e && e.stopPropagation) e.stopPropagation();
+        var btn = e && e.target ? e.target : null;
+        if (btn && btn.closest) btn = btn.closest('button') || btn;
+
+        swal({
+            title: 'Are you sure?',
+            text: 'Do you want to mark this schedule as completed?',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, mark as completed',
+            cancelButtonText: 'Cancel',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-secondary'
+        }).then(function (result) {
+            if (!result || result.dismiss || result.value === false) return;
+            docUpdateStatus({ stopPropagation: function(){}, target: btn }, id, 'Completed');
+        });
+    }
+
+    function docUpdateStatus(e, id, newStatus) {
+        e.stopPropagation();
+        var btn = e.target;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-circle-o-notch fa-spin"></i>';
+
+        fetch(DOC_STATUS_URL, {
+            method : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body   : JSON.stringify({ ClinicalAppointmentid: id, status: newStatus })
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+            if (res && res.success) {
+                var idx = _docAppts.findIndex(function(a){ return a.ClinicalAppointmentid === id; });
+                if (idx >= 0) _docAppts[idx].status = newStatus;
+                var sc = docStatusCls(newStatus);
+                if (sc === 'closed' || sc === 'cancelled' || sc === 'rescheduled') {
+                    docSetTab('done');
+                } else {
+                    docSetTab('active');
+                }
+                docRenderWeek();
+                docUpdateStats();
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa fa-exclamation"></i>';
+                alert('Update failed: ' + ((res && res.message) || 'Unknown error'));
+            }
+        })
+        .catch(function(){
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-exclamation"></i>';
+            alert('Network error. Please try again.');
+        });
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       STATS
+       ════════════════════════════════════════════════════════════════ */
+    function docUpdateStats() {
+        var today = docApiDate(_docDate);
+        var todayAppts = _docAppts.filter(function(a){
+            var d = docParseDate(a.appointmentdate);
+            return d && docApiDate(d) === today &&
+                   (!_docPractId || a.practitioner === _docPractId);
+        });
+        document.getElementById('docStatTotal').textContent  = todayAppts.length;
+        document.getElementById('docStatInProg').textContent = todayAppts.filter(function(a){ return docStatusCls(a.status)==='inprogress'; }).length;
+        document.getElementById('docStatDone').textContent   = todayAppts.filter(function(a){ return docStatusCls(a.status)==='closed'; }).length;
+        document.getElementById('docStatCancel').textContent = todayAppts.filter(function(a){ return docStatusCls(a.status)==='cancelled'; }).length;
+    }
+
+    /* ════════════════════════════════════════════════════════════════
+       DATA FETCH
+       ════════════════════════════════════════════════════════════════ */
+    function docFetchAppts(dayFrom, dayTo, weekFrom, weekTo) {
+        if (!DOC_TENANT_ID) {
+            document.getElementById('docDaySlots').innerHTML =
+                '<div class="doc-empty"><i class="fa fa-exclamation-circle"></i>Tenant not configured</div>';
+            return;
+        }
+
+        /* Use broadest range to cover both day and week in one request */
+        var from = weekFrom || dayFrom;
+        var to   = weekTo   || dayTo;
+
+        document.getElementById('docDaySlots').innerHTML =
+            '<div class="doc-loading"><i class="fa fa-spinner fa-spin"></i> Loading…</div>';
+        document.getElementById('docWeekBody').innerHTML =
+            '<div class="doc-loading"><i class="fa fa-spinner fa-spin"></i> Loading…</div>';
+
+        var pract = (DOC_ROLE.toLowerCase() === 'doctor' && _docOwnPeopleId)
+            ? _docOwnPeopleId
+            : (document.getElementById('docFilterDoctor').value || '');
+        var sf    = document.getElementById('docFilterStatus').value || '';
+        var url = DOC_APPT_URL +
+            '?tenantid='                      + encodeURIComponent(DOC_TENANT_ID) +
+            '&tasktype='                      +
+            '&patient='                       +
+            '&practitioner='                  + encodeURIComponent(pract) +
+            '&appointmentdate_automatonfrom=' + encodeURIComponent(from) +
+            '&appointmentdate_automatonto='   + encodeURIComponent(to) +
+            '&status='                        + encodeURIComponent(sf) +
+            '&origin='                        +
+            '&pagesize=500&pagenumber=0';
+
+        fetch(url)
+            .then(function(r){ return r.text(); })
+            .then(function(txt){
+                var parsed;
+                try { parsed = JSON.parse(txt); } catch(e){ parsed = []; }
+                var raw = Array.isArray(parsed) ? parsed
+                        : (parsed && Array.isArray(parsed.detail)) ? parsed.detail : [];
+                _docAppts = raw.map(function(a){
+                    return {
+                        ClinicalAppointmentid : a.clinicalappointmentid || a.ClinicalAppointmentid || '',
+                        patient               : a.patient               || '',
+                        patient_master        : a.patient_master        || '',
+                        practitioner          : a.practitioner          || '',
+                        appointmentdate       : a.appointmentdate       || '',
+                        durationfrom          : a.durationfrom          || '',
+                        durationto            : a.durationto            || '',
+                        origin                : a.origin                || '',
+                        bookingid             : a.bookingid             || a.bookingId || a.BookingId || '',
+                        status                : a.status                || '',
+                        verifiedstatus        : a.verifiedstatus        || a.verifiedStatus || a.VerifiedStatus || '',
+                        tasktype              : a.tasktype              || '',
+                        tasktype_master       : a.tasktype_master       || '',
+                        taskpriority          : docNormalizePriority(a.taskpriority || a.TaskPriority || a.priority || a.Priority),
+                        tokennumber           : a.tokennumber           || ''
+                    };
+                });
+                if ((DOC_ROLE || '').trim().toLowerCase() === 'intern doctor') {
+                    _docAppts = _docAppts.filter(function(a) {
+                        return !docIsPreAdmissionConsultation(a);
+                    });
+                }
+                docRenderDay();
+                docRenderWeek();
+                docUpdateStats();
+            })
+            .catch(function(){ _docAppts = []; docRenderDay(); docRenderWeek(); });
+    }
+
+    function docRefresh() {
+        var mon = docWeekStart(_docWeekDate);
+        var sun = new Date(mon); sun.setDate(mon.getDate()+6);
+        docFetchAppts(docApiDate(_docDate), docApiDate(_docDate),
+                      docApiDate(mon), docApiDate(sun));
+    }
+
+    /* ── Populate doctor dropdown ── */
+    function docLoadDoctors() {
+        if (!DOC_TENANT_ID) return;
+        fetch(DOC_PRACT_URL + '?tenantid=' + encodeURIComponent(DOC_TENANT_ID) + '&searchterm=')
+            .then(function(r){ return r.text(); })
+            .then(function(txt){
+                var data;
+                try { data = JSON.parse(txt); } catch(e){ data=[]; }
+                if (!Array.isArray(data)) data = data.detail || [];
+                var sel = document.getElementById('docFilterDoctor');
+                data.forEach(function(d){
+                    var opt = document.createElement('option');
+                    opt.value = d.peopleid || d.Peopleid || d.id || '';
+                    opt.textContent = (d.firstname||'')+' '+(d.lastname||'');
+                    sel.appendChild(opt);
+                });
+                if (DOC_LOGIN_ID) {
+                    sel.value = DOC_LOGIN_ID;
+                    var chosen = sel.options[sel.selectedIndex];
+                    if (chosen && chosen.value) {
+                        _docPractId = chosen.value;
+                       // document.getElementById('docDoctorName').textContent = DOC_LOGIN_NAME;
+                    }
+                }
+                docRefresh();
+            })
+            .catch(function(){ docRefresh(); });
+    }
+
+    document.getElementById('docFilterDoctor').addEventListener('change', function(){
+        _docPractId = this.value;
+      // document.getElementById('docDoctorName').textContent = this.value ? this.options[this.selectedIndex].textContent.trim() : DOC_LOGIN_NAME;
+        docRefresh();
+    });
+
+    /* ════════════════════════════════════════════════════════════════
+       IPD & OPD LISTS
+       ════════════════════════════════════════════════════════════════ */
+    var DOC_IPD_LIST_URL       = '@Url.Action("get_Added_IPD_Application_Form", "IPDApplicationForm")';
+    var DOC_PATIENT_PROFILE_LIST_URL = '@Url.Action("get_all_PatientProfile", "IPDApplicationForm")';
+    var DOC_IPD_VIEW_URL       = '@Url.Action("View_IPD_Application_Form", "IPDApplicationForm")';
+    var DOC_OPD_VIEW_URL       = '@Url.Action("View_OPD_Form", "OPDForm")';
+    var DOC_OPD_LIST_URL       = '@Url.Action("get_Added_OPD_Form", "OPDForm")';
+    var DOC_UPDATE_ASSESSMENT_URL = '@Url.Action("Update_Assessment", "Assessment")';
+    var DOC_GET_OPD_ASSESSMENT_ID_URL = '@Url.Action("GetAssessmentIdByOPDForm", "Assessment")';
+    var DOC_IPD_ACT_REVIEW     = '@Url.Action("Review_IPD_Application_Form", "IPDApplicationForm")';
+      var DOC_IPD_SCREENING_REVIEW     = '@Url.Action("IPD_Screening", "IPDApplicationForm")';
+      var DOC_IPD_FINAL_Consultation     = '@Url.Action("Add_Assessment", "Assessment")';
+
+    var DOC_IPD_ACT_SCREENING  = '@Url.Action("IPD_Screening", "IPDApplicationForm")';
+    var DOC_IPD_ACT_BILLING    = '@Url.Action("Billing_Dashboard", "IPDApplicationForm")';
+    var DOC_IPD_ACT_COLLECTION = '@Url.Action("IPD_Payment_Collection", "IPDApplicationForm")';
+
+    var FD_ADD_Assessment = '@Url.Action("Add_Assessment", "Assessment")';
+
+
+
+    var DOC_IPD_PATIENTS = [];
+    var DOC_OPD_FORMS = [];
+    var _docPatientProfileMap = {};
+    var _docPatientProfileLookupMap = {};
+
+    /* ── Helpers (same as FrontDesk) ── */
+    function docListEsc(s) { var d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+    function docListPick(row, keys, fallback) {
+        if (!row) return fallback;
+        for (var i = 0; i < keys.length; i++) {
+            var k = keys[i];
+            if (row[k] !== undefined && row[k] !== null && row[k] !== '') return row[k];
+            var ck = k.replace(/_([a-z])/g, function (_, c) { return c.toUpperCase(); });
+            if (row[ck] !== undefined && row[ck] !== null && row[ck] !== '') return row[ck];
+        }
+        return fallback;
+    }
+    function docListPickNumber(row, keys, fallback) {
+        var raw = docListPick(row, keys, '');
+        if (raw === null || raw === undefined) return fallback;
+        var text = raw.toString ? raw.toString().trim() : raw;
+        if (text === '' || text === '-' || text.toString().toLowerCase() === 'null') return fallback;
+        var n = Number(text);
+        return isNaN(n) ? fallback : n;
+    }
+    function docListNormalizeLookupValue(value) {
+        return (value || '').toString().replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+    function docListBuildPatientProfileLookupKey(name, phone) {
+        var nameKey = docListNormalizeLookupValue(name);
+        var phoneKey = docListNormalizeLookupValue(phone).replace(/\D/g, '');
+        return nameKey + '|' + phoneKey;
+    }
+    function docListParseApi(raw) {
+        try {
+            var data = typeof raw === 'string' ? JSON.parse(raw) : raw;
+            if (Array.isArray(data)) return data;
+            if (data && Array.isArray(data.detail)) return data.detail;
+            if (data && Array.isArray(data.Detail)) return data.Detail;
+            if (data && Array.isArray(data.data)) return data.data;
+        } catch (e) { }
+        return [];
+    }
+    function docListBuildPatientProfileMap(rows) {
+        var map = {};
+        (rows || []).forEach(function (p) {
+            var id = (docListPick(p, ['PatientProfileid', 'patientprofileid', 'patientid', 'patientname'], '') || '').toString().trim().toLowerCase();
+            if (id) map[id] = p;
+        });
+        return map;
+    }
+    function docListBuildPatientProfileLookupMap(rows) {
+        var map = {};
+        (rows || []).forEach(function (p) {
+            var firstName = docListCleanName(docListPick(p, ['firstname', 'firstName', 'FirstName'], ''));
+            var lastName = docListCleanName(docListPick(p, ['lastname', 'lastName', 'LastName'], ''));
+            var profileName = docListCleanName(docListPick(p, ['patientname_master', 'patientnameMaster', 'name'], '')) || docListCleanName((firstName + ' ' + lastName).trim());
+            var mobile = docListPick(p, ['mobilenumber', 'mobile', 'phonenumber', 'whatsappnumber'], '');
+            var namePhoneKey = docListBuildPatientProfileLookupKey(profileName, mobile);
+            var nameOnlyKey = docListBuildPatientProfileLookupKey(profileName, '');
+            if (profileName && mobile) map[namePhoneKey] = p;
+            if (profileName && !map[nameOnlyKey]) map[nameOnlyKey] = p;
+        });
+        return map;
+    }
+    function docListParseDateAny(value) {
+        if (!value) return null;
+        var text = value.toString ? value.toString().trim() : '';
+        if (!text || text === '-' || text.toLowerCase() === 'null') return null;
+        var dateOnly = text.split('T')[0].split(' ')[0];
+        var dmy = dateOnly.split('/');
+        if (dmy.length === 3) {
+            var dd = parseInt(dmy[0], 10), mm = parseInt(dmy[1], 10), yyyy = parseInt(dmy[2], 10);
+            var d = new Date(yyyy, mm - 1, dd);
+            return isNaN(d.getTime()) ? null : d;
+        }
+        var ymd = dateOnly.split('-');
+        if (ymd.length === 3) {
+            var y = parseInt(ymd[0], 10), m = parseInt(ymd[1], 10), day = parseInt(ymd[2], 10);
+            var yd = new Date(y, m - 1, day);
+            return isNaN(yd.getTime()) ? null : yd;
+        }
+        var parsed = new Date(text);
+        return isNaN(parsed.getTime()) ? null : parsed;
+    }
+    function docListAgeFromDob(dobValue) {
+        var dob = docListParseDateAny(dobValue);
+        if (!dob) return null;
+        var today = new Date();
+        var years = today.getFullYear() - dob.getFullYear();
+        var months = today.getMonth() - dob.getMonth();
+        if (today.getDate() < dob.getDate()) months--;
+        if (months < 0) { years--; months += 12; }
+        if (years < 0) return null;
+        return { years: years, months: months };
+    }
+    function docListResolvePatientAge(row, patientId) {
+        var years = docListPickNumber(row, ['age', 'Age', 'patientage', 'PatientAge'], null);
+        var months = docListPickNumber(row, ['ageinmonths', 'AgeInMonths', 'patientageinmonths', 'PatientAgeInMonths'], null);
+        var profile = _docPatientProfileMap[(patientId || '').toString().trim().toLowerCase()] || null;
+        if (!profile && row) {
+            var patientName = docListPatientDisplayName(row);
+            var patientPhone = docListPick(row, ['mobilenumber', 'mobile', 'phonenumber', 'whatsappnumber'], '');
+            profile =
+                _docPatientProfileLookupMap[docListBuildPatientProfileLookupKey(patientName, patientPhone)] ||
+                _docPatientProfileLookupMap[docListBuildPatientProfileLookupKey(patientName, '')] ||
+                null;
+        }
+
+        /* DOB is the authoritative source and keeps the displayed age current. */
+        var dobAge = profile
+            ? docListAgeFromDob(docListPick(profile, ['dateofbirth', 'DateOfBirth', 'dob', 'DOB'], ''))
+            : null;
+        if (!dobAge && row) {
+            dobAge = docListAgeFromDob(docListPick(row, ['dateofbirth', 'DateOfBirth', 'dob', 'DOB', 'patientdateofbirth', 'PatientDateOfBirth'], ''));
+        }
+        if (dobAge) return dobAge;
+
+        if ((years === null || years === 0) && profile) {
+            years = docListPickNumber(profile, ['age', 'Age'], years);
+        }
+        if ((months === null || months === 0) && profile) {
+            months = docListPickNumber(profile, ['ageinmonths', 'AgeInMonths'], months);
+        }
+
+        if ((years === null || years === 0) && row) {
+            var rowDobAge = docListAgeFromDob(docListPick(row, ['dateofbirth', 'DateOfBirth', 'dob', 'DOB', 'patientdateofbirth', 'PatientDateOfBirth'], ''));
+            if (rowDobAge) { years = rowDobAge.years; months = rowDobAge.months; }
+        }
+        if ((years === null || years === 0) && profile) {
+            var profileDobAge = docListAgeFromDob(docListPick(profile, ['dateofbirth', 'DateOfBirth', 'dob', 'DOB'], ''));
+            if (profileDobAge) { years = profileDobAge.years; months = profileDobAge.months; }
+        }
+
+        return {
+            years: years === null || isNaN(years) ? 0 : years,
+            months: months === null || isNaN(months) ? 0 : months
+        };
+    }
+    function docListNormalizeGender(v) {
+        var t = (v || '').toString().trim().toLowerCase();
+        if (t === 'm' || t === 'male') return 'M';
+        if (t === 'f' || t === 'female') return 'F';
+        if (t === 'o' || t === 'other' || t === 'others') return 'O';
+        return '-';
+    }
+    function docListFormatAge(years, months) {
+        var y = Number(years);
+        var m = Number(months);
+        var hasYears = !isNaN(y) && y > 0;
+        var hasMonths = !isNaN(m) && m > 0;
+        if (!hasYears && !hasMonths) return '-';
+        return (hasYears ? y : 0) + ' y ' + (hasMonths ? m : 0) + ' m';
+    }
+    function docListFormatDate(ds) {
+        if (!ds) return '-';
+        var d = new Date(ds);
+        if (isNaN(d.getTime())) return '-';
+        return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    function docListFormatConsultationDate(ds) {
+        if (!ds) return '-';
+        var text = ds.toString().trim();
+        var match = /^(\d{4})-(\d{2})-(\d{2})/.exec(text);
+        var d = match
+            ? new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+            : new Date(text);
+        if (isNaN(d.getTime())) return '-';
+        return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+    function docListFormatConsultationTime(from, to) {
+        var clean = function (value) {
+            var text = (value || '').toString().trim();
+            var match = /^(\d{1,2}):(\d{2})/.exec(text);
+            if (!match) return '';
+            var d = new Date(2000, 0, 1, Number(match[1]), Number(match[2]));
+            return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+        };
+        var start = clean(from), end = clean(to);
+        if (start && end) return start + ' – ' + end;
+        return start || end || '';
+    }
+    function docListAppointmentSortValue(row) {
+        var appointmentDate = docListParseDateAny(docListPick(row, ['appointmentdate', 'appointmentDate', 'AppointmentDate'], ''));
+        if (appointmentDate) {
+            var time = (docListPick(row, ['durationfrom', 'durationFrom', 'DurationFrom'], '') || '').toString();
+            var match = /^(\d{1,2}):(\d{2})/.exec(time);
+            if (match) appointmentDate.setHours(Number(match[1]), Number(match[2]), 0, 0);
+            return appointmentDate.getTime();
+        }
+        var changedDate = Date.parse(docListPick(row, ['modifieddate', 'modifiedDate', 'createddate', 'createdDate'], ''));
+        return isNaN(changedDate) ? 0 : changedDate;
+    }
+    function docListShouldReplaceDoctorAssignment(current, candidate) {
+        if (!current) return true;
+        if (candidate.isActive !== current.isActive) return candidate.isActive;
+        return candidate.sortValue >= current.sortValue;
+    }
+    function docListParseIpdDmyYmd(s) {
+        if (!s) return null;
+        var t = (s || '').toString().trim();
+        if (!t || t === '-' || t.toLowerCase() === 'null') return null;
+        var parts = t.split(' ');
+        var datePart = parts[0];
+        var dParts = datePart.split('/');
+        if (dParts.length < 3) return null;
+        var dd = parseInt(dParts[0], 10), mm = parseInt(dParts[1], 10), yyyy = parseInt(dParts[2], 10);
+        if (!yyyy || !mm || !dd) return null;
+        return new Date(yyyy, mm - 1, dd);
+    }
+    function docListParseAutomaton(raw) {
+        if (!raw) return [];
+        try { if (Array.isArray(raw)) return raw; return typeof raw === 'string' ? JSON.parse(raw) : []; } catch (e) { return []; }
+    }
+    function docListRowAutoField(row, keySuffix) {
+        var target = ('automaton_' + keySuffix).toLowerCase();
+        for (var k in row) { if (k.toLowerCase() === target) return row[k]; }
+        return undefined;
+    }
+    function docListPickAutoFirst(autoArr, keyCandidates) {
+        if (!Array.isArray(autoArr) || !autoArr.length) return '';
+        var first = autoArr[0] || {};
+        var lowerMap = {};
+        for (var fk in first) { lowerMap[fk.toLowerCase().trim()] = first[fk]; }
+        for (var i = 0; i < keyCandidates.length; i++) {
+            var k = keyCandidates[i];
+            if (first[k] !== undefined && first[k] !== null && first[k] !== '') return first[k];
+            var lk = k.toLowerCase().trim();
+            if (lowerMap[lk] !== undefined && lowerMap[lk] !== null && lowerMap[lk] !== '') return lowerMap[lk];
+        }
+        return '';
+    }
+    function docListIsGuid(v) {
+        return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test((v || '').toString().trim());
+    }
+    function docListCleanName(v) {
+        var t = (v || '').toString().replace(/\s+/g, ' ').trim();
+        if (!t || t === '-' || t.toLowerCase() === 'null' || docListIsGuid(t)) return '';
+        return t;
+    }
+    function docListPatientDisplayName(row) {
+        var masterName = docListCleanName(docListPick(row, ['patientname_master', 'patientnameMaster', 'PatientName_master'], ''));
+        if (masterName) return masterName;
+
+        var firstName = docListCleanName(docListPick(row, ['firstname', 'firstName', 'FirstName'], ''));
+        var lastName = docListCleanName(docListPick(row, ['lastname', 'lastName', 'LastName'], ''));
+        var formName = docListCleanName((firstName + ' ' + lastName).trim());
+        if (formName) return formName;
+
+        return '-';
+    }
+
+    /* ── Map IPD row ── */
+    function docMapIpdRow(row) {
+        var id = (docListPick(row, ['IPDApplicationFormid', 'ipdapplicationformid'], '') || '').toString();
+        var name = docListPatientDisplayName(row);
+        var patientid = (docListPick(row, ['patientnameid', 'patientname_id', 'patientprofileid', 'PatientProfileid', 'patientid', 'patientname'], '') || '').toString();
+        var patientAge = docListResolvePatientAge(row, patientid);
+        var preferredDoctorId   = (docListPick(row, ['preferreddoctor', 'PreferredDoctor'], '') || '').toString();
+        var preferredDoctorName = (docListPick(row, ['preferreddoctor_master', 'PreferredDoctor_master'], '') || '').toString();
+        var bookingKey = (id || '').toLowerCase();
+        var doctorAssignment = _docIpdAllottedDoctorMap[bookingKey] || null;
+        var allottedDoctorPeopleId = doctorAssignment ? doctorAssignment.peopleId : '';
+        var allottedDoctorName = (doctorAssignment && doctorAssignment.name)
+            || _docDoctorNameMap[(allottedDoctorPeopleId || '').toLowerCase()]
+            || '';
+        var reviewAppointment = _docIpdReviewApptMap[bookingKey] || null;
+
+        var bookingreferencenumber=(docListPick(row, ['bookingreferencenumber'], '-') || '-').toString();
+
+        var phone = (docListPick(row, ['mobilenumber', 'phone', 'phonenumber'], '') || '').toString();
+        var bookingStatus = (docListPick(row, ['bookingstatus', 'BookingStatus'], '') || '').toString();
+        var verifiedStatus = (docListPick(row, ['verifiedstatus', 'VerifiedStatus'], '') || '').toString();
+        var ipdRoomStatus = (docListPick(row, ['ipdroomstatus', 'ipdRoomStatus', 'IPDRoomStatus'], '') || '').toString().trim();
+        var prefDates = docListParseAutomaton(docListRowAutoField(row, 'ipdapplicationform_preferreddatesofadmission'));
+        var prefArr = docListPickAutoFirst(prefDates, ['Date of Arrival', 'dateofarrival', 'date of arrival']);
+        var checkin = docListParseIpdDmyYmd(prefArr);
+        if (!checkin) checkin = docListParseIpdDmyYmd(docListPick(row, ['estimatedarrival'], ''));
+
+        var roomAuto = docListParseAutomaton(docListRowAutoField(row, 'ipdapplicationform_room'));
+           var roomNumber = [...new Set(
+        roomAuto
+            .map(function (r) {
+                return (r['Room Number'] || '').toString().trim();
+            })
+            .filter(function (r) {
+                return r !== '';
+            })
+    )].join(', ');
+        var roomPrefAuto = docListParseAutomaton(docListRowAutoField(row, 'ipdapplicationform_roompreference'));
+        var roomType = docListPickAutoFirst(roomPrefAuto, ['Room Type', 'roomtype']);
+
+        return {
+            ipdFormId: id,
+            bookingRef: (docListPick(row, ['bookingreferencenumber'], '') || id || '-').toString(),
+            name: name,
+            patientid:patientid,
+            bookingreferencenumber:bookingreferencenumber,
+            gender: docListNormalizeGender(docListPick(row, ['gender'], '-')),
+            age: patientAge.years,
+            ageinmonths: patientAge.months,
+            phone: phone || '-',
+            room: (roomNumber || '-').toString().trim() || '-',
+            roomType: (roomType || '-').toString().trim(),
+            checkin: checkin,
+            bookingStatus: bookingStatus,
+            ipdRoomStatus: ipdRoomStatus || '-',
+            verifiedStatus: verifiedStatus,
+            programme: (docListPick(row, ['packagename_master', 'packagename'], '-') || '-').toString(),
+            preferredDoctorId: preferredDoctorId,
+            preferredDoctorName: preferredDoctorName,
+            allottedDoctorPeopleId: allottedDoctorPeopleId,
+            allottedDoctorName: allottedDoctorName,
+            allottedDoctorTaskType: doctorAssignment ? doctorAssignment.taskType : '',
+            allottedDoctorAppointmentStatus: doctorAssignment ? doctorAssignment.status : '',
+            hasActiveDoctorAssignment: doctorAssignment ? doctorAssignment.isActive : false,
+            activeAllottedDoctorPeopleId: (_docIpdClinicalApptMap[bookingKey] || '').toString(),
+            screeningAppointmentDate: _docIpdScreeningDateMap[bookingKey] || '',
+            consultationAppointmentDate: _docIpdConsultationDateMap[bookingKey] || '',
+            screeningClinicalAppointmentId: (_docIpdScreeningAppointmentMap[bookingKey]
+                && _docIpdScreeningAppointmentMap[bookingKey].clinicalAppointmentId) || '',
+            consultationTaskType: (_docIpdConsultationAppointmentMap[bookingKey]
+                && _docIpdConsultationAppointmentMap[bookingKey].taskType) || '',
+            screeningDoctorPeopleId: (_docIpdScreeningDoctorMap[bookingKey] || '').toString(),
+            consultationDoctorPeopleId: (_docIpdConsultationDoctorMap[bookingKey] || '').toString(),
+            reviewAppointment: reviewAppointment
+        };
+    }
+
+    /* ── Map OPD row ── */
+    function docMapOpdRow(row) {
+        var opdPatientName = docListPatientDisplayName(row);
+        var canReviewRaw = docListPick(row, ['canreviewassessment', 'canReviewAssessment'], false);
+        var paymentCompleteRaw = docListPick(row, ['ispaymentcomplete', 'isPaymentComplete'], false);
+        var netReceivableRaw = docListPick(row, ['netreceivable', 'netReceivable'], null);
+        return {
+            opdFormRef: (docListPick(row, ['bookingreferencenumber', 'bookingreferenceno', 'opdformref'], '-') || '-').toString(),
+            opdFormId: (docListPick(row, ['OPDFormid', 'opdformid', 'id'], '-') || '-').toString(),
+            patientName: opdPatientName,
+            patientId: (docListPick(row, ['patientname'], '') || '').toString(),
+            task: (docListPick(row, ['task_master', 'taskMaster', 'Task_master'], '-') || '-').toString(),
+            consultationMode: (docListPick(row, ['appointmentmode', 'appointmentMode', 'AppointmentMode'], '-') || '-').toString(),
+            preferredDoctor: (docListPick(row, ['preferreddoctor_master', 'doctor_master', 'doctorname'], '-') || '-').toString(),
+            preferredDoctorId: (docListPick(row, ['preferreddoctor', 'PreferredDoctor'], '') || '').toString(),
+            appointmentDate: docListPick(row, ['appointmentdate', 'appointmentDate', 'AppointmentDate'], null),
+            durationFrom: (docListPick(row, ['durationfrom', 'durationFrom', 'DurationFrom'], '') || '').toString(),
+            durationTo: (docListPick(row, ['durationto', 'durationTo', 'DurationTo'], '') || '').toString(),
+            appointmentStatus: (docListPick(row, ['appointmentstatus', 'appointmentStatus', 'AppointmentStatus'], '-') || '-').toString(),
+            verifiedStatus: (docListPick(row, ['verifiedstatus', 'VerifiedStatus', 'status'], '-') || '-').toString(),
+             opdFinancialStatus: (
+            docListPick(row, [
+                'opdfinancialstatus',
+                'opdFinancialStatus',
+                'OPDFinancialStatus',
+                'financialstatus',
+                'financialStatus'
+            ], '-') || '-'
+        ).toString(),
+            netReceivable: netReceivableRaw === null || netReceivableRaw === ''
+                ? null
+                : Number(netReceivableRaw),
+            assessmentId: (docListPick(row, ['assessmentid', 'Assessmentid'], '') || '').toString(),
+            assessmentAssessedBy: (docListPick(row, ['assessment_assessedby', 'assessmentassessedby'], '') || '').toString(),
+            isPaymentComplete: paymentCompleteRaw === true
+                || paymentCompleteRaw === 1
+                || String(paymentCompleteRaw).toLowerCase() === 'true'
+                || String(paymentCompleteRaw).toLowerCase() === 't',
+            canReviewAssessment: canReviewRaw === true
+                || canReviewRaw === 1
+                || String(canReviewRaw).toLowerCase() === 'true'
+                || String(canReviewRaw).toLowerCase() === 't'
+        };
+    }
+
+    function openOPDReviewAssessment(opdFormId, assessmentId) {
+        if (assessmentId) {
+            window.location.href = DOC_UPDATE_ASSESSMENT_URL + '?Assessmentid=' + encodeURIComponent(assessmentId);
+            return false;
+        }
+
+        $.ajax({
+            url: DOC_GET_OPD_ASSESSMENT_ID_URL,
+            type: 'GET',
+            data: { opdformid: opdFormId },
+            success: function (id) {
+                id = (id || '').replace(/^"|"$/g, '').trim();
+                if (!id) {
+                    swal({
+                        title: 'Not Found',
+                        text: 'No saved assessment was found for this OPD form.',
+                        type: 'warning',
+                        buttonsStyling: false,
+                        confirmButtonClass: 'btn btn-primary'
+                    });
+                    return;
+                }
+                window.location.href = DOC_UPDATE_ASSESSMENT_URL + '?Assessmentid=' + encodeURIComponent(id);
+            },
+            error: function () {
+                swal({
+                    title: 'Not Found',
+                    text: 'No saved assessment was found for this OPD form.',
+                    type: 'warning',
+                    buttonsStyling: false,
+                    confirmButtonClass: 'btn btn-primary'
+                });
+            }
+        });
+        return false;
+    }
+
+    function docBuildOpdActionDropdown(links) {
+        if (!links) return '<span style="color:#94a3b8;font-size:11px;">&mdash;</span>';
+        return '<div class="doc-opdact-wrap">' +
+            '<button type="button" class="doc-opdact-trigger" onclick="docToggleOpdActMenu(this,event)">' +
+            '<span><i class="fa fa-bolt"></i> Actions</span><i class="fa fa-chevron-down doc-opdact-chevron"></i>' +
+            '</button>' +
+            '<div class="doc-opdact-menu">' + links + '</div>' +
+            '</div>';
+    }
+
+    function docCloseOpdActMenus() {
+        document.querySelectorAll('.doc-opdact-menu.open').forEach(function (menu) {
+            menu.classList.remove('open');
+            if (menu.previousElementSibling) menu.previousElementSibling.classList.remove('open');
+        });
+    }
+
+    function docToggleOpdActMenu(button, event) {
+        event.stopPropagation();
+        var menu = button.nextElementSibling;
+        var shouldOpen = !menu.classList.contains('open');
+        docCloseOpdActMenus();
+        if (!shouldOpen) return;
+
+        menu.classList.add('open');
+        button.classList.add('open');
+        var rect = button.getBoundingClientRect();
+        var menuWidth = 190;
+        menu.style.top = (rect.bottom + 4) + 'px';
+        menu.style.left = (rect.left + menuWidth > window.innerWidth ? rect.right - menuWidth : rect.left) + 'px';
+    }
+
+    document.addEventListener('click', docCloseOpdActMenus);
+    document.addEventListener('scroll', docCloseOpdActMenus, true);
+    window.docToggleOpdActMenu = docToggleOpdActMenu;
+
+       function openDoctorReviewAssessment(ipdformid, task, clinicalAppointmentId) {
+        var DOC_GET_ASSESSMENT_BY_IPD = '@Url.Action("get_AssessmentId_by_IPDForm", "Assessment")';
+        $.ajax({
+            url: DOC_GET_ASSESSMENT_BY_IPD,
+            type: 'GET',
+            data: { ipdform: ipdformid },
+            success: function (data) {
+                if (data && data.assessmentid) {
+                    var url = DOC_UPDATE_ASSESSMENT_URL + '?Assessmentid=' + data.assessmentid;
+                    if (task) url += '&task=' + encodeURIComponent(task);
+                    if (clinicalAppointmentId) {
+                        url += '&clinicalappointmentid=' + encodeURIComponent(clinicalAppointmentId);
+                    }
+                    window.location.href = url;
+                } else {
+                    swal({ title: 'Not Found', text: 'No saved assessment found for this booking.', type: 'warning',
+                           buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+                }
+            },
+            error: function () {
+                swal({ title: 'Error', text: 'Could not retrieve assessment. Please try again.', type: 'error',
+                       buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+            }
+        });
+    }
+    /* ── Build IPD action buttons (Doctor-specific) ── */
+    function docBuildIpdActions(p) {
+        var id = p.ipdFormId || '';
+        var bs = (p.bookingStatus || '').trim();
+        var vs = (p.verifiedStatus || '').trim();
+        var qid = '?IPDApplicationFormid=' + encodeURIComponent(id);
+        var ipdformqid = '?ipdform=' + encodeURIComponent(id);
+        var patientname = '&patientname=' + encodeURIComponent(p.patientid);
+        var isfinal='&isfinal=Y'
+        var today = DOC_BUSINESS_DATE;
+        var screeningDate = docListParseDateAny(p.screeningAppointmentDate);
+        var consultationDate = docListParseDateAny(p.consultationAppointmentDate);
+        var isScreeningDateToday = !!screeningDate && docApiDate(screeningDate) === today;
+        var isConsultationDateToday = !!consultationDate && docApiDate(consultationDate) === today;
+
+                    var FD_IPD_ACT_VIEW        = DOC_IPD_VIEW_URL;
+
+
+
+        var links = '';
+
+        /* Determine if the logged-in doctor is the one allotted to this IPD via ClinicalAppointment (origin=IPD, bookingid=ipdapplicationid).
+           For non-doctor roles the check is skipped so admins can always act. */
+        var _allottedDoc = (p.activeAllottedDoctorPeopleId || '').toLowerCase();
+        var _ownDoc      = (_docOwnPeopleId || '').toLowerCase();
+        var isAllottedDoctor = (DOC_ROLE !== 'Doctor' && DOC_ROLE !== 'Intern Doctor') ||
+                               (!!_allottedDoc && !!_ownDoc && _allottedDoc === _ownDoc);
+        var isScreeningAllottedDoctor = !!_ownDoc && (p.screeningDoctorPeopleId || '').toLowerCase() === _ownDoc;
+        var isConsultationAllottedDoctor = !!_ownDoc && (p.consultationDoctorPeopleId || '').toLowerCase() === _ownDoc;
+        var reviewAppointment = p.reviewAppointment || null;
+        var reviewAssessmentActionAdded = false;
+        var isAssessmentFormReviewPending = bs === 'Assessment Form - Review Pending'
+            || bs === 'Screening completed by the patient - Doctor Review Pending';
+
+        /* IP Rounds/IP Discharge assessment review is driven by the active
+           ClinicalAppointment assigned to the logged-in doctor. Completed,
+           cancelled and rescheduled appointments are deliberately excluded. */
+        if (reviewAppointment && isAllottedDoctor) {
+            links += '<a href="javascript:void(0)" onclick="openDoctorReviewAssessment(\'' + id + '\', \'' +
+                docListEsc(isAssessmentFormReviewPending ? 'Assessment Review' : reviewAppointment.tasktype) + '\', \'' +
+                docListEsc(reviewAppointment.clinicalappointmentid) +
+                '\')" class="doc-list-action doc-list-action--screening">' +
+                '<i class="fa fa-check"></i> Review Assessment</a>';
+            reviewAssessmentActionAdded = true;
+        }
+
+        /* Review — Doctor reviews the IPD application */
+        if (DOC_ROLE === 'Doctor' && (vs === 'Ready For Doctor Review' || vs === 'Request for Doctor Review' || vs === 'Doctor Review Requested')) {
+            var reviewReturnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+            links += '<a href="' + DOC_IPD_ACT_REVIEW + qid + '&returnurl=' + reviewReturnUrl + '" class="doc-list-action doc-list-action--review">' +
+                     '<i class="fa fa-stethoscope"></i> Review</a>';
+        }
+        if ( bs === 'Screening completed by the patient - Doctor Review Pending' || bs === 'Assessment Form - Review Pending' || bs === 'Awaiting Doctor Screening') {
+
+             if ((DOC_ROLE === 'Intern Doctor' || DOC_ROLE === 'Doctor') &&
+                 !reviewAssessmentActionAdded &&
+                 (isAllottedDoctor || bs === 'Assessment Form - Review Pending')) {
+               
+                    var reviewTask = isAssessmentFormReviewPending ? 'Assessment Review' : 'Screening';
+                    links += '<a href="javascript:void(0)" onclick="openDoctorReviewAssessment(\'' + id + '\', \'' + reviewTask + '\')" class="doc-list-action doc-list-action--screening">' +
+                  '<i class="fa fa-check"></i> Review Assessment</a>';
+                    reviewAssessmentActionAdded = true;
+               
+            }
+            else if (DOC_ROLE === 'Doctor' && bs === 'Awaiting Doctor Screening') {
+                if (isAllottedDoctor) {
+                    links += '<a href="javascript:void(0)" onclick="openDoctorReviewAssessment(\'' + id + '\', \'Screening\')" class="doc-list-action doc-list-action--screening">' +
+                  '<i class="fa fa-check"></i> Review Assessment</a>';
+                }
+            } else if (bs === 'Awaiting Doctor Screening' && isScreeningDateToday && isScreeningAllottedDoctor) {
+                links += '<a href="' + DOC_IPD_SCREENING_REVIEW + qid + '" class="doc-list-action doc-list-action--screening">'+
+                         '<i class="fa fa-stethoscope"></i> IPD Screening</a>';
+            }
+        }
+    if (isScreeningDateToday && (bs === 'Screening completed by the patient' || bs === 'Awaiting Doctor Screening' || bs === 'Assessment Form Reviewed' || bs ==='Screening Scheduled')) {
+        if (isScreeningAllottedDoctor) {
+            links += '<a href="javascript:void(0)" onclick="openDoctorReviewAssessment(\'' + id + '\', \'Screening\', \'' +
+                docListEsc(p.screeningClinicalAppointmentId || '') + '\')" class="doc-list-action doc-list-action--screening">' +
+                '<i class="fa fa-clipboard"></i> Review Assessment</a>';
+        }
+    }
+
+        if (DOC_ROLE === 'Doctor' && isConsultationDateToday && isConsultationAllottedDoctor && (bs === 'Pre-Admission Initiated' || bs === 'Consultation Scheduled' || bs === 'Awaiting Consultation')) {
+            var consultationTaskQuery = '&taskname=' + encodeURIComponent(p.consultationTaskType || 'IP New');
+            links += '<a href="' + DOC_IPD_FINAL_Consultation + ipdformqid + patientname + consultationTaskQuery + isfinal + '" class="doc-list-action doc-list-action--consult">' +
+                     '<i class="fa fa-clipboard"></i> Review Assessment</a>';
+        }
+ 
+               links += '<a href="' + FD_IPD_ACT_VIEW + qid + '" class="fd-ipdact fd-ipdact--view">' +
+                             '<i class="fa fa-eye"></i> IPD Form</a>';
+
+        // /* Billing Dashboard — for admitted patients */
+        // if (bs === 'Admission Confirmed' || bs === 'Admitted') {
+        //     links += '<a href="' + DOC_IPD_ACT_BILLING + qid + '" class="doc-list-action doc-list-action--billing">' +
+        //              '<i class="fa fa-file-text"></i> Billing</a>';
+        // }
+
+        // /* Payment Collection — for admitted */
+        // if (bs === 'Admitted') {
+        //     links += '<a href="' + DOC_IPD_ACT_COLLECTION + qid + '" class="doc-list-action doc-list-action--payments">' +
+        //              '<i class="fa fa-inr"></i> Payments</a>';
+        // }
+
+        if (!links) return '<span style="color:#94a3b8;font-size:11px;">&mdash;</span>';
+        return '<div class="doc-list-actions">' + links + '</div>';
+    }
+
+    function docRenderAllottedDoctor(p) {
+        if (p.allottedDoctorName) {
+            var detailParts = [];
+            if (p.allottedDoctorTaskType) detailParts.push(p.allottedDoctorTaskType);
+            if (p.allottedDoctorAppointmentStatus) detailParts.push(p.allottedDoctorAppointmentStatus);
+            return '<span style="font-weight:600;">' + docListEsc(p.allottedDoctorName) + '</span>' +
+                (detailParts.length
+                    ? '<div style="margin-top:3px;color:' + (p.hasActiveDoctorAssignment ? '#15803d' : '#64748b') + ';font-size:10px;">' +
+                        docListEsc(detailParts.join(' • ')) + '</div>'
+                    : '');
+        }
+        if (p.allottedDoctorPeopleId) {
+            return '<span style="color:#b45309;font-weight:600;">Doctor Assigned</span>' +
+                   '<div style="margin-top:3px;color:#94a3b8;font-size:10px;">Name unavailable</div>';
+        }
+        return '<span style="color:#94a3b8;">Not Allotted</span>' +
+            (p.preferredDoctorName
+                ? '<div style="margin-top:3px;color:#64748b;font-size:10px;">Preferred: ' + docListEsc(p.preferredDoctorName) + '</div>'
+                : '');
+    }
+
+    /* ── Render IPD List ── */
+    function docRenderIPDList(list) {
+        var tbody = document.getElementById('docIPDList');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!list || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9"><div class="doc-list-empty"><i class="fa fa-bed"></i><span>No IPD records found</span></div></td></tr>';
+            return;
+        }
+        list.forEach(function (p) {
+            var initials = (p.name || '?').split(' ').map(function (w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
+            var avatarCls = p.gender === 'F' ? 'doc-list-avatar--f' : p.gender === 'O' ? 'doc-list-avatar--o' : 'doc-list-avatar--m';
+
+            var bsPillCls = 'doc-list-pill--blue';
+            var bsLower = (p.bookingStatus || '').toLowerCase();
+            if (bsLower.indexOf('admitted') !== -1 || bsLower.indexOf('confirmed') !== -1) bsPillCls = 'doc-list-pill--green';
+            else if (bsLower.indexOf('reject') !== -1 || bsLower.indexOf('cancel') !== -1) bsPillCls = 'doc-list-pill--red';
+            else if (bsLower.indexOf('rework') !== -1) bsPillCls = 'doc-list-pill--amber';
+            else if (bsLower.indexOf('pending') !== -1 || bsLower.indexOf('provisional') !== -1) bsPillCls = 'doc-list-pill--amber';
+            var bsPill = p.bookingStatus
+                ? '<span class="doc-list-pill ' + bsPillCls + '">' + docListEsc(p.bookingStatus) + '</span>'
+                : '<span style="color:#94a3b8;">&mdash;</span>';
+
+            var vs = (p.verifiedStatus || '').trim();
+            var vsPillCls = 'doc-list-pill--blue';
+            if (vs.indexOf('Approved') !== -1) vsPillCls = 'doc-list-pill--green';
+            else if (vs === 'Ready For Doctor Review' || vs === 'Request for Doctor Review'|| vs === 'Doctor Review Requested') vsPillCls = 'doc-list-pill--purple';
+            else if (vs.indexOf('Reject') !== -1) vsPillCls = 'doc-list-pill--red';
+            else if (vs.toLowerCase().indexOf('rework') !== -1) vsPillCls = 'doc-list-pill--amber';
+            var vsPill = vs
+                ? '<span class="doc-list-pill ' + vsPillCls + '">' + docListEsc(vs) + '</span>'
+                : '<span style="color:#94a3b8;">&mdash;</span>';
+
+            var tr = document.createElement('tr');
+            if (p.ipdFormId) tr.dataset.href = DOC_IPD_VIEW_URL + '?IPDApplicationFormid=' + encodeURIComponent(p.ipdFormId);
+            var ageText = docListFormatAge(p.age, p.ageinmonths);
+            tr.innerHTML =
+                '<td>' +
+                    '<div class="doc-list-patient">' +
+                        '<span class="doc-list-avatar ' + avatarCls + '">' + initials + '</span>' +
+                        '<div><div class="doc-list-patient__name">' + docListEsc(p.name) + '</div>' +
+                            '<div class="doc-list-patient__meta">' + (function(g){ var s='font-family:Segoe UI Symbol,sans-serif;font-size:16px;font-weight:900;-webkit-text-stroke:.6px currentColor;'; g=(g||'').toUpperCase(); return g==='F'?'<span style="'+s+'color:#e91e8c;">&#9792;</span>':g==='M'?'<span style="'+s+'color:#1565c0;">&#9794;</span>':(g==='O'||g==='OTHER')?'<span style="'+s+'color:#111827;">&#9895;</span>':docListEsc(p.gender); })(p.gender) + ', ' + docListEsc(ageText) + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</td>' +
+                '<td><span class="doc-list-booking-ref">' + docListEsc(p.bookingRef) + '</span></td>' +
+                '<td><span style="font-weight:600;">' + docListEsc(p.room) + /* '</span><div class="doc-list-room-type">' + docListEsc(p.roomType) + */ '</div></td>' +
+                '<td>' + docRenderAllottedDoctor(p) + '</td>' +
+                '<td>' + docListFormatDate(p.checkin) + '</td>' +
+                '<td>' + bsPill + '</td>' +
+                '<td>' + docBuildIpdRoomStatusPill(p.ipdRoomStatus) + '</td>' +
+                '<td>' + vsPill + '</td>' +
+                '<td>' + docBuildIpdActions(p) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    /* ── Render OPD List ── */
+    function docRenderOPDList(list) {
+        var tbody = document.getElementById('docOPDList');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!list || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8"><div class="doc-list-empty"><i class="fa fa-stethoscope"></i><span>No OPD forms found</span></div></td></tr>';
+            return;
+        }
+        var DOC_ADD_CONSULT_URL    = '@Url.Action("Add_Clinical_Appointment", "ClinicalAppointment")';
+        list.forEach(function (o) {
+            var initials = (o.patientName || '').split(' ').map(function (w) { return w[0]; }).join('').substring(0, 2).toUpperCase();
+            var vs = (o.verifiedStatus || '').trim().toLowerCase();
+            var _isOnlineOPD = (o.consultationMode || '').toLowerCase().indexOf('online') !== -1;
+            var _opdFinancialStatusKey = (o.opdFinancialStatus || '').trim().toLowerCase();
+            var _hasReceivableState = _opdFinancialStatusKey && _opdFinancialStatusKey !== '-';
+            var _isOPDPaid = o.isPaymentComplete
+                || _opdFinancialStatusKey === 'paid'
+                || _opdFinancialStatusKey === 'over paid'
+                || (_hasReceivableState && o.netReceivable !== null
+                    && isFinite(o.netReceivable) && o.netReceivable <= 0);
+            var displayedFinancialStatus = _isOPDPaid ? 'Paid' : o.opdFinancialStatus;
+            var _isOnlinePaymentPending = _isOnlineOPD && !_isOPDPaid
+                && (vs === 'assessment intern review pending' || vs === 'assessment doctor review pending');
+            var displayedWorkflowStatus = _isOnlinePaymentPending ? 'Awaiting Online Payment' : o.verifiedStatus;
+            var vsPillCls = 'doc-list-pill--blue';
+            if (vs.indexOf('approved') !== -1 || vs === 'opd completed') vsPillCls = 'doc-list-pill--green';
+            else if (vs.indexOf('rejected') !== -1 || vs.indexOf('reject') !== -1) vsPillCls = 'doc-list-pill--red';
+            else if (_isOnlinePaymentPending) vsPillCls = 'doc-list-pill--amber';
+            var badge = '<span class="doc-list-pill ' + vsPillCls + '">' + docListEsc(displayedWorkflowStatus) + '</span>';
+            var consultationDate = docListFormatConsultationDate(o.appointmentDate);
+            var consultationTime = docListFormatConsultationTime(o.durationFrom, o.durationTo);
+            var consultationCell = consultationDate === '-'
+                ? '<span style="color:#94a3b8;">&mdash;</span>'
+                : '<div class="doc-list-consultation"><div class="doc-list-consultation__date">' + docListEsc(consultationDate) + '</div>' +
+                  (consultationTime ? '<div class="doc-list-consultation__time">' + docListEsc(consultationTime) + '</div>' : '') + '</div>';
+            var appointmentStatus = (o.appointmentStatus || '-').trim();
+            var appointmentStatusLower = appointmentStatus.toLowerCase();
+            var appointmentStatusCls = 'doc-list-pill--blue';
+            if (appointmentStatusLower === 'completed' || appointmentStatusLower === 'confirmed') appointmentStatusCls = 'doc-list-pill--green';
+            else if (appointmentStatusLower.indexOf('cancel') !== -1) appointmentStatusCls = 'doc-list-pill--red';
+            else if (appointmentStatusLower.indexOf('resched') !== -1 || appointmentStatusLower.indexOf('reshed') !== -1) appointmentStatusCls = 'doc-list-pill--amber';
+            else if (appointmentStatusLower.indexOf('progress') !== -1) appointmentStatusCls = 'doc-list-pill--purple';
+            var appointmentStatusPill = appointmentStatus === '-'
+                ? '<span style="color:#94a3b8;">&mdash;</span>'
+                : '<span class="doc-list-pill ' + appointmentStatusCls + '">' + docListEsc(appointmentStatus) + '</span>';
+            var consultationParts = [o.consultationMode, o.task].filter(function (value) {
+                value = (value || '').toString().trim();
+                return value && value !== '-';
+            });
+            var consultationLabel = consultationParts.length ? consultationParts.join(' - ') : '-';
+        var opdActionLinks = '';
+            var _appointmentDateValue = docListParseDateAny(o.appointmentDate);
+            var _opdAppointmentDate = _appointmentDateValue ? docApiDate(_appointmentDateValue) : '';
+            var _isOPDDateToday = !!_opdAppointmentDate && _opdAppointmentDate === DOC_BUSINESS_DATE;
+            var _isOPDDateNotPassed = !!_opdAppointmentDate && DOC_BUSINESS_DATE <= _opdAppointmentDate;
+            var _isOPDConsultationCompleted = (o.appointmentStatus || '').trim().toLowerCase() === 'completed';
+            if (vs.indexOf('approved') !== -1 || vs === 'assessment intern review pending' || vs === 'assessment doctor review pending' || vs === 'opd completed') {
+                var _aId = o.assessmentId && o.assessmentId !== '00000000-0000-0000-0000-000000000000' ? o.assessmentId : '';
+                var _role = (DOC_ROLE || '').trim().toLowerCase();
+                var _currentDoctorId = (_docOwnPeopleId || DOC_LOGIN_ID || '').toString().trim().toLowerCase();
+                var _preferredDoctorId = (o.preferredDoctorId || '').toString().trim().toLowerCase();
+                var _isPreferredDoctor = !!_currentDoctorId && _currentDoctorId === _preferredDoctorId;
+                var _isInternReviewWindowOpen = _isOnlineOPD ? _isOPDPaid : _isOPDDateNotPassed;
+                var _isInternReview = vs === 'assessment intern review pending'
+                    && _role === 'intern doctor' && o.canReviewAssessment
+                    && _isInternReviewWindowOpen
+                    && !_isOPDConsultationCompleted;
+                var _isDoctorReview = (vs === 'assessment intern review pending' || vs === 'assessment doctor review pending')
+                    && _role === 'doctor' && (o.canReviewAssessment || _isPreferredDoctor)
+                    && _isOPDDateToday
+                    && (!_isOnlineOPD || _isOPDPaid);
+                if (_aId) {
+                    var _assessedBy = (o.assessmentAssessedBy || '').toLowerCase();
+                    var _doctorReviewed = _assessedBy.toLowerCase().includes('doctor');
+                    var DOC_VIEW_ASSESSMENT_URL = '@Url.Action("View_Assessment", "Assessment")';
+                    if (vs === 'opd completed') {
+                        opdActionLinks = '<a href="' + DOC_VIEW_ASSESSMENT_URL + '?Assessmentid=' + encodeURIComponent(_aId) + '" class="doc-list-action doc-list-action--payments" title="View Assessment"><i class="fa fa-eye"></i> View Assessment</a>';
+                    } else if (_isInternReview) {
+                        opdActionLinks =
+                            '<a href="' + DOC_VIEW_ASSESSMENT_URL + '?Assessmentid=' + encodeURIComponent(_aId) + '" class="doc-list-action doc-list-action--payments" title="View Assessment"><i class="fa fa-eye"></i> View Assessment</a> ' +
+                            '<a href="#" onclick="return openOPDReviewAssessment(\'' + docListEsc(o.opdFormId) + '\',\'' + docListEsc(_aId) + '\')" class="doc-list-action doc-list-action--screening" title="Review Assessment"><i class="fa fa-clipboard"></i> Review Assessment</a>';
+                    } else if (_isDoctorReview) {
+                        opdActionLinks =
+                            '<a href="' + DOC_VIEW_ASSESSMENT_URL + '?Assessmentid=' + encodeURIComponent(_aId) + '" class="doc-list-action doc-list-action--payments" title="View Assessment"><i class="fa fa-eye"></i> View Assessment</a> ' +
+                            '<a href="#" onclick="return openOPDReviewAssessment(\'' + docListEsc(o.opdFormId) + '\',\'' + docListEsc(_aId) + '\')" class="doc-list-action doc-list-action--screening" title="Review Assessment"><i class="fa fa-clipboard"></i> Review Assessment</a>';
+                    } else if (vs === 'assessment intern review pending' || vs === 'assessment doctor review pending') {
+                        opdActionLinks = '<a href="' + DOC_VIEW_ASSESSMENT_URL + '?Assessmentid=' + encodeURIComponent(_aId) + '" class="doc-list-action doc-list-action--payments" title="View Assessment"><i class="fa fa-eye"></i> View Assessment</a>';
+                    }
+                } else if (_isInternReview || _isDoctorReview) {
+                    opdActionLinks = '<a href="#" onclick="return openOPDReviewAssessment(\'' + docListEsc(o.opdFormId) + '\',\'\')" class="doc-list-action doc-list-action--screening" title="Review Assessment"><i class="fa fa-clipboard"></i> Review Assessment</a>';
+                }
+            }
+            var actionsCell = '<td style="white-space:nowrap;">' + docBuildOpdActionDropdown(opdActionLinks) + '</td>';
+
+            var tr = document.createElement('tr');
+            if (o.opdFormId) tr.dataset.href = DOC_OPD_VIEW_URL + '?OPDFormid=' + encodeURIComponent(o.opdFormId);
+            tr.innerHTML =
+                '<td>' +
+                    '<div class="doc-list-patient">' +
+                        '<span class="doc-list-avatar doc-list-avatar--m">' + initials + '</span>' +
+                        '<div><div class="doc-list-patient__name">' + docListEsc(o.patientName) + '</div>' +
+                            '<div class="doc-list-patient__meta">OPD: ' + docListEsc(o.opdFormRef || o.opdFormId) + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</td>' +
+                '<td><span style="font-weight:600;">' + docListEsc(consultationLabel) + '</span></td>' +
+                '<td>' + consultationCell + '</td>' +
+                '<td>' + appointmentStatusPill + '</td>' +
+                '<td>' + docListEsc(o.preferredDoctor) + '</td>' +
+                '<td>' + badge + '</td>' +
+                 '<td>' + docBuildOpdFinancialStatusPill(displayedFinancialStatus) + '</td>' +
+                actionsCell;
+            tbody.appendChild(tr);
+        });
+    }
+
+    /* ── Top-level tab switching ── */
+    var _docMainTabMap = {
+        'therapy': 'docTabTherapy',
+        'ipd':     'docTabIPD',
+        'opd':     'docTabOPD'
+    };
+    function docTogglePeriodFilter(tab) {
+        var filter = document.getElementById('reportrange');
+        if (filter) filter.classList.toggle('is-hidden', tab === 'therapy');
+    }
+    document.querySelectorAll('.doc-main-tab').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var tab = this.getAttribute('data-main-tab');
+            /* Update tab buttons */
+            document.querySelectorAll('.doc-main-tab').forEach(function (b) {
+                b.classList.toggle('is-active', b.getAttribute('data-main-tab') === tab);
+            });
+            /* Show/hide content panels */
+            for (var key in _docMainTabMap) {
+                var el = document.getElementById(_docMainTabMap[key]);
+                if (el) el.classList.toggle('is-visible', key === tab);
+            }
+            docTogglePeriodFilter(tab);
+        });
+    });
+    docTogglePeriodFilter('therapy');
+
+    /* ── IPD Search ── */
+    function docApplyIPDFilters() {
+        var q = (document.getElementById('docIPDSearch').value || '').toLowerCase().trim();
+        var doctorId = (document.getElementById('docIPDDoctorFilter').value || '').toLowerCase();
+        var filtered = DOC_IPD_PATIENTS.filter(function (p) {
+            var assignedId = (p.allottedDoctorPeopleId || '').toLowerCase();
+            var doctorMatches = !doctorId
+                || (doctorId === '__unassigned__' ? !assignedId : assignedId === doctorId);
+            var searchMatches = !q ||
+                   (p.name || '').toLowerCase().indexOf(q) !== -1 ||
+                   (p.bookingRef || '').toLowerCase().indexOf(q) !== -1 ||
+                   (p.room || '').toLowerCase().indexOf(q) !== -1 ||
+                   (p.allottedDoctorName || '').toLowerCase().indexOf(q) !== -1 ||
+                   (p.preferredDoctorName || '').toLowerCase().indexOf(q) !== -1 ||
+                   (p.bookingStatus || '').toLowerCase().indexOf(q) !== -1;
+            return doctorMatches && searchMatches;
+        });
+        docRenderIPDList(filtered);
+    }
+    document.getElementById('docIPDSearch').addEventListener('keyup', docApplyIPDFilters);
+    document.getElementById('docIPDDoctorFilter').addEventListener('change', docApplyIPDFilters);
+
+    function docPopulateIPDDoctorFilter(doctors, assignments) {
+        var select = document.getElementById('docIPDDoctorFilter');
+        if (!select) return;
+        while (select.options.length > 2) select.remove(2);
+        var filterDoctors = {};
+        function addDoctor(id, name) {
+            id = (id || '').toString().trim();
+            name = docListCleanName(name);
+            if (!id) return;
+            var key = id.toLowerCase();
+            if (name) _docDoctorNameMap[key] = name;
+            if (!filterDoctors[key]) filterDoctors[key] = { id: id, name: name || 'Assigned Doctor' };
+            else if (name) filterDoctors[key].name = name;
+        }
+        (doctors || []).forEach(function (doctor) {
+            var id = docListPick(doctor, ['peopleid', 'Peopleid', 'peopleId', 'id'], '');
+            var firstName = docListPick(doctor, ['firstname', 'firstName', 'FirstName'], '');
+            var lastName = docListPick(doctor, ['lastname', 'lastName', 'LastName'], '');
+            var name = docListCleanName((firstName + ' ' + lastName).trim())
+                || docListCleanName(docListPick(doctor, ['practitioner_master', 'practitionerMaster', 'name'], ''));
+            addDoctor(id, name);
+        });
+        Object.keys(assignments || {}).forEach(function (bookingId) {
+            var assignment = assignments[bookingId];
+            if (assignment) addDoctor(assignment.peopleId, assignment.name);
+        });
+        Object.keys(filterDoctors).map(function (key) { return filterDoctors[key]; })
+        .sort(function (a, b) { return a.name.localeCompare(b.name); })
+        .forEach(function (doctor) {
+            var option = document.createElement('option');
+            option.value = doctor.id;
+            option.textContent = doctor.name;
+            select.appendChild(option);
+        });
+    }
+
+    /* ── OPD Search ── */
+    document.getElementById('docOPDSearch').addEventListener('keyup', function () {
+        var q = this.value.toLowerCase().trim();
+        if (!q) { docRenderOPDList(DOC_OPD_FORMS); return; }
+           var filtered = DOC_OPD_FORMS.filter(function (o) {
+        return (o.patientName || '').toLowerCase().indexOf(q) !== -1 ||
+               (o.opdFormRef || '').toLowerCase().indexOf(q) !== -1 ||
+               (o.task || '').toLowerCase().indexOf(q) !== -1 ||
+               (o.consultationMode || '').toLowerCase().indexOf(q) !== -1 ||
+               (o.appointmentStatus || '').toLowerCase().indexOf(q) !== -1 ||
+               (docListFormatConsultationDate(o.appointmentDate) || '').toLowerCase().indexOf(q) !== -1 ||
+               (o.appointmentDate || '').toString().toLowerCase().indexOf(q) !== -1 ||
+               (docListFormatConsultationTime(o.durationFrom, o.durationTo) || '').toLowerCase().indexOf(q) !== -1 ||
+               (o.preferredDoctor || '').toLowerCase().indexOf(q) !== -1 ||
+               (o.verifiedStatus || '').toLowerCase().indexOf(q) !== -1 ||
+               (o.opdFinancialStatus || '').toLowerCase().indexOf(q) !== -1;
+    });
+        docRenderOPDList(filtered);
+    });
+
+    /* ── Fetch IPD list ──
+       Doctors can see the complete IPD list and narrow it using the allotted-doctor filter. */
+    function docFilterIPDByDoctor(list) {
+        return list.slice();
+    }
+
+    function docFetchIPDList() {
+        if (!DOC_TENANT_ID) { DOC_IPD_PATIENTS = []; docRenderIPDList([]); return; }
+        var ipdUrl = DOC_IPD_LIST_URL +
+            '?tenantid=' + encodeURIComponent(DOC_TENANT_ID) +
+            '&patientname=&bookingstatus=&verifiedstatus=' +
+                '&createddate_automatonfrom=' + encodeURIComponent(getPeriodFromDate()) +
+    '&createddate_automatonto=' + encodeURIComponent(getPeriodToDate()) +
+            '&pagesize=500&pagenumber=0&searchterm=&sort_fields=';
+        /* Fetch ClinicalAppointments with origin=IPD to resolve the allotted doctor per IPD.
+           practitioner field is a Peopleid UUID — compared against _docOwnPeopleId. */
+        var apptUrl = DOC_APPT_URL +
+            '?tenantid=' + encodeURIComponent(DOC_TENANT_ID) +
+            '&tasktype=&patient=&practitioner=&appointmentdate_automatonfrom=&appointmentdate_automatonto=' +
+            '&status=&origin=IPD&pagesize=1000&pagenumber=0&searchterm=&sort_fields=[]';
+        var patientProfileUrl = DOC_PATIENT_PROFILE_LIST_URL +
+            '?tenantid=' + encodeURIComponent(DOC_TENANT_ID) +
+            '&searchterm=&pagesize=5000&pagenumber=0';
+        var doctorUrl = DOC_PRACT_URL +
+            '?tenantid=' + encodeURIComponent(DOC_TENANT_ID) + '&searchterm=';
+        Promise.all([
+            fetch(ipdUrl).then(function (r) { return r.text(); }),
+            fetch(apptUrl).then(function (r) { return r.text(); }),
+            fetch(patientProfileUrl).then(function (r) { return r.text(); }).catch(function () { return '[]'; }),
+            fetch(doctorUrl).then(function (r) { return r.text(); }).catch(function () { return '[]'; })
+        ]).then(function (results) {
+            /* Build bookingid -> practitioner (Peopleid) map for origin=IPD appointments */
+            var apptRows = docListParseApi(results[1]);
+            _docIpdClinicalApptMap = {};
+            _docIpdAllottedDoctorMap = {};
+            _docIpdReviewApptMap = {};
+            _docIpdScreeningDateMap = {};
+            _docIpdConsultationDateMap = {};
+            _docIpdScreeningDoctorMap = {};
+            _docIpdConsultationDoctorMap = {};
+            _docIpdScreeningAppointmentMap = {};
+            _docIpdConsultationAppointmentMap = {};
+            apptRows.forEach(function (a) {
+                var origin = (docListPick(a, ['origin', 'Origin'], '') || '').toString().trim().toLowerCase();
+                if (origin === 'ipd') {
+                    var bid = (docListPick(a, ['bookingid', 'bookingId', 'BookingId'], '') || '').toString().trim().toLowerCase();
+                    var pract = (docListPick(a, ['practitioner', 'Practitioner', 'practitionerid', 'practitionerId'], '') || '').toString().trim();
+                    var doctorName = docListCleanName(docListPick(a,
+                        ['practitioner_master', 'practitionerMaster', 'Practitioner_master', 'doctorname', 'doctorName'], ''));
+                    var task = (docListPick(a, ['tasktype_master', 'tasktype', 'taskType', 'TaskType'], '') || '').toString().trim();
+                    var taskLower = task.toLowerCase();
+                    var appointmentStatus = (docListPick(a, ['status', 'appointmentstatus', 'appointmentStatus', 'Status'], '') || '').toString().trim();
+                    var statusClass = docStatusCls(appointmentStatus);
+                    var isActive = statusClass !== 'closed' && statusClass !== 'cancelled' && statusClass !== 'rescheduled';
+                    var isValidAssignment = statusClass !== 'cancelled' && statusClass !== 'rescheduled';
+                    var appointmentDate = docListPick(a, ['appointmentdate', 'appointmentDate', 'AppointmentDate'], '');
+                    var appointmentCandidate = {
+                        peopleId: pract,
+                        appointmentDate: appointmentDate,
+                        clinicalAppointmentId: docListPick(a, ['ClinicalAppointmentid', 'clinicalappointmentid'], ''),
+                        taskType: task,
+                        isActive: isActive,
+                        sortValue: docListAppointmentSortValue(a)
+                    };
+                    if (bid && isActive && taskLower.indexOf('screening') !== -1 &&
+                        docListShouldReplaceDoctorAssignment(_docIpdScreeningAppointmentMap[bid], appointmentCandidate)) {
+                        _docIpdScreeningAppointmentMap[bid] = appointmentCandidate;
+                        _docIpdScreeningDateMap[bid] = appointmentCandidate.appointmentDate;
+                        _docIpdScreeningDoctorMap[bid] = appointmentCandidate.peopleId;
+                    }
+                    var isConsultationTask = taskLower.indexOf('consultation') !== -1
+                        || taskLower === 'ip new'
+                        || taskLower === 'pre admission consultation';
+                    if (bid && isActive && isConsultationTask &&
+                        docListShouldReplaceDoctorAssignment(_docIpdConsultationAppointmentMap[bid], appointmentCandidate)) {
+                        _docIpdConsultationAppointmentMap[bid] = appointmentCandidate;
+                        _docIpdConsultationDateMap[bid] = appointmentCandidate.appointmentDate;
+                        _docIpdConsultationDoctorMap[bid] = appointmentCandidate.peopleId;
+                    }
+                    var candidate = {
+                        peopleId: pract,
+                        name: doctorName,
+                        taskType: task,
+                        status: appointmentStatus,
+                        isActive: isActive,
+                        sortValue: docListAppointmentSortValue(a)
+                    };
+                    if (bid && pract && isValidAssignment &&
+                        docListShouldReplaceDoctorAssignment(_docIpdAllottedDoctorMap[bid], candidate)) {
+                        _docIpdAllottedDoctorMap[bid] = candidate;
+                    }
+                    if (bid && pract && isActive &&
+                        (taskLower === 'ip rounds' || taskLower === 'ip discharge') &&
+                        pract.toLowerCase() === (_docOwnPeopleId || '').toLowerCase()) {
+                        _docIpdReviewApptMap[bid] = {
+                            clinicalappointmentid: docListPick(a, ['ClinicalAppointmentid', 'clinicalappointmentid'], ''),
+                            tasktype: task
+                        };
+                    }
+                }
+            });
+            Object.keys(_docIpdAllottedDoctorMap).forEach(function (bookingId) {
+                var assignment = _docIpdAllottedDoctorMap[bookingId];
+                if (assignment.isActive) _docIpdClinicalApptMap[bookingId] = assignment.peopleId;
+            });
+            var patientProfileRows = docListParseApi(results[2]);
+            _docPatientProfileMap = docListBuildPatientProfileMap(patientProfileRows);
+            _docPatientProfileLookupMap = docListBuildPatientProfileLookupMap(patientProfileRows);
+            var doctorRows = docListParseApi(results[3]);
+            _docDoctorNameMap = {};
+            docPopulateIPDDoctorFilter(doctorRows, _docIpdAllottedDoctorMap);
+            var rows   = docListParseApi(results[0]);
+            var mapped = rows.map(docMapIpdRow);
+            // Keep the complete list; the doctor dropdown controls the visible subset.
+            DOC_IPD_PATIENTS = docFilterIPDByDoctor(mapped);
+            docRenderIPDList(DOC_IPD_PATIENTS);
+            var el = document.getElementById('docTabCountIPD');
+            if (el) el.textContent = String(DOC_IPD_PATIENTS.length);
+        }).catch(function () {
+            DOC_IPD_PATIENTS = [];
+            docRenderIPDList([]);
+            var el = document.getElementById('docTabCountIPD');
+            if (el) el.textContent = '0';
+        });
+    }
+
+    /* ── Fetch OPD list ──
+       Keep every visible OPD, but place the logged-in doctor's assigned patients
+       first. Array#sort is stable, so the API order is retained within each group. */
+    function docPrioritizeOPDForDoctor(list) {
+        var doctorId = (_docOwnPeopleId || DOC_LOGIN_ID || '').toString().trim().toLowerCase();
+        if (!doctorId) return list.slice();
+        return list.slice().sort(function (a, b) {
+            var aDoctor = (a.preferredDoctorId || '').toString().trim().toLowerCase();
+            var bDoctor = (b.preferredDoctorId || '').toString().trim().toLowerCase();
+            return Number(bDoctor === doctorId) - Number(aDoctor === doctorId);
+        });
+    }
+
+    function docFetchOPDList() {
+        if (!DOC_TENANT_ID) { DOC_OPD_FORMS = []; docRenderOPDList([]); return; }
+        var url = DOC_OPD_LIST_URL +
+            '?tenantid=' + encodeURIComponent(DOC_TENANT_ID) +
+            '&patientname=&verifiedstatus=' +
+            
+            '&pagesize=200&pagenumber=0&searchterm=&sort_fields=' + 
+                 '&createddate_automatonfrom=' + encodeURIComponent(getPeriodFromDate()) +
+    '&createddate_automatonto=' + encodeURIComponent(getPeriodToDate()) ;
+        fetch(url).then(function (res) { return res.text(); }).catch(function () { return '[]'; })
+        .then(function (result) {
+                var rows = docListParseApi(result);
+                var mapped = rows.map(docMapOpdRow);
+                DOC_OPD_FORMS = docPrioritizeOPDForDoctor(mapped);
+                docRenderOPDList(DOC_OPD_FORMS);
+                var el = document.getElementById('docTabCountOPD');
+                if (el) el.textContent = String(DOC_OPD_FORMS.length);
+            })
+            .catch(function () {
+                DOC_OPD_FORMS = [];
+                docRenderOPDList([]);
+                var el = document.getElementById('docTabCountOPD');
+                if (el) el.textContent = '0';
+            });
+    }
+
+    /* ── Init ── */
+    (function init(){
+        docRenderDay();
+
+        if (DOC_ROLE.toLowerCase().includes('doctor')  && DOC_LOGIN_ID) {
+            /* Resolve logged-in doctor's Peopleid first so the allotted-doctor
+               check in docBuildIpdActions has _docOwnPeopleId available. */
+            fetch(DOC_PEOPLEID_URL + '?usersid=' + encodeURIComponent(DOC_LOGIN_ID))
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data && data.peopleid) {
+                        _docOwnPeopleId = data.peopleid;
+                        _docPractId     = data.peopleid;
+                    }
+                })
+                .catch(function() {})
+                .finally(function() {
+                    docLoadDoctors();
+                    docFetchIPDList();
+                    docFetchOPDList();
+                });
+        } else {
+            docLoadDoctors();
+            docFetchIPDList();
+            docFetchOPDList();
+        }
+    })();
+</script>
+
+
+
+<script>
+
+                var periodstart = null;
+    var periodend = null;
+
+           function formatDateYMD(date) {
+        var y = date.getFullYear();
+        var m = ('0' + (date.getMonth() + 1)).slice(-2);
+        var d = ('0' + date.getDate()).slice(-2);
+        return y + '-' + m + '-' + d;
+    }
+
+    function getPeriodFromDate() {
+        if (periodstart) return periodstart;
+
+        var d = new Date();
+        d.setDate(d.getDate() - 29);
+        return formatDateYMD(d);
+    }
+
+    function getPeriodToDate() {
+        if (periodend) return periodend;
+
+        var d = new Date();
+        d.setDate(d.getDate() + 1);
+        return formatDateYMD(d);
+    }
+</script>
+
+        <script>
+               $(function () {
+
+        // Default Last 30 Days
+        var start = moment().subtract(29, 'days');
+        var end = moment();
+
+        // Store default values
+        periodstart = start.format('YYYY-MM-DD');
+        periodend = end.clone().add(1, 'days').format('YYYY-MM-DD');
+
+        function cb(start, end) {
+            $('#period span')
+                .removeClass('placeholder')
+                .html(start.format('MMM D, YYYY') + ' - ' + end.format('MMM D, YYYY'));
+        }
+
+        $('#period').daterangepicker({
+            startDate: start,
+            endDate: end,
+            ranges: {
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                'This Month': [moment().startOf('month'), moment().endOf('month')],
+                'Last Month': [
+                    moment().subtract(1, 'month').startOf('month'),
+                    moment().subtract(1, 'month').endOf('month')
+                ],
+                'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+                'Last 365 Days': [moment().subtract(364, 'days'), moment()]
+            },
+            autoUpdateInput: false
+        }, cb);
+
+        // Show Last 30 Days in UI by default
+        cb(start, end);
+
+        $('#period').on('apply.daterangepicker', function (ev, picker) {
+
+            periodstart = picker.startDate.format('YYYY-MM-DD');
+            periodend = picker.endDate.clone().add(1, 'days').format('YYYY-MM-DD');
+
+            $('#period span').removeClass('placeholder');
+
+                docFetchIPDList();
+    docFetchOPDList();
+        });
+
+    });
+        </script>
+
+<script>
+    setInterval(function () {
+        if (!document.hidden) {
+            docRefresh();      // Schedule tab
+            docFetchIPDList(); // IPD List
+            docFetchOPDList(); // OPD List
+        }
+    }, 60000);
+
+    /* ── Row click → view page ── */
+    document.addEventListener('click', function(e) {
+        if (e.target.closest('a, button')) return;
+        var tr = e.target.closest('tr[data-href]');
+        if (tr) window.location.href = tr.dataset.href;
+    });
+</script>
+
+            <script>
+                    function docBuildIpdRoomStatusPill(status) {
+        var s = (status || '').toString().trim();
+
+        if (!s || s === '-') {
+            return '<span style="color:#94a3b8;font-size:11px;">&mdash;</span>';
+        }
+
+        return '<span class="doc-list-pill doc-list-pill--red">' + docListEsc(s) + '</span>';
+    }
+            </script>
+
+            <script>
+                    function docBuildOpdFinancialStatusPill(status) {
+        var s = (status || '').toString().trim();
+
+        if (!s || s === '-') {
+            return '<span style="color:#94a3b8;font-size:11px;">&mdash;</span>';
+        }
+
+        return '<span class="doc-list-pill doc-list-pill--green">' + docListEsc(s) + '</span>';
+    }
+            </script>

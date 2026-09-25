@@ -1,0 +1,200 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:41:47 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.TherapyKitModel
+					@{
+					ViewData["Title"] = "Therapy Kit";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+						   
+							
+							<div class="row printablerow"  style="padding:20px"> 
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Therapy Kit</b>
+							</h3>
+				
+							<br />
+							</div>
+							<div class="col-sm-3 col-xs-12 p-2 therapykitname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="therapykitname">@Resource.therapykit_therapykitname</label><br>
+										<span class="auto_cls_therapykitname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent kititemsContainerBodyParent hide"><!--Dependent Kit Items Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.kititems
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="kititemsContainer" class="table table-bordered mb-0 kititemsContainer">
+							<thead id="kititemsContainerHead">
+								<th>Therapy Item</th>
+<th>Price</th>
+<th>Count</th>
+<th>Line Total</th>
+
+
+							</thead>
+							
+							<tbody id="kititemsContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Kit Items Containder Block-->
+			 
+			
+<div class="col-sm-3 col-xs-12 p-2 kitprice_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="kitprice">@Resource.therapykit_kitprice</label><br>
+										<span class="auto_cls_kitprice"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('TherapyKit.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_TherapyKit_view_data(){
+
+					   var  TherapyKitid = getUrlVars()["TherapyKitid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_TherapyKit")',
+												dataType: 'json',
+												data:{TherapyKitid: TherapyKitid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='automaton_TherapyKit_kititems'){
+																			$('#kititemsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + TherapyKitid +'&section=automaton_TherapyKit_kititems_history'
+																					 $(".kititemsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("TherapyKit","versionhistory")
+																				if(Actions == undefined){
+																				$("kititemsauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.kititemsContainerBodyParent').removeClass('hide')      
+																			   $('#kititemsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.kititemsContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_TherapyKit_view_data()
+
+
+					/*var Actions=getAutho("TherapyKit","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						
+						$(document).ready(function () {
+							
+						});
+					</script>
+					
+					
+					

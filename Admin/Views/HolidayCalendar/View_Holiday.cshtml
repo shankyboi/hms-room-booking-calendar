@@ -1,0 +1,199 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/30/2026 12:49:21 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.HolidayCalendarModel
+					@{
+					ViewData["Title"] = "Holiday Calendar";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+						   
+							
+							<div class="row printablerow"  style="padding:20px"> 
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Holiday Calendar</b>
+							</h3>
+				
+							<br />
+							</div>
+							<div class="col-sm-3 col-xs-12 p-2 holidayname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="holidayname">@Resource.holidaycalendar_holidayname</label><br>
+										<span class="auto_cls_holidayname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 holidaydate_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="holidaydate">@Resource.holidaycalendar_holidaydate</label><br>
+										<span class="auto_cls_holidaydate"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent taskallowedContainerBodyParent hide"><!--Dependent Task Allowed Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.taskallowed
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="taskallowedContainer" class="table table-bordered mb-0 taskallowedContainer">
+							<thead id="taskallowedContainerHead">
+								<th>Task Name</th>
+<th>Is Allowed ?</th>
+<th>Count</th>
+
+
+							</thead>
+							
+							<tbody id="taskallowedContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Task Allowed Containder Block-->
+			 
+			
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('HolidayCalendar.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_HolidayCalendar_view_data(){
+
+					   var  HolidayCalendarid = getUrlVars()["HolidayCalendarid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_HolidayCalendar")',
+												dataType: 'json',
+												data:{HolidayCalendarid: HolidayCalendarid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='automaton_HolidayCalendar_taskallowed'){
+																			$('#taskallowedContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + HolidayCalendarid +'&section=automaton_HolidayCalendar_taskallowed_history'
+																					 $(".taskallowedauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("HolidayCalendar","versionhistory")
+																				if(Actions == undefined){
+																				$("taskallowedauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.taskallowedContainerBodyParent').removeClass('hide')      
+																			   $('#taskallowedContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.taskallowedContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_HolidayCalendar_view_data()
+
+
+					/*var Actions=getAutho("HolidayCalendar","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						
+						$(document).ready(function () {
+							
+						});
+					</script>
+					
+					
+					

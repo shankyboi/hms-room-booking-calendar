@@ -1,0 +1,1385 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@using Newtonsoft.Json.Linq
+@using System.Collections.Generic
+@using System.Globalization
+@using System.Linq
+
+@functions {
+    public class BillingRoomStatementRow
+    {
+        public string AllottedTo { get; set; } = "-";
+        public string RoomNo { get; set; } = "-";
+        public string ChargeSource { get; set; } = "";
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public int Days { get; set; } = 1;
+        public decimal CostPerDay { get; set; }
+        public decimal LineTotal { get; set; }
+    }
+
+    private static readonly string[] BillingDateFormats = new[]
+  {
+    "yyyy-MM-dd",
+    "yyyy-MM-dd HH:mm:ss",
+    "yyyy-MM-ddTHH:mm:ss",
+    "yyyy-MM-ddTHH:mm:ss.fff",
+
+    "MM/dd/yyyy",
+    "M/d/yyyy",
+    "MM/dd/yyyy HH:mm:ss",
+    "M/d/yyyy HH:mm:ss",
+
+    "dd/MM/yyyy",
+    "d/M/yyyy",
+    "dd/MM/yyyy HH:mm:ss",
+    "d/M/yyyy HH:mm:ss",
+
+    "dd-MM-yyyy",
+    "d-M-yyyy",
+    "dd-MM-yyyy HH:mm:ss",
+    "d-M-yyyy HH:mm:ss"
+};
+
+    private static bool TryParseBillingDate(string value, out DateTime date)
+    {
+        value = (value ?? "").Trim();
+        if (DateTime.TryParseExact(value, BillingDateFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        {
+            date = date.Date;
+            return true;
+        }
+
+        if (DateTime.TryParse(value, CultureInfo.GetCultureInfo("en-IN"), DateTimeStyles.None, out date))
+        {
+            date = date.Date;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static string GetDynamicString(object item, string name)
+    {
+        if (item is JObject jobj && jobj.TryGetValue(name, StringComparison.OrdinalIgnoreCase, out var token))
+            return token?.ToString() ?? "";
+
+        if (item is IDictionary<string, object> dict && dict.TryGetValue(name, out var value))
+            return value?.ToString() ?? "";
+
+        var prop = item?.GetType().GetProperty(name);
+        return prop?.GetValue(item)?.ToString() ?? "";
+    }
+
+    private static decimal GetDynamicDecimal(object item, string name)
+    {
+        var raw = GetDynamicString(item, name);
+        return decimal.TryParse(raw, NumberStyles.Any, CultureInfo.InvariantCulture, out var value)
+            ? value
+            : 0m;
+    }
+
+    private static bool IsRefundPayment(object payment)
+    {
+        var receivableFor = GetDynamicString(payment, "receivablefor");
+        var paymentStatus = GetDynamicString(payment, "paymentstatus");
+        var refundStatus = GetDynamicString(payment, "refundstatus");
+
+        return receivableFor.IndexOf("refund", StringComparison.OrdinalIgnoreCase) >= 0
+            || paymentStatus.IndexOf("refund", StringComparison.OrdinalIgnoreCase) >= 0
+            || !string.IsNullOrWhiteSpace(refundStatus)
+            || GetDynamicDecimal(payment, "refundedamount") > 0m;
+    }
+
+    private static string GetPaymentDateDisplay(object payment)
+    {
+        var rawDate = GetDynamicString(payment, "paymentdate");
+        if (string.IsNullOrWhiteSpace(rawDate))
+            return "-";
+
+        return DateTime.TryParse(rawDate, CultureInfo.GetCultureInfo("en-IN"), DateTimeStyles.None, out var parsedDate)
+            ? parsedDate.ToString("dd/MM/yyyy")
+            : rawDate;
+    }
+
+    private static decimal GetRefundAmount(object payment)
+    {
+        var refundedAmount = GetDynamicDecimal(payment, "refundedamount");
+        if (refundedAmount != 0m)
+            return Math.Abs(refundedAmount);
+
+        var amount = GetDynamicDecimal(payment, "amount");
+        if (amount != 0m)
+            return Math.Abs(amount);
+
+        return Math.Abs(GetDynamicDecimal(payment, "receivedamount"));
+    }
+
+    private static string FormatBillingDate(DateTime? date)
+    {
+        return date.HasValue ? date.Value.ToString("dd/MM/yyyy") : "-";
+    }
+
+    private static string FormatBillingDateTime(string value)
+    {
+        value = (value ?? "").Trim();
+        if (string.IsNullOrWhiteSpace(value))
+            return "-";
+
+        if (DateTime.TryParse(value, CultureInfo.GetCultureInfo("en-IN"), DateTimeStyles.None, out var date))
+            return date.ToString("dd/MM/yyyy HH:mm");
+
+        return value;
+    }
+
+    private static decimal GetRoomCost(JToken room, string role)
+    {
+        var patientCpd = (decimal?)room["costperday"] ?? 0m;
+        var attendantCpd = (decimal?)room["attendantcostperday"] ?? 0m;
+        return role.Equals("Attendant", StringComparison.OrdinalIgnoreCase) ? attendantCpd : patientCpd;
+    }
+
+    private static string GetRoomChargeSource(string remarks)
+    {
+        remarks = (remarks ?? "").Trim();
+        var separatorIndex = remarks.IndexOf(':');
+        return separatorIndex > 0 ? remarks.Substring(0, separatorIndex) : remarks;
+    }
+
+    private static int GetBillableOccupantCount(string allottedTo)
+    {
+        allottedTo = allottedTo ?? "";
+        var hasPatient = allottedTo.IndexOf("Patient", StringComparison.OrdinalIgnoreCase) >= 0;
+        var hasAttendant = allottedTo.IndexOf("Attendant", StringComparison.OrdinalIgnoreCase) >= 0;
+        return hasPatient && hasAttendant ? 2 : 1;
+    }
+
+    private static string GetReceivableRoomNumber(object receivable)
+    {
+        var roomNumber = GetDynamicString(receivable, "roomnumber").Trim();
+        if (!string.IsNullOrWhiteSpace(roomNumber) && roomNumber != "-" && !Guid.TryParse(roomNumber, out _))
+            return roomNumber;
+
+        roomNumber = GetDynamicString(receivable, "room_master").Trim();
+        if (!string.IsNullOrWhiteSpace(roomNumber) && roomNumber != "-" && !Guid.TryParse(roomNumber, out _))
+            return roomNumber;
+
+        roomNumber = GetDynamicString(receivable, "room").Trim();
+        return Guid.TryParse(roomNumber, out _) ? "" : roomNumber;
+    }
+
+    private static string ResolveRoomNumber(JArray roomDetails, string role, DateTime date, decimal amount)
+    {
+        string fallback = "-";
+
+        foreach (var room in roomDetails)
+        {
+            var roomRole = (room["allottedto"]?.ToString() ?? "").Trim();
+            if (!roomRole.Equals(role, StringComparison.OrdinalIgnoreCase)) continue;
+
+            var roomNo = (room["roomnumber"]?.ToString() ?? "").Trim();
+            if (!string.IsNullOrWhiteSpace(roomNo) && roomNo != "-")
+                fallback = roomNo;
+
+            if (!TryParseBillingDate(room["fromdate"]?.ToString(), out var fromDate) ||
+                !TryParseBillingDate(room["todate"]?.ToString(), out var toDate)) continue;
+
+            if (date < fromDate || date > toDate) continue;
+
+            if (GetRoomCost(room, role) == amount)
+                return string.IsNullOrWhiteSpace(roomNo) ? "-" : roomNo;
+        }
+
+        if (fallback == "-")
+        {
+            foreach (var room in roomDetails)
+            {
+                var roomNo = (room["roomnumber"]?.ToString() ?? "").Trim();
+                if (!string.IsNullOrWhiteSpace(roomNo) && roomNo != "-")
+                    return roomNo;
+            }
+        }
+
+        return fallback;
+    }
+    
+
+    private static string GetBillingItemDescription(object receivable)
+    {
+        var receivableFor = GetDynamicString(receivable, "receivablefor");
+        var remarks = GetDynamicString(receivable, "remarks");
+
+        if (!receivableFor.Equals("Room", StringComparison.OrdinalIgnoreCase))
+        {
+            return string.IsNullOrWhiteSpace(receivableFor) ? "-" : receivableFor;
+        }
+
+        if (remarks.IndexOf("AttendantWaivedForSharedRoom", StringComparison.OrdinalIgnoreCase) >= 0)
+        {
+            return "Room (Attendant - Waived)";
+        }
+
+        bool hasPatient = remarks.IndexOf("Patient", StringComparison.OrdinalIgnoreCase) >= 0;
+        bool hasAttendant = remarks.IndexOf("Attendant", StringComparison.OrdinalIgnoreCase) >= 0;
+
+        if (hasPatient && hasAttendant)
+        {
+            return "Room (Patient + Attendant)";
+        }
+
+        if (hasAttendant)
+        {
+            return "Room (Attendant)";
+        }
+
+        if (hasPatient)
+        {
+            return "Room (Patient)";
+        }
+
+        return "Room";
+    }
+
+
+    private static List<BillingRoomStatementRow> BuildRoomRowsFromBackend(JArray roomDetails, int fallbackDays)
+    {
+        var rows = new List<BillingRoomStatementRow>();
+
+        foreach (var room in roomDetails)
+        {
+            var role = (room["allottedto"]?.ToString() ?? "-").Trim();
+
+            DateTime fromDate = DateTime.MinValue;
+            DateTime toDate = DateTime.MinValue;
+
+            bool hasFromDate = TryParseBillingDate(room["fromdate"]?.ToString(), out fromDate);
+            bool hasToDate = TryParseBillingDate(room["todate"]?.ToString(), out toDate);
+            bool hasDates = hasFromDate && hasToDate;
+
+            int rowDays = hasDates
+                ? Math.Max(1, (toDate.Date - fromDate.Date).Days + 1)
+                : fallbackDays;
+
+            decimal costPerDay = GetRoomCost(room, role);
+
+            string roomNo = (room["roomnumber"]?.ToString() ?? "").Trim();
+
+            if (string.IsNullOrWhiteSpace(roomNo) || roomNo == "-")
+                roomNo = (room["roomno"]?.ToString() ?? "-").Trim();
+
+            decimal receivableRoomTotal = 0m;
+
+            bool hasReceivableRoomTotal =
+                room["receivableroomtotal"] != null &&
+                room["receivableroomtotal"].Type != JTokenType.Null &&
+                decimal.TryParse(
+                    room["receivableroomtotal"]?.ToString(),
+                    NumberStyles.Any,
+                    CultureInfo.InvariantCulture,
+                    out receivableRoomTotal
+                );
+
+            rows.Add(new BillingRoomStatementRow
+            {
+                AllottedTo = string.IsNullOrWhiteSpace(role) ? "-" : role,
+                RoomNo = string.IsNullOrWhiteSpace(roomNo) ? "-" : roomNo,
+                FromDate = hasDates ? fromDate : (DateTime?)null,
+                ToDate = hasDates ? toDate : (DateTime?)null,
+                Days = rowDays,
+
+                // Keep this existing value, but do not display it.
+                CostPerDay = costPerDay,
+
+                // Display total from receivable if available.
+                LineTotal = hasReceivableRoomTotal
+                    ? receivableRoomTotal
+                    : costPerDay * rowDays
+            });
+        }
+
+        return rows
+            .OrderBy(x => x.FromDate)
+            .ThenBy(x => x.AllottedTo)
+            .ToList();
+    }
+    private static List<BillingRoomStatementRow> BuildRoomStatementRows(List<dynamic> receivables, JArray roomDetails, int fallbackDays)
+    {
+        var dailyRows = new List<BillingRoomStatementRow>();
+
+        if (receivables != null)
+        {
+            foreach (var receivable in receivables)
+            {
+                var receivableFor = GetDynamicString(receivable, "receivablefor");
+                if (!receivableFor.Equals("Room", StringComparison.OrdinalIgnoreCase)) continue;
+
+                DateTime chargeDate;
+                if (!TryParseBillingDate(GetDynamicString(receivable, "receivabledate"), out chargeDate)) continue;
+
+                var amount = GetDynamicDecimal(receivable, "amount");
+                if (amount <= 0) continue;
+
+                var remarks = GetDynamicString(receivable, "remarks");
+                bool remarkHasPatient = remarks.IndexOf("Patient", StringComparison.OrdinalIgnoreCase) >= 0;
+                bool remarkHasAttendant = remarks.IndexOf("Attendant", StringComparison.OrdinalIgnoreCase) >= 0;
+                var role = (remarkHasPatient && remarkHasAttendant) ? "Patient, Attendant"
+                         : remarkHasAttendant ? "Attendant"
+                         : "Patient";
+                var receivableRoomNo = GetReceivableRoomNumber(receivable);
+
+                dailyRows.Add(new BillingRoomStatementRow
+                {
+                    AllottedTo = role,
+                    RoomNo = string.IsNullOrWhiteSpace(receivableRoomNo)
+                        ? ResolveRoomNumber(roomDetails, role, chargeDate, amount)
+                        : receivableRoomNo,
+                    ChargeSource = GetRoomChargeSource(remarks),
+                    FromDate = chargeDate,
+                    ToDate = chargeDate,
+                    Days = 1,
+                    CostPerDay = amount,
+                    LineTotal = amount * GetBillableOccupantCount(role)
+                });
+            }
+        }
+
+        if (dailyRows.Count > 0)
+        {
+            var grouped = new List<BillingRoomStatementRow>();
+            foreach (var row in dailyRows.OrderBy(x => x.AllottedTo).ThenBy(x => x.RoomNo).ThenBy(x => x.CostPerDay).ThenBy(x => x.ChargeSource).ThenBy(x => x.FromDate))
+            {
+                var previous = grouped.LastOrDefault();
+                if (previous != null &&
+                    previous.AllottedTo.Equals(row.AllottedTo, StringComparison.OrdinalIgnoreCase) &&
+                    previous.RoomNo.Equals(row.RoomNo, StringComparison.OrdinalIgnoreCase) &&
+                    previous.ChargeSource.Equals(row.ChargeSource, StringComparison.OrdinalIgnoreCase) &&
+                    previous.CostPerDay == row.CostPerDay &&
+                    previous.ToDate.HasValue &&
+                    row.FromDate.HasValue &&
+                    previous.ToDate.Value.AddDays(1) == row.FromDate.Value)
+                {
+                    previous.ToDate = row.ToDate;
+                    previous.Days += 1;
+                    previous.LineTotal += row.LineTotal;
+                }
+                else
+                {
+                    grouped.Add(row);
+                }
+            }
+
+            return grouped.OrderBy(x => x.FromDate).ThenBy(x => x.AllottedTo).ToList();
+        }
+
+        var fallbackRows = new List<BillingRoomStatementRow>();
+        foreach (var room in roomDetails)
+        {
+            var role = (room["allottedto"]?.ToString() ?? "").Trim();
+            var cost = GetRoomCost(room, role);
+            DateTime fromDate = DateTime.MinValue;
+            DateTime toDate = DateTime.MinValue;
+            var hasDates = TryParseBillingDate(room["fromdate"]?.ToString(), out fromDate) &&
+                           TryParseBillingDate(room["todate"]?.ToString(), out toDate);
+            var rowDays = hasDates ? Math.Max(1, (toDate - fromDate).Days + 1) : fallbackDays;
+
+            fallbackRows.Add(new BillingRoomStatementRow
+            {
+                AllottedTo = string.IsNullOrWhiteSpace(role) ? "-" : role,
+                RoomNo = (room["roomnumber"]?.ToString() ?? "-").Trim(),
+                FromDate = hasDates ? fromDate : (DateTime?)null,
+                ToDate = hasDates ? toDate : (DateTime?)null,
+                Days = rowDays,
+                CostPerDay = cost,
+                LineTotal = cost * rowDays * GetBillableOccupantCount(role)
+            });
+        }
+
+        return fallbackRows;
+    }
+}
+
+@{
+    ViewData["Title"] = "IPD Billing Statement";
+    Layout = null;
+
+    var summary = ViewBag.Summary as NalamVazha.Models.IPDBillingSummaryModel;
+    var receivables = ViewBag.Receivables as List<dynamic>;
+    var payments = ViewBag.Payments as List<dynamic>;
+    var receivedPayments = payments == null
+        ? new List<dynamic>()
+        : payments.Where(p => !IsRefundPayment(p)).ToList();
+    var refundPayments = payments == null
+        ? new List<dynamic>()
+        : payments.Where(IsRefundPayment).ToList();
+    var generatedOn = ViewBag.GeneratedOn as string ?? DateTime.Now.ToString("dd/MM/yyyy hh:mm tt");
+    var isEstimatedBill = summary != null
+        && string.Equals(summary.bookingstatus, "Admitted", StringComparison.OrdinalIgnoreCase);
+
+    decimal totalReceivable = 0m;
+    decimal billingItemsTotal = 0m;
+    decimal totalReceivablePaid = 0m;
+    decimal totalReceivableBalance = 0m;
+
+    if (receivables != null)
+    {
+        foreach (var r in receivables)
+        {
+            try
+            {
+                var receivableAmount = Convert.ToDecimal(r.amount);
+                totalReceivable += receivableAmount;
+                var itemDescription = GetBillingItemDescription(r);
+                if (!itemDescription.Equals("Discount", StringComparison.OrdinalIgnoreCase)
+                    && !itemDescription.Equals("Concession", StringComparison.OrdinalIgnoreCase))
+                {
+                    billingItemsTotal += receivableAmount;
+                }
+            }
+            catch { }
+            try { totalReceivablePaid += (decimal)r.paidamount; } catch { }
+            try { totalReceivableBalance += (decimal)r.balance; } catch { }
+        }
+    }
+
+    decimal totalPaymentsMade = 0m;
+    if (payments != null)
+    {
+        foreach (var p in payments)
+        {
+            try { totalPaymentsMade += (decimal)p.amount; } catch { }
+        }
+    }
+
+    decimal totalCollected = totalPaymentsMade > 0 ? totalPaymentsMade : totalReceivablePaid;
+
+    var roomDetails = new JArray();
+    if (summary != null && !string.IsNullOrWhiteSpace(summary.blocked_room_details_json))
+    {
+        try { roomDetails = JArray.Parse(summary.blocked_room_details_json); }
+        catch { roomDetails = new JArray(); }
+    }
+
+    var days = (summary?.daysofstay ?? 1) > 0 ? (summary?.daysofstay ?? 1) : 1;
+
+    var roomStatementRows = BuildRoomRowsFromBackend(roomDetails, days); decimal roomGrandTotal = roomStatementRows.Sum(x => x.LineTotal);
+
+    var hasReceivables = receivables != null && receivables.Count > 0;
+    decimal grandTotal = hasReceivables ? totalReceivable : roomGrandTotal;
+    decimal displayedItemsTotal = hasReceivables ? billingItemsTotal : roomGrandTotal;
+
+decimal totalReceived = totalCollected;
+
+decimal totalExtraPaid = 0m;
+decimal totalBalance = 0m;
+
+if (totalReceived > grandTotal)
+{
+    totalExtraPaid = totalReceived - grandTotal;
+    totalBalance = 0m;
+}
+else
+{
+    totalExtraPaid = 0m;
+    totalBalance = grandTotal - totalReceived;
+}
+    decimal netBalance = grandTotal - totalCollected;
+
+    string bookingRef = summary?.bookingreferencenumber ?? "-";
+    string tenantName = summary != null
+      ? Convert.ToString(summary.tenantname)
+      : "Hospital";
+
+    string organizationLogo = summary != null
+        ? Convert.ToString(summary.organizationlogo)
+        : "";
+
+    string tenantAddress = summary != null
+        ? Convert.ToString(summary.addressline1)
+        : "";
+
+    string currencyCode = "INR";
+    string logoUrl = "";
+
+    if (!string.IsNullOrWhiteSpace(organizationLogo))
+    {
+        organizationLogo = organizationLogo.Replace("|", "").Trim();
+
+        logoUrl =
+            (HttpContextAccessor.HttpContext.Session.GetString("NalamVazhacloudpath") ?? "").TrimEnd('/')
+            + "/"
+            + organizationLogo
+            + (HttpContextAccessor.HttpContext.Session.GetString("NalamVazhaSAStoken") ?? "");
+    }
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>IPD Billing Statement - @bookingRef</title>
+
+    <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 10px;
+                color: #111827;
+                background: #fff;
+            }
+
+            .page {
+                padding: 24px 28px;
+                max-width: 1100px;
+                margin: 0 auto;
+                background: #fff;
+            }
+
+            .no-print {
+                padding: 10px 16px;
+                background: #f8f9fa;
+                border-bottom: 1px solid #dee2e6;
+            }
+
+            .btn-print,
+            .btn-print:hover,
+            .btn-print:focus,
+            .btn-print:active {
+                background: linear-gradient(135deg, #2d5f44, #1a4a36);
+                color: #fff !important;
+                border: none;
+                padding: 7px 16px;
+                font-size: 11px;
+                cursor: pointer;
+                border-radius: 3px;
+                font-weight: 700;
+                text-decoration: none !important;
+                display: inline-block;
+            }
+
+            @@media print {
+                .no-print {
+                    display: none !important;
+                }
+
+                .page {
+                    padding: 16px;
+                    max-width: 100%;
+                }
+            }
+
+            .bill-header {
+                display: flex;
+                align-items: stretch;
+                margin-bottom: 20px;
+                border-radius: 4px;
+                overflow: hidden;
+                box-shadow: 0 2px 6px rgba(0,0,0,.10);
+            }
+
+            .bill-header-accent {
+                width: 6px;
+                background: #1a4a36;
+                flex-shrink: 0;
+            }
+
+            .bill-header-content {
+                background: linear-gradient(135deg, #2d5f44, #1a4a36);
+                flex: 1;
+                padding: 12px 20px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .bill-header-title {
+                font-size: 15px;
+                font-weight: 700;
+                color: #fff;
+                letter-spacing: .3px;
+            }
+
+            .bill-estimated-label {
+                display: inline-block;
+                margin-left: 8px;
+                padding: 3px 9px;
+                border-radius: 999px;
+                background: #fef3c7;
+                color: #92400e;
+                font-size: 11px;
+                font-weight: 700;
+                vertical-align: middle;
+            }
+
+            .bill-header-subtitle {
+                font-size: 9.5px;
+                color: rgba(255,255,255,.70);
+                margin-top: 2px;
+            }
+
+            .bill-ipd-badge {
+                background: rgba(255,255,255,.15);
+                border: 1px solid rgba(255,255,255,.30);
+                border-radius: 4px;
+                padding: 5px 12px;
+                color: #fff;
+                font-size: 12px;
+                font-weight: 700;
+                white-space: nowrap;
+            }
+
+            .top-row {
+                display: flex;
+                align-items: center;
+                margin-bottom: 18px;
+            }
+
+            .tenant-name {
+                font-size: 18px;
+                font-weight: 700;
+                color: #111827;
+                text-transform: uppercase;
+                letter-spacing: .4px;
+                line-height: 1;
+            }
+
+            .tenant-sub {
+                font-size: 9.5px;
+                color: #6b7280;
+                margin-top: 2px;
+            }
+
+            .two-col-box {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                border: 1px solid #e0e0e0;
+                border-radius: 4px;
+                overflow: hidden;
+                margin-bottom: 14px;
+            }
+
+            .info-section {
+                padding: 10px 14px;
+                border-right: 1px solid #e0e0e0;
+                background: #fff;
+            }
+
+                .info-section:last-child {
+                    border-right: none;
+                }
+
+            .section-title {
+                font-size: 10.5px;
+                font-weight: 700;
+                color: #2d5f44;
+                margin-bottom: 8px;
+            }
+
+            .info-grid {
+                display: grid;
+                grid-template-columns: 130px 1fr;
+                row-gap: 6px;
+            }
+
+            .label {
+                color: #6b7280;
+                font-weight: 500;
+                font-size: 9.5px;
+            }
+
+            .value {
+                color: #111827;
+                font-weight: 600;
+                font-size: 9.5px;
+            }
+
+            .pmt-section-title {
+                font-size: 10.5px;
+                font-weight: 700;
+                color: #111827;
+                margin: 14px 0 6px;
+            }
+
+            .pmt-intro {
+                font-size: 9px;
+                color: #4b5563;
+                line-height: 1.5;
+                margin-bottom: 8px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 9.5px;
+                margin-bottom: 12px;
+            }
+
+            th {
+                background: #f0f7f4;
+                color: #1a4a36;
+                padding: 7px 8px;
+                text-align: left;
+                font-weight: 700;
+                border: 1px solid #d1e7dd;
+                white-space: nowrap;
+                font-size: 9px;
+            }
+
+            td {
+                padding: 6px 8px;
+                border: 1px solid #e0e0e0;
+                color: #111827;
+                vertical-align: middle;
+                font-size: 9.5px;
+            }
+
+            tbody tr:nth-child(even) {
+                background: #f9fafb;
+            }
+
+            tfoot td {
+                background: #f0f7f4;
+                font-weight: 700;
+                border: 1px solid #d1e7dd;
+            }
+
+            .pmt-table th {
+                background: #f9fafb;
+                border: 1px solid #e0e0e0;
+                color: #374151;
+            }
+
+            .pmt-table tr.pmt-data-row td {
+                background: #eef5f1;
+                font-weight: 700;
+            }
+
+            .pmt-balance {
+                color: #b91c1c !important;
+            }
+
+            .summary-left-heading {
+                font-size: 12px;
+                font-weight: 700;
+                color: #111827;
+                margin: 16px 0 10px;
+            }
+
+            .section-heading {
+                font-size: 10.5px;
+                font-weight: 700;
+                color: #2d5f44;
+                margin: 14px 0 8px;
+            }
+
+            .text-right {
+                text-align: right !important;
+            }
+
+            .text-center {
+                text-align: center !important;
+            }
+
+            .total-label {
+                text-align: right;
+                font-weight: 700;
+            }
+
+            .status-paid {
+                display: inline-block;
+                background: #dcfce7;
+                color: #166534;
+                font-size: 8.5px;
+                font-weight: 700;
+                padding: 2px 7px;
+                border-radius: 10px;
+                white-space: nowrap;
+            }
+
+            .status-pending {
+                display: inline-block;
+                background: #fff7ed;
+                color: #9a3412;
+                font-size: 8.5px;
+                font-weight: 700;
+                padding: 2px 7px;
+                border-radius: 10px;
+                white-space: nowrap;
+            }
+
+            .status-partial {
+                display: inline-block;
+                background: #fef3c7;
+                color: #92400e;
+                font-size: 8.5px;
+                font-weight: 700;
+                padding: 2px 7px;
+                border-radius: 10px;
+                white-space: nowrap;
+            }
+
+            .status-other {
+                display: inline-block;
+                background: #e0e7ff;
+                color: #3730a3;
+                font-size: 8.5px;
+                font-weight: 700;
+                padding: 2px 7px;
+                border-radius: 10px;
+                white-space: nowrap;
+            }
+
+            .empty-cell {
+                text-align: center;
+                color: #777;
+                font-style: italic;
+                padding: 14px !important;
+            }
+
+            .invoice-summary-wrap {
+                display: flex;
+                justify-content: flex-end;
+                margin-top: -8px;
+                margin-bottom: 12px;
+            }
+
+            .invoice-summary-table {
+                width: 340px;
+                border-collapse: collapse;
+                font-size: 9.5px;
+            }
+
+                .invoice-summary-table td {
+                    padding: 5px 8px;
+                    border: 1px solid #e0e0e0;
+                    color: #111827;
+                }
+
+                .invoice-summary-table tr td:first-child {
+                    color: #374151;
+                    font-weight: 600;
+                    text-align: right;
+                    background: #f9fafb;
+                    white-space: nowrap;
+                }
+
+                .invoice-summary-table tr td:last-child {
+                    font-weight: 700;
+                    text-align: right;
+                    width: 120px;
+                    background: #fff;
+                }
+
+                .invoice-summary-table tr.grand-total-row td {
+                    background: #eef5f1;
+                    font-weight: 800;
+                    color: #1a4a36;
+                }
+
+                .invoice-summary-table tr.balance-row td:last-child {
+                    color: #b91c1c;
+                }
+
+                .invoice-summary-table tr.received-row td:last-child {
+                    color: #166534;
+                }
+
+            .bill-footer {
+                margin-top: 24px;
+                border-top: 2px solid #2d5f44;
+                padding-top: 14px;
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .footer-left {
+                font-size: 8.5px;
+                color: #6b7280;
+                line-height: 1.5;
+            }
+
+                .footer-left strong {
+                    display: block;
+                    color: #2d5f44;
+                    font-size: 9.5px;
+                    margin-bottom: 3px;
+                }
+
+            .footer-center {
+                text-align: center;
+            }
+
+            .footer-logo {
+                background: linear-gradient(135deg, #2d5f44, #1a4a36);
+                color: #fff;
+                font-size: 9px;
+                font-weight: 700;
+                padding: 5px 14px;
+                border-radius: 3px;
+                letter-spacing: .3px;
+                display: inline-block;
+            }
+
+            .footer-tagline {
+                font-size: 7.5px;
+                color: #9ca3af;
+                margin-top: 3px;
+            }
+
+            .footer-right {
+                text-align: right;
+                font-size: 8.5px;
+                color: #6b7280;
+                line-height: 1.6;
+            }
+
+                .footer-right strong {
+                    display: block;
+                    color: #111827;
+                    font-size: 9px;
+                }
+
+            .tenant-logo {
+                width: 72px;
+                height: 72px;
+                object-fit: contain;
+                flex-shrink: 0;
+            }
+
+            .tenant-sub {
+                font-size: 9.5px;
+                color: #6b7280;
+                margin-top: 2px;
+            }
+
+    </style>
+</head>
+
+<body>
+
+    @if (summary == null)
+    {
+        <div style="padding:40px; text-align:center; color:#dc2626; font-size:15px;">
+            Billing record not found. Please close and try again.
+        </div>
+    }
+    else
+    {
+        <div class="no-print">
+            <button class="btn-print" onclick="window.print()">
+                Print
+            </button>
+
+            <a class="btn-print"
+               href="@Url.Action("IPD_Billing_Summary_PDF", "IPDApplicationForm", new { IPDApplicationFormid = ViewBag.IPDApplicationFormid, download = true })">
+                Download PDF
+            </a>
+        </div>
+
+        <div class="page">
+
+            <div class="bill-header">
+                <div class="bill-header-accent"></div>
+                <div class="bill-header-content">
+                    <div>
+                        <div class="bill-header-title">
+                            IPD Billing Statement
+                            @if (isEstimatedBill)
+                            {
+                                <span class="bill-estimated-label">Estimated Billing Summary</span>
+                            }
+                        </div>
+                        <div class="bill-header-subtitle">Patient Admission & Billing Summary</div>
+                    </div>
+                    <div class="bill-ipd-badge">@bookingRef</div>
+                </div>
+            </div>
+
+            <div class="top-row">
+
+                <div style="display:flex;align-items:center;gap:18px;">
+
+                    @if (!string.IsNullOrWhiteSpace(logoUrl))
+                    {
+                        <img src="@logoUrl"
+                             class="tenant-logo"
+                             alt="Logo" />
+                    }
+
+                    <div class="tenant-name">
+                        @tenantName
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="two-col-box">
+                <div class="info-section">
+                    <div class="section-title">Patient Details</div>
+                    <div class="info-grid">
+                        <div class="label">Patient Name</div>
+                        <div class="value">@summary.patientfullname</div>
+
+                        <div class="label">Mobile</div>
+                        <div class="value">@summary.mobilenumber</div>
+
+                        <div class="label">Days of Stay</div>
+                        <div class="value">@(summary.daysofstay.GetValueOrDefault() > 0 ? summary.daysofstay.ToString() + " day(s)" : "-")</div>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <div class="section-title">Admission Details</div>
+                    <div class="info-grid">
+                        <div class="label">Booking Status</div>
+                        <div class="value">@summary.bookingstatus</div>
+                        <div class="label">Admitted Date</div>
+                        <div class="value">@FormatBillingDateTime(summary.estimatedarrival)</div>
+                        @if (!string.IsNullOrWhiteSpace(summary.groupcode))
+                        {
+                            <div class="label">Group Code</div>
+                            <div class="value">@summary.groupcode</div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @* <div class="pmt-section-title">PAYMENT INFORMATION</div>
+
+
+            <table class="pmt-table">
+                <thead>
+                    <tr>
+                        <th>Currency</th>
+                        <th>Grand Total</th>
+                        <th>Fund Received</th>
+                        <th>Net Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="pmt-data-row">
+                        <td>@currencyCode</td>
+                        <td>₹ @grandTotal.ToString("N2")</td>
+                        <td>₹ @totalCollected.ToString("N2")</td>
+                        <td class="pmt-balance">₹ @netBalance.ToString("N2")</td>
+                    </tr>
+                </tbody>
+            </table> *@
+
+
+            @if (roomStatementRows.Count > 0)
+            {
+                <div class="section-heading">Room / Accommodation Details</div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Allotted To</th>
+                            <th>Room No</th>
+                            <th>From Date</th>
+                            <th>To Date</th>
+                            <th class="text-right">Days</th>
+                            <th class="text-right">Total Room Cost (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int roomIdx = 1;
+
+                            foreach (var room in roomStatementRows)
+                            {
+                                <tr>
+                                    <td>@roomIdx</td>
+                                    <td><strong>@room.AllottedTo</strong></td>
+                                    <td><strong>@(string.IsNullOrWhiteSpace(room.RoomNo) ? "-" : room.RoomNo)</strong></td>
+                                    <td>@FormatBillingDate(room.FromDate)</td>
+                                    <td>@FormatBillingDate(room.ToDate)</td>
+                                    <td class="text-right">@room.Days</td>
+                                    <td class="text-right"><strong>@room.LineTotal.ToString("N2")</strong></td>
+                                </tr>
+
+                                roomIdx++;
+                            }
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6" class="total-label">Total Room Cost</td>
+                            <td class="text-right">₹ @roomGrandTotal.ToString("N2")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+
+            <div class="section-heading">Items Description</div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:50px;">#</th>
+                        <th style="width:190px;">Item No</th>
+                        <th style="width:140px;">Date</th>
+                        <th>Description</th>
+                        <th style="width:160px;" class="text-right">Amount (₹)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (receivables == null || receivables.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="empty-cell">
+                                No billing items found for this IPD.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        int recIdx = 1;
+
+                        foreach (var r in receivables)
+                        {
+                            var itemDescription = GetBillingItemDescription(r);
+                            if (itemDescription.Equals("Discount", StringComparison.OrdinalIgnoreCase)
+                                || itemDescription.Equals("Concession", StringComparison.OrdinalIgnoreCase))
+                            {
+                                continue;
+                            }
+                            decimal rAmt = 0m;
+
+                            try
+                            {
+                                rAmt = (decimal)r.amount;
+                            }
+                            catch { }
+
+                            <tr>
+                                <td>@recIdx</td>
+
+                                <td>
+                                    @(r.receivableno?.ToString() ?? "-")
+                                </td>
+
+                                <td>
+                                    @(r.receivabledate?.ToString() ?? "-")
+                                </td>
+
+                                <td>
+                                    @itemDescription
+                                </td>
+
+                                <td class="text-right">
+                                    @rAmt.ToString("N2")
+                                </td>
+                            </tr>
+
+                            recIdx++;
+                        }
+                    }
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="total-label">
+                            Total (INR)
+                        </td>
+
+                        <td class="text-right">
+                            ₹ @displayedItemsTotal.ToString("N2")
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            @foreach (var adjustmentName in new[] { "Billing Adjustments" })
+            {
+                var adjustmentRows = receivables == null
+                    ? new List<dynamic>()
+                    : receivables.Where(r =>
+                        GetBillingItemDescription(r).Equals("Discount", StringComparison.OrdinalIgnoreCase)
+                        || GetBillingItemDescription(r).Equals("Concession", StringComparison.OrdinalIgnoreCase)).ToList();
+                if (adjustmentRows.Count > 0)
+                {
+                    decimal totalAdjustmentAmount = 0m;
+                    <div class="section-heading" style="margin-top:14px;">@adjustmentName</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item No</th>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th class="text-right">Amount (₹)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var adjustment in adjustmentRows)
+                            {
+                                decimal adjustmentAmount = 0m;
+                                try { adjustmentAmount = Convert.ToDecimal(adjustment.amount); } catch { }
+                                totalAdjustmentAmount += Math.Abs(adjustmentAmount);
+                                <tr>
+                                    <td>@(adjustment.receivableno?.ToString() ?? "-")</td>
+                                    <td>@(adjustment.receivabledate?.ToString() ?? "-")</td>
+                                    <td>@GetBillingItemDescription(adjustment)</td>
+                                    <td class="text-right">@Math.Abs(adjustmentAmount).ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="total-label">Total Billing Adjustments</td>
+                                <td class="text-right">₹ @totalAdjustmentAmount.ToString("N2")</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+            }
+
+            <div class="section-heading" style="margin-top:18px;">
+                Payment Summary
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:60px;">#</th>
+                        <th>Received Date</th>
+                        <th>Received Mode</th>
+                        <th>Currency</th>
+                        <th class="text-right">Received Amount (₹)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @{
+                        int paymentIdx = 1;
+                    }
+
+                    @if (receivedPayments.Count == 0)
+                    {
+                        <tr><td colspan="5" class="empty-cell">No payments found.</td></tr>
+                    }
+                    else
+                    {
+                        foreach (var p in receivedPayments)
+                        {
+                            decimal receivedAmount = 0m;
+                            try { receivedAmount = Convert.ToDecimal(p.receivedamount); } catch { }
+
+                            <tr>
+                                <td>@paymentIdx</td>
+                                <td>@GetPaymentDateDisplay(p)</td>
+                                <td>@(p.paymentmode?.ToString() ?? "-")</td>
+                                <td>@(p.currency?.ToString() ?? "-")</td>
+                                <td class="text-right">@receivedAmount.ToString("N2")</td>
+                            </tr>
+
+                            paymentIdx++;
+                        }
+                    }
+                </tbody>
+
+              
+                <tr>
+                    <td colspan="4" class="total-label">Total Received</td>
+                    <td class="text-right" style="color:#166534;font-weight:700;">
+                        ₹ @totalReceived.ToString("N2")
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="total-label">Grand Total</td>
+                    <td class="text-right">₹ @grandTotal.ToString("N2")</td>
+                </tr>
+
+                <tr>
+                    <td colspan="4" class="total-label">Total Extra Paid</td>
+                    <td class="text-right" style="color:#2563eb;font-weight:700;">
+                        ₹ @totalExtraPaid.ToString("N2")
+                    </td>
+                </tr>
+
+                <tr>
+                    <td colspan="4" class="total-label">Total Balance</td>
+                    <td class="text-right" style="color:#b91c1c;font-weight:700;">
+                        ₹ @totalBalance.ToString("N2")
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="total-label">Amount in Words</td>
+                    <td class="text-right" style="white-space:normal;overflow-wrap:anywhere;line-height:1.4;">
+                        @(summary?.amountinwords ?? "")
+                    </td>
+                </tr>
+
+            </table>
+
+            @if (refundPayments.Count > 0)
+            {
+                <div class="section-heading" style="margin-top:18px;">Refund Summary</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:60px;">#</th>
+                            <th>Refund Date</th>
+                            <th>Refund Mode</th>
+                            <th>Currency</th>
+                            <th>Reference / Status</th>
+                            <th class="text-right">Refunded Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int refundIdx = 1;
+                        }
+                        @foreach (var refund in refundPayments)
+                        {
+                            var refundMode = GetDynamicString(refund, "refundmode");
+                            if (string.IsNullOrWhiteSpace(refundMode))
+                                refundMode = GetDynamicString(refund, "paymentmode");
+
+                            var refundReference = GetDynamicString(refund, "refundreferencenumber");
+                            if (string.IsNullOrWhiteSpace(refundReference))
+                                refundReference = GetDynamicString(refund, "transactionreference");
+
+                            var refundStatus = GetDynamicString(refund, "refundstatus");
+                            if (string.IsNullOrWhiteSpace(refundStatus))
+                                refundStatus = GetDynamicString(refund, "paymentstatus");
+
+                            var referenceAndStatus = string.Join(" / ",
+                                new[] { refundReference, refundStatus }.Where(v => !string.IsNullOrWhiteSpace(v)));
+
+                            <tr>
+                                <td>@refundIdx</td>
+                                <td>@GetPaymentDateDisplay(refund)</td>
+                                <td>@(string.IsNullOrWhiteSpace(refundMode) ? "-" : refundMode)</td>
+                                <td>@(string.IsNullOrWhiteSpace(GetDynamicString(refund, "currency")) ? "-" : GetDynamicString(refund, "currency"))</td>
+                                <td>@(string.IsNullOrWhiteSpace(referenceAndStatus) ? "-" : referenceAndStatus)</td>
+                                <td class="text-right">@GetRefundAmount(refund).ToString("N2")</td>
+                            </tr>
+                            refundIdx++;
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="total-label">Total Refunded</td>
+                            <td class="text-right">@refundPayments.Sum(GetRefundAmount).ToString("N2")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+        </div>
+    }
+
+</body>
+</html>

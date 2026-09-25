@@ -1,0 +1,232 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@model NalamVazha.Models.IPDBillingSummaryModel
+@{
+    ViewData["Title"] = "Final Admission & Billing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string ipdId = ViewBag.IPDApplicationFormid?.ToString() ?? Model?.IPDApplicationFormid ?? "";
+    string patientvisitid = ViewBag.patientvisitid?.ToString() ?? Model?.patientvisitid ?? "";
+    bool hasBalance = Model != null && Model.remainingbalance > 0;
+}
+
+<div class="card card-block contCard">
+    <div class="mobileHeader">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="formHdr"><i class="fa fa-hospital-o"></i> Final Admission &amp; Receive Payment</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-block">
+        <!-- Patient Info -->
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label">Booking Reference</label>
+                    <p class="form-control-static"><strong>@Model.bookingreferencenumber</strong></p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label">Patient Name</label>
+                    <p class="form-control-static"><strong>@Model.patientfullname</strong></p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group">
+                    <label class="control-label">Booking Status</label>
+                    <p class="form-control-static">
+                        @{
+                            string badgeClass = Model.bookingstatus == "Admitted" ? "label-success"
+                                              : Model.bookingstatus == "Patient Arrived" || Model.bookingstatus == "Admission Confirmed" ? "label-warning"
+                                              : "label-info";
+                        }
+                        <span class="label @badgeClass">@Model.bookingstatus</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <!-- Billing Summary (from Billing Dashboard) -->
+        <h5><i class="fa fa-table"></i> Billing Summary</h5>
+        <div class="row">
+            <div class="col-sm-8">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr class="active">
+                            <td><strong>Total Package / Stay Amount</strong></td>
+                            <td class="text-right"><strong>&#8377; @Model.totalamount.ToString("N2")</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Booking Deposit (Advance via Razorpay)</td>
+                            <td class="text-right">&#8377; @Model.bookingdepositpaid.ToString("N2")</td>
+                        </tr>
+                        <tr>
+                            <td>Consultation Fee</td>
+                            <td class="text-right">&#8377; @Model.consultationfeepaid.ToString("N2")</td>
+                        </tr>
+                        <tr>
+                            <td>Admission Fee</td>
+                            <td class="text-right">&#8377; @Model.admissionfeepaid.ToString("N2")</td>
+                        </tr>
+                        <tr class="success">
+                            <td><strong>Total Amount Paid</strong></td>
+                            <td class="text-right"><strong class="text-success">&#8377; @Model.totalamountpaid.ToString("N2")</strong></td>
+                        </tr>
+                        <tr class="@(Model.remainingbalance > 0 ? "danger" : "success")">
+                            <td><strong>Remaining Balance</strong></td>
+                            <td class="text-right">
+                                <strong class="@(Model.remainingbalance > 0 ? "text-danger" : "text-success")">
+                                    &#8377; @Model.remainingbalance.ToString("N2")
+                                </strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><strong>Payment Status</strong></div>
+                    <div class="panel-body text-center">
+                        @if (Model.remainingbalance <= 0)
+                        {
+                            <i class="fa fa-check-circle fa-3x text-success"></i>
+                            <p class="text-success"><strong>Fully Paid</strong></p>
+                        }
+                        else
+                        {
+                            <i class="fa fa-exclamation-circle fa-3x text-warning"></i>
+                            <p class="text-warning"><strong>Balance Due: &#8377; @Model.remainingbalance.ToString("N2")</strong></p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (hasBalance)
+        {
+            <hr />
+            <h5><i class="fa fa-inr"></i> Receive Remaining Payment</h5>
+            <p class="text-muted">Collect the pending amount and record it below. A billing entry will be created and then status will be set to <strong>Admitted</strong>.</p>
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">Amount to Receive (&#8377;)</label>
+                        <input type="number" id="amountToReceive" class="form-control" step="0.01" min="0" value="@Model.remainingbalance.ToString("F2")" />
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label class="control-label">Payment Mode</label>
+                        <select id="paymentmode" class="form-control">
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Net Banking">Net Banking</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            <label class="control-label">Admission Notes (optional)</label>
+            <textarea id="notes" class="form-control" rows="2" placeholder="Any additional admission notes..."></textarea>
+        </div>
+
+        <div id="admission-status-msg" class="alert" style="display:none;"></div>
+
+        <div class="row" style="margin-top:15px;">
+            <div class="col-sm-12">
+                <button id="btn-admit" class="btn btn-warning btn-lg" type="button">
+                    @if (hasBalance)
+                    {
+                        <text><i class="fa fa-check-circle"></i>&nbsp; Receive Payment &amp; Confirm Admission (Status &rarr; Admitted)</text>
+                    }
+                    else if (Model.bookingstatus !="Admitted")
+                    {
+                        <text><i class="fa fa-check-circle"></i>&nbsp; Confirm Final Admission (Status &rarr; Admitted)</text>
+                    }
+                </button>
+                &nbsp;
+                <a href="javascript:history.back()" class="btn btn-secondary cma_cancel_button waves-effect">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    var ipdFormId = '@ipdId';
+            var patientvisitid='@patientvisitid'
+    var remainingBalance = @(Model?.remainingbalance ?? 0);
+
+    document.getElementById('btn-admit').addEventListener('click', function () {
+        var btn = this;
+        var amount = 0;
+        if (remainingBalance > 0) {
+            var amountInput = document.getElementById('amountToReceive');
+            amount = parseFloat(amountInput.value) || 0;
+            if (amount <= 0) {
+                showError('Please enter a valid amount to receive.');
+                return;
+            }
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Processing...';
+
+        var payload = {
+            IPDApplicationFormid: ipdFormId,
+                    patientvisitid:patientvisitid,
+            notes: document.getElementById('notes').value,
+            advancedeposit: amount,
+            paymentmode: remainingBalance > 0 ? document.getElementById('paymentmode').value : 'Cash'
+        };
+
+        fetch('@Url.Action("Confirm_Final_Admission", "IPDApplicationForm")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(result) {
+            if (result && (result.message === '"201.1"' || result.message === '201.1')) {
+                showSuccess('Patient is now <strong>Admitted</strong>' + (amount > 0 ? '. Payment recorded.' : '') + ' Redirecting...');
+                setTimeout(function() {
+                    window.location.href = '@Url.Action("IPD_Application_Forms_for_Review", "IPDApplicationForm")';
+                }, 2000);
+            } else {
+                showError('Failed to confirm admission. ' + (result && result.message ? result.message : 'Please try again.'));
+                resetBtn(btn);
+            }
+        })
+        .catch(function(err) {
+            showError('Error: ' + err.message);
+            resetBtn(btn);
+        });
+    });
+
+    function showError(msg) {
+        var el = document.getElementById('admission-status-msg');
+        el.className = 'alert alert-danger';
+        el.innerHTML = '<strong>Error:</strong> ' + msg;
+        el.style.display = 'block';
+    }
+    function showSuccess(msg) {
+        var el = document.getElementById('admission-status-msg');
+        el.className = 'alert alert-success';
+        el.innerHTML = msg;
+        el.style.display = 'block';
+    }
+    function resetBtn(btn) {
+        btn.disabled = false;
+        btn.innerHTML = remainingBalance > 0
+            ? '<i class="fa fa-check-circle"></i>&nbsp; Receive Payment &amp; Confirm Admission (Status &rarr; Admitted)'
+            : '<i class="fa fa-check-circle"></i>&nbsp; Confirm Final Admission (Status &rarr; Admitted)';
+    }
+</script>
+}

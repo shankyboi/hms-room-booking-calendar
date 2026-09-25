@@ -1,0 +1,5117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="people_preferredlanguageinfo_ability" xml:space="preserve">
+    <value>Ability</value>
+  </data>
+  <data name="opdform_medicalrecords_abnormalfindings" xml:space="preserve">
+    <value>Abnormal Findings</value>
+  </data>
+  <data name="ipdapplicationform_medicalrecords_abnormallabfindings" xml:space="preserve">
+    <value>Abnormal Lab Findings</value>
+  </data>
+  <data name="ipdapplicationform_bookingtype" xml:space="preserve">
+    <value>Booking Type</value>
+  </data>
+  <data name="ipdapplicationform_groupcode" xml:space="preserve">
+    <value>Group Code</value>
+  </data>
+  <data name="clinicalappointment_actualpractitioner" xml:space="preserve">
+    <value>Actual Practitioner</value>
+  </data>
+  <data name="address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="ipdapplicationform_caddressline1" xml:space="preserve">
+    <value>Address Line 1</value>
+  </data>
+  <data name="ipdapplicationform_paddressline1" xml:space="preserve">
+    <value>Address Line 1</value>
+  </data>
+  <data name="ipdapplicationform_caddressline2" xml:space="preserve">
+    <value>Address Line 2</value>
+  </data>
+  <data name="ipdapplicationform_paddressline2" xml:space="preserve">
+    <value>Address Line 2</value>
+  </data>
+  <data name="tenant_addressline1" xml:space="preserve">
+    <value>Address Line1</value>
+  </data>
+  <data name="tenant_addressline2" xml:space="preserve">
+    <value>Address Line2</value>
+  </data>
+  <data name="tenant_allowdoctortoadmitpatients" xml:space="preserve">
+    <value>Allow Doctor to Admit Patients</value>
+  </data>
+  <data name="patientprofile_caddressline1" xml:space="preserve">
+    <value>Address Line 1</value>
+  </data>
+  <data name="patientprofile_paddressline1" xml:space="preserve">
+    <value>Address Line 1</value>
+  </data>
+  <data name="people_caddressline1" xml:space="preserve">
+    <value>AddressLine1</value>
+  </data>
+  <data name="people_paddressline1" xml:space="preserve">
+    <value>AddressLine1</value>
+  </data>
+  <data name="patientprofile_caddressline2" xml:space="preserve">
+    <value>Address Line 2</value>
+  </data>
+  <data name="patientprofile_paddressline2" xml:space="preserve">
+    <value>Address Line 2</value>
+  </data>
+  <data name="people_caddressline2" xml:space="preserve">
+    <value>AddressLine2</value>
+  </data>
+  <data name="people_paddressline2" xml:space="preserve">
+    <value>AddressLine2</value>
+  </data>
+  <data name="roomtype_admissionfee" xml:space="preserve">
+    <value>Admission Fee</value>
+  </data>
+  <data name="treatmentpackage_admissionfee" xml:space="preserve">
+    <value>Admission Fee</value>
+  </data>
+  <data name="ipdapplicationform_admissionreason" xml:space="preserve">
+    <value>Admission Reason</value>
+  </data>
+  <data name="room_advanceperday" xml:space="preserve">
+    <value>Advance Per Day</value>
+  </data>
+  <data name="room_attendantadvanceperday" xml:space="preserve">
+    <value>Attendant Advance Per Day</value>
+  </data>
+  <data name="roomtype_advanceperday" xml:space="preserve">
+    <value>Advance Per Day</value>
+  </data>
+  <data name="roomtype_attendantadvanceperday" xml:space="preserve">
+    <value>Advance Per Day</value>
+  </data>
+  <data name="enquiryform_age" xml:space="preserve">
+    <value>Age</value>
+  </data>
+  <data name="ipdapplicationform_attendantinfo_age" xml:space="preserve">
+    <value>Age</value>
+  </data>
+  <data name="patientprofile_age" xml:space="preserve">
+    <value>Age</value>
+  </data>
+  <data name="people_age" xml:space="preserve">
+    <value>Age</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_agegroup" xml:space="preserve">
+    <value>Age Group</value>
+  </data>
+  <data name="ipdapplicationform_agreefortermsandconditions" xml:space="preserve">
+    <value>Agree for Terms and Conditions</value>
+  </data>
+  <data name="alerttemplates_alertcarboncopyto" xml:space="preserve">
+    <value>Alert Carbon Copy To </value>
+  </data>
+  <data name="alerttemplates_alertcontent" xml:space="preserve">
+    <value>Alert Content</value>
+  </data>
+  <data name="alerttemplates_alertcopyto" xml:space="preserve">
+    <value>Alert Copy To</value>
+  </data>
+  <data name="alerttemplates_alertsubject" xml:space="preserve">
+    <value>Alert Subject</value>
+  </data>
+  <data name="alerttemplates_alerttype" xml:space="preserve">
+    <value>Alert Type</value>
+  </data>
+  <data name="ipdapplicationform_room_allottedto" xml:space="preserve">
+    <value>Allotted to</value>
+  </data>
+  <data name="task_allowpatienttoselectappointmentslot" xml:space="preserve">
+    <value>Allow patient to select appointment slot?</value>
+  </data>
+  <data name="paymentrequest_amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="paymentresponse_amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="billingpayment_amount" xml:space="preserve">
+    <value>Amount in INR</value>
+  </data>
+  <data name="receivable_amount" xml:space="preserve">
+    <value>Amount in INR</value>
+  </data>
+  <data name="screening_amountofexposuretochemicals" xml:space="preserve">
+    <value>Amount of exposure to chemicals</value>
+  </data>
+  <data name="assessment_patientanswers_answertype" xml:space="preserve">
+    <value>Answer Type</value>
+  </data>
+  <data name="assessmentquestion_answertype" xml:space="preserve">
+    <value>Answer Type</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_answertype" xml:space="preserve">
+    <value>Answer Type</value>
+  </data>
+  <data name="assessment_patientanswers_answervalue" xml:space="preserve">
+    <value>answervalue</value>
+  </data>
+  <data name="appetitenature" xml:space="preserve">
+    <value>Appetite nature</value>
+  </data>
+  <data name="mailbox_applicableservice" xml:space="preserve">
+    <value>Applicable Service</value>
+  </data>
+  <data name="clinicalappointment_appointmentdate" xml:space="preserve">
+    <value>Appointment Date</value>
+  </data>
+  <data name="screening_areyoucontinuingit" xml:space="preserve">
+    <value>Are you continuing it?</value>
+  </data>
+  <data name="screening_areyouinterestedinanyspecificphilosophysectreligiousorspiritualactivities" xml:space="preserve">
+    <value>Are you interested in any specific philosophy sect religious or spiritual activities?</value>
+  </data>
+  <data name="screening_areyouinterestedinspirituality" xml:space="preserve">
+    <value>Are you interested in spirituality?</value>
+  </data>
+  <data name="screening_areyousatisfiedwiththetypeofworkyouaredoing" xml:space="preserve">
+    <value>Are you satisfied with the type of work you are doing?</value>
+  </data>
+  <data name="ipdapplicationform_areyouthegroupleader" xml:space="preserve">
+    <value>Are you the group leader?</value>
+  </data>
+  <data name="arrivalconfirmation" xml:space="preserve">
+    <value>Arrival Confirmation</value>
+  </data>
+  <data name="screening_artificialcolorandflavouring" xml:space="preserve">
+    <value>Artificial Color and Flavouring</value>
+  </data>
+  <data name="screening_asachildwhatdidyouliketodo" xml:space="preserve">
+    <value>As a child what did you like to do?</value>
+  </data>
+  <data name="assessment_assessedby" xml:space="preserve">
+    <value>Last Revised By</value>
+  </data>
+  <data name="assessment_assessmentdate" xml:space="preserve">
+    <value>Assessment Date</value>
+  </data>
+  <data name="assessment_assessmentnotes" xml:space="preserve">
+    <value>Assessment Notes</value>
+  </data>
+  <data name="tenant_parentid" xml:space="preserve">
+    <value>Associated with </value>
+  </data>
+  <data name="attendantinfo" xml:space="preserve">
+    <value>Attendant Info</value>
+  </data>
+  <data name="ipdapplicationform_attendantinfo_attendantname" xml:space="preserve">
+    <value>Attendant Name</value>
+  </data>
+  <data name="people_clinicaltaskinfo_availableon" xml:space="preserve">
+    <value>Available on</value>
+  </data>
+  <data name="peopletimepreference_timepreference_availableon" xml:space="preserve">
+    <value>Available on</value>
+  </data>
+  <data name="billingpayment_bankname" xml:space="preserve">
+    <value>Bank Name</value>
+  </data>
+  <data name="paymentresponse_banktransactionid" xml:space="preserve">
+    <value>Bank Transaction Id</value>
+  </data>
+  <data name="basicinfo" xml:space="preserve">
+    <value>Basic Info</value>
+  </data>
+  <data name="screening_beforesleepyouusually" xml:space="preserve">
+    <value>Before sleep you usually</value>
+  </data>
+  <data name="billingpolicy" xml:space="preserve">
+    <value>Billing Policy</value>
+  </data>
+  <data name="roomtype_billingwaiverfordelayedstart" xml:space="preserve">
+    <value>Billing Waiver For Delayed Start</value>
+  </data>
+  <data name="treatmentpackage_billingwaiverfordelayedstart" xml:space="preserve">
+    <value>Billing waiver for delayed start</value>
+  </data>
+  <data name="people_bio" xml:space="preserve">
+    <value>Bio</value>
+  </data>
+  <data name="blacklistdetails" xml:space="preserve">
+    <value>Blacklist Details</value>
+  </data>
+  <data name="patientprofile_blacklisted" xml:space="preserve">
+    <value>Blacklisted</value>
+  </data>
+  <data name="screening_bloating" xml:space="preserve">
+    <value>Bloating</value>
+  </data>
+  <data name="building_block" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="floor_block" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="room_block" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="roomallocation_block" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="roomoccupancystatus_block" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="block_blockcode" xml:space="preserve">
+    <value>Block Code</value>
+  </data>
+  <data name="block_blockdescription" xml:space="preserve">
+    <value>Block Description</value>
+  </data>
+  <data name="block_blockimage" xml:space="preserve">
+    <value>Block Image</value>
+  </data>
+  <data name="block_blocklocationurl" xml:space="preserve">
+    <value>Block Location URL</value>
+  </data>
+  <data name="block_blockname" xml:space="preserve">
+    <value>Block Name</value>
+  </data>
+  <data name="block_blocknearbylandmark" xml:space="preserve">
+    <value>Block Nearby Landmark</value>
+  </data>
+  <data name="patientprofile_bloodgroup" xml:space="preserve">
+    <value>Blood Group</value>
+  </data>
+  <data name="bodyenergy" xml:space="preserve">
+    <value>Body Energy</value>
+  </data>
+  <data name="roomoccupancystatus_bookeddate" xml:space="preserve">
+    <value>Booked Date</value>
+  </data>
+  <data name="roomallocation_bookedfor" xml:space="preserve">
+    <value>Booked For</value>
+  </data>
+  <data name="roomoccupancystatus_bookedfor" xml:space="preserve">
+    <value>Booked For</value>
+  </data>
+  <data name="treatmentpackage_packagebookingadvance" xml:space="preserve">
+    <value>Booking Advance</value>
+  </data>
+  <data name="ipdapplicationform_bookingdate" xml:space="preserve">
+    <value>Booking Date</value>
+  </data>
+  <data name="room_attendantbookingdeposit" xml:space="preserve">
+    <value>Attendant Booking Deposit</value>
+  </data>
+  <data name="room_bookingdeposit" xml:space="preserve">
+    <value>Booking Deposit</value>
+  </data>
+  <data name="roomtype_attendantbookingdeposit" xml:space="preserve">
+    <value>Booking Deposit</value>
+  </data>
+  <data name="roomtype_bookingdeposit" xml:space="preserve">
+    <value>Booking Deposit</value>
+  </data>
+  <data name="treatmentpackage_packagebookingdeposit" xml:space="preserve">
+    <value>Booking Deposit</value>
+  </data>
+  <data name="ipdapplicationform_bookingreferencenumber" xml:space="preserve">
+    <value>Booking Reference Number</value>
+  </data>
+  <data name="opdform_bookingreferencenumber" xml:space="preserve">
+    <value>Booking Reference Number</value>
+  </data>
+  <data name="appointmentpreferences" xml:space="preserve">
+    <value>Appointment Preferences</value>
+  </data>
+  <data name="opdform_appointmentmode" xml:space="preserve">
+    <value>Appointment Mode</value>
+  </data>
+  <data name="ipdapplicationform_bookingstatus" xml:space="preserve">
+    <value>Booking Status</value>
+  </data>
+  <data name="screening_bowelfrequency" xml:space="preserve">
+    <value>Bowel Frequency</value>
+  </data>
+  <data name="bowelmovement" xml:space="preserve">
+    <value>Bowel Movement</value>
+  </data>
+  <data name="breakdurationdetails" xml:space="preserve">
+    <value>Break Duration Details</value>
+  </data>
+  <data name="shift_breakdurationdetails_breakname" xml:space="preserve">
+    <value>Break Name</value>
+  </data>
+  <data name="breakfast" xml:space="preserve">
+    <value>Breakfast</value>
+  </data>
+  <data name="screening_breakfasttime" xml:space="preserve">
+    <value>Breakfast Time</value>
+  </data>
+  <data name="floor_building" xml:space="preserve">
+    <value>Building</value>
+  </data>
+  <data name="room_building" xml:space="preserve">
+    <value>Building</value>
+  </data>
+  <data name="roomallocation_building" xml:space="preserve">
+    <value>Building</value>
+  </data>
+  <data name="roomoccupancystatus_building" xml:space="preserve">
+    <value>Building</value>
+  </data>
+  <data name="building_buildingcode" xml:space="preserve">
+    <value>Building Code</value>
+  </data>
+  <data name="building_buildingdescription" xml:space="preserve">
+    <value>Building Description</value>
+  </data>
+  <data name="building_buildingimage" xml:space="preserve">
+    <value>Building Image</value>
+  </data>
+  <data name="building_buildingname" xml:space="preserve">
+    <value>Building Name</value>
+  </data>
+  <data name="building_buildingnearbylandmark" xml:space="preserve">
+    <value>Building Nearby Land Mark</value>
+  </data>
+  <data name="treatmentpackage_calculatedpackagecost" xml:space="preserve">
+    <value>Calculated Package Cost</value>
+  </data>
+  <data name="roomtype_refundpolicy_cancellationby" xml:space="preserve">
+    <value>Cancellation By</value>
+  </data>
+  <data name="treatmentpackage_refundpolicy_cancellationby" xml:space="preserve">
+    <value>Cancellation By</value>
+  </data>
+  <data name="roomtype_refundpolicy_cancellationwindowdays" xml:space="preserve">
+    <value>Cancellation Window (Days)</value>
+  </data>
+  <data name="treatmentpackage_refundpolicy_cancellationwindowdays" xml:space="preserve">
+    <value>Cancellation Window (Days)</value>
+  </data>
+  <data name="therapycategory_categorydescription" xml:space="preserve">
+    <value>Category Description</value>
+  </data>
+  <data name="clinicaltaskinfo" xml:space="preserve">
+    <value>Clinical Task Info</value>
+  </data>
+  <data name="screening_coldaerateddrinks" xml:space="preserve">
+    <value>Cold Aerated Drinks</value>
+  </data>
+  <data name="billingpayment_collectedby" xml:space="preserve">
+    <value>Collected By</value>
+  </data>
+  <data name="clinicaltask_competency" xml:space="preserve">
+    <value>Competency</value>
+  </data>
+  <data name="people_competencylevel" xml:space="preserve">
+    <value>Competency Level</value>
+  </data>
+  <data name="competency_competencyname" xml:space="preserve">
+    <value>Competency Name</value>
+  </data>
+  <data name="roomtype_concessoneligibility" xml:space="preserve">
+    <value>Concession Eligibility</value>
+  </data>
+  <data name="enquiryform_medicalinfo_conditionname" xml:space="preserve">
+    <value>Condition Name</value>
+  </data>
+  <data name="medicalcondition_conditionname" xml:space="preserve">
+    <value>Condition Name</value>
+  </data>
+  <data name="ipdapplicationform_consentfile" xml:space="preserve">
+    <value>Consent File</value>
+  </data>
+  <data name="patientconsent_consentfile" xml:space="preserve">
+    <value>Consent File</value>
+  </data>
+  <data name="ipdapplicationform_consentform" xml:space="preserve">
+    <value>Consent Form</value>
+  </data>
+  <data name="patientconsent_consenttype" xml:space="preserve">
+    <value>Consent Type</value>
+  </data>
+  <data name="people_clinicaltaskinfo_consultations" xml:space="preserve">
+    <value>Consultations</value>
+  </data>
+  <data name="patientvisit_consultingdoctor" xml:space="preserve">
+    <value>Consulting Doctor</value>
+  </data>
+  <data name="contactaddress" xml:space="preserve">
+    <value>Contact Address</value>
+  </data>
+  <data name="people_contactnumber" xml:space="preserve">
+    <value>Contact Number</value>
+  </data>
+  <data name="referralsource_contactnumber" xml:space="preserve">
+    <value>Contact Number</value>
+  </data>
+  <data name="screening_contraceptionusage" xml:space="preserve">
+    <value>Contraception Usage</value>
+  </data>
+  <data name="people_contractrenewaldate" xml:space="preserve">
+    <value>Contract Renewal Date</value>
+  </data>
+  <data name="billingpayment_conversionrate" xml:space="preserve">
+    <value>Conversion Rate</value>
+  </data>
+  <data name="room_attendantcostperday" xml:space="preserve">
+    <value>Attendant Cost Per Day</value>
+  </data>
+  <data name="room_costperday" xml:space="preserve">
+    <value>Cost Per Day</value>
+  </data>
+  <data name="roomtype_attendantcostperday" xml:space="preserve">
+    <value>Cost Per Day</value>
+  </data>
+  <data name="roomtype_costperday" xml:space="preserve">
+    <value>Cost Per Day</value>
+  </data>
+  <data name="treatmentpackage_roomtypes_costperday" xml:space="preserve">
+    <value>Cost Per Day</value>
+  </data>
+  <data name="holidaycalendar_taskallowed_count" xml:space="preserve">
+    <value>Count</value>
+  </data>
+  <data name="therapykit_kititems_count" xml:space="preserve">
+    <value>count</value>
+  </data>
+  <data name="billingpayment_counterid" xml:space="preserve">
+    <value>Counter Id</value>
+  </data>
+  <data name="tenant_country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="country_countrycode" xml:space="preserve">
+    <value>Country Code</value>
+  </data>
+  <data name="country_countryname" xml:space="preserve">
+    <value>Country Name</value>
+  </data>
+  <data name="ipdapplicationform_countryoforigin" xml:space="preserve">
+    <value>Country of Origin</value>
+  </data>
+  <data name="patientprofile_countryoforigin" xml:space="preserve">
+    <value>Country of Origin</value>
+  </data>
+  <data name="country_countryshortcode" xml:space="preserve">
+    <value>Country Short Code</value>
+  </data>
+  <data name="shiftplanning_people_coveragetype" xml:space="preserve">
+    <value>Coverage Type </value>
+  </data>
+  <data name="patientprofile_creativeactivities" xml:space="preserve">
+    <value>Creative Activities</value>
+  </data>
+  <data name="creativeleisuredimension" xml:space="preserve">
+    <value>Creative Leisure Dimension</value>
+  </data>
+  <data name="billingpayment_currency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="paymentrequest_currency" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="paymentrequest_customeremail" xml:space="preserve">
+    <value>Customer Email</value>
+  </data>
+  <data name="paymentrequest_customername" xml:space="preserve">
+    <value>Customer Name</value>
+  </data>
+  <data name="paymentrequest_customerphone" xml:space="preserve">
+    <value>Customer Phone</value>
+  </data>
+  <data name="patientprofile_dateandtimeofdeath" xml:space="preserve">
+    <value>Date and Time of Death</value>
+  </data>
+  <data name="ipdapplicationform_preferreddatesofadmission_dateofarrival" xml:space="preserve">
+    <value>Date of Arrival</value>
+  </data>
+  <data name="patientprofile_dateofbirth" xml:space="preserve">
+    <value>Date of Birth</value>
+  </data>
+  <data name="ipdapplicationform_preferreddatesofadmission_dateofdeparture" xml:space="preserve">
+    <value>Date of Departure</value>
+  </data>
+  <data name="ipdapplicationform_preferreddatesofadmission_daysofstay" xml:space="preserve">
+    <value>Days of Stay</value>
+  </data>
+  <data name="screening_daytimesleep" xml:space="preserve">
+    <value>Daytime sleep</value>
+  </data>
+  <data name="patientprofile_deceased" xml:space="preserve">
+    <value>Deceased</value>
+  </data>
+  <data name="deceasedinformation" xml:space="preserve">
+    <value>Deceased Information</value>
+  </data>
+  <data name="assessment_patientanswers_defaultvalue" xml:space="preserve">
+    <value>Default Value</value>
+  </data>
+  <data name="assessmentquestion_defaultvalue" xml:space="preserve">
+    <value>Default Value</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_defaultvalue" xml:space="preserve">
+    <value>Default Value</value>
+  </data>
+  <data name="people_educationinfo_degree" xml:space="preserve">
+    <value>Degree</value>
+  </data>
+  <data name="people_educationinfo_degreestatus" xml:space="preserve">
+    <value>Degree Status</value>
+  </data>
+  <data name="pincodemaster_delivery" xml:space="preserve">
+    <value>delivery</value>
+  </data>
+  <data name="consultationqueue_department" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="queue_department" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="workprofile_department" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="roomtype_deposittype" xml:space="preserve">
+    <value>Deposit Type</value>
+  </data>
+  <data name="competency_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="department_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="medicalcondition_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="roomtype_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="shift_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="tasktype_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="therapyitemcategory_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="designation_designation" xml:space="preserve">
+    <value>Designation</value>
+  </data>
+  <data name="people_designation" xml:space="preserve">
+    <value>Designation</value>
+  </data>
+  <data name="people_workexperience_designation" xml:space="preserve">
+    <value>Designation</value>
+  </data>
+  <data name="patientprofile_detailedremarks" xml:space="preserve">
+    <value>Detailed Remarks</value>
+  </data>
+  <data name="screening_detailsifyes" xml:space="preserve">
+    <value>Details (if yes)</value>
+  </data>
+  <data name="screening_diettype" xml:space="preserve">
+    <value>Diet type</value>
+  </data>
+  <data name="dinner" xml:space="preserve">
+    <value>Dinner</value>
+  </data>
+  <data name="pincodemaster_district" xml:space="preserve">
+    <value>district</value>
+  </data>
+  <data name="pincodemaster_divisionname" xml:space="preserve">
+    <value>divisionname</value>
+  </data>
+  <data name="screening_doyoubelieveingod" xml:space="preserve">
+    <value>Do you believe in God?</value>
+  </data>
+  <data name="screening_doyoufeelexhaustedduringtheday" xml:space="preserve">
+    <value>Do you feel exhausted during the day ?</value>
+  </data>
+  <data name="screening_doyouhaveanyspecificreasonforstressinyourlife" xml:space="preserve">
+    <value>Do you have any specific reason for stress in your life?</value>
+  </data>
+  <data name="screening_doyoupracticeregularyogameditationanyspecificrelaxationtechnique" xml:space="preserve">
+    <value>Do you practice regular yoga meditation any specific relaxation technique?</value>
+  </data>
+  <data name="ipdapplicationform_doyourequireahospitalprovidedattendant" xml:space="preserve">
+    <value>Required Nursing Assistant ?</value>
+  </data>
+  <data name="screening_doyouworktowardsyourgoal" xml:space="preserve">
+    <value>Do you work towards your goal?</value>
+  </data>
+  <data name="people_dob" xml:space="preserve">
+    <value>DOB</value>
+  </data>
+  <data name="assessment_doctorname" xml:space="preserve">
+    <value>Doctor Name</value>
+  </data>
+  <data name="screening_dreams" xml:space="preserve">
+    <value>Dreams</value>
+  </data>
+  <data name="enquiryform_medicalinfo_duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="ipdapplicationform_medicalinfo_duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="opdform_medicalinfo_duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="restrictedmedicalconditions_medicalinfo_duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="clinicalappointment_durationfrom" xml:space="preserve">
+    <value>Duration From</value>
+  </data>
+  <data name="screening_physicalactivitydurationhrsperday" xml:space="preserve">
+    <value>Duration Hrs Per Day</value>
+  </data>
+  <data name="shift_breakdurationdetails_durationinmin" xml:space="preserve">
+    <value>Duration in Min</value>
+  </data>
+  <data name="clinicaltask_taskduration_durationinminutes" xml:space="preserve">
+    <value>Duration in Minutes</value>
+  </data>
+  <data name="people_clinicaltaskinfo_durationinminutes" xml:space="preserve">
+    <value>Duration in Minutes</value>
+  </data>
+  <data name="clinicalappointment_durationto" xml:space="preserve">
+    <value>Duration To</value>
+  </data>
+  <data name="staffattendance_earlyinmin" xml:space="preserve">
+    <value>Early In (min)</value>
+  </data>
+  <data name="staffattendance_earlyoutmin" xml:space="preserve">
+    <value>Early Out (min)</value>
+  </data>
+  <data name="screening_eatingcontextofmostmeals" xml:space="preserve">
+    <value>Eating context of most meals</value>
+  </data>
+  <data name="patientprofile_education" xml:space="preserve">
+    <value>Education</value>
+  </data>
+  <data name="educationinfo" xml:space="preserve">
+    <value>Education Info</value>
+  </data>
+  <data name="people_educationinfo_educationinstitution" xml:space="preserve">
+    <value>Education Institution</value>
+  </data>
+  <data name="enquiryform_emailaddress" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="patientprofile_emailaddress" xml:space="preserve">
+    <value>Email Address</value>
+  </data>
+  <data name="mailbox_emailfooter" xml:space="preserve">
+    <value>Email Footer</value>
+  </data>
+  <data name="mailbox_emailhostname" xml:space="preserve">
+    <value>Email Host Name</value>
+  </data>
+  <data name="people_emailid" xml:space="preserve">
+    <value>Email ID</value>
+  </data>
+  <data name="users_emailid" xml:space="preserve">
+    <value>Email ID</value>
+  </data>
+  <data name="emergencycontact" xml:space="preserve">
+    <value>Emergency Contact</value>
+  </data>
+  <data name="emergencycontactinfo" xml:space="preserve">
+    <value>Emergency Contact Info</value>
+  </data>
+  <data name="emotionaldimension" xml:space="preserve">
+    <value>Emotional Dimension</value>
+  </data>
+  <data name="people_employmentstatus" xml:space="preserve">
+    <value>Employment Status</value>
+  </data>
+  <data name="patientqueue_endtime" xml:space="preserve">
+    <value>End Time</value>
+  </data>
+  <data name="shift_breakdurationdetails_endtime" xml:space="preserve">
+    <value>End Time</value>
+  </data>
+  <data name="energylevelduringtheday" xml:space="preserve">
+    <value>Energy level during the day</value>
+  </data>
+  <data name="enquiryform_enquiredvia" xml:space="preserve">
+    <value>Enquired Via</value>
+  </data>
+  <data name="enquiryform_enquirertype" xml:space="preserve">
+    <value>Enquirer Type</value>
+  </data>
+  <data name="enquiryform_enquirydate" xml:space="preserve">
+    <value>Enquiry Date</value>
+  </data>
+  <data name="enquirytype_enquirydesc" xml:space="preserve">
+    <value>Enquiry Desc</value>
+  </data>
+  <data name="enquirytype_enquiryname" xml:space="preserve">
+    <value>Enquiry Name</value>
+  </data>
+  <data name="enquiryform_enquirynumber" xml:space="preserve">
+    <value>Enquiry Number</value>
+  </data>
+  <data name="enquiryform_enquiryreason" xml:space="preserve">
+    <value>Enquiry Reason</value>
+  </data>
+  <data name="enquiryform_enquirystatus" xml:space="preserve">
+    <value>Enquiry Status</value>
+  </data>
+  <data name="enquiryform_enquirytype" xml:space="preserve">
+    <value>Enquiry Type</value>
+  </data>
+  <data name="alerttemplates_entityaction" xml:space="preserve">
+    <value>Entity Action</value>
+  </data>
+  <data name="maillogs_entityid" xml:space="preserve">
+    <value>Entity ID</value>
+  </data>
+  <data name="alerttemplates_entityname" xml:space="preserve">
+    <value>Entity Name</value>
+  </data>
+  <data name="maillogs_entityname" xml:space="preserve">
+    <value>Entity Name</value>
+  </data>
+  <data name="environmentaldimension" xml:space="preserve">
+    <value>Environmental Dimension</value>
+  </data>
+  <data name="ipdapplicationform_estimatedarrival" xml:space="preserve">
+    <value>Estimated Arrival</value>
+  </data>
+  <data name="otplogs_expirytime" xml:space="preserve">
+    <value>expiry time</value>
+  </data>
+  <data name="screening_familyrelationshipstate" xml:space="preserve">
+    <value>Family Relationship State</value>
+  </data>
+  <data name="screening_fastfood" xml:space="preserve">
+    <value>Fast Food</value>
+  </data>
+  <data name="people_clinicaltaskinfo_feesamount" xml:space="preserve">
+    <value>Fees Amount</value>
+  </data>
+  <data name="screening_fermentedfood" xml:space="preserve">
+    <value>Fermented Food</value>
+  </data>
+  <data name="people_educationinfo_fieldofstudy" xml:space="preserve">
+    <value>Field of Study</value>
+  </data>
+  <data name="screening_firstfoodinthemorning" xml:space="preserve">
+    <value>First food in the morning</value>
+  </data>
+  <data name="enquiryform_firstname" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="ipdapplicationform_firstname" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="patientprofile_firstname" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="people_firstname" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="users_firstname" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="flexibilityinfo" xml:space="preserve">
+    <value>Flexibility Info</value>
+  </data>
+  <data name="ipdapplicationform_flexiblewithdates" xml:space="preserve">
+    <value>Flexible with Dates</value>
+  </data>
+  <data name="ipdapplicationform_flexiblewithroomtype" xml:space="preserve">
+    <value>Flexible with Room Type</value>
+  </data>
+  <data name="room_floor" xml:space="preserve">
+    <value>Floor</value>
+  </data>
+  <data name="roomallocation_floor" xml:space="preserve">
+    <value>Floor</value>
+  </data>
+  <data name="roomoccupancystatus_floor" xml:space="preserve">
+    <value>Floor</value>
+  </data>
+  <data name="floor_floorname" xml:space="preserve">
+    <value>Floor Name</value>
+  </data>
+  <data name="floor_floornumber" xml:space="preserve">
+    <value>Floor Number</value>
+  </data>
+  <data name="fluidbalance" xml:space="preserve">
+    <value>Fluid Balance</value>
+  </data>
+  <data name="foodpreference" xml:space="preserve">
+    <value>Food Preference</value>
+  </data>
+  <data name="screening_physicalactivityfrequency" xml:space="preserve">
+    <value>Frequency</value>
+  </data>
+  <data name="ipdapplicationform_medicationinfo_frequencyinaday" xml:space="preserve">
+    <value>Frequency in a day</value>
+  </data>
+  <data name="ipdapplicationform_medicationinfo_medicationduration" xml:space="preserve">
+    <value>Medication Duration</value>
+  </data>
+  <data name="opdform_medicationinfo_frequencyinaday" xml:space="preserve">
+    <value>Frequency in a day</value>
+  </data>
+  <data name="opdform_medicationinfo_medicationduration" xml:space="preserve">
+    <value>Medication Duration</value>
+  </data>
+  <data name="screening_frequencyinday" xml:space="preserve">
+    <value>Frequency in Day</value>
+  </data>
+  <data name="screening_frequencyinnight" xml:space="preserve">
+    <value>Frequency in Night</value>
+  </data>
+  <data name="screening_frequencyoffruitintake" xml:space="preserve">
+    <value>Frequency of Fruit Intake</value>
+  </data>
+  <data name="screening_stimulantsfrequencyperday" xml:space="preserve">
+    <value>Frequency Per Day</value>
+  </data>
+  <data name="screening_fried" xml:space="preserve">
+    <value>Fried</value>
+  </data>
+  <data name="ipdapplicationform_room_fromdate" xml:space="preserve">
+    <value>From Date</value>
+  </data>
+  <data name="people_workexperience_fromdate" xml:space="preserve">
+    <value>From Date</value>
+  </data>
+  <data name="roomallocation_fromdate" xml:space="preserve">
+    <value>From Date</value>
+  </data>
+  <data name="screening_fruitintake" xml:space="preserve">
+    <value>Fruit Intake</value>
+  </data>
+  <data name="roomtype_futurebookinglimit" xml:space="preserve">
+    <value>Future Booking Limit</value>
+  </data>
+  <data name="screening_gapbetweendinnerandsleep" xml:space="preserve">
+    <value>Gap between dinner and sleep</value>
+  </data>
+  <data name="screening_gaspassed" xml:space="preserve">
+    <value>Gas Passed</value>
+  </data>
+  <data name="paymentresponse_gatewayresponsecode" xml:space="preserve">
+    <value>Gateway Response Code</value>
+  </data>
+  <data name="paymentresponse_gatewayresponsemessage" xml:space="preserve">
+    <value>Gateway Response Message</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_gender" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="enquiryform_gender" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="ipdapplicationform_attendantinfo_gender" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="ipdapplicationform_gender" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="patientprofile_gender" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="people_gender" xml:space="preserve">
+    <value>Gender</value>
+  </data>
+  <data name="roomtype_gendersuitability" xml:space="preserve">
+    <value>Gender Suitability</value>
+  </data>
+  <data name="ipdapplicationform_generalcondition" xml:space="preserve">
+    <value>General Condition</value>
+  </data>
+  <data name="generalinfo" xml:space="preserve">
+    <value>General Info</value>
+  </data>
+  <data name="groupbooking" xml:space="preserve">
+    <value>Group Booking</value>
+  </data>
+  <data name="ipdapplicationform_groupbooking" xml:space="preserve">
+    <value>Group Booking</value>
+  </data>
+  <data name="roomgroup_groupdesc" xml:space="preserve">
+    <value>Group Desc</value>
+  </data>
+  <data name="ipdapplicationform_groupleadersbookingreferencenumber" xml:space="preserve">
+    <value>Group Leader's Booking Reference Number</value>
+  </data>
+  <data name="roomgroup_groupname" xml:space="preserve">
+    <value>Group Name</value>
+  </data>
+  <data name="roomgroup_groupnumber" xml:space="preserve">
+    <value>Group Number</value>
+  </data>
+  <data name="screening_handlingdifferencesconflicts" xml:space="preserve">
+    <value>Handling DifferencesConflicts</value>
+  </data>
+  <data name="healthinsurancedetails" xml:space="preserve">
+    <value>Health Insurance Details</value>
+  </data>
+  <data name="holidaycalendar_holidaydate" xml:space="preserve">
+    <value>Holiday Date</value>
+  </data>
+  <data name="holidaycalendar_holidayname" xml:space="preserve">
+    <value>Holiday Name</value>
+  </data>
+  <data name="hourlycharges" xml:space="preserve">
+    <value>Hourly Charges</value>
+  </data>
+  <data name="roomtype_hourlychargesapplicable" xml:space="preserve">
+    <value>Hourly Charges Applicable ?</value>
+  </data>
+  <data name="screening_howdoyoumostlyprocessyouremotions" xml:space="preserve">
+    <value>How do you mostly process your emotions?</value>
+  </data>
+  <data name="screening_howdoesmoneyaffectyourmentalpeace" xml:space="preserve">
+    <value>How does money affect your mental peace?</value>
+  </data>
+  <data name="screening_howistheenvironmentattheplaceofyouroccupation" xml:space="preserve">
+    <value>How is the environment at the place of your occupation?</value>
+  </data>
+  <data name="screening_howisyoursexuallife" xml:space="preserve">
+    <value>How is your sexual life ?</value>
+  </data>
+  <data name="screening_howoftendoyouintentionallygetsunlight" xml:space="preserve">
+    <value>How often do you intentionally get sunlight?</value>
+  </data>
+  <data name="screening_hungerbeforemeals" xml:space="preserve">
+    <value>Hunger before meals</value>
+  </data>
+  <data name="people_iddocument" xml:space="preserve">
+    <value>ID Document</value>
+  </data>
+  <data name="people_idnumber" xml:space="preserve">
+    <value>ID Number</value>
+  </data>
+  <data name="idproof" xml:space="preserve">
+    <value>ID Proof</value>
+  </data>
+  <data name="patientprofile_idproofnumber" xml:space="preserve">
+    <value>ID Proof Number</value>
+  </data>
+  <data name="patientprofile_idprooftype" xml:space="preserve">
+    <value>ID Proof Type</value>
+  </data>
+  <data name="people_idtype" xml:space="preserve">
+    <value>ID Type</value>
+  </data>
+  <data name="identityproof" xml:space="preserve">
+    <value>Identity Proof</value>
+  </data>
+  <data name="screening_ifyes" xml:space="preserve">
+    <value>If Yes</value>
+  </data>
+  <data name="screening_ifyesdetails" xml:space="preserve">
+    <value>If yes details</value>
+  </data>
+  <data name="screening_ifyouwanttorestartahobbywhatwouldthatbe" xml:space="preserve">
+    <value>If you want to restart a hobby what would that be?</value>
+  </data>
+  <data name="screening_indicators" xml:space="preserve">
+    <value>Indicators </value>
+  </data>
+  <data name="processsla_processsla_initialstage" xml:space="preserve">
+    <value>Initial Stage</value>
+  </data>
+  <data name="people_workexperience_institutionname" xml:space="preserve">
+    <value>Institution Name</value>
+  </data>
+  <data name="patientprofile_insurancecompany" xml:space="preserve">
+    <value>Insurance Company</value>
+  </data>
+  <data name="patientprofile_insurancetype" xml:space="preserve">
+    <value>Insurance Type</value>
+  </data>
+  <data name="assessment_ipdform" xml:space="preserve">
+    <value>IPD Form</value>
+  </data>
+  <data name="roomallocation_ipdno" xml:space="preserve">
+    <value>IPD No</value>
+  </data>
+  <data name="roomoccupancystatus_ipdno" xml:space="preserve">
+    <value>IPD No</value>
+  </data>
+  <data name="billingpayment_ipdnumber" xml:space="preserve">
+    <value>IPD Number</value>
+  </data>
+  <data name="clinicalappointment_ipdnumber" xml:space="preserve">
+    <value>IPD Number</value>
+  </data>
+  <data name="patientvisit_ipdnumber" xml:space="preserve">
+    <value>IPD Number</value>
+  </data>
+  <data name="receivable_ipdnumber" xml:space="preserve">
+    <value>IPD Number</value>
+  </data>
+  <data name="screening_ipdnumber" xml:space="preserve">
+    <value>IPD Number</value>
+  </data>
+  <data name="holidaycalendar_taskallowed_isallowed" xml:space="preserve">
+    <value>Is Allowed ?</value>
+  </data>
+  <data name="assessmenttemplate_isdefaulttemplate" xml:space="preserve">
+    <value>Is Default Template</value>
+  </data>
+  <data name="task_screeningtemplates_isdefaulttemplate" xml:space="preserve">
+    <value>Is Default Template ?</value>
+  </data>
+  <data name="therapies_isgrouptherapyallowed" xml:space="preserve">
+    <value>Is Group Therapy Allowed ?</value>
+  </data>
+  <data name="assessment_patientanswers_isrequired" xml:space="preserve">
+    <value>Is Required</value>
+  </data>
+  <data name="assessmentquestion_isrequired" xml:space="preserve">
+    <value>Is Required</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_isrequired" xml:space="preserve">
+    <value>Is Required</value>
+  </data>
+  <data name="enquiryform_isroombookingrelated" xml:space="preserve">
+    <value>Is Room Booking Related</value>
+  </data>
+  <data name="enquirytype_isroombookingrelated" xml:space="preserve">
+    <value>Is Room Booking Related</value>
+  </data>
+  <data name="maillogs_issent" xml:space="preserve">
+    <value>Is Sent ?</value>
+  </data>
+  <data name="workprofile_isthisaclinicalprofile" xml:space="preserve">
+    <value>Is This a Clinical Profile</value>
+  </data>
+  <data name="people_issuingauthority" xml:space="preserve">
+    <value>Issuing Authority</value>
+  </data>
+  <data name="otplogs_isused" xml:space="preserve">
+    <value>isused</value>
+  </data>
+  <data name="therapyitemcategory_itemcategory" xml:space="preserve">
+    <value>Item Category</value>
+  </data>
+  <data name="ipdapplicationform_joinwaitinglist" xml:space="preserve">
+    <value>Join Waiting List</value>
+  </data>
+  <data name="enquiryform_joinwaitinglist" xml:space="preserve">
+    <value>Join Waiting List if Room Not Available ?</value>
+  </data>
+  <data name="people_joiningdate" xml:space="preserve">
+    <value>Joining Date</value>
+  </data>
+  <data name="paymentconfig_keyinfo_keyid" xml:space="preserve">
+    <value>Key ID</value>
+  </data>
+  <data name="keyinfo" xml:space="preserve">
+    <value>Key Info</value>
+  </data>
+  <data name="paymentconfig_keyinfo_keysecret" xml:space="preserve">
+    <value>Key Secret</value>
+  </data>
+  <data name="paymentconfig_keyinfo_keytype" xml:space="preserve">
+    <value>Key Type</value>
+  </data>
+  <data name="kititems" xml:space="preserve">
+    <value>Kit Items</value>
+  </data>
+  <data name="billingpayment_kitprice" xml:space="preserve">
+    <value>Kit Price</value>
+  </data>
+  <data name="receivable_kitprice" xml:space="preserve">
+    <value>Kit Price</value>
+  </data>
+  <data name="therapykit_kitprice" xml:space="preserve">
+    <value>Kit Price</value>
+  </data>
+  <data name="treatmentpackage_therapykits_kitprice" xml:space="preserve">
+    <value>Kit Price</value>
+  </data>
+  <data name="medicalcondition_synonyms_slanguage" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="languagepreferences" xml:space="preserve">
+    <value>Language Preferences</value>
+  </data>
+  <data name="patientprofile_languagesknown" xml:space="preserve">
+    <value>Languages Known</value>
+  </data>
+  <data name="people_preferredlanguageinfo_languagesknown" xml:space="preserve">
+    <value>Languages Known</value>
+  </data>
+  <data name="patientprofile_languagespreferrable" xml:space="preserve">
+    <value>Languages Preferrable</value>
+  </data>
+  <data name="enquiryform_lastname" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="ipdapplicationform_lastname" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="patientprofile_lastname" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="people_lastname" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="users_lastname" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="staffattendance_latemin" xml:space="preserve">
+    <value>Late (min)</value>
+  </data>
+  <data name="pincodemaster_latitude" xml:space="preserve">
+    <value>latitude</value>
+  </data>
+  <data name="therapycategory_categoryname" xml:space="preserve">
+    <value>Category Name</value>
+  </data>
+  <data name="patientprofile_causeofdeath" xml:space="preserve">
+    <value>Cause of Death</value>
+  </data>
+  <data name="people_educationinfo_certificationnumber" xml:space="preserve">
+    <value>Certification Number</value>
+  </data>
+  <data name="roomtype_chargeperhour" xml:space="preserve">
+    <value>Charge per Hour</value>
+  </data>
+  <data name="patientqueue_checkintime" xml:space="preserve">
+    <value>Check In Time</value>
+  </data>
+  <data name="billingpayment_chequedddate" xml:space="preserve">
+    <value>Cheque DD Date</value>
+  </data>
+  <data name="screening_chewinghabit" xml:space="preserve">
+    <value>Chewing habit</value>
+  </data>
+  <data name="pincodemaster_circlename" xml:space="preserve">
+    <value>circlename</value>
+  </data>
+  <data name="ipdapplicationform_ccityordistrict" xml:space="preserve">
+    <value>City or District</value>
+  </data>
+  <data name="ipdapplicationform_pcityordistrict" xml:space="preserve">
+    <value>City or District</value>
+  </data>
+  <data name="patientprofile_ccityordistrict" xml:space="preserve">
+    <value>City or District</value>
+  </data>
+  <data name="patientprofile_pcityordistrict" xml:space="preserve">
+    <value>City or District</value>
+  </data>
+  <data name="people_ccityordistrict" xml:space="preserve">
+    <value>City or District</value>
+  </data>
+  <data name="people_pcityordistrict" xml:space="preserve">
+    <value>City or District</value>
+  </data>
+  <data name="people_clinicaltask" xml:space="preserve">
+    <value>Clinical Task</value>
+  </data>
+  <data name="peopletimepreference_timepreference_clinicaltask" xml:space="preserve">
+    <value>Clinical Task</value>
+  </data>
+  <data name="people_licenceupload" xml:space="preserve">
+    <value>Licence Upload</value>
+  </data>
+  <data name="licenseinfo" xml:space="preserve">
+    <value>License Info</value>
+  </data>
+  <data name="therapykit_kititems_linetotal" xml:space="preserve">
+    <value>Line Total</value>
+  </data>
+  <data name="logininformation" xml:space="preserve">
+    <value>Login Information</value>
+  </data>
+  <data name="pincodemaster_longitude" xml:space="preserve">
+    <value>longitude</value>
+  </data>
+  <data name="lunch" xml:space="preserve">
+    <value>Lunch</value>
+  </data>
+  <data name="patientprofile_magazinename" xml:space="preserve">
+    <value>Magazine Name</value>
+  </data>
+  <data name="maillogs_mailbody" xml:space="preserve">
+    <value>Mail Body</value>
+  </data>
+  <data name="maillogs_mailfor" xml:space="preserve">
+    <value>Mail For</value>
+  </data>
+  <data name="maillogs_mailsubject" xml:space="preserve">
+    <value>Mail Subject</value>
+  </data>
+  <data name="maillogs_mailto" xml:space="preserve">
+    <value>Mail To</value>
+  </data>
+  <data name="patientprofile_maritalstatus" xml:space="preserve">
+    <value>Marital Status</value>
+  </data>
+  <data name="screening_maritalstatus" xml:space="preserve">
+    <value>Marital Status</value>
+  </data>
+  <data name="roomtype_maxbookingdays" xml:space="preserve">
+    <value>Max Booking Days</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_medicalcondition" xml:space="preserve">
+    <value>Medical Condition</value>
+  </data>
+  <data name="enquiryform_medicalinfo_medicalcondition" xml:space="preserve">
+    <value>Medical Condition</value>
+  </data>
+  <data name="ipdapplicationform_medicalinfo_medicalconditionname" xml:space="preserve">
+    <value>Medical Condition Name</value>
+  </data>
+  <data name="opdform_medicalinfo_medicalconditionname" xml:space="preserve">
+    <value>Medical Condition Name</value>
+  </data>
+  <data name="restrictedmedicalconditions_medicalinfo_medicalconditionname" xml:space="preserve">
+    <value>Medical Condition Name</value>
+  </data>
+  <data name="medicalinfo" xml:space="preserve">
+    <value>Medical Info</value>
+  </data>
+  <data name="ipdapplicationform_medicalrecords_medicalrecordfile" xml:space="preserve">
+    <value>Medical Record File</value>
+  </data>
+  <data name="opdform_medicalrecords_medicalrecordfile" xml:space="preserve">
+    <value>Medical Record File</value>
+  </data>
+  <data name="ipdapplicationform_medicalrecords_medicalrecordname" xml:space="preserve">
+    <value>Medical Record Name</value>
+  </data>
+  <data name="opdform_medicalrecords_medicalrecordname" xml:space="preserve">
+    <value>Medical Record Name</value>
+  </data>
+  <data name="medicalrecords" xml:space="preserve">
+    <value>Medical Records</value>
+  </data>
+  <data name="medicationinfo" xml:space="preserve">
+    <value>Medication Info</value>
+  </data>
+  <data name="medicine_medicationtype" xml:space="preserve">
+    <value>Medication Type</value>
+  </data>
+  <data name="medicationtype_medicationtypedescription" xml:space="preserve">
+    <value>Medication Type Description</value>
+  </data>
+  <data name="medicationtype_medicationtypename" xml:space="preserve">
+    <value>Medication Type Name</value>
+  </data>
+  <data name="billingpayment_medicine" xml:space="preserve">
+    <value>Medicine</value>
+  </data>
+  <data name="receivable_medicine" xml:space="preserve">
+    <value>Medicine</value>
+  </data>
+  <data name="treatmentpackage_medicineamount" xml:space="preserve">
+    <value>Medicine Amount</value>
+  </data>
+  <data name="treatmentpackage_medicines_medicinecost" xml:space="preserve">
+    <value>Medicine Cost</value>
+  </data>
+  <data name="treatmentpackage_medicines_medicinecount" xml:space="preserve">
+    <value>Medicine Count</value>
+  </data>
+  <data name="ipdapplicationform_medicationinfo_medicinecoverimage" xml:space="preserve">
+    <value>Medicine Cover Image</value>
+  </data>
+  <data name="opdform_medicationinfo_medicineimage" xml:space="preserve">
+    <value>Medicine Image</value>
+  </data>
+  <data name="ipdapplicationform_medicationinfo_medicinename" xml:space="preserve">
+    <value>Medicine Name</value>
+  </data>
+  <data name="medicine_medicinename" xml:space="preserve">
+    <value>Medicine Name</value>
+  </data>
+  <data name="opdform_medicationinfo_medicinename" xml:space="preserve">
+    <value>Medicine Name</value>
+  </data>
+  <data name="treatmentpackage_medicines_medicinename" xml:space="preserve">
+    <value>Medicine Name</value>
+  </data>
+  <data name="medicines" xml:space="preserve">
+    <value>Medicines</value>
+  </data>
+  <data name="patientprofile_meditationpractice" xml:space="preserve">
+    <value>Meditation Practice </value>
+  </data>
+  <data name="mentaldimension" xml:space="preserve">
+    <value>Mental Dimension</value>
+  </data>
+  <data name="screening_mentalplanningfocusstyle" xml:space="preserve">
+    <value>Mental planning focus style</value>
+  </data>
+  <data name="paymentconfig_keyinfo_merchantid" xml:space="preserve">
+    <value>Merchant Id</value>
+  </data>
+  <data name="paymentrequest_merchantid" xml:space="preserve">
+    <value>Merchant ID</value>
+  </data>
+  <data name="roomtype_minbookingdays" xml:space="preserve">
+    <value>Min Booking Days</value>
+  </data>
+  <data name="ipdapplicationform_mobilenumber" xml:space="preserve">
+    <value>Mobile Number</value>
+  </data>
+  <data name="patientprofile_mobilenumber" xml:space="preserve">
+    <value>Mobile Number</value>
+  </data>
+  <data name="users_mobilenumber" xml:space="preserve">
+    <value>Mobile Number</value>
+  </data>
+  <data name="screening_morningfeeling" xml:space="preserve">
+    <value>Morning feeling</value>
+  </data>
+  <data name="department_name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="roomtype_name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="screening_nasalmucus" xml:space="preserve">
+    <value>Nasal Mucus</value>
+  </data>
+  <data name="ipdapplicationform_nationality" xml:space="preserve">
+    <value>Nationality</value>
+  </data>
+  <data name="patientprofile_nationality" xml:space="preserve">
+    <value>Nationality</value>
+  </data>
+  <data name="people_nationality" xml:space="preserve">
+    <value>Nationality</value>
+  </data>
+  <data name="screening_breakfastnature" xml:space="preserve">
+    <value>Nature</value>
+  </data>
+  <data name="screening_dinnernature" xml:space="preserve">
+    <value>Nature</value>
+  </data>
+  <data name="screening_lunchnature" xml:space="preserve">
+    <value>Nature</value>
+  </data>
+  <data name="screening_natureofurine" xml:space="preserve">
+    <value>Nature of Urine</value>
+  </data>
+  <data name="tenant_natureofbusiness" xml:space="preserve">
+    <value>Nature of Work</value>
+  </data>
+  <data name="room_nextdaycheckin" xml:space="preserve">
+    <value>Next Day Checkin</value>
+  </data>
+  <data name="room_nextdaycheckout" xml:space="preserve">
+    <value>Next Day Checkout</value>
+  </data>
+  <data name="treatmentpackage_noofdays" xml:space="preserve">
+    <value>No of Days</value>
+  </data>
+  <data name="screening_nonvegfrequency" xml:space="preserve">
+    <value>Nonveg frequency</value>
+  </data>
+  <data name="patientvisit_notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="paymentconfig_keyinfo_notifyurl" xml:space="preserve">
+    <value>notify Url</value>
+  </data>
+  <data name="paymentrequest_notifyurl" xml:space="preserve">
+    <value>Notify URl</value>
+  </data>
+  <data name="tenant_numberofemployees" xml:space="preserve">
+    <value>Number of  Employees</value>
+  </data>
+  <data name="tenant_enablepatientautologin" xml:space="preserve">
+    <value>Enable Patient Auto Login</value>
+  </data>
+  <data name="treatmentpackage_therapykits_numberofkits" xml:space="preserve">
+    <value>Number of Kits</value>
+  </data>
+  <data name="ipdapplicationform_numberofmember" xml:space="preserve">
+    <value>Number of Members</value>
+  </data>
+  <data name="treatmentpackage_therapy_numberoftimes" xml:space="preserve">
+    <value>Number of Times</value>
+  </data>
+  <data name="patientprofile_occupation" xml:space="preserve">
+    <value>Occupation</value>
+  </data>
+  <data name="occupation_occupationdesc" xml:space="preserve">
+    <value>Occupation Desc</value>
+  </data>
+  <data name="occupation_occupationname" xml:space="preserve">
+    <value>Occupation Name</value>
+  </data>
+  <data name="occupationaldimension" xml:space="preserve">
+    <value>Occupational Dimension</value>
+  </data>
+  <data name="pincodemaster_officename" xml:space="preserve">
+    <value>officename</value>
+  </data>
+  <data name="pincodemaster_officetype" xml:space="preserve">
+    <value>officetype</value>
+  </data>
+  <data name="screening_oilorgheeintakeliterinamonth" xml:space="preserve">
+    <value>Oil or Ghee intake liter in a month</value>
+  </data>
+  <data name="assessment_opdform" xml:space="preserve">
+    <value>OPD Form</value>
+  </data>
+  <data name="billingpayment_opdnumber" xml:space="preserve">
+    <value>OPD Number</value>
+  </data>
+  <data name="clinicalappointment_opdnumber" xml:space="preserve">
+    <value>OPD Number</value>
+  </data>
+  <data name="patientvisit_opdnumber" xml:space="preserve">
+    <value>OPD Number</value>
+  </data>
+  <data name="receivable_opdnumber" xml:space="preserve">
+    <value>OPD Number</value>
+  </data>
+  <data name="assessment_patientanswers_optiontext" xml:space="preserve">
+    <value>Option Text</value>
+  </data>
+  <data name="assessmentquestion_optiontext" xml:space="preserve">
+    <value>Option Text</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_optiontext" xml:space="preserve">
+    <value>Option Text</value>
+  </data>
+  <data name="assessment_patientanswers_optionvalue" xml:space="preserve">
+    <value>Option Value</value>
+  </data>
+  <data name="assessmentquestion_optionvalue" xml:space="preserve">
+    <value>Option Value</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_optionvalue" xml:space="preserve">
+    <value>Option Value</value>
+  </data>
+  <data name="paymentrequest_orderid" xml:space="preserve">
+    <value>Order ID</value>
+  </data>
+  <data name="paymentresponse_orderid" xml:space="preserve">
+    <value>Order Id</value>
+  </data>
+  <data name="paymentrequest_orderpaymentdesc" xml:space="preserve">
+    <value>Order Payment Desc</value>
+  </data>
+  <data name="tenant_businessemail" xml:space="preserve">
+    <value>Organisation  Email</value>
+  </data>
+  <data name="tenant_businessname" xml:space="preserve">
+    <value>Organisation  Name</value>
+  </data>
+  <data name="tenant_businessphone" xml:space="preserve">
+    <value>Organisation  Phone</value>
+  </data>
+  <data name="tenant_businesswebsite" xml:space="preserve">
+    <value>Organisation  Website</value>
+  </data>
+  <data name="tenant_organizationlogo" xml:space="preserve">
+    <value>Organization  Logo</value>
+  </data>
+  <data name="clinicalappointment_origin" xml:space="preserve">
+    <value>Origin</value>
+  </data>
+  <data name="screening_other" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="screening_otherprimaryreason" xml:space="preserve">
+    <value>Other (Primary Reason)</value>
+  </data>
+  <data name="screening_otherchallenges" xml:space="preserve">
+    <value>Other Challenges</value>
+  </data>
+  <data name="patientprofile_othercreativeactivities" xml:space="preserve">
+    <value>Other Creative Activities</value>
+  </data>
+  <data name="patientprofile_otherlanguages" xml:space="preserve">
+    <value>Other Languages</value>
+  </data>
+  <data name="patientprofile_otherreferral" xml:space="preserve">
+    <value>Other Referral</value>
+  </data>
+  <data name="screening_othersigns" xml:space="preserve">
+    <value>Other Signs</value>
+  </data>
+  <data name="screening_otherenvironmentoccupation" xml:space="preserve">
+    <value>Other(Environment Occupation)</value>
+  </data>
+  <data name="otplogs_otpcode" xml:space="preserve">
+    <value>otpcode</value>
+  </data>
+  <data name="clinicaltask_taskduration_overbookingcount" xml:space="preserve">
+    <value>Over Booking Count</value>
+  </data>
+  <data name="people_clinicaltaskinfo_overbookingcount" xml:space="preserve">
+    <value>Over Booking Count</value>
+  </data>
+  <data name="treatmentpackage_packagecost" xml:space="preserve">
+    <value>Package Cost</value>
+  </data>
+  <data name="treatmentpackage_packagedescription" xml:space="preserve">
+    <value>Package Description</value>
+  </data>
+  <data name="packageinfo" xml:space="preserve">
+    <value>Package Info</value>
+  </data>
+  <data name="ipdapplicationform_packagename" xml:space="preserve">
+    <value>Package Name</value>
+  </data>
+  <data name="treatmentpackage_packagename" xml:space="preserve">
+    <value>Package Name</value>
+  </data>
+  <data name="roles_parentname" xml:space="preserve">
+    <value>Parent Name</value>
+  </data>
+  <data name="passportandvisadetails" xml:space="preserve">
+    <value>Passport and Visa Details</value>
+  </data>
+  <data name="ipdapplicationform_passportexpirydate" xml:space="preserve">
+    <value>Passport Expiry Date</value>
+  </data>
+  <data name="ipdapplicationform_passportissuingcountry" xml:space="preserve">
+    <value>Passport Issuing Country</value>
+  </data>
+  <data name="ipdapplicationform_passportnumber" xml:space="preserve">
+    <value>Passport Number</value>
+  </data>
+  <data name="mailbox_password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="tenant_password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="tenant_preadmissionnoticedays" xml:space="preserve">
+    <value>Pre Admission Notice Days</value>
+  </data>
+  <data name="users_passwordkey" xml:space="preserve">
+    <value>Password Key</value>
+  </data>
+  <data name="screening_pastpsychologicaltrauma" xml:space="preserve">
+    <value>Past psychological trauma</value>
+  </data>
+  <data name="clinicalappointment_patient" xml:space="preserve">
+    <value>Patient</value>
+  </data>
+  <data name="patientanswers" xml:space="preserve">
+    <value>Patient Answers</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_patientcategory" xml:space="preserve">
+    <value>Patient Category</value>
+  </data>
+  <data name="patientprofile_patientcategory" xml:space="preserve">
+    <value>Patient Category</value>
+  </data>
+  <data name="patientcategory_patientcategorydesc" xml:space="preserve">
+    <value>Patient Category Desc</value>
+  </data>
+  <data name="patientcategory_patientcategoryname" xml:space="preserve">
+    <value>Patient Category Name</value>
+  </data>
+  <data name="assessment_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="billingpayment_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="enquiryform_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="ipdapplicationform_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="opdform_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="patientqueue_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="patientvisit_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="paymentrequest_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="receivable_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="roomoccupancystatus_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="opdform_patientnotes" xml:space="preserve">
+    <value>Patient Notes</value>
+  </data>
+  <data name="assessment_patientvisit" xml:space="preserve">
+    <value>Patient Visit</value>
+  </data>
+  <data name="billingpayment_patientvisit" xml:space="preserve">
+    <value>Patient Visit</value>
+  </data>
+  <data name="clinicalappointment_patientvisit" xml:space="preserve">
+    <value>Patient Visit</value>
+  </data>
+  <data name="patientqueue_patientvisit" xml:space="preserve">
+    <value>Patient Visit</value>
+  </data>
+  <data name="receivable_patientvisit" xml:space="preserve">
+    <value>Patient Visit</value>
+  </data>
+  <data name="roomoccupancystatus_patientvisit" xml:space="preserve">
+    <value>Patient Visit</value>
+  </data>
+  <data name="billingpayment_paymentdate" xml:space="preserve">
+    <value>Payment Date</value>
+  </data>
+  <data name="paymentrequest_paymentgateway" xml:space="preserve">
+    <value>Payment Gateway</value>
+  </data>
+  <data name="paymentconfig_paymentgatewayprovider" xml:space="preserve">
+    <value>Payment Gateway Provider</value>
+  </data>
+  <data name="paymentrequest_paymentid" xml:space="preserve">
+    <value>Payment Reference</value>
+  </data>
+  <data name="paymentresponse_paymentid" xml:space="preserve">
+    <value>Payment Id</value>
+  </data>
+  <data name="paymentresponse_paymentmethod" xml:space="preserve">
+    <value>Payment Method</value>
+  </data>
+  <data name="billingpayment_paymentmode" xml:space="preserve">
+    <value>Payment Mode</value>
+  </data>
+  <data name="paymentresponse_paymentrequest" xml:space="preserve">
+    <value>Payment Request</value>
+  </data>
+  <data name="billingpayment_paymentstatus" xml:space="preserve">
+    <value>Payment Status</value>
+  </data>
+  <data name="paymentrequest_paymenttype" xml:space="preserve">
+    <value>Payment Type</value>
+  </data>
+  <data name="paymentresponse_paymenttype" xml:space="preserve">
+    <value>Payment Type</value>
+  </data>
+  <data name="paymentrequest_people" xml:space="preserve">
+    <value>People</value>
+  </data>
+  <data name="people" xml:space="preserve">
+    <value>People</value>
+  </data>
+  <data name="peopletimepreference_people" xml:space="preserve">
+    <value>People</value>
+  </data>
+  <data name="staffattendance_peoplename" xml:space="preserve">
+    <value>People Name</value>
+  </data>
+  <data name="treatmentpackage_roomtypes_percentagecovered" xml:space="preserve">
+    <value>Percentage Covered</value>
+  </data>
+  <data name="permanentaddress" xml:space="preserve">
+    <value>Permanent Address</value>
+  </data>
+  <data name="patientprofile_emergencycontactinfo_personname" xml:space="preserve">
+    <value>Person Name</value>
+  </data>
+  <data name="people_emergencycontact_personname" xml:space="preserve">
+    <value>Person Name</value>
+  </data>
+  <data name="shiftplanning_people_personname" xml:space="preserve">
+    <value>Person Name</value>
+  </data>
+  <data name="personalandlifestyledetails" xml:space="preserve">
+    <value>Personal and Lifestyle Details</value>
+  </data>
+  <data name="enquiryform_phonenumber" xml:space="preserve">
+    <value>Phone Number</value>
+  </data>
+  <data name="ipdapplicationform_attendantinfo_phonenumber" xml:space="preserve">
+    <value>Phone Number</value>
+  </data>
+  <data name="patientprofile_emergencycontactinfo_phonenumber" xml:space="preserve">
+    <value>Phone Number</value>
+  </data>
+  <data name="people_emergencycontact_phonenumber" xml:space="preserve">
+    <value>Phone Number</value>
+  </data>
+  <data name="patientprofile_photo" xml:space="preserve">
+    <value>Photo</value>
+  </data>
+  <data name="people_photo" xml:space="preserve">
+    <value>Photo</value>
+  </data>
+  <data name="screening_physicalactivityincludes" xml:space="preserve">
+    <value>Physical activity includes </value>
+  </data>
+  <data name="ipdapplicationform_pickupfrom" xml:space="preserve">
+    <value>Pickup From</value>
+  </data>
+  <data name="ipdapplicationform_cpincode" xml:space="preserve">
+    <value>Pin Code</value>
+  </data>
+  <data name="ipdapplicationform_ppincode" xml:space="preserve">
+    <value>Pin Code</value>
+  </data>
+  <data name="pincodemaster_pincode" xml:space="preserve">
+    <value>pincode</value>
+  </data>
+  <data name="patientprofile_policyclaimlimit" xml:space="preserve">
+    <value>Policy Claim Limit</value>
+  </data>
+  <data name="patientprofile_policyexpirydate" xml:space="preserve">
+    <value>Policy Expiry Date</value>
+  </data>
+  <data name="patientprofile_policynumber" xml:space="preserve">
+    <value>Policy Number</value>
+  </data>
+  <data name="mailbox_portnumber" xml:space="preserve">
+    <value>Port Number</value>
+  </data>
+  <data name="clinicalappointment_practitioner" xml:space="preserve">
+    <value>Practitioner</value>
+  </data>
+  <data name="people_practitionerid" xml:space="preserve">
+    <value>Practitioner ID</value>
+  </data>
+  <data name="roomtype_prebookingdaylimit" xml:space="preserve">
+    <value>Post-booking Day Limit</value>
+  </data>
+  <data name="screening_predominantemotionalcondition" xml:space="preserve">
+    <value>Predominant emotional condition</value>
+  </data>
+  <data name="screening_predominantmentalconditiontickallthatapply" xml:space="preserve">
+    <value>Predominant mental condition (tick all that apply</value>
+  </data>
+  <data name="enquiryform_preferredcontactmethod" xml:space="preserve">
+    <value>Preferred Contact Method</value>
+  </data>
+  <data name="opdform_preferreddate" xml:space="preserve">
+    <value>Preferred Date</value>
+  </data>
+  <data name="opdform_appointmentpreferences_preferreddate" xml:space="preserve">
+    <value>Preferred Date</value>
+  </data>
+  <data name="opdform_appointmentpreferences_slotpreference" xml:space="preserve">
+    <value>Slot Preference</value>
+  </data>
+  <data name="enquiryform_preferreddateofarrival" xml:space="preserve">
+    <value>Preferred Date of Arrival</value>
+  </data>
+  <data name="enquiryform_preferreddateofdeparture" xml:space="preserve">
+    <value>Preferred Date of Departure</value>
+  </data>
+  <data name="preferreddatesofadmission" xml:space="preserve">
+    <value>Preferred Dates of Admission</value>
+  </data>
+  <data name="opdform_preferreddoctor" xml:space="preserve">
+    <value>Preferred Doctor</value>
+  </data>
+  <data name="ipdapplicationform_preferredduration" xml:space="preserve">
+    <value>Preferred duration</value>
+  </data>
+  <data name="preferredlanguageinfo" xml:space="preserve">
+    <value>Preferred Language Info</value>
+  </data>
+  <data name="enquiryform_preferredroomtype" xml:space="preserve">
+    <value>Preferred Room Type</value>
+  </data>
+  <data name="medicine_prescriptionrequired" xml:space="preserve">
+    <value>Prescription Required</value>
+  </data>
+  <data name="billingpayment_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="medicine_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="receivable_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="therapyitem_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="therapykit_kititems_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="treatmentpackage_medicines_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="treatmentpackage_therapyitems_price" xml:space="preserve">
+    <value>Price</value>
+  </data>
+  <data name="pricingforattendant" xml:space="preserve">
+    <value>Pricing for Attendant</value>
+  </data>
+  <data name="pricingforhealthseeker" xml:space="preserve">
+    <value>Pricing for Health Seeker </value>
+  </data>
+  <data name="pricingsummary" xml:space="preserve">
+    <value>Pricing Summary</value>
+  </data>
+  <data name="screening_primaryreasonforno" xml:space="preserve">
+    <value>Primary Reason for No</value>
+  </data>
+  <data name="patientqueue_priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="people_clinicaltaskinfo_priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="processsla_processname" xml:space="preserve">
+    <value>Process Name</value>
+  </data>
+  <data name="processsla" xml:space="preserve">
+    <value>Process SLA</value>
+  </data>
+  <data name="people_preferredlanguageinfo_proficiency" xml:space="preserve">
+    <value>Proficiency</value>
+  </data>
+  <data name="users_profilepicture" xml:space="preserve">
+    <value>Profile Picture</value>
+  </data>
+  <data name="staffattendance_punchdateandtime" xml:space="preserve">
+    <value>Punch Date and Time</value>
+  </data>
+  <data name="screening_quantityperday" xml:space="preserve">
+    <value>Quantity Per Day</value>
+  </data>
+  <data name="assessment_patientanswers_question" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_question" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="assessment_patientanswers_questioncategory" xml:space="preserve">
+    <value>Question Category</value>
+  </data>
+  <data name="assessmentquestion_questioncategory" xml:space="preserve">
+    <value>Question Category</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_questioncategory" xml:space="preserve">
+    <value>Question Category</value>
+  </data>
+  <data name="questioncategory_questioncategorydesc" xml:space="preserve">
+    <value>Question Category Desc</value>
+  </data>
+  <data name="questioncategory_questioncategoryname" xml:space="preserve">
+    <value>Question Category Name</value>
+  </data>
+  <data name="questionsubcategory_questioncategoryname" xml:space="preserve">
+    <value>Question Category Name</value>
+  </data>
+  <data name="assessment_patientanswers_questionsub" xml:space="preserve">
+    <value>Question Sub</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_questionsub" xml:space="preserve">
+    <value>Question Sub</value>
+  </data>
+  <data name="assessmentquestion_questionsubcategory" xml:space="preserve">
+    <value>Question Sub Category</value>
+  </data>
+  <data name="questionsubcategory_questionsubcategorydesc" xml:space="preserve">
+    <value>Question Sub Category Desc</value>
+  </data>
+  <data name="questionsubcategory_questionsubcategoryname" xml:space="preserve">
+    <value>Question Sub Category Name</value>
+  </data>
+  <data name="assessmentquestion_questiontext" xml:space="preserve">
+    <value>Question Text</value>
+  </data>
+  <data name="assessmentquestion_questionnairereferencenumber" xml:space="preserve">
+    <value>Questionnaire Reference Number</value>
+  </data>
+  <data name="assessment_questionnairetemplate" xml:space="preserve">
+    <value>Questionnaire Template</value>
+  </data>
+  <data name="assessment_patientanswers_questions" xml:space="preserve">
+    <value>Questions</value>
+  </data>
+  <data name="consultationqueue_queuename" xml:space="preserve">
+    <value>Queue Name</value>
+  </data>
+  <data name="patientqueue_queuename" xml:space="preserve">
+    <value>Queue Name</value>
+  </data>
+  <data name="queue_queuename" xml:space="preserve">
+    <value>Queue Name</value>
+  </data>
+  <data name="consultationqueue_queuenumber" xml:space="preserve">
+    <value>Queue Number</value>
+  </data>
+  <data name="queue_queuenumber" xml:space="preserve">
+    <value>Queue Number</value>
+  </data>
+  <data name="patientqueue_queuestatus" xml:space="preserve">
+    <value>Queue Status</value>
+  </data>
+  <data name="blacklistreason_reason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="blacklistreason_reasondesc" xml:space="preserve">
+    <value>Reason Desc</value>
+  </data>
+  <data name="patientprofile_reasonforblacklisting" xml:space="preserve">
+    <value>Reason for Blacklisting</value>
+  </data>
+  <data name="receivable_receivabledate" xml:space="preserve">
+    <value>Receivable Date</value>
+  </data>
+  <data name="billingpayment_receivablefor" xml:space="preserve">
+    <value>Receivable For</value>
+  </data>
+  <data name="receivable_receivablefor" xml:space="preserve">
+    <value>Receivable For</value>
+  </data>
+  <data name="receivable_receivableno" xml:space="preserve">
+    <value>Receivable No</value>
+  </data>
+  <data name="billingpayment_receivedamount" xml:space="preserve">
+    <value>Received Amount</value>
+  </data>
+  <data name="patientprofile_referralsource" xml:space="preserve">
+    <value>Referral Source</value>
+  </data>
+  <data name="referralsourcedetails" xml:space="preserve">
+    <value>Referral Source Details</value>
+  </data>
+  <data name="referralsource_referralsourcename" xml:space="preserve">
+    <value>Referral Source Name</value>
+  </data>
+  <data name="patientprofile_referraltype" xml:space="preserve">
+    <value>Referral Type</value>
+  </data>
+  <data name="patientprofile_referrername" xml:space="preserve">
+    <value>Referrer Name</value>
+  </data>
+  <data name="patientprofile_referrerphonenumber" xml:space="preserve">
+    <value>Referrer Phone Number</value>
+  </data>
+  <data name="screening_refrigeratedfood" xml:space="preserve">
+    <value>Refrigerated Food</value>
+  </data>
+  <data name="billingpayment_refundbankname" xml:space="preserve">
+    <value>Refund Bank Name</value>
+  </data>
+  <data name="refundinfo" xml:space="preserve">
+    <value>Refund Info</value>
+  </data>
+  <data name="billingpayment_refundmode" xml:space="preserve">
+    <value>Refund Mode</value>
+  </data>
+  <data name="roomtype_refundpolicy_refundpercentage" xml:space="preserve">
+    <value>Refund Percentage</value>
+  </data>
+  <data name="treatmentpackage_refundpolicy_refundpercentage" xml:space="preserve">
+    <value>Refund Percentage</value>
+  </data>
+  <data name="refundpolicy" xml:space="preserve">
+    <value>Refund Policy</value>
+  </data>
+  <data name="billingpayment_refundreason" xml:space="preserve">
+    <value>Refund Reason</value>
+  </data>
+  <data name="paymentresponse_refundreason" xml:space="preserve">
+    <value>Refund Reason</value>
+  </data>
+  <data name="billingpayment_refundreferencenumber" xml:space="preserve">
+    <value>Refund Reference Number</value>
+  </data>
+  <data name="billingpayment_refundstatus" xml:space="preserve">
+    <value>Refund Status</value>
+  </data>
+  <data name="roomtype_refundpolicy_refundtype" xml:space="preserve">
+    <value>Refund Type</value>
+  </data>
+  <data name="treatmentpackage_refundpolicy_refundtype" xml:space="preserve">
+    <value>Refund Type</value>
+  </data>
+  <data name="billingpayment_refundedamount" xml:space="preserve">
+    <value>Refunded Amount</value>
+  </data>
+  <data name="paymentresponse_refundedamount" xml:space="preserve">
+    <value>Refunded Amount</value>
+  </data>
+  <data name="billingpayment_refundedby" xml:space="preserve">
+    <value>Refunded By</value>
+  </data>
+  <data name="pincodemaster_regionname" xml:space="preserve">
+    <value>regionname</value>
+  </data>
+  <data name="patientprofile_registrationid" xml:space="preserve">
+    <value>Registration ID</value>
+  </data>
+  <data name="people_registrationnumber" xml:space="preserve">
+    <value>Registration Number</value>
+  </data>
+  <data name="screening_regularity" xml:space="preserve">
+    <value>Regularity</value>
+  </data>
+  <data name="patientprofile_emergencycontactinfo_relationship" xml:space="preserve">
+    <value>Relationship</value>
+  </data>
+  <data name="people_emergencycontact_relationship" xml:space="preserve">
+    <value>Relationship</value>
+  </data>
+  <data name="assessmenttemplate_templateapplicability_relationshipstatus" xml:space="preserve">
+    <value>Relationship Status</value>
+  </data>
+  <data name="billingpayment_remarks" xml:space="preserve">
+    <value>Remarks</value>
+  </data>
+  <data name="receivable_remarks" xml:space="preserve">
+    <value>Remarks</value>
+  </data>
+  <data name="screening_rememberdreams" xml:space="preserve">
+    <value>Remember dreams</value>
+  </data>
+  <data name="paymentrequest_requestdatetime" xml:space="preserve">
+    <value>Request Date Time</value>
+  </data>
+  <data name="ipdapplicationform_requireddinner" xml:space="preserve">
+    <value>Required Dinner?</value>
+  </data>
+  <data name="ipdapplicationform_requiredparkingspace" xml:space="preserve">
+    <value>Required Parking Space ?</value>
+  </data>
+  <data name="reshedulehistory" xml:space="preserve">
+    <value>Reshedule History</value>
+  </data>
+  <data name="clinicalappointment_reshedulehistory_reshedulereason" xml:space="preserve">
+    <value>Reshedule Reason</value>
+  </data>
+  <data name="clinicalappointment_reshedulehistory_resheduleddatetime" xml:space="preserve">
+    <value>Resheduled Date Time</value>
+  </data>
+  <data name="paymentresponse_responsesignature" xml:space="preserve">
+    <value>Response Signature</value>
+  </data>
+  <data name="restrictedmedicalconditions_restrictionno" xml:space="preserve">
+    <value>Restriction No</value>
+  </data>
+  <data name="paymentconfig_keyinfo_returnurl" xml:space="preserve">
+    <value>Return Url</value>
+  </data>
+  <data name="paymentrequest_returnurl" xml:space="preserve">
+    <value>Return URL</value>
+  </data>
+  <data name="roles_rolegroupname" xml:space="preserve">
+    <value>Role Group Name</value>
+  </data>
+  <data name="roles_rolehierarchynumber" xml:space="preserve">
+    <value>Role Hierarchy Number</value>
+  </data>
+  <data name="roles_rolename" xml:space="preserve">
+    <value>Role Name</value>
+  </data>
+  <data name="workprofile_rolename" xml:space="preserve">
+    <value>Role Name</value>
+  </data>
+  <data name="billingpayment_room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+  <data name="receivable_room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+  <data name="room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+  <data name="roomallocation_room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+  <data name="roomoccupancystatus_room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+  <data name="roomallocation_roomallocationno" xml:space="preserve">
+    <value>Room Allocation No</value>
+  </data>
+  <data name="roomoccupancystatus_roomallocationno" xml:space="preserve">
+    <value>Room Allocation No</value>
+  </data>
+  <data name="roomanddaterequest" xml:space="preserve">
+    <value>Room and Date Request</value>
+  </data>
+  <data name="room_roomcode" xml:space="preserve">
+    <value>Room Code</value>
+  </data>
+  <data name="treatmentpackage_roomtypes_roomcost" xml:space="preserve">
+    <value>Room Cost</value>
+  </data>
+  <data name="room_roomgroup" xml:space="preserve">
+    <value>Room Group</value>
+  </data>
+  <data name="room_roomimage" xml:space="preserve">
+    <value>Room Image</value>
+  </data>
+  <data name="ipdapplicationform_room_roomnumber" xml:space="preserve">
+    <value>Room Number</value>
+  </data>
+  <data name="room_roomnumber" xml:space="preserve">
+    <value>Room Number</value>
+  </data>
+  <data name="roompreference" xml:space="preserve">
+    <value>Room Preference</value>
+  </data>
+  <data name="room_roomtransfercost" xml:space="preserve">
+    <value>Room Transfer Cost</value>
+  </data>
+  <data name="roomtype_roomtransfercost" xml:space="preserve">
+    <value>Room Transfer Cost</value>
+  </data>
+  <data name="treatmentpackage_roomtransfercost" xml:space="preserve">
+    <value>Room Transfer Cost</value>
+  </data>
+  <data name="ipdapplicationform_roompreference_roomtype" xml:space="preserve">
+    <value>Room Type</value>
+  </data>
+  <data name="room_roomtype" xml:space="preserve">
+    <value>Room Type</value>
+  </data>
+  <data name="treatmentpackage_roomtypes_roomtype" xml:space="preserve">
+    <value>Room Type</value>
+  </data>
+  <data name="treatmentpackage_roomtypeamountaverage" xml:space="preserve">
+    <value>Room Type Amount Average</value>
+  </data>
+  <data name="roomtype_roomtypeicon" xml:space="preserve">
+    <value>Room Type Icon</value>
+  </data>
+  <data name="roomtypeinfo" xml:space="preserve">
+    <value>Room Type Info</value>
+  </data>
+  <data name="roomtypes" xml:space="preserve">
+    <value>Room Types</value>
+  </data>
+  <data name="ipdapplicationform_sameaspermanentaddress" xml:space="preserve">
+    <value>Same as Permanent Address</value>
+  </data>
+  <data name="patientprofile_sameaspermanentaddress" xml:space="preserve">
+    <value>Same as Permanent Address</value>
+  </data>
+  <data name="people_sameaspermanentaddress" xml:space="preserve">
+    <value>Same as Permanent Address</value>
+  </data>
+  <data name="screening_satisfiedafterpassingstools" xml:space="preserve">
+    <value>Satisfied after passing stools</value>
+  </data>
+  <data name="assessment_patientanswers_scalerangemax" xml:space="preserve">
+    <value>Scale Range Max</value>
+  </data>
+  <data name="assessmentquestion_scalerangemax" xml:space="preserve">
+    <value>Scale Range Max</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_scalerangemax" xml:space="preserve">
+    <value>Scale Range Max</value>
+  </data>
+  <data name="assessment_patientanswers_scalerangemin" xml:space="preserve">
+    <value>Scale Range Min</value>
+  </data>
+  <data name="assessmentquestion_scalerangemin" xml:space="preserve">
+    <value>Scale Range Min</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_scalerangemin" xml:space="preserve">
+    <value>Scale Range Min</value>
+  </data>
+  <data name="assessment_patientanswers_scorevalue" xml:space="preserve">
+    <value>Score Value</value>
+  </data>
+  <data name="assessmentquestion_scorevalue" xml:space="preserve">
+    <value>Score Value</value>
+  </data>
+  <data name="assessmenttemplate_templatequestions_scorevalue" xml:space="preserve">
+    <value>Score Value</value>
+  </data>
+  <data name="screening_screentime" xml:space="preserve">
+    <value>Screen time</value>
+  </data>
+  <data name="screening_screenusebeforesleep" xml:space="preserve">
+    <value>Screen use before sleep</value>
+  </data>
+  <data name="people_screeningmeetinglink" xml:space="preserve">
+    <value>Screening Meeting Link</value>
+  </data>
+  <data name="task_screeningtemplates_screeningtemplate" xml:space="preserve">
+    <value>Screening Template</value>
+  </data>
+  <data name="screeningtemplates" xml:space="preserve">
+    <value>Screening Templates</value>
+  </data>
+  <data name="alerttemplates_sendasbatch" xml:space="preserve">
+    <value>Send as Batch?</value>
+  </data>
+  <data name="mailbox_senderdisplayname" xml:space="preserve">
+    <value>Sender Display Name</value>
+  </data>
+  <data name="mailbox_senderemail" xml:space="preserve">
+    <value>Sender Email</value>
+  </data>
+  <data name="screening_senseofbodyfeeling" xml:space="preserve">
+    <value>Sense of body feeling</value>
+  </data>
+  <data name="enquiryform_medicalinfo_severity" xml:space="preserve">
+    <value>Severity</value>
+  </data>
+  <data name="ipdapplicationform_medicalinfo_severitylevel" xml:space="preserve">
+    <value>Severity Level</value>
+  </data>
+  <data name="opdform_medicalinfo_severitylevel" xml:space="preserve">
+    <value>Severity Level</value>
+  </data>
+  <data name="restrictedmedicalconditions_medicalinfo_severitylevel" xml:space="preserve">
+    <value>Severity Level</value>
+  </data>
+  <data name="staffattendance_shift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="shift_shiftcode" xml:space="preserve">
+    <value>Shift Code</value>
+  </data>
+  <data name="staffattendance_shiftdate" xml:space="preserve">
+    <value>Shift Date</value>
+  </data>
+  <data name="shiftdetails" xml:space="preserve">
+    <value>Shift Details</value>
+  </data>
+  <data name="shift_shiftendtime" xml:space="preserve">
+    <value>Shift End Time</value>
+  </data>
+  <data name="staffattendance_shiftendtime" xml:space="preserve">
+    <value>Shift End Time</value>
+  </data>
+  <data name="shift_shifthours" xml:space="preserve">
+    <value>Shift Hours</value>
+  </data>
+  <data name="staffattendance_shifthours" xml:space="preserve">
+    <value>Shift Hours</value>
+  </data>
+  <data name="peopletimepreference_shiftname" xml:space="preserve">
+    <value>Shift Name</value>
+  </data>
+  <data name="shift_shiftname" xml:space="preserve">
+    <value>Shift Name</value>
+  </data>
+  <data name="shiftplanning_shiftname" xml:space="preserve">
+    <value>Shift Name</value>
+  </data>
+  <data name="shiftplanningdetails" xml:space="preserve">
+    <value>Shift Planning Details</value>
+  </data>
+  <data name="shift_shiftstarttime" xml:space="preserve">
+    <value>Shift Start Time</value>
+  </data>
+  <data name="staffattendance_shiftstarttime" xml:space="preserve">
+    <value>Shift Start Time</value>
+  </data>
+  <data name="shiftsummary" xml:space="preserve">
+    <value>Shift Summary</value>
+  </data>
+  <data name="tenant_shortcode" xml:space="preserve">
+    <value>Short Code</value>
+  </data>
+  <data name="medicine_sideeffect" xml:space="preserve">
+    <value>Side Effects</value>
+  </data>
+  <data name="ipdapplicationform_signature" xml:space="preserve">
+    <value>Signature</value>
+  </data>
+  <data name="paymentrequest_signatureorchecksum" xml:space="preserve">
+    <value>signature or checksum</value>
+  </data>
+  <data name="processsla_processsla_slaindays" xml:space="preserve">
+    <value>SLA in Days</value>
+  </data>
+  <data name="processsla_processsla_slainhrs" xml:space="preserve">
+    <value>SLA in Hrs</value>
+  </data>
+  <data name="task_slainhrs" xml:space="preserve">
+    <value>SLA in Hrs</value>
+  </data>
+  <data name="sleep" xml:space="preserve">
+    <value>Sleep</value>
+  </data>
+  <data name="screening_sleepquality" xml:space="preserve">
+    <value>Sleep quality (last 14 days)</value>
+  </data>
+  <data name="medicalcondition_snomedid" xml:space="preserve">
+    <value>SNOMED ID</value>
+  </data>
+  <data name="screening_socialconnectedness" xml:space="preserve">
+    <value>Social Connectedness</value>
+  </data>
+  <data name="socialdimensionsexualfinancial" xml:space="preserve">
+    <value>Social Dimension Sexual Financial</value>
+  </data>
+  <data name="patientprofile_socialmediaplatform" xml:space="preserve">
+    <value>Social Media Platform</value>
+  </data>
+  <data name="ipdapplicationform_specialrequest" xml:space="preserve">
+    <value>Special Request</value>
+  </data>
+  <data name="screening_specificchallenges" xml:space="preserve">
+    <value>Specific Challenges</value>
+  </data>
+  <data name="people_specifycountry" xml:space="preserve">
+    <value>Specify Country</value>
+  </data>
+  <data name="screening_spicytangy" xml:space="preserve">
+    <value>Spicy Tangy</value>
+  </data>
+  <data name="spiritualdimension" xml:space="preserve">
+    <value>Spiritual Dimension</value>
+  </data>
+  <data name="therapies_standarddurationinmins" xml:space="preserve">
+    <value>Standard Duration in Mins</value>
+  </data>
+  <data name="shift_breakdurationdetails_starttime" xml:space="preserve">
+    <value>Start Time</value>
+  </data>
+  <data name="tenant_statename" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="ipdapplicationform_cstatename" xml:space="preserve">
+    <value>State Name</value>
+  </data>
+  <data name="ipdapplicationform_pstatename" xml:space="preserve">
+    <value>State Name</value>
+  </data>
+  <data name="patientprofile_cstatename" xml:space="preserve">
+    <value>State Name</value>
+  </data>
+  <data name="patientprofile_ppstatename" xml:space="preserve">
+    <value>State Name</value>
+  </data>
+  <data name="people_cstatename" xml:space="preserve">
+    <value>State Name</value>
+  </data>
+  <data name="people_pstatename" xml:space="preserve">
+    <value>State Name</value>
+  </data>
+  <data name="pincodemaster_statename" xml:space="preserve">
+    <value>statename</value>
+  </data>
+  <data name="clinicalappointment_status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="paymentconfig_keyinfo_status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="paymentresponse_status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="roomallocation_status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="roomoccupancystatus_status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="screening_stimulantsusedforenergy" xml:space="preserve">
+    <value>Stimulants used for energy</value>
+  </data>
+  <data name="screening_stooltype" xml:space="preserve">
+    <value>Stool Type</value>
+  </data>
+  <data name="screening_stresslevel0to10" xml:space="preserve">
+    <value>Stress Level (0 to 10)</value>
+  </data>
+  <data name="screening_sugerpermonthinkg" xml:space="preserve">
+    <value>Suger per month in Kg</value>
+  </data>
+  <data name="roomtype_suitabilityforvip" xml:space="preserve">
+    <value>Suitability for VIP</value>
+  </data>
+  <data name="screening_supporthistory" xml:space="preserve">
+    <value>Support history</value>
+  </data>
+  <data name="screening_sweat" xml:space="preserve">
+    <value>Sweat</value>
+  </data>
+  <data name="medicalcondition_synonyms_synonymname" xml:space="preserve">
+    <value>Synonym Name</value>
+  </data>
+  <data name="synonyms" xml:space="preserve">
+    <value>Synonyms</value>
+  </data>
+  <data name="processsla_processsla_targetstage" xml:space="preserve">
+    <value>Target Stage</value>
+  </data>
+  <data name="consultationqueue_task" xml:space="preserve">
+    <value>Task</value>
+  </data>
+  <data name="opdform_task" xml:space="preserve">
+    <value>Booking For</value>
+  </data>
+  <data name="queue_task" xml:space="preserve">
+    <value>Task</value>
+  </data>
+  <data name="taskallowed" xml:space="preserve">
+    <value>Task Allowed</value>
+  </data>
+  <data name="task_taskcharges" xml:space="preserve">
+    <value>Task Charges</value>
+  </data>
+  <data name="task_taskdesc" xml:space="preserve">
+    <value>Task Desc</value>
+  </data>
+  <data name="taskduration" xml:space="preserve">
+    <value>Task Duration</value>
+  </data>
+  <data name="peopletimepreference_timepreference_taskendtime" xml:space="preserve">
+    <value>Task End Time</value>
+  </data>
+  <data name="task_taskfeestype" xml:space="preserve">
+    <value>Task Fees Type</value>
+  </data>
+  <data name="peopletimepreference_timepreference_taskhours" xml:space="preserve">
+    <value>Task Hours</value>
+  </data>
+  <data name="assessmenttemplate_taskname" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="clinicalappointment_taskname" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="clinicaltask_taskduration_taskname" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="holidaycalendar_taskallowed_taskname" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="people_clinicaltaskinfo_taskname" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="peopletimepreference_timepreference_taskname" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="task_taskname" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="peopletimepreference_timepreference_taskstarttime" xml:space="preserve">
+    <value>Task Start Time</value>
+  </data>
+  <data name="clinicalappointment_tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="clinicaltask_taskduration_tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="consultationqueue_tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="people_clinicaltaskinfo_tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="peopletimepreference_timepreference_tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="queue_tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="task_tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="tasktype_tasktypename" xml:space="preserve">
+    <value>Task Type Name </value>
+  </data>
+  <data name="screening_tastecravings" xml:space="preserve">
+    <value>Taste cravings</value>
+  </data>
+  <data name="templateapplicability" xml:space="preserve">
+    <value>Template Applicability</value>
+  </data>
+  <data name="assessmenttemplate_templatename" xml:space="preserve">
+    <value>Template Name</value>
+  </data>
+  <data name="templatequestions" xml:space="preserve">
+    <value>Template Questions</value>
+  </data>
+  <data name="billingpayment_therapy" xml:space="preserve">
+    <value>Therapy</value>
+  </data>
+  <data name="receivable_therapy" xml:space="preserve">
+    <value>Therapy</value>
+  </data>
+  <data name="therapy" xml:space="preserve">
+    <value>Therapy</value>
+  </data>
+  <data name="treatmentpackage_therapyamount" xml:space="preserve">
+    <value>Therapy Amount</value>
+  </data>
+  <data name="therapies_therapycategory" xml:space="preserve">
+    <value>Therapy Category</value>
+  </data>
+  <data name="billingpayment_therapycost" xml:space="preserve">
+    <value>Therapy Cost</value>
+  </data>
+  <data name="receivable_therapycost" xml:space="preserve">
+    <value>Therapy Cost</value>
+  </data>
+  <data name="therapies_therapycost" xml:space="preserve">
+    <value>Therapy Cost</value>
+  </data>
+  <data name="treatmentpackage_therapy_therapycost" xml:space="preserve">
+    <value>Therapy Cost</value>
+  </data>
+  <data name="therapies_therapyimage" xml:space="preserve">
+    <value>Therapy Image</value>
+  </data>
+  <data name="therapies_therapyinstructions" xml:space="preserve">
+    <value>Therapy Instructions</value>
+  </data>
+  <data name="therapykit_kititems_therapyitem" xml:space="preserve">
+    <value>Therapy Item</value>
+  </data>
+  <data name="treatmentpackage_therapyitems_therapyitem" xml:space="preserve">
+    <value>Therapy Item</value>
+  </data>
+  <data name="treatmentpackage_therapyitemamount" xml:space="preserve">
+    <value>Therapy Item Amount</value>
+  </data>
+  <data name="therapyitem_therapyitemcategory" xml:space="preserve">
+    <value>Therapy Item Category</value>
+  </data>
+  <data name="treatmentpackage_therapyitems_therapyitemcost" xml:space="preserve">
+    <value>Therapy Item Cost</value>
+  </data>
+  <data name="treatmentpackage_therapyitems_therapyitemcount" xml:space="preserve">
+    <value>Therapy Item Count</value>
+  </data>
+  <data name="therapyitem_therapyitemimage" xml:space="preserve">
+    <value>Therapy Item Image</value>
+  </data>
+  <data name="therapyitem_therapyitemname" xml:space="preserve">
+    <value>Therapy Item Name</value>
+  </data>
+  <data name="therapyitems" xml:space="preserve">
+    <value>Therapy Items</value>
+  </data>
+  <data name="billingpayment_therapykit" xml:space="preserve">
+    <value>Therapy Kit</value>
+  </data>
+  <data name="receivable_therapykit" xml:space="preserve">
+    <value>Therapy Kit</value>
+  </data>
+  <data name="treatmentpackage_therapykitamount" xml:space="preserve">
+    <value>Therapy Kit Amount</value>
+  </data>
+  <data name="treatmentpackage_therapykits_therapykitcost" xml:space="preserve">
+    <value>Therapy Kit Cost</value>
+  </data>
+  <data name="therapykit_therapykitname" xml:space="preserve">
+    <value>Therapy Kit Name</value>
+  </data>
+  <data name="treatmentpackage_therapykits_therapykitname" xml:space="preserve">
+    <value>Therapy Kit Name</value>
+  </data>
+  <data name="therapykits" xml:space="preserve">
+    <value>Therapy Kits</value>
+  </data>
+  <data name="therapies_therapyname" xml:space="preserve">
+    <value>Therapy Name</value>
+  </data>
+  <data name="treatmentpackage_therapy_therapyname" xml:space="preserve">
+    <value>Therapy Name</value>
+  </data>
+  <data name="treatmentpackage_therapy_therapyprice" xml:space="preserve">
+    <value>Therapy Price</value>
+  </data>
+  <data name="therapies_therapyvideourl" xml:space="preserve">
+    <value>Therapy Video URL</value>
+  </data>
+  <data name="screening_thirstpattern" xml:space="preserve">
+    <value>Thirst Pattern</value>
+  </data>
+  <data name="screening_dinnertime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="screening_lunchtime" xml:space="preserve">
+    <value>Time</value>
+  </data>
+  <data name="timepreference" xml:space="preserve">
+    <value>Time Preference</value>
+  </data>
+  <data name="screening_timespentdailyorweekly" xml:space="preserve">
+    <value>Time spent (daily or weekly)</value>
+  </data>
+  <data name="screening_timing" xml:space="preserve">
+    <value>TIming</value>
+  </data>
+  <data name="ipdapplicationform_room_todate" xml:space="preserve">
+    <value>To Date</value>
+  </data>
+  <data name="people_workexperience_todate" xml:space="preserve">
+    <value>To Date</value>
+  </data>
+  <data name="roomallocation_todate" xml:space="preserve">
+    <value>To Date</value>
+  </data>
+  <data name="clinicalappointment_tokennumber" xml:space="preserve">
+    <value>Token Number</value>
+  </data>
+  <data name="shift_totalbreakinhrs" xml:space="preserve">
+    <value>Total Break in Hrs</value>
+  </data>
+  <data name="shift_totalbreakinmins" xml:space="preserve">
+    <value>Total Break in Mins</value>
+  </data>
+  <data name="screening_totalsleep" xml:space="preserve">
+    <value>Total Sleep</value>
+  </data>
+  <data name="ipdapplicationform_ctown" xml:space="preserve">
+    <value>Town</value>
+  </data>
+  <data name="ipdapplicationform_ptown" xml:space="preserve">
+    <value>Town</value>
+  </data>
+  <data name="patientprofile_ctown" xml:space="preserve">
+    <value>Town</value>
+  </data>
+  <data name="patientprofile_ptown" xml:space="preserve">
+    <value>Town</value>
+  </data>
+  <data name="people_ctown" xml:space="preserve">
+    <value>Town</value>
+  </data>
+  <data name="people_ptown" xml:space="preserve">
+    <value>Town</value>
+  </data>
+  <data name="tenant_town" xml:space="preserve">
+    <value>Town</value>
+  </data>
+  <data name="transactioninfo" xml:space="preserve">
+    <value>Transaction Info</value>
+  </data>
+  <data name="billingpayment_transactionreference" xml:space="preserve">
+    <value>Transaction Reference</value>
+  </data>
+  <data name="paymentresponse_transactiontime" xml:space="preserve">
+    <value>Transaction Time</value>
+  </data>
+  <data name="ipdapplicationform_travelarrangement" xml:space="preserve">
+    <value>Travel Arrangement</value>
+  </data>
+  <data name="screening_tryingorplanningtostop" xml:space="preserve">
+    <value>Trying or planning to stop</value>
+  </data>
+  <data name="screening_breakfasttype" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="screening_dinnertype" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="screening_lunchtype" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="screening_type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="screening_typeofaerateddrinks" xml:space="preserve">
+    <value>Type of Aerated Drinks</value>
+  </data>
+  <data name="patientprofile_typeofpractice" xml:space="preserve">
+    <value>Type of Practice</value>
+  </data>
+  <data name="screening_typeoftoiletused" xml:space="preserve">
+    <value>Type of toilet used</value>
+  </data>
+  <data name="ipdapplicationform_typeoftravelrequired" xml:space="preserve">
+    <value>Type of Travel Required</value>
+  </data>
+  <data name="screening_typeofwater" xml:space="preserve">
+    <value>Type of Water</value>
+  </data>
+  <data name="ipdapplicationform_medicalinfo_unit" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="opdform_medicalinfo_unit" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="restrictedmedicalconditions_medicalinfo_unit" xml:space="preserve">
+    <value>Unit</value>
+  </data>
+  <data name="unitofmeasure_unitofmeasuredesc" xml:space="preserve">
+    <value>Unit of Measure Desc</value>
+  </data>
+  <data name="unitofmeasure_unitofmeasurename" xml:space="preserve">
+    <value>Unit of Measure Name</value>
+  </data>
+  <data name="patientprofile_uploadidproof" xml:space="preserve">
+    <value>Upload ID Proof</value>
+  </data>
+  <data name="ipdapplicationform_uploadpassportcopy" xml:space="preserve">
+    <value>Upload Passport Copy</value>
+  </data>
+  <data name="ipdapplicationform_uploadvisacopy" xml:space="preserve">
+    <value>Upload Visa Copy</value>
+  </data>
+  <data name="screening_urine" xml:space="preserve">
+    <value>Urine</value>
+  </data>
+  <data name="users_userpassword" xml:space="preserve">
+    <value>User Password</value>
+  </data>
+  <data name="tenant_userrole" xml:space="preserve">
+    <value>User Role</value>
+  </data>
+  <data name="users_userrole" xml:space="preserve">
+    <value>User Role</value>
+  </data>
+  <data name="otplogs_username" xml:space="preserve">
+    <value>username</value>
+  </data>
+  <data name="tenant_username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="users_username" xml:space="preserve">
+    <value>UserName</value>
+  </data>
+  <data name="screening_usualbedtime" xml:space="preserve">
+    <value>Usual bedtime</value>
+  </data>
+  <data name="screening_breakfastusualfoods" xml:space="preserve">
+    <value>Usual Foods</value>
+  </data>
+  <data name="screening_dinnerusualfoods" xml:space="preserve">
+    <value>Usual Foods</value>
+  </data>
+  <data name="screening_lunchusualfoods" xml:space="preserve">
+    <value>Usual Foods</value>
+  </data>
+  <data name="screening_usualwakeuptime" xml:space="preserve">
+    <value>Usual wakeup time</value>
+  </data>
+  <data name="shiftplanning_validfrom" xml:space="preserve">
+    <value>Valid From</value>
+  </data>
+  <data name="people_validtill" xml:space="preserve">
+    <value>Valid Till</value>
+  </data>
+  <data name="shiftplanning_validto" xml:space="preserve">
+    <value>Valid To</value>
+  </data>
+  <data name="roomtype_attendantvariableofbookingdays" xml:space="preserve">
+    <value>Variable ( of booking days) </value>
+  </data>
+  <data name="roomtype_variableofbookingdays" xml:space="preserve">
+    <value>Variable ( of booking days) </value>
+  </data>
+  <data name="enquiryform_verifiedstatus" xml:space="preserve">
+    <value>Verified Status</value>
+  </data>
+  <data name="ipdapplicationform_verifiedstatus" xml:space="preserve">
+    <value>Verified Status</value>
+  </data>
+  <data name="opdform_verifiedstatus" xml:space="preserve">
+    <value>Verified Status</value>
+  </data>
+  <data name="screening_verycoldfood" xml:space="preserve">
+    <value>Very Cold Food</value>
+  </data>
+  <data name="ipdapplicationform_visaexpirydate" xml:space="preserve">
+    <value>Visa Expiry Date</value>
+  </data>
+  <data name="ipdapplicationform_visaissuedate" xml:space="preserve">
+    <value>Visa Issue Date</value>
+  </data>
+  <data name="ipdapplicationform_visaissuedcountry" xml:space="preserve">
+    <value>Visa Issued Country</value>
+  </data>
+  <data name="ipdapplicationform_visanumber" xml:space="preserve">
+    <value>Visa Number</value>
+  </data>
+  <data name="ipdapplicationform_visatype" xml:space="preserve">
+    <value>Visa Type</value>
+  </data>
+  <data name="patientqueue_visitdatetime" xml:space="preserve">
+    <value>Visit Date Time</value>
+  </data>
+  <data name="patientvisit_visitdatetime" xml:space="preserve">
+    <value>Visit Date Time</value>
+  </data>
+  <data name="patientvisit_visitnumber" xml:space="preserve">
+    <value>Visit Number</value>
+  </data>
+  <data name="patientvisit_visitstatus" xml:space="preserve">
+    <value>Visit Status</value>
+  </data>
+  <data name="patientvisit_visittype" xml:space="preserve">
+    <value>Visit Type</value>
+  </data>
+  <data name="roomtype_waiverpercentage" xml:space="preserve">
+    <value>Waiver Percentage</value>
+  </data>
+  <data name="treatmentpackage_waiverpercentage" xml:space="preserve">
+    <value>Waiver Percentage</value>
+  </data>
+  <data name="referralsource_websiteurl" xml:space="preserve">
+    <value>Website URL</value>
+  </data>
+  <data name="screening_weightpattern" xml:space="preserve">
+    <value>Weight pattern</value>
+  </data>
+  <data name="screening_whatareyourhobbiesthatyouhavetried" xml:space="preserve">
+    <value>What are your hobbies that you have tried?</value>
+  </data>
+  <data name="screening_whatdoyouliketoreadwatch" xml:space="preserve">
+    <value>What do you like to read watch?</value>
+  </data>
+  <data name="screening_whatisthegoalofyourlife" xml:space="preserve">
+    <value>What is the goal of your life? </value>
+  </data>
+  <data name="screening_whatisyourambition" xml:space="preserve">
+    <value>What is your ambition? </value>
+  </data>
+  <data name="screening_whattimeduringthedayyoufeelexhausted" xml:space="preserve">
+    <value>What time during the day you feel exhausted ?</value>
+  </data>
+  <data name="ipdapplicationform_whatsappnumber" xml:space="preserve">
+    <value>Whatsapp Number</value>
+  </data>
+  <data name="patientprofile_whatsappnumber" xml:space="preserve">
+    <value>Whatsapp Number</value>
+  </data>
+  <data name="people_whatsappnumber" xml:space="preserve">
+    <value>Whatsapp Number</value>
+  </data>
+  <data name="ipdapplicationform_wheelchairassistance" xml:space="preserve">
+    <value>Wheelchair Assistance</value>
+  </data>
+  <data name="screening_whydidyoudiscontinueit" xml:space="preserve">
+    <value>Why did you discontinue it?</value>
+  </data>
+  <data name="workexperience" xml:space="preserve">
+    <value>Work Experience</value>
+  </data>
+  <data name="people_clinicaltaskinfo_workhourends" xml:space="preserve">
+    <value>Work Hour Ends</value>
+  </data>
+  <data name="people_clinicaltaskinfo_workhourstarts" xml:space="preserve">
+    <value>Work Hour Starts</value>
+  </data>
+  <data name="shift_workhours" xml:space="preserve">
+    <value>Work Hours</value>
+  </data>
+  <data name="staffattendance_workhours" xml:space="preserve">
+    <value>Work Hours</value>
+  </data>
+  <data name="clinicaltask_taskduration_workprofile" xml:space="preserve">
+    <value>Work Profile</value>
+  </data>
+  <data name="clinicaltask_workprofile" xml:space="preserve">
+    <value>Work Profile</value>
+  </data>
+  <data name="designation_workprofile" xml:space="preserve">
+    <value>Work Profile</value>
+  </data>
+  <data name="people_clinicaltaskinfo_workprofile" xml:space="preserve">
+    <value>Work Profile</value>
+  </data>
+  <data name="people_workprofile" xml:space="preserve">
+    <value>Work Profile</value>
+  </data>
+  <data name="shiftplanning_people_workprofile" xml:space="preserve">
+    <value>Work Profile</value>
+  </data>
+  <data name="staffattendance_workprofile" xml:space="preserve">
+    <value>Work Profile</value>
+  </data>
+  <data name="workprofile_workprofiledescription" xml:space="preserve">
+    <value>Work Profile Description</value>
+  </data>
+  <data name="workprofile_workprofilename" xml:space="preserve">
+    <value>Work Profile Name</value>
+  </data>
+  <data name="people_educationinfo_yearofgraduation" xml:space="preserve">
+    <value>Year of Graduation</value>
+  </data>
+  <data name="screening_stimulantsyearsofuse" xml:space="preserve">
+    <value>Years of use</value>
+  </data>
+  <data name="screening_yourregularcontactwithnatureincludes" xml:space="preserve">
+    <value>Your regular contact with nature includes</value>
+  </data>
+  <data name="screening_yourusualdailyenvironmentismostly" xml:space="preserve">
+    <value>Your usual daily environment is mostly</value>
+  </data>
+  <data name="patientprofile_czip" xml:space="preserve">
+    <value>Zip</value>
+  </data>
+  <data name="patientprofile_pzip" xml:space="preserve">
+    <value>Zip</value>
+  </data>
+  <data name="people_czip" xml:space="preserve">
+    <value>Zip</value>
+  </data>
+  <data name="people_pzip" xml:space="preserve">
+    <value>Zip</value>
+  </data>
+  <data name="tenant_zip" xml:space="preserve">
+    <value>Zip</value>
+  </data>
+  <data name="alerttemplates" xml:space="preserve">
+    <value>Alert Templates</value>
+  </data>
+  <data name="assessment" xml:space="preserve">
+    <value>Assessment</value>
+  </data>
+  <data name="assessmentquestion" xml:space="preserve">
+    <value>Assessment Question</value>
+  </data>
+  <data name="assessmenttemplate" xml:space="preserve">
+    <value>Assessment Template</value>
+  </data>
+  <data name="billingpayment" xml:space="preserve">
+    <value>Billing Payment</value>
+  </data>
+  <data name="blacklistreason" xml:space="preserve">
+    <value>Blacklist Reason</value>
+  </data>
+  <data name="block" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="building" xml:space="preserve">
+    <value>Building</value>
+  </data>
+  <data name="clinicalappointment" xml:space="preserve">
+    <value>Clinical Appointment</value>
+  </data>
+  <data name="clinicaltask" xml:space="preserve">
+    <value>Clinical Task</value>
+  </data>
+  <data name="competency" xml:space="preserve">
+    <value>Competency</value>
+  </data>
+  <data name="consultationqueue" xml:space="preserve">
+    <value>Consultation Queue</value>
+  </data>
+  <data name="country" xml:space="preserve">
+    <value>Country</value>
+  </data>
+  <data name="department" xml:space="preserve">
+    <value>Department</value>
+  </data>
+  <data name="designation" xml:space="preserve">
+    <value>Designation</value>
+  </data>
+  <data name="enquiryform" xml:space="preserve">
+    <value>Enquiry Form</value>
+  </data>
+  <data name="enquirytype" xml:space="preserve">
+    <value>Enquiry Type</value>
+  </data>
+  <data name="floor" xml:space="preserve">
+    <value>Floor</value>
+  </data>
+  <data name="holidaycalendar" xml:space="preserve">
+    <value>Holiday Calendar</value>
+  </data>
+  <data name="ipdapplicationform" xml:space="preserve">
+    <value>IPD Application Form</value>
+  </data>
+  <data name="lookups" xml:space="preserve">
+    <value>Lookups</value>
+  </data>
+  <data name="mailbox" xml:space="preserve">
+    <value>Mail Box</value>
+  </data>
+  <data name="maillogs" xml:space="preserve">
+    <value>Mail Logs</value>
+  </data>
+  <data name="medicalcondition" xml:space="preserve">
+    <value>Medical Condition</value>
+  </data>
+  <data name="medicationtype" xml:space="preserve">
+    <value>Medication Type</value>
+  </data>
+  <data name="medicine" xml:space="preserve">
+    <value>Medicine</value>
+  </data>
+  <data name="occupation" xml:space="preserve">
+    <value>Occupation</value>
+  </data>
+  <data name="opdform" xml:space="preserve">
+    <value>OPD Form</value>
+  </data>
+  <data name="otplogs" xml:space="preserve">
+    <value>OTP Logs</value>
+  </data>
+  <data name="patientcategory" xml:space="preserve">
+    <value>Patient Category</value>
+  </data>
+  <data name="patientconsent" xml:space="preserve">
+    <value>Patient Consent</value>
+  </data>
+  <data name="patientprofile" xml:space="preserve">
+    <value>Patient Profile</value>
+  </data>
+  <data name="patientqueue" xml:space="preserve">
+    <value>Patient Queue</value>
+  </data>
+  <data name="patientvisit" xml:space="preserve">
+    <value>Patient Visit</value>
+  </data>
+  <data name="paymentconfig" xml:space="preserve">
+    <value>Payment Config</value>
+  </data>
+  <data name="paymentrequest" xml:space="preserve">
+    <value>Payment Request</value>
+  </data>
+  <data name="paymentresponse" xml:space="preserve">
+    <value>Payment Response</value>
+  </data>
+  <data name="peopletimepreference" xml:space="preserve">
+    <value>People Time Preference</value>
+  </data>
+  <data name="pincodemaster" xml:space="preserve">
+    <value>Pincode Master</value>
+  </data>
+  <data name="questioncategory" xml:space="preserve">
+    <value>Question Category</value>
+  </data>
+  <data name="questionsubcategory" xml:space="preserve">
+    <value>Question SubCategory</value>
+  </data>
+  <data name="queue" xml:space="preserve">
+    <value>Queue</value>
+  </data>
+  <data name="receivable" xml:space="preserve">
+    <value>Receivable</value>
+  </data>
+  <data name="referralsource" xml:space="preserve">
+    <value>Referral Source</value>
+  </data>
+  <data name="restrictedmedicalconditions" xml:space="preserve">
+    <value>Restricted Medical Conditions</value>
+  </data>
+  <data name="roles" xml:space="preserve">
+    <value>roles</value>
+  </data>
+  <data name="roomallocation" xml:space="preserve">
+    <value>Room Allocation</value>
+  </data>
+  <data name="roomgroup" xml:space="preserve">
+    <value>Room Group</value>
+  </data>
+  <data name="roomoccupancystatus" xml:space="preserve">
+    <value>Room Occupancy Status</value>
+  </data>
+  <data name="roomtype" xml:space="preserve">
+    <value>Room Type</value>
+  </data>
+  <data name="screening" xml:space="preserve">
+    <value>Screening</value>
+  </data>
+  <data name="shift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="shiftplanning" xml:space="preserve">
+    <value>Shift Planning</value>
+  </data>
+  <data name="staffattendance" xml:space="preserve">
+    <value>Staff Attendance</value>
+  </data>
+  <data name="task" xml:space="preserve">
+    <value>Task</value>
+  </data>
+  <data name="tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="tenant" xml:space="preserve">
+    <value>Tenant</value>
+  </data>
+  <data name="therapies" xml:space="preserve">
+    <value>Therapies</value>
+  </data>
+  <data name="therapycategory" xml:space="preserve">
+    <value>Therapy Category</value>
+  </data>
+  <data name="therapyitem" xml:space="preserve">
+    <value>Therapy Item</value>
+  </data>
+  <data name="therapyitemcategory" xml:space="preserve">
+    <value>Therapy Item Category</value>
+  </data>
+  <data name="therapykit" xml:space="preserve">
+    <value>Therapy Kit</value>
+  </data>
+  <data name="treatmentpackage" xml:space="preserve">
+    <value>Treatment Package</value>
+  </data>
+  <data name="unitofmeasure" xml:space="preserve">
+    <value>Unit of Measure</value>
+  </data>
+  <data name="users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="workprofile" xml:space="preserve">
+    <value>Work Profile</value>
+  </data>
+  <data name="addassessment" xml:space="preserve">
+    <value>Submit Assessment</value>
+  </data>
+  <data name="addassessmentquestion" xml:space="preserve">
+    <value>Add Assessment Question</value>
+  </data>
+  <data name="addassessmenttemplate" xml:space="preserve">
+    <value>Add Assessment Template</value>
+  </data>
+  <data name="addbillingpayment" xml:space="preserve">
+    <value>Add Billing Payment</value>
+  </data>
+  <data name="addblacklistreason" xml:space="preserve">
+    <value>Add Blacklist reason</value>
+  </data>
+  <data name="addblock" xml:space="preserve">
+    <value>Add Block</value>
+  </data>
+  <data name="addbuilding" xml:space="preserve">
+    <value>Add Building</value>
+  </data>
+  <data name="addclinicalappointment" xml:space="preserve">
+    <value>Add Clinical Appointment</value>
+  </data>
+  <data name="addclinicaltask" xml:space="preserve">
+    <value>Add Clinical Task</value>
+  </data>
+  <data name="addcompetency" xml:space="preserve">
+    <value>Add Competency</value>
+  </data>
+  <data name="addconsultationqueue" xml:space="preserve">
+    <value>Add Consultation Queue</value>
+  </data>
+  <data name="addcountry" xml:space="preserve">
+    <value>Add Country</value>
+  </data>
+  <data name="adddepartment" xml:space="preserve">
+    <value>Add Department</value>
+  </data>
+  <data name="adddesignation" xml:space="preserve">
+    <value>Add Designation</value>
+  </data>
+  <data name="addenquiry" xml:space="preserve">
+    <value>Add Enquiry</value>
+  </data>
+  <data name="addenquirytype" xml:space="preserve">
+    <value>Add Enquiry Type</value>
+  </data>
+  <data name="addfloor" xml:space="preserve">
+    <value>Add Floor</value>
+  </data>
+  <data name="addholiday" xml:space="preserve">
+    <value>Add Holiday</value>
+  </data>
+  <data name="addipdapplicationform" xml:space="preserve">
+    <value>Add IPD Application Form</value>
+  </data>
+  <data name="addmailbox" xml:space="preserve">
+    <value>Add Mail Box</value>
+  </data>
+  <data name="addmedicalcondition" xml:space="preserve">
+    <value>Add Medical Condition</value>
+  </data>
+  <data name="addmedicationtype" xml:space="preserve">
+    <value>Add Medication Type</value>
+  </data>
+  <data name="addmedicine" xml:space="preserve">
+    <value>Add Medicine</value>
+  </data>
+  <data name="addoccupation" xml:space="preserve">
+    <value>Add Occupation</value>
+  </data>
+  <data name="addopdform" xml:space="preserve">
+    <value>Add OPD Form</value>
+  </data>
+  <data name="addotplogs" xml:space="preserve">
+    <value>Add otplogs</value>
+  </data>
+  <data name="addpatientcategory" xml:space="preserve">
+    <value>Add Patient Category</value>
+  </data>
+  <data name="addpatientconsent" xml:space="preserve">
+    <value>Add Patient Consent</value>
+  </data>
+  <data name="addpatientprofile" xml:space="preserve">
+    <value>Add Patient Profile</value>
+  </data>
+  <data name="addpatientqueue" xml:space="preserve">
+    <value>Add Patient Queue</value>
+  </data>
+  <data name="addpatientvisit" xml:space="preserve">
+    <value>Add Patient Visit</value>
+  </data>
+  <data name="addpaymentconfig" xml:space="preserve">
+    <value>Add Payment Config</value>
+  </data>
+  <data name="addpaymentrequest" xml:space="preserve">
+    <value>Add Payment Request</value>
+  </data>
+  <data name="addpaymentresponse" xml:space="preserve">
+    <value>Add Payment Response</value>
+  </data>
+  <data name="addpeople" xml:space="preserve">
+    <value>Add People</value>
+  </data>
+  <data name="addpeopletimepreference" xml:space="preserve">
+    <value>Add People Time Preference</value>
+  </data>
+  <data name="addpincode" xml:space="preserve">
+    <value>Add Pincode</value>
+  </data>
+  <data name="addprocesssla" xml:space="preserve">
+    <value>Add Process SLA</value>
+  </data>
+  <data name="addquestioncategory" xml:space="preserve">
+    <value>Add Question Category</value>
+  </data>
+  <data name="addquestionsubcategory" xml:space="preserve">
+    <value>Add Question Sub Category</value>
+  </data>
+  <data name="addqueue" xml:space="preserve">
+    <value>Add Queue</value>
+  </data>
+  <data name="addreceivable" xml:space="preserve">
+    <value>Add Receivable</value>
+  </data>
+  <data name="addreferralsource" xml:space="preserve">
+    <value>Add Referral Source</value>
+  </data>
+  <data name="addrestrictedmedicalconditions" xml:space="preserve">
+    <value>Add Restricted Medical Conditions</value>
+  </data>
+  <data name="addroom" xml:space="preserve">
+    <value>Add Room</value>
+  </data>
+  <data name="addroomallocation" xml:space="preserve">
+    <value>Add Room Allocation</value>
+  </data>
+  <data name="addroomgroup" xml:space="preserve">
+    <value>Add Room Group</value>
+  </data>
+  <data name="addroomoccupancystatus" xml:space="preserve">
+    <value>Add Room Occupancy Status</value>
+  </data>
+  <data name="addroomtype" xml:space="preserve">
+    <value>Add Room Type</value>
+  </data>
+  <data name="addscreening" xml:space="preserve">
+    <value>Add Screening</value>
+  </data>
+  <data name="addshift" xml:space="preserve">
+    <value>Add Shift</value>
+  </data>
+  <data name="addshiftplanning" xml:space="preserve">
+    <value>Add Shift Planning</value>
+  </data>
+  <data name="addstaffattendance" xml:space="preserve">
+    <value>Add Staff Attendance</value>
+  </data>
+  <data name="addtask" xml:space="preserve">
+    <value>Add Task</value>
+  </data>
+  <data name="addtasktype" xml:space="preserve">
+    <value>Add Task Type</value>
+  </data>
+  <data name="addtherapy" xml:space="preserve">
+    <value>Add Therapy</value>
+  </data>
+  <data name="addtherapycategory" xml:space="preserve">
+    <value>Add Therapy Category</value>
+  </data>
+  <data name="addtherapyitem" xml:space="preserve">
+    <value>Add Therapy Item</value>
+  </data>
+  <data name="addtherapyitemcategory" xml:space="preserve">
+    <value>Add Therapy Item Category</value>
+  </data>
+  <data name="addtherapykit" xml:space="preserve">
+    <value>Add Therapy Kit</value>
+  </data>
+  <data name="addtoblacklist" xml:space="preserve">
+    <value>Add to Blacklist</value>
+  </data>
+  <data name="addtreatmentpackage" xml:space="preserve">
+    <value>Add Treatment Package</value>
+  </data>
+  <data name="addunitofmeasure" xml:space="preserve">
+    <value>Add Unit of Measure</value>
+  </data>
+  <data name="addworkprofile" xml:space="preserve">
+    <value>Add Work Profile</value>
+  </data>
+  <data name="addedenquiries" xml:space="preserve">
+    <value>Added Enquiries</value>
+  </data>
+  <data name="addedipdapplicationform" xml:space="preserve">
+    <value>Added IPD Application Form</value>
+  </data>
+  <data name="addedopdform" xml:space="preserve">
+    <value>Added OPD Form</value>
+  </data>
+  <data name="alerttemplateslist" xml:space="preserve">
+    <value>Alert Templates List</value>
+  </data>
+  <data name="allotroom" xml:space="preserve">
+    <value>Allot Room</value>
+  </data>
+  <data name="approvedipdapplicationform" xml:space="preserve">
+    <value>Approved IPD Application Form</value>
+  </data>
+  <data name="approvedipdapplicationforms" xml:space="preserve">
+    <value>Approved IPD Application Forms</value>
+  </data>
+  <data name="approvedopdforms" xml:space="preserve">
+    <value>Approved OPD Forms</value>
+  </data>
+  <data name="assessmentlist" xml:space="preserve">
+    <value>Assessment List</value>
+  </data>
+  <data name="assessmentquestionlist" xml:space="preserve">
+    <value>Assessment Question List</value>
+  </data>
+  <data name="assessmenttemplatelist" xml:space="preserve">
+    <value>Assessment Template List</value>
+  </data>
+  <data name="authenticate" xml:space="preserve">
+    <value>Authenticate</value>
+  </data>
+  <data name="billingpaymentlist" xml:space="preserve">
+    <value>Billing Payment List</value>
+  </data>
+  <data name="blacklistreasonlist" xml:space="preserve">
+    <value>Blacklist reason List</value>
+  </data>
+  <data name="blocklist" xml:space="preserve">
+    <value>Block List</value>
+  </data>
+  <data name="buildinglist" xml:space="preserve">
+    <value>Building List</value>
+  </data>
+  <data name="changestatus" xml:space="preserve">
+    <value>Change Status</value>
+  </data>
+  <data name="changepassword" xml:space="preserve">
+    <value>ChangePassword</value>
+  </data>
+  <data name="clinicalappointmentlist" xml:space="preserve">
+    <value>Clinical Appointment List</value>
+  </data>
+  <data name="clinicaltasklist" xml:space="preserve">
+    <value>Clinical Task List</value>
+  </data>
+  <data name="competencylist" xml:space="preserve">
+    <value>Competency List</value>
+  </data>
+  <data name="confirmarrival" xml:space="preserve">
+    <value>Confirm Arrival</value>
+  </data>
+  <data name="consultationqueuelist" xml:space="preserve">
+    <value>Consultation Queue List</value>
+  </data>
+  <data name="countrylist" xml:space="preserve">
+    <value>Country List</value>
+  </data>
+  <data name="createalerttemplates" xml:space="preserve">
+    <value>Create Alert Templates</value>
+  </data>
+  <data name="createhealthcareprovider" xml:space="preserve">
+    <value>Create Healthcare Provider</value>
+  </data>
+  <data name="createmaillog" xml:space="preserve">
+    <value>Create MailLog</value>
+  </data>
+  <data name="departmentlist" xml:space="preserve">
+    <value>Department List</value>
+  </data>
+  <data name="designationlist" xml:space="preserve">
+    <value>Designation List</value>
+  </data>
+  <data name="detail" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="detailalerttemplates" xml:space="preserve">
+    <value>Detail Alert Templates</value>
+  </data>
+  <data name="detailassessmenttemplate" xml:space="preserve">
+    <value>Detail Assessment Template</value>
+  </data>
+  <data name="detailbillingpayment" xml:space="preserve">
+    <value>Detail Billing Payment</value>
+  </data>
+  <data name="detailmaillog" xml:space="preserve">
+    <value>Detail MailLog</value>
+  </data>
+  <data name="detailoccupation" xml:space="preserve">
+    <value>Detail Occupation</value>
+  </data>
+  <data name="detailpaymentresponse" xml:space="preserve">
+    <value>Detail Payment Response</value>
+  </data>
+  <data name="detailprocesssla" xml:space="preserve">
+    <value>Detail Process SLA</value>
+  </data>
+  <data name="detailquestionsubcategory" xml:space="preserve">
+    <value>Detail Question Sub Category</value>
+  </data>
+  <data name="detailqueue" xml:space="preserve">
+    <value>Detail Queue</value>
+  </data>
+  <data name="detailroomoccupancystatus" xml:space="preserve">
+    <value>Detail Room Occupancy Status</value>
+  </data>
+  <data name="enquiries" xml:space="preserve">
+    <value>Enquiries</value>
+  </data>
+  <data name="enquiriesforreview" xml:space="preserve">
+    <value>Enquiries for Review</value>
+  </data>
+  <data name="enquirydetails" xml:space="preserve">
+    <value>Enquiry Details</value>
+  </data>
+  <data name="enquirytypelist" xml:space="preserve">
+    <value>Enquiry Type List</value>
+  </data>
+  <data name="floorlist" xml:space="preserve">
+    <value>Floor List</value>
+  </data>
+  <data name="index" xml:space="preserve">
+    <value>Index</value>
+  </data>
+  <data name="ipdapplicationformsforreview" xml:space="preserve">
+    <value>IPD Application Forms for Review</value>
+  </data>
+  <data name="listofuserprofiles" xml:space="preserve">
+    <value>List of User Profiles</value>
+  </data>
+  <data name="mailboxlist" xml:space="preserve">
+    <value>Mail Box List</value>
+  </data>
+  <data name="maillogslist" xml:space="preserve">
+    <value>MailLogs List</value>
+  </data>
+  <data name="markasdeceased" xml:space="preserve">
+    <value>Mark as Deceased</value>
+  </data>
+  <data name="medicalconditionlist" xml:space="preserve">
+    <value>Medical Condition List</value>
+  </data>
+  <data name="medicationtypelist" xml:space="preserve">
+    <value>Medication Type List</value>
+  </data>
+  <data name="medicinelist" xml:space="preserve">
+    <value>Medicine List</value>
+  </data>
+  <data name="modifypatientcategory" xml:space="preserve">
+    <value>Modify Patient Category</value>
+  </data>
+  <data name="occupationlist" xml:space="preserve">
+    <value>Occupation List</value>
+  </data>
+  <data name="opdformsforreview" xml:space="preserve">
+    <value>OPD Forms for Review</value>
+  </data>
+  <data name="otplogslist" xml:space="preserve">
+    <value>otplogs List</value>
+  </data>
+  <data name="patientcategorylist" xml:space="preserve">
+    <value>Patient Category List</value>
+  </data>
+  <data name="patientconsentlist" xml:space="preserve">
+    <value>Patient Consent List</value>
+  </data>
+  <data name="patientprofiles" xml:space="preserve">
+    <value>Patient Profiles</value>
+  </data>
+  <data name="patientqueuelist" xml:space="preserve">
+    <value>Patient Queue List</value>
+  </data>
+  <data name="patientvisitlist" xml:space="preserve">
+    <value>Patient Visit List</value>
+  </data>
+  <data name="paymentconfiglist" xml:space="preserve">
+    <value>Payment Config List</value>
+  </data>
+  <data name="paymentrequestlist" xml:space="preserve">
+    <value>Payment Request List</value>
+  </data>
+  <data name="paymentresponselist" xml:space="preserve">
+    <value>Payment Response List</value>
+  </data>
+  <data name="peoplelist" xml:space="preserve">
+    <value>People List</value>
+  </data>
+  <data name="peopletimepreferencelist" xml:space="preserve">
+    <value>People Time Preference List</value>
+  </data>
+  <data name="pincodelist" xml:space="preserve">
+    <value>Pincode List</value>
+  </data>
+  <data name="processslalist" xml:space="preserve">
+    <value>Process SLA List</value>
+  </data>
+  <data name="questioncategorylist" xml:space="preserve">
+    <value>Question Category List</value>
+  </data>
+  <data name="questionsubcategorylist" xml:space="preserve">
+    <value>Question Sub Category List</value>
+  </data>
+  <data name="queuelist" xml:space="preserve">
+    <value>Queue List</value>
+  </data>
+  <data name="receivables" xml:space="preserve">
+    <value>Receivables</value>
+  </data>
+  <data name="referralsourcelist" xml:space="preserve">
+    <value>Referral Source List</value>
+  </data>
+  <data name="refund" xml:space="preserve">
+    <value>Refund</value>
+  </data>
+  <data name="registerprofile" xml:space="preserve">
+    <value>Register Profile</value>
+  </data>
+  <data name="removealerttemplates" xml:space="preserve">
+    <value>Remove Alert Templates</value>
+  </data>
+  <data name="removeassessment" xml:space="preserve">
+    <value>Remove Assessment</value>
+  </data>
+  <data name="removeassessmentquestion" xml:space="preserve">
+    <value>Remove Assessment Question</value>
+  </data>
+  <data name="removeassessmenttemplate" xml:space="preserve">
+    <value>Remove Assessment Template</value>
+  </data>
+  <data name="removebillingpayment" xml:space="preserve">
+    <value>Remove Billing Payment</value>
+  </data>
+  <data name="removeblacklistreason" xml:space="preserve">
+    <value>Remove Blacklist reason</value>
+  </data>
+  <data name="removeblock" xml:space="preserve">
+    <value>Remove Block</value>
+  </data>
+  <data name="removebuilding" xml:space="preserve">
+    <value>Remove Building</value>
+  </data>
+  <data name="removeclinicalappointment" xml:space="preserve">
+    <value>Remove Clinical Appointment</value>
+  </data>
+  <data name="removeclinicaltask" xml:space="preserve">
+    <value>Remove Clinical Task</value>
+  </data>
+  <data name="removecompetency" xml:space="preserve">
+    <value>Remove Competency</value>
+  </data>
+  <data name="removeconsultationqueue" xml:space="preserve">
+    <value>Remove Consultation Queue</value>
+  </data>
+  <data name="removecountry" xml:space="preserve">
+    <value>Remove Country</value>
+  </data>
+  <data name="removedepartment" xml:space="preserve">
+    <value>Remove Department</value>
+  </data>
+  <data name="removedesignation" xml:space="preserve">
+    <value>Remove Designation</value>
+  </data>
+  <data name="removeenquiry" xml:space="preserve">
+    <value>Remove Enquiry</value>
+  </data>
+  <data name="removeenquirytype" xml:space="preserve">
+    <value>Remove Enquiry Type</value>
+  </data>
+  <data name="removefloor" xml:space="preserve">
+    <value>Remove Floor</value>
+  </data>
+  <data name="removehealthcareprovider" xml:space="preserve">
+    <value>Remove Healthcare Provider</value>
+  </data>
+  <data name="removeholiday" xml:space="preserve">
+    <value>Remove Holiday</value>
+  </data>
+  <data name="removeipdapplicationform" xml:space="preserve">
+    <value>Remove IPD Application Form</value>
+  </data>
+  <data name="removemailbox" xml:space="preserve">
+    <value>Remove Mail Box</value>
+  </data>
+  <data name="removemaillog" xml:space="preserve">
+    <value>Remove MailLog</value>
+  </data>
+  <data name="removemedicalcondition" xml:space="preserve">
+    <value>Remove Medical Condition</value>
+  </data>
+  <data name="removemedicationtype" xml:space="preserve">
+    <value>Remove Medication Type</value>
+  </data>
+  <data name="removemedicine" xml:space="preserve">
+    <value>Remove Medicine</value>
+  </data>
+  <data name="removeoccupation" xml:space="preserve">
+    <value>Remove Occupation</value>
+  </data>
+  <data name="removeopdform" xml:space="preserve">
+    <value>Remove OPD Form</value>
+  </data>
+  <data name="removeotplogs" xml:space="preserve">
+    <value>Remove otplogs</value>
+  </data>
+  <data name="removepatientcategory" xml:space="preserve">
+    <value>Remove Patient Category</value>
+  </data>
+  <data name="removepatientconsent" xml:space="preserve">
+    <value>Remove Patient Consent</value>
+  </data>
+  <data name="removepatientprofile" xml:space="preserve">
+    <value>Remove Patient Profile</value>
+  </data>
+  <data name="removepatientqueue" xml:space="preserve">
+    <value>Remove Patient Queue</value>
+  </data>
+  <data name="removepatientvisit" xml:space="preserve">
+    <value>Remove Patient Visit</value>
+  </data>
+  <data name="removepaymentconfig" xml:space="preserve">
+    <value>Remove Payment Config</value>
+  </data>
+  <data name="removepaymentrequest" xml:space="preserve">
+    <value>Remove Payment Request</value>
+  </data>
+  <data name="removepaymentresponse" xml:space="preserve">
+    <value>Remove Payment Response</value>
+  </data>
+  <data name="removepeople" xml:space="preserve">
+    <value>Remove People</value>
+  </data>
+  <data name="removepeopletimepreference" xml:space="preserve">
+    <value>Remove People Time Preference</value>
+  </data>
+  <data name="removepincode" xml:space="preserve">
+    <value>Remove Pincode</value>
+  </data>
+  <data name="removeprocesssla" xml:space="preserve">
+    <value>Remove Process SLA</value>
+  </data>
+  <data name="removequestioncategory" xml:space="preserve">
+    <value>Remove Question Category</value>
+  </data>
+  <data name="removequestionsubcategory" xml:space="preserve">
+    <value>Remove Question Sub Category</value>
+  </data>
+  <data name="removequeue" xml:space="preserve">
+    <value>Remove Queue</value>
+  </data>
+  <data name="removereceivable" xml:space="preserve">
+    <value>Remove Receivable</value>
+  </data>
+  <data name="removereferralsource" xml:space="preserve">
+    <value>Remove Referral Source</value>
+  </data>
+  <data name="removerestrictedmedicalconditions" xml:space="preserve">
+    <value>Remove Restricted Medical Conditions</value>
+  </data>
+  <data name="removeroom" xml:space="preserve">
+    <value>Remove Room</value>
+  </data>
+  <data name="removeroomallocation" xml:space="preserve">
+    <value>Remove Room Allocation</value>
+  </data>
+  <data name="removeroomgroup" xml:space="preserve">
+    <value>Remove Room Group</value>
+  </data>
+  <data name="removeroomoccupancystatus" xml:space="preserve">
+    <value>Remove Room Occupancy Status</value>
+  </data>
+  <data name="removeroomtype" xml:space="preserve">
+    <value>Remove Room Type</value>
+  </data>
+  <data name="removescreening" xml:space="preserve">
+    <value>Remove Screening</value>
+  </data>
+  <data name="removeshift" xml:space="preserve">
+    <value>Remove Shift</value>
+  </data>
+  <data name="removeshiftplanning" xml:space="preserve">
+    <value>Remove Shift Planning</value>
+  </data>
+  <data name="removestaffattendance" xml:space="preserve">
+    <value>Remove Staff Attendance</value>
+  </data>
+  <data name="removetask" xml:space="preserve">
+    <value>Remove Task</value>
+  </data>
+  <data name="removetasktype" xml:space="preserve">
+    <value>Remove Task Type</value>
+  </data>
+  <data name="removetherapy" xml:space="preserve">
+    <value>Remove Therapy</value>
+  </data>
+  <data name="removetherapycategory" xml:space="preserve">
+    <value>Remove Therapy Category</value>
+  </data>
+  <data name="removetherapyitem" xml:space="preserve">
+    <value>Remove Therapy Item</value>
+  </data>
+  <data name="removetherapyitemcategory" xml:space="preserve">
+    <value>Remove Therapy Item Category</value>
+  </data>
+  <data name="removetherapykit" xml:space="preserve">
+    <value>Remove Therapy Kit</value>
+  </data>
+  <data name="removetreatmentpackage" xml:space="preserve">
+    <value>Remove Treatment Package</value>
+  </data>
+  <data name="removeunitofmeasure" xml:space="preserve">
+    <value>Remove Unit of Measure</value>
+  </data>
+  <data name="removeworkprofile" xml:space="preserve">
+    <value>Remove Work Profile</value>
+  </data>
+  <data name="rescheduleappointment" xml:space="preserve">
+    <value>Reschedule Appointment</value>
+  </data>
+  <data name="restrictedmedicalconditionslist" xml:space="preserve">
+    <value>Restricted Medical Conditions List</value>
+  </data>
+  <data name="reviewipdapplicationform" xml:space="preserve">
+    <value>Review IPD Application Form</value>
+  </data>
+  <data name="reviewopd" xml:space="preserve">
+    <value>Review OPD</value>
+  </data>
+  <data name="reviseipdapplicationform" xml:space="preserve">
+    <value>Revise IPD Application Form</value>
+  </data>
+  <data name="roomallocationlist" xml:space="preserve">
+    <value>Room Allocation List</value>
+  </data>
+  <data name="roomgrouplist" xml:space="preserve">
+    <value>Room Group List</value>
+  </data>
+  <data name="roomlist" xml:space="preserve">
+    <value>Room List</value>
+  </data>
+  <data name="roomoccupancystatuslist" xml:space="preserve">
+    <value>Room Occupancy Status List</value>
+  </data>
+  <data name="roomtypelist" xml:space="preserve">
+    <value>Room Type List</value>
+  </data>
+  <data name="screeninglist" xml:space="preserve">
+    <value>Screening List</value>
+  </data>
+  <data name="shiftlist" xml:space="preserve">
+    <value>Shift List</value>
+  </data>
+  <data name="shiftplanninglist" xml:space="preserve">
+    <value>Shift Planning List</value>
+  </data>
+  <data name="staffattendancelist" xml:space="preserve">
+    <value>Staff Attendance List</value>
+  </data>
+  <data name="suspendprofile" xml:space="preserve">
+    <value>Suspend Profile</value>
+  </data>
+  <data name="tasklist" xml:space="preserve">
+    <value>Task List</value>
+  </data>
+  <data name="tasktypelist" xml:space="preserve">
+    <value>Task Type List</value>
+  </data>
+  <data name="therapycategorylist" xml:space="preserve">
+    <value>Therapy Category List</value>
+  </data>
+  <data name="therapyitemcategorylist" xml:space="preserve">
+    <value>Therapy Item Category List</value>
+  </data>
+  <data name="therapyitemlist" xml:space="preserve">
+    <value>Therapy Item List</value>
+  </data>
+  <data name="therapykitlist" xml:space="preserve">
+    <value>Therapy Kit List</value>
+  </data>
+  <data name="treatmentpackagelist" xml:space="preserve">
+    <value>Treatment Package List</value>
+  </data>
+  <data name="unitofmeasurelist" xml:space="preserve">
+    <value>Unit of Measure List</value>
+  </data>
+  <data name="updatealerttemplates" xml:space="preserve">
+    <value>Update Alert Templates</value>
+  </data>
+  <data name="updateassessment" xml:space="preserve">
+    <value>Update Assessment</value>
+  </data>
+  <data name="updateassessmentquestion" xml:space="preserve">
+    <value>Update Assessment Question</value>
+  </data>
+  <data name="updateassessmenttemplate" xml:space="preserve">
+    <value>Update Assessment Template</value>
+  </data>
+  <data name="updatebillingpayment" xml:space="preserve">
+    <value>Update Billing Payment</value>
+  </data>
+  <data name="updateblacklistreason" xml:space="preserve">
+    <value>Update Blacklist reason</value>
+  </data>
+  <data name="updateblock" xml:space="preserve">
+    <value>Update Block</value>
+  </data>
+  <data name="updatebuilding" xml:space="preserve">
+    <value>Update Building</value>
+  </data>
+  <data name="updateclinicalappointment" xml:space="preserve">
+    <value>Update Clinical Appointment</value>
+  </data>
+  <data name="updateclinicaltask" xml:space="preserve">
+    <value>Update Clinical Task</value>
+  </data>
+  <data name="updatecompetency" xml:space="preserve">
+    <value>Update Competency</value>
+  </data>
+  <data name="updateconsultationqueue" xml:space="preserve">
+    <value>Update Consultation Queue</value>
+  </data>
+  <data name="updatecountry" xml:space="preserve">
+    <value>Update Country</value>
+  </data>
+  <data name="updatedepartment" xml:space="preserve">
+    <value>Update Department</value>
+  </data>
+  <data name="updatedesignation" xml:space="preserve">
+    <value>Update Designation</value>
+  </data>
+  <data name="updateenquiry" xml:space="preserve">
+    <value>Update Enquiry</value>
+  </data>
+  <data name="updateenquirytype" xml:space="preserve">
+    <value>Update Enquiry Type</value>
+  </data>
+  <data name="updatefloor" xml:space="preserve">
+    <value>Update Floor</value>
+  </data>
+  <data name="updatehealthcareprovider" xml:space="preserve">
+    <value>Update Healthcare Provider</value>
+  </data>
+  <data name="updateholiday" xml:space="preserve">
+    <value>Update Holiday</value>
+  </data>
+  <data name="updateipdapplicationform" xml:space="preserve">
+    <value>Update IPD Application Form</value>
+  </data>
+  <data name="updatemailbox" xml:space="preserve">
+    <value>Update Mail Box</value>
+  </data>
+  <data name="updatemaillog" xml:space="preserve">
+    <value>Update MailLog</value>
+  </data>
+  <data name="updatemedicalcondition" xml:space="preserve">
+    <value>Update Medical Condition</value>
+  </data>
+  <data name="updatemedicationtype" xml:space="preserve">
+    <value>Update Medication Type</value>
+  </data>
+  <data name="updatemedicine" xml:space="preserve">
+    <value>Update Medicine</value>
+  </data>
+  <data name="updateoccupation" xml:space="preserve">
+    <value>Update Occupation</value>
+  </data>
+  <data name="updateopdform" xml:space="preserve">
+    <value>Update OPD Form</value>
+  </data>
+  <data name="updateotplogs" xml:space="preserve">
+    <value>Update otplogs</value>
+  </data>
+  <data name="updatepatientcategory" xml:space="preserve">
+    <value>Update Patient Category</value>
+  </data>
+  <data name="updatepatientconsent" xml:space="preserve">
+    <value>Update Patient Consent</value>
+  </data>
+  <data name="updatepatientprofile" xml:space="preserve">
+    <value>Update Patient Profile</value>
+  </data>
+  <data name="updatepatientqueue" xml:space="preserve">
+    <value>Update Patient Queue</value>
+  </data>
+  <data name="updatepatientvisit" xml:space="preserve">
+    <value>Update Patient Visit</value>
+  </data>
+  <data name="updatepaymentconfig" xml:space="preserve">
+    <value>Update Payment Config</value>
+  </data>
+  <data name="updatepaymentrequest" xml:space="preserve">
+    <value>Update Payment Request</value>
+  </data>
+  <data name="updatepaymentresponse" xml:space="preserve">
+    <value>Update Payment Response</value>
+  </data>
+  <data name="updatepeople" xml:space="preserve">
+    <value>Update People</value>
+  </data>
+  <data name="updatepeopletimepreference" xml:space="preserve">
+    <value>Update People Time Preference</value>
+  </data>
+  <data name="updatepincode" xml:space="preserve">
+    <value>Update Pincode</value>
+  </data>
+  <data name="updateprocesssla" xml:space="preserve">
+    <value>Update Process SLA</value>
+  </data>
+  <data name="updateprofile" xml:space="preserve">
+    <value>Update Profile</value>
+  </data>
+  <data name="updatequestioncategory" xml:space="preserve">
+    <value>Update Question Category</value>
+  </data>
+  <data name="updatequestionsubcategory" xml:space="preserve">
+    <value>Update Question Sub Category</value>
+  </data>
+  <data name="updatequeue" xml:space="preserve">
+    <value>Update Queue</value>
+  </data>
+  <data name="updatereceivable" xml:space="preserve">
+    <value>Update Receivable</value>
+  </data>
+  <data name="updatereferralsource" xml:space="preserve">
+    <value>Update Referral Source</value>
+  </data>
+  <data name="updaterestrictedmedicalconditions" xml:space="preserve">
+    <value>Update Restricted Medical Conditions</value>
+  </data>
+  <data name="updateroom" xml:space="preserve">
+    <value>Update Room</value>
+  </data>
+  <data name="updateroomallocation" xml:space="preserve">
+    <value>Update Room Allocation</value>
+  </data>
+  <data name="updateroomgroup" xml:space="preserve">
+    <value>Update Room Group</value>
+  </data>
+  <data name="updateroomoccupancystatus" xml:space="preserve">
+    <value>Update Room Occupancy Status</value>
+  </data>
+  <data name="updateroomtype" xml:space="preserve">
+    <value>Update Room Type</value>
+  </data>
+  <data name="updatescreening" xml:space="preserve">
+    <value>Update Screening</value>
+  </data>
+  <data name="updateshift" xml:space="preserve">
+    <value>Update Shift</value>
+  </data>
+  <data name="updateshiftplanning" xml:space="preserve">
+    <value>Update Shift Planning</value>
+  </data>
+  <data name="updatestaffattendance" xml:space="preserve">
+    <value>Update Staff Attendance</value>
+  </data>
+  <data name="updatetask" xml:space="preserve">
+    <value>Update Task</value>
+  </data>
+  <data name="updatetasktype" xml:space="preserve">
+    <value>Update Task Type</value>
+  </data>
+  <data name="updatetherapy" xml:space="preserve">
+    <value>Update Therapy</value>
+  </data>
+  <data name="updatetherapycategory" xml:space="preserve">
+    <value>Update Therapy Category</value>
+  </data>
+  <data name="updatetherapyitem" xml:space="preserve">
+    <value>Update Therapy Item</value>
+  </data>
+  <data name="updatetherapyitemcategory" xml:space="preserve">
+    <value>Update Therapy Item Category</value>
+  </data>
+  <data name="updatetherapykit" xml:space="preserve">
+    <value>Update Therapy Kit</value>
+  </data>
+  <data name="updatetreatmentpackage" xml:space="preserve">
+    <value>Update Treatment Package</value>
+  </data>
+  <data name="updateunitofmeasure" xml:space="preserve">
+    <value>Update Unit of Measure</value>
+  </data>
+  <data name="updateworkprofile" xml:space="preserve">
+    <value>Update Work Profile</value>
+  </data>
+  <data name="uploadshiftplanning" xml:space="preserve">
+    <value>Upload Shift Planning</value>
+  </data>
+  <data name="versionhistoryipdapplicationform" xml:space="preserve">
+    <value>Version History IPD Application Form</value>
+  </data>
+  <data name="viewapprovedopdform" xml:space="preserve">
+    <value>View Approved OPD Form</value>
+  </data>
+  <data name="viewassessment" xml:space="preserve">
+    <value>View Assessment</value>
+  </data>
+  <data name="viewassessmentquestion" xml:space="preserve">
+    <value>View Assessment Question</value>
+  </data>
+  <data name="viewblacklistreason" xml:space="preserve">
+    <value>View Blacklist reason</value>
+  </data>
+  <data name="viewblock" xml:space="preserve">
+    <value>View Block</value>
+  </data>
+  <data name="viewbuilding" xml:space="preserve">
+    <value>View Building</value>
+  </data>
+  <data name="viewclinicalappointment" xml:space="preserve">
+    <value>View Clinical Appointment</value>
+  </data>
+  <data name="viewclinicaltask" xml:space="preserve">
+    <value>View Clinical Task</value>
+  </data>
+  <data name="viewcompetency" xml:space="preserve">
+    <value>View Competency</value>
+  </data>
+  <data name="viewconsultationqueue" xml:space="preserve">
+    <value>View Consultation Queue</value>
+  </data>
+  <data name="viewcountry" xml:space="preserve">
+    <value>View Country</value>
+  </data>
+  <data name="viewdepartment" xml:space="preserve">
+    <value>View Department</value>
+  </data>
+  <data name="viewdesignation" xml:space="preserve">
+    <value>View Designation</value>
+  </data>
+  <data name="viewenquiry" xml:space="preserve">
+    <value>View Enquiry</value>
+  </data>
+  <data name="viewenquirydetail" xml:space="preserve">
+    <value>View Enquiry Detail</value>
+  </data>
+  <data name="viewenquirytype" xml:space="preserve">
+    <value>View Enquiry Type</value>
+  </data>
+  <data name="viewfloor" xml:space="preserve">
+    <value>View Floor</value>
+  </data>
+  <data name="viewholiday" xml:space="preserve">
+    <value>View Holiday</value>
+  </data>
+  <data name="viewipdapplicationform" xml:space="preserve">
+    <value>View IPD Application Form</value>
+  </data>
+  <data name="viewlistofhealthcareprovider" xml:space="preserve">
+    <value>View List of Healthcare Provider</value>
+  </data>
+  <data name="viewmailbox" xml:space="preserve">
+    <value>View Mail Box</value>
+  </data>
+  <data name="viewmedicalcondition" xml:space="preserve">
+    <value>View Medical Condition</value>
+  </data>
+  <data name="viewmedicationtype" xml:space="preserve">
+    <value>View Medication Type</value>
+  </data>
+  <data name="viewmedicine" xml:space="preserve">
+    <value>View Medicine</value>
+  </data>
+  <data name="viewopdform" xml:space="preserve">
+    <value>View OPD Form</value>
+  </data>
+  <data name="viewotplogs" xml:space="preserve">
+    <value>view otplogs</value>
+  </data>
+  <data name="viewpatientcategory" xml:space="preserve">
+    <value>View Patient Category</value>
+  </data>
+  <data name="viewpatientconsent" xml:space="preserve">
+    <value>View Patient Consent</value>
+  </data>
+  <data name="viewpatientprofile" xml:space="preserve">
+    <value>View Patient Profile</value>
+  </data>
+  <data name="viewpatientqueue" xml:space="preserve">
+    <value>View Patient Queue</value>
+  </data>
+  <data name="viewpatientvisit" xml:space="preserve">
+    <value>View Patient Visit</value>
+  </data>
+  <data name="viewpaymentconfig" xml:space="preserve">
+    <value>View Payment Config</value>
+  </data>
+  <data name="viewpaymentrequest" xml:space="preserve">
+    <value>View Payment Request</value>
+  </data>
+  <data name="viewpeople" xml:space="preserve">
+    <value>View People</value>
+  </data>
+  <data name="viewpeopletimepreference" xml:space="preserve">
+    <value>View People Time Preference</value>
+  </data>
+  <data name="viewpincodedetail" xml:space="preserve">
+    <value>View Pincode Detail</value>
+  </data>
+  <data name="viewquestioncategory" xml:space="preserve">
+    <value>View Question Category</value>
+  </data>
+  <data name="viewreceivable" xml:space="preserve">
+    <value>View Receivable</value>
+  </data>
+  <data name="viewreferralsource" xml:space="preserve">
+    <value>View Referral Source</value>
+  </data>
+  <data name="viewrestrictedmedicalconditions" xml:space="preserve">
+    <value>View Restricted Medical Conditions</value>
+  </data>
+  <data name="viewroom" xml:space="preserve">
+    <value>View Room</value>
+  </data>
+  <data name="viewroomallocation" xml:space="preserve">
+    <value>View Room Allocation</value>
+  </data>
+  <data name="viewroomgroup" xml:space="preserve">
+    <value>View Room Group</value>
+  </data>
+  <data name="viewroomtype" xml:space="preserve">
+    <value>View Room Type</value>
+  </data>
+  <data name="viewscreening" xml:space="preserve">
+    <value>View Screening</value>
+  </data>
+  <data name="viewshift" xml:space="preserve">
+    <value>View Shift</value>
+  </data>
+  <data name="viewshiftplanning" xml:space="preserve">
+    <value>View Shift Planning</value>
+  </data>
+  <data name="viewstaffattendance" xml:space="preserve">
+    <value>View Staff Attendance</value>
+  </data>
+  <data name="viewtask" xml:space="preserve">
+    <value>View Task</value>
+  </data>
+  <data name="viewtasktype" xml:space="preserve">
+    <value>View Task Type</value>
+  </data>
+  <data name="viewtherapy" xml:space="preserve">
+    <value>View Therapy</value>
+  </data>
+  <data name="viewtherapycategory" xml:space="preserve">
+    <value>View Therapy Category</value>
+  </data>
+  <data name="viewtherapyitem" xml:space="preserve">
+    <value>View Therapy Item</value>
+  </data>
+  <data name="viewtherapyitemcategory" xml:space="preserve">
+    <value>View Therapy Item Category</value>
+  </data>
+  <data name="viewtherapykit" xml:space="preserve">
+    <value>View Therapy Kit</value>
+  </data>
+  <data name="viewtreatmentpackage" xml:space="preserve">
+    <value>View Treatment Package</value>
+  </data>
+  <data name="viewunitofmeasure" xml:space="preserve">
+    <value>View Unit of Measure</value>
+  </data>
+  <data name="viewworkprofile" xml:space="preserve">
+    <value>View Work Profile</value>
+  </data>
+  <data name="viewdetailshealthcareprovider" xml:space="preserve">
+    <value>ViewDetails Healthcare Provider</value>
+  </data>
+  <data name="workprofilelist" xml:space="preserve">
+    <value>Work Profile List</value>
+  </data>
+  <data name="tenantdisplayname" xml:space="preserve">
+    <value>Healthcare Provider</value>
+  </data>
+  <data name="providertenantdisplayname" xml:space="preserve">
+    <value>Healthcare Provider</value>
+  </data>
+  <data name="appadmin" xml:space="preserve">
+    <value>App Admin</value>
+  </data>
+  <data name="doctor" xml:space="preserve">
+    <value>Doctor</value>
+  </data>
+  <data name="frontdeskadmin" xml:space="preserve">
+    <value>Frontdesk Admin</value>
+  </data>
+  <data name="healthseeker" xml:space="preserve">
+    <value>Health Seeker</value>
+  </data>
+  <data name="healthcareadministrator" xml:space="preserve">
+    <value>Healthcare Administrator</value>
+  </data>
+  <data name="healthcareprovideradmin" xml:space="preserve">
+    <value>Healthcare Provider Admin</value>
+  </data>
+  <data name="platformadmin" xml:space="preserve">
+    <value>Platform Admin</value>
+  </data>
+  <data name="appointmentscheduling" xml:space="preserve">
+    <value>Appointment Scheduling</value>
+  </data>
+  <data name="clinicalsetup" xml:space="preserve">
+    <value>Clinical Setup</value>
+  </data>
+  <data name="configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="consultation" xml:space="preserve">
+    <value>Consultation</value>
+  </data>
+  <data name="diagnosis" xml:space="preserve">
+    <value>Diagnosis</value>
+  </data>
+  <data name="insuranceclaimsprocessing" xml:space="preserve">
+    <value>Insurance Claims Processing</value>
+  </data>
+  <data name="managehealthcareprovider" xml:space="preserve">
+    <value>Manage Healthcare Provider</value>
+  </data>
+  <data name="manageusers" xml:space="preserve">
+    <value>Manage Users</value>
+  </data>
+  <data name="patientbilling" xml:space="preserve">
+    <value>Patient Billing</value>
+  </data>
+  <data name="patientfollowup" xml:space="preserve">
+    <value>Patient Follow-Up</value>
+  </data>
+  <data name="patientregistration" xml:space="preserve">
+    <value>Patient Registration</value>
+  </data>
+  <data name="patientsafety" xml:space="preserve">
+    <value>Patient Safety</value>
+  </data>
+  <data name="paymentcollection" xml:space="preserve">
+    <value>Payment Collection</value>
+  </data>
+  <data name="performancemanagement" xml:space="preserve">
+    <value>Performance Management</value>
+  </data>
+  <data name="qualitycontrol" xml:space="preserve">
+    <value>Quality Control</value>
+  </data>
+  <data name="recordsmanagement" xml:space="preserve">
+    <value>Records Management</value>
+  </data>
+  <data name="recruitment" xml:space="preserve">
+    <value>Recruitment</value>
+  </data>
+  <data name="regulatorycompliance" xml:space="preserve">
+    <value>Regulatory Compliance</value>
+  </data>
+  <data name="settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
+  <data name="setuphealthcareprovider" xml:space="preserve">
+    <value>Setup Healthcare Provider</value>
+  </data>
+  <data name="setuphealthcareproviderusers" xml:space="preserve">
+    <value>Setup Healthcare Provider Users</value>
+  </data>
+  <data name="traininganddevelopment" xml:space="preserve">
+    <value>Training and Development</value>
+  </data>
+  <data name="treatmentplanning" xml:space="preserve">
+    <value>Treatment Planning</value>
+  </data>
+  <data name="user" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="action" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="download" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="forgotpasswordcommon" xml:space="preserve">
+    <value>Forgotten Password</value>
+  </data>
+  <data name="from" xml:space="preserve">
+    <value>From</value>
+  </data>
+  <data name="login" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="logout" xml:space="preserve">
+    <value>Logout</value>
+  </data>
+  <data name="manageroleauthorization" xml:space="preserve">
+    <value>Manage RoleAuthorization</value>
+  </data>
+  <data name="print" xml:space="preserve">
+    <value>Print</value>
+  </data>
+  <data name="save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="submit" xml:space="preserve">
+    <value>Submit</value>
+  </data>
+  <data name="to" xml:space="preserve">
+    <value>To</value>
+  </data>
+  <data name="receivable_package" xml:space="preserve">
+    <value>Package</value>
+  </data>
+  <data name="room_easeofaccess" xml:space="preserve">
+    <value>Ease of Access</value>
+  </data>
+  <data name="addconcessionform" xml:space="preserve">
+    <value>Add Concession Form</value>
+  </data>
+  <data name="addedconcessionform" xml:space="preserve">
+    <value>Added Concession Form</value>
+  </data>
+  <data name="approveddetailconcessionform" xml:space="preserve">
+    <value>ApprovedDetail Concession Form</value>
+  </data>
+  <data name="checkerdetailconcessionform" xml:space="preserve">
+    <value>CheckerDetail Concession Form</value>
+  </data>
+  <data name="concessionform" xml:space="preserve">
+    <value>ConcessionForm</value>
+  </data>
+  <data name="concessionform_approvedconcessionamount" xml:space="preserve">
+    <value>Approved Concession Amount</value>
+  </data>
+  <data name="concessionform_bookingreferencenumber" xml:space="preserve">
+    <value>Booking Reference Number</value>
+  </data>
+  <data name="concessionform_doanyofthefollowingapplytoyou" xml:space="preserve">
+    <value>Do any of the following apply to you?</value>
+  </data>
+  <data name="concessionform_earningmembers_approxannualincome" xml:space="preserve">
+    <value>Approx Annual Income</value>
+  </data>
+  <data name="concessionform_earningmembers_designationoccupation" xml:space="preserve">
+    <value>Designation Occupation</value>
+  </data>
+  <data name="concessionform_earningmembers_earningmembername" xml:space="preserve">
+    <value>Earning Member Name</value>
+  </data>
+  <data name="concessionform_earningmembers_incomebyinterestandallkinds" xml:space="preserve">
+    <value>Income by Interest and all kinds</value>
+  </data>
+  <data name="concessionform_earningmembers_relation" xml:space="preserve">
+    <value>Relation</value>
+  </data>
+  <data name="concessionform_haveyoutraveledinternationallyinthelast5years" xml:space="preserve">
+    <value>Have you traveled internationally in the last 5 years?</value>
+  </data>
+  <data name="concessionform_otherpleasespecify" xml:space="preserve">
+    <value>Other (please specify)</value>
+  </data>
+  <data name="concessionform_paidservicesaccessed" xml:space="preserve">
+    <value>Paid Services Accessed</value>
+  </data>
+  <data name="concessionform_patientname" xml:space="preserve">
+    <value>Patient Name</value>
+  </data>
+  <data name="concessionform_purposeoftravel" xml:space="preserve">
+    <value>Purpose of Travel</value>
+  </data>
+  <data name="concessionform_requestedconcessionamount" xml:space="preserve">
+    <value>Requested Concession Amount</value>
+  </data>
+  <data name="concessionform_residentialhousetype" xml:space="preserve">
+    <value>Residential House Type</value>
+  </data>
+  <data name="concessionform_specifyotherindustry" xml:space="preserve">
+    <value>Specify other industry</value>
+  </data>
+  <data name="concessionform_totalannualfamilyincome" xml:space="preserve">
+    <value>Total Annual Family Income</value>
+  </data>
+  <data name="concessionform_verifiedstatus" xml:space="preserve">
+    <value>Verified Status</value>
+  </data>
+  <data name="concessionform_whichofthesedoyouown" xml:space="preserve">
+    <value>Which of these do you own?</value>
+  </data>
+  <data name="concessionformforreview" xml:space="preserve">
+    <value>Concession Form for Review</value>
+  </data>
+  <data name="concessionformlist" xml:space="preserve">
+    <value>Concession Form List</value>
+  </data>
+  <data name="makerdetailconcessionform" xml:space="preserve">
+    <value>MakerDetail Concession Form</value>
+  </data>
+  <data name="removeconcessionform" xml:space="preserve">
+    <value>Remove Concession Form</value>
+  </data>
+  <data name="updateconcessionform" xml:space="preserve">
+    <value>Update Concession Form</value>
+  </data>
+  <data name="additionalsocialdetails" xml:space="preserve">
+    <value>Additional Social Details</value>
+  </data>
+  <data name="earningmembers" xml:space="preserve">
+    <value>Earning Members</value>
+  </data>
+  <data name="familyandincome" xml:space="preserve">
+    <value>Family and Income</value>
+  </data>
+  <data name="householdcommodities" xml:space="preserve">
+    <value>Household Commodities</value>
+  </data>
+  <data name="internationaltravelhistorylast5years" xml:space="preserve">
+    <value>International Travel History (Last 5 Years)</value>
+  </data>
+  <data name="addgroupbooking" xml:space="preserve">
+    <value>Add Group Booking</value>
+  </data>
+  <data name="contacts" xml:space="preserve">
+    <value>Contacts</value>
+  </data>
+  <data name="detailgroupbooking" xml:space="preserve">
+    <value>Detail Group Booking</value>
+  </data>
+  <data name="groupbooking_contacts_email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="groupbooking_contacts_mobile" xml:space="preserve">
+    <value>Mobile</value>
+  </data>
+  <data name="groupbooking_contacts_person" xml:space="preserve">
+    <value>Person</value>
+  </data>
+  <data name="groupbooking_countofmembers" xml:space="preserve">
+    <value>Count of Members</value>
+  </data>
+  <data name="groupbooking_groupcode" xml:space="preserve">
+    <value>Group Code</value>
+  </data>
+  <data name="groupbooking_groupname" xml:space="preserve">
+    <value>Group Name</value>
+  </data>
+  <data name="groupbooking_patientinfo_emailid" xml:space="preserve">
+    <value>Email ID</value>
+  </data>
+  <data name="groupbooking_patientinfo_name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="groupbooking_patientinfo_phonenumber" xml:space="preserve">
+    <value>Phone Number</value>
+  </data>
+  <data name="groupbookinglist" xml:space="preserve">
+    <value>Group Booking List</value>
+  </data>
+  <data name="patientinfo" xml:space="preserve">
+    <value>Patient Info</value>
+  </data>
+  <data name="removegroupbooking" xml:space="preserve">
+    <value>Remove Group Booking</value>
+  </data>
+  <data name="updategroupbooking" xml:space="preserve">
+    <value>Update Group Booking</value>
+  </data>
+  <data name="ipdapplicationform_isbookingdepositmandatory" xml:space="preserve">
+    <value>Is Booking Deposit Mandatory</value>
+  </data>
+  <data name="patientconsent_consentlanguage" xml:space="preserve">
+    <value>Consent Language</value>
+  </data>
+  <data name="patientpreferreddates" xml:space="preserve">
+    <value>Patient Preferred Dates of Admission</value>
+  </data>
+  <data name="attendantpreferreddates" xml:space="preserve">
+    <value>Attendant Preferred Dates of Admission</value>
+  </data>
+  <data name="patientroompreference" xml:space="preserve">
+    <value>Patient Room Preference</value>
+  </data>
+  <data name="attendantroompreference" xml:space="preserve">
+    <value>Attendant Room Preference</value>
+  </data>
+  <data name="ipdapplicationform_patientpreferreddates_dateofarrival" xml:space="preserve">
+    <value>Date of Arrival</value>
+  </data>
+  <data name="ipdapplicationform_patientpreferreddates_dateofdeparture" xml:space="preserve">
+    <value>Date of Departure</value>
+  </data>
+  <data name="ipdapplicationform_patientpreferreddates_daysofstay" xml:space="preserve">
+    <value>Days of Stay</value>
+  </data>
+  <data name="ipdapplicationform_attendantpreferreddates_dateofarrivalatt" xml:space="preserve">
+    <value>Attendant Date of Arrival</value>
+  </data>
+  <data name="ipdapplicationform_attendantpreferreddates_dateofdepartureatt" xml:space="preserve">
+    <value>Attendant Date of Departure</value>
+  </data>
+  <data name="ipdapplicationform_attendantpreferreddates_daysofstayatt" xml:space="preserve">
+    <value>Attendant Days of Stay</value>
+  </data>
+  <data name="ipdapplicationform_patientroompreference_roomtype" xml:space="preserve">
+    <value>Patient Room Type</value>
+  </data>
+  <data name="ipdapplicationform_attendantroompreference_roomtypeatt" xml:space="preserve">
+    <value>Attendant Room Type</value>
+  </data>
+  <data name="actiondetails" xml:space="preserve">
+    <value>Action Details</value>
+  </data>
+  <data name="actions_actionname" xml:space="preserve">
+    <value>Action Name</value>
+  </data>
+  <data name="actions_actiontype" xml:space="preserve">
+    <value>Action Type</value>
+  </data>
+  <data name="actions_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="actionslist" xml:space="preserve">
+    <value>Actions List</value>
+  </data>
+  <data name="actiontype_actiontype" xml:space="preserve">
+    <value>Action Type </value>
+  </data>
+  <data name="actiontype_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="actiontypelist" xml:space="preserve">
+    <value>Action Type  List</value>
+  </data>
+  <data name="addactions" xml:space="preserve">
+    <value>Add Actions</value>
+  </data>
+  <data name="addactiontype" xml:space="preserve">
+    <value>Add Action Type</value>
+  </data>
+  <data name="adddailytask" xml:space="preserve">
+    <value>Add Daily Task</value>
+  </data>
+  <data name="addfinancetask" xml:space="preserve">
+    <value>Add Task Action Log</value>
+  </data>
+  <data name="addtasktemplate" xml:space="preserve">
+    <value>Add Task Template</value>
+  </data>
+  <data name="addtypeoftask" xml:space="preserve">
+    <value>Add Type of Task</value>
+  </data>
+  <data name="dailytask_amount" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="dailytask_ipdreferencenumber" xml:space="preserve">
+    <value>IPD Reference Number</value>
+  </data>
+  <data name="dailytask_opdreferencenumber" xml:space="preserve">
+    <value>OPD Reference Number</value>
+  </data>
+  <data name="dailytask_patientname" xml:space="preserve">
+    <value>Patient Name </value>
+  </data>
+  <data name="dailytask_status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="dailytask_taskname" xml:space="preserve">
+    <value>Task Name </value>
+  </data>
+  <data name="dailytask_taskno" xml:space="preserve">
+    <value>Task No </value>
+  </data>
+  <data name="dailytask_tasktype" xml:space="preserve">
+    <value>Task Type </value>
+  </data>
+  <data name="dailytasklist" xml:space="preserve">
+    <value>Daily Task  List</value>
+  </data>
+  <data name="dependenciesandclearence" xml:space="preserve">
+    <value>Dependencies And Clearence </value>
+  </data>
+  <data name="escalationdetails" xml:space="preserve">
+    <value>Escalation Details </value>
+  </data>
+  <data name="financetasklist" xml:space="preserve">
+    <value>Task Action Log List</value>
+  </data>
+  <data name="nextactiondetails" xml:space="preserve">
+    <value>Next Action Details </value>
+  </data>
+  <data name="taskactionlog_description" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="taskactionlog_summary" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="taskactionlog_taskname" xml:space="preserve">
+    <value>Task Name</value>
+  </data>
+  <data name="taskactionlog_tasktype" xml:space="preserve">
+    <value>Task Type </value>
+  </data>
+  <data name="taskdetails" xml:space="preserve">
+    <value>Task Details </value>
+  </data>
+  <data name="tasktemplate_duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="tasktemplate_escalationdetails_emailid" xml:space="preserve">
+    <value>Email ID</value>
+  </data>
+  <data name="tasktemplate_escalationdetails_mobilenumber" xml:space="preserve">
+    <value>Mobile Number</value>
+  </data>
+  <data name="tasktemplate_escalationdetails_notifyto" xml:space="preserve">
+    <value>Notify To </value>
+  </data>
+  <data name="tasktemplate_escalationdetails_priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="tasktemplate_nextactiondetails_actionname" xml:space="preserve">
+    <value>Action Name</value>
+  </data>
+  <data name="tasktemplate_nextactiondetails_actiontype" xml:space="preserve">
+    <value>Action Type</value>
+  </data>
+  <data name="tasktemplate_priority" xml:space="preserve">
+    <value>Priority</value>
+  </data>
+  <data name="tasktemplate_taskname" xml:space="preserve">
+    <value>Task Name </value>
+  </data>
+  <data name="tasktemplate_tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="tasktemplatelist" xml:space="preserve">
+    <value>Task Template List</value>
+  </data>
+  <data name="typeoftask_tasktype" xml:space="preserve">
+    <value>Task Type</value>
+  </data>
+  <data name="typeoftasklist" xml:space="preserve">
+    <value>Type of Task List</value>
+  </data>
+  <data name="updateactions" xml:space="preserve">
+    <value>Update Actions</value>
+  </data>
+  <data name="updateactiontype" xml:space="preserve">
+    <value>Update Action Type</value>
+  </data>
+  <data name="updatedailytask" xml:space="preserve">
+    <value>Update Daily Task</value>
+  </data>
+  <data name="updatefinancetask" xml:space="preserve">
+    <value>Update Task Action Log </value>
+  </data>
+  <data name="updatetasktemplate" xml:space="preserve">
+    <value>Update Task Template</value>
+  </data>
+  <data name="updatetypeoftask" xml:space="preserve">
+    <value>Update Type of Task</value>
+  </data>
+  <data name="tasksupportmanagement" xml:space="preserve">
+    <value>Support</value>
+  </data>
+  <data name="support" xml:space="preserve">
+    <value>Support</value>
+  </data>
+  <data name="financetask" xml:space="preserve">
+    <value>Task Action Log</value>
+  </data>
+  <data name="typeoftask" xml:space="preserve">
+    <value>Type of Task</value>
+  </data>
+  <data name="dailytask" xml:space="preserve">
+    <value>Daily Task</value>
+  </data>
+  <data name="actiontype" xml:space="preserve">
+    <value>Action Type</value>
+  </data>
+  <data name="actions" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="tasktemplate" xml:space="preserve">
+    <value>Task Template</value>
+  </data>
+	<data name="adddoctorinternmap" xml:space="preserve">
+    <value>Add DoctorInternMap</value>
+  </data>
+	<data name="detaildoctorinternmap" xml:space="preserve">
+    <value>Detail DoctorInternMap</value>
+  </data>
+	<data name="doctorinternmap" xml:space="preserve">
+    <value>Doctor Intern Map</value>
+  </data>
+	<data name="doctorinternmap_interndoctor" xml:space="preserve">
+    <value>Intern Doctor</value>
+  </data>
+	<data name="doctorinternmap_seniordoctor" xml:space="preserve">
+    <value>Senior Doctor</value>
+  </data>
+	<data name="doctorinternmaplist" xml:space="preserve">
+    <value>DoctorInternMap List</value>
+  </data>
+	<data name="removedoctorinternmap" xml:space="preserve">
+    <value>Remove DoctorInternMap</value>
+  </data>
+	<data name="updatedoctorinternmap" xml:space="preserve">
+    <value>Update DoctorInternMap</value>
+  </data>
+	<data name="shiftplanning_shiftendtime" xml:space="preserve">
+    <value>Shift End Time</value>
+  </data>
+	<data name="shiftplanning_shiftstarttime" xml:space="preserve">
+    <value>Shift Start Time</value>
+  </data>
+	<data name="peopletimepreference_workprofile" xml:space="preserve">
+    <value>Work Profile</value>
+  </data>
+	<data name="reports" xml:space="preserve">
+    <value>Reports</value>
+  </data>
+	<data name="updateappoinment" xml:space="preserve">
+    <value>Update Appoinment</value>
+  </data>
+	<data name="updatearrival" xml:space="preserve">
+    <value>Update Arrival</value>
+  </data>
+	<data name="addappoinment" xml:space="preserve">
+    <value>Add Appointment</value>
+  </data>
+	<data name="addarrival" xml:space="preserve">
+    <value>Add Arrival</value>
+  </data>
+	<data name="adddischarge" xml:space="preserve">
+    <value>Add Discharge</value>
+  </data>
+	<data name="addfinance" xml:space="preserve">
+    <value>Add Finance</value>
+  </data>
+	<data name="appoinment" xml:space="preserve">
+    <value>Appointment</value>
+  </data>
+	<data name="appoinment_appointmentdate" xml:space="preserve">
+    <value>Appointment Date</value>
+  </data>
+	<data name="appoinment_bookingreferencenumber" xml:space="preserve">
+    <value>Booking Reference Number</value>
+  </data>
+	<data name="appoinment_doctor" xml:space="preserve">
+    <value>Doctor</value>
+  </data>
+	<data name="appoinment_duration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+	<data name="appoinment_origin" xml:space="preserve">
+    <value>Origin</value>
+  </data>
+	<data name="appoinment_patient" xml:space="preserve">
+    <value>Patient</value>
+  </data>
+	<data name="appoinment_status" xml:space="preserve">
+    <value>Status</value>
+  </data>
+	<data name="appoinment_task" xml:space="preserve">
+    <value>Task</value>
+  </data>
+	<data name="appoinmentlist" xml:space="preserve">
+    <value>Appointment List</value>
+  </data>
+	<data name="arrivallist" xml:space="preserve">
+    <value>Arrival List</value>
+  </data>
+	<data name="arrival" xml:space="preserve">
+    <value>Arrival</value>
+  </data>
+	<data name="arrival_bookingstatus" xml:space="preserve">
+    <value>Booking Status</value>
+  </data>
+	<data name="arrival_estimatedarrival" xml:space="preserve">
+    <value>Estimated Arrival</value>
+  </data>
+	<data name="arrival_ipdnumber" xml:space="preserve">
+    <value>IPD Number</value>
+  </data>
+	<data name="arrival_patient" xml:space="preserve">
+    <value>Patient</value>
+  </data>
+	<data name="arrival_paymentstatus" xml:space="preserve">
+    <value>Payment status</value>
+  </data>
+	<data name="arrival_pendingamount" xml:space="preserve">
+    <value>Pending Amount</value>
+  </data>
+	<data name="arrival_pickupfrom" xml:space="preserve">
+    <value>Pickup From</value>
+  </data>
+	<data name="arrival_requireddinner" xml:space="preserve">
+    <value>Required Dinner</value>
+  </data>
+	<data name="arrival_room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+	<data name="arrival_specialrequest" xml:space="preserve">
+    <value>Special Request</value>
+  </data>
+	<data name="arrival_travelarrangement" xml:space="preserve">
+    <value>Travel Arrangement</value>
+  </data>
+	<data name="arrival_wheelchairassistance" xml:space="preserve">
+    <value>Wheelchair Assistance</value>
+  </data>
+	<data name="detailfinance" xml:space="preserve">
+    <value>Detail Finance</value>
+  </data>
+	<data name="detaildischarge" xml:space="preserve">
+    <value>Detail Discharge</value>
+  </data>
+	<data name="finance" xml:space="preserve">
+    <value>Finance</value>
+  </data>
+	<data name="finance_billedamount" xml:space="preserve">
+    <value>Billed Amount</value>
+  </data>
+	<data name="finance_bookingreferencenumber" xml:space="preserve">
+    <value>Booking Reference Number</value>
+  </data>
+	<data name="finance_collectedby" xml:space="preserve">
+    <value>Collected By</value>
+  </data>
+	<data name="finance_patient" xml:space="preserve">
+    <value>Patient</value>
+  </data>
+	<data name="finance_paymentdate" xml:space="preserve">
+    <value>Payment Date</value>
+  </data>
+	<data name="finance_paymentmode" xml:space="preserve">
+    <value>Payment Mode</value>
+  </data>
+	<data name="finance_paymentstatus" xml:space="preserve">
+    <value>Payment Status</value>
+  </data>
+	<data name="finance_pendingamount" xml:space="preserve">
+    <value>Pending Amount</value>
+  </data>
+	<data name="finance_receiptnumber" xml:space="preserve">
+    <value>Receipt Number</value>
+  </data>
+	<data name="finance_receivablefor" xml:space="preserve">
+    <value>Receivable For</value>
+  </data>
+	<data name="finance_receivedamount" xml:space="preserve">
+    <value>Received Amount</value>
+  </data>
+	<data name="finance_refundedamount" xml:space="preserve">
+    <value>Refunded Amount</value>
+  </data>
+	<data name="finance_refundedby" xml:space="preserve">
+    <value>Refunded By</value>
+  </data>
+	<data name="finance_refundmode" xml:space="preserve">
+    <value>Refund Mode</value>
+  </data>
+	<data name="finance_remarks" xml:space="preserve">
+    <value>Remarks</value>
+  </data>
+	<data name="financelist" xml:space="preserve">
+    <value>Finance List</value>
+  </data>
+	<data name="financetask" xml:space="preserve">
+    <value>Finance Task </value>
+  </data>
+	<data name="removefinance" xml:space="preserve">
+    <value>Remove Finance</value>
+  </data>
+	<data name="removedischarge" xml:space="preserve">
+    <value>Remove Discharge</value>
+  </data>
+	<data name="updatefinance" xml:space="preserve">
+    <value>Update Finance</value>
+  </data>
+	<data name="updatedischarge" xml:space="preserve">
+    <value>Update Discharge</value>
+  </data>
+	<data name="discharge" xml:space="preserve">
+    <value>Discharge</value>
+  </data>
+	<data name="discharge_daysofstay" xml:space="preserve">
+    <value>Days Of Stay</value>
+  </data>
+	<data name="discharge_discharge" xml:space="preserve">
+    <value>Discharge</value>
+  </data>
+	<data name="discharge_feedbackstatus" xml:space="preserve">
+    <value>Feedback Status</value>
+  </data>
+	<data name="discharge_ipdnumber" xml:space="preserve">
+    <value>IPD Number</value>
+  </data>
+	<data name="discharge_patient" xml:space="preserve">
+    <value>Patient</value>
+  </data>
+	<data name="discharge_paymentstatus" xml:space="preserve">
+    <value>Payment Status</value>
+  </data>
+	<data name="discharge_pendingamount" xml:space="preserve">
+    <value>Pending Amount</value>
+  </data>
+	<data name="discharge_refundamount" xml:space="preserve">
+    <value>Refund Amount</value>
+  </data>
+	<data name="discharge_refundstatus" xml:space="preserve">
+    <value>Refund Status</value>
+  </data>
+	<data name="discharge_room" xml:space="preserve">
+    <value>Room</value>
+  </data>
+	<data name="dischargelist" xml:space="preserve">
+    <value>Discharge List</value>
+  </data>
+	<data name="patientpreferreddates" xml:space="preserve"><value>Patient Preferred Dates of Admission</value></data>
+	<data name="attendantpreferreddates" xml:space="preserve"><value>Attendant Preferred Dates of Admission</value></data>
+	<data name="patientroompreference" xml:space="preserve"><value>Patient Room Preference</value></data>
+	<data name="attendantroompreference" xml:space="preserve"><value>Attendant Room Preference</value></data>
+	<data name="ipdapplicationform_patientpreferreddates_dateofarrival" xml:space="preserve"><value>Date of Arrival</value></data>
+	<data name="ipdapplicationform_patientpreferreddates_dateofdeparture" xml:space="preserve"><value>Date of Departure</value></data>
+	<data name="ipdapplicationform_patientpreferreddates_daysofstay" xml:space="preserve"><value>Days of Stay</value></data>
+	<data name="ipdapplicationform_attendantpreferreddates_dateofarrivalatt" xml:space="preserve"><value>Attendant Date of Arrival</value></data>
+	<data name="ipdapplicationform_attendantpreferreddates_dateofdepartureatt" xml:space="preserve"><value>Attendant Date of Departure</value></data>
+	<data name="ipdapplicationform_attendantpreferreddates_daysofstayatt" xml:space="preserve"><value>Attendant Days of Stay</value></data>
+	<data name="ipdapplicationform_patientroompreference_roomtype" xml:space="preserve"><value>Patient Room Type</value></data>
+	<data name="ipdapplicationform_attendantroompreference_roomtypeatt" xml:space="preserve"><value>Attendant Room Type</value></data>
+	<data name="patientprofilecredentialssent" xml:space="preserve">
+    <value>Registration completed successfully. Please check the registered email inbox for your login password.</value>
+  </data>
+	<data name="peoplecredentialssent" xml:space="preserve">
+    <value>Please ask the user to check their registered email for their login credentials.</value>
+  </data><data name="receivable_specifyothers" xml:space="preserve">
+    <value>Specify(others)</value>
+  </data>
+</root>

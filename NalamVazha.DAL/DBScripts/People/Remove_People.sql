@@ -1,0 +1,102 @@
+
+			  CREATE OR REPLACE FUNCTION  "Remove_People"
+			  (
+				  pvar_Peopleid Varchar(50)
+				  ,pvar_modifieduser  Varchar(50)
+				  ,OUT pvar_returnMessage Varchar(4000)
+			  )
+			  RETURNS Varchar(4000) 
+              AS $BODY$  
+              DECLARE lv_viewactionroles Varchar(128);
+              BEGIN
+              /*This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 11:34:27*/
+			  IF "Check_Authorization"(pvar_modifieduser::uuid, 'People', 'delete') THEN
+			  
+            INSERT INTO history
+VALUES('People', NOW(),
+(SELECT query_to_xml('SELECT * FROM People WHERE CAST(People.Peopleid AS VARCHAR)= '''||pvar_Peopleid||'''', true, false, '')));
+
+			 INSERT INTO history
+VALUES('People_emergencycontact', NOW(),
+(SELECT query_to_xml('SELECT * FROM People_emergencycontact WHERE People_emergencycontact.Peopleid= '''||pvar_Peopleid||'''', true, false, '')));
+
+INSERT INTO history
+VALUES('People_educationinfo', NOW(),
+(SELECT query_to_xml('SELECT * FROM People_educationinfo WHERE People_educationinfo.Peopleid= '''||pvar_Peopleid||'''', true, false, '')));
+
+INSERT INTO history
+VALUES('People_workexperience', NOW(),
+(SELECT query_to_xml('SELECT * FROM People_workexperience WHERE People_workexperience.Peopleid= '''||pvar_Peopleid||'''', true, false, '')));
+
+INSERT INTO history
+VALUES('People_preferredlanguageinfo', NOW(),
+(SELECT query_to_xml('SELECT * FROM People_preferredlanguageinfo WHERE People_preferredlanguageinfo.Peopleid= '''||pvar_Peopleid||'''', true, false, '')));
+
+INSERT INTO history
+VALUES('People_clinicaltaskinfo', NOW(),
+(SELECT query_to_xml('SELECT * FROM People_clinicaltaskinfo WHERE People_clinicaltaskinfo.Peopleid= '''||pvar_Peopleid||'''', true, false, '')));
+
+
+			 UPDATE People SET
+													isdeleted=true ,modifieduser=CAST(pvar_modifieduser AS UUID),modifieddate=NOW()
+													WHERE CAST(People.Peopleid AS VARCHAR)=pvar_Peopleid;
+					 
+				  pvar_returnMessage := '201.1';
+					 
+																ELSE
+																
+
+															
+																INSERT INTO system_logging
+																(
+																Log_code
+																,system_logging_guid
+																,log_application
+																,log_date
+																,log_level
+																,log_logger
+																,log_message
+																,log_user_name
+																)
+																VALUES
+																('401.1'
+																,gen_random_uuid()
+																,'Store Proc Authorization Check'
+																,NOW()
+																,'Critical'
+																,'Remove_People'
+																,'Authorization Failed Remove_People'
+																,pvar_modifieduser
+																);
+																pvar_returnMessage := '401.1';
+																
+																END IF;
+			  
+                    /*EXCEPTION WHEN OTHERS THEN
+			 
+						INSERT INTO system_logging
+						(
+						Log_code
+						,system_logging_guid
+						,log_application
+						,log_date
+						,log_level
+						,log_logger
+						,log_message
+						)
+						VALUES
+						('16'
+						,gen_random_uuid()
+						,'Postgre Function Exception'
+						,NOW()
+						,'16'
+						,'Remove_People'
+						,'user delete failed'
+						);				 
+					    pvar_returnMessage := 'user delete failed';*/
+				  
+			  
+ 			  END
+              $BODY$
+              LANGUAGE plpgsql;
+

@@ -1,0 +1,577 @@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@model NalamVazha.Models.EnquiryFormModel
+@{
+    ViewData["Title"] = "Submit an Enquiry";
+    Layout = "~/Views/Shared/_PublicFormLayout.cshtml";
+}
+
+<div class="public-form-card">
+    <div class="public-form-card-header">
+        <h2><i class="fa fa-clipboard-list mr-2"></i>Submit an Enquiry</h2>
+        <p>Fill in the details below and our team will get back to you shortly.</p>
+    </div>
+    <div class="public-form-card-body">
+        <form id="formId" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="EnquiryFormid" id="EnquiryFormid" value="" />
+            <input type="hidden" name="tenantid" id="tenantid" value="@ViewBag.DefaultTenantId" />
+            <input type="hidden" name="enquirystatus" id="enquirystatus" value="Ready For Review" />
+            <input type="hidden" name="enquirydate" id="enquirydate" value="" />
+
+            <!-- Hidden fields: auto-determined -->
+            <input type="hidden" name="isroombookingrelated" id="isroombookingrelated" value="" />
+            <input type="hidden" name="enquiredvia" id="enquiredvia" value="WebApp" />
+
+            <!-- ===== SECTION 1: Enquiry Info ===== -->
+            <div class="public-form-section">
+                <div class="public-form-section-title"><i class="fa fa-info-circle"></i> Enquiry Information</div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6">
+                        <div class="form-group">
+                            <label for="enquirytype">Enquiry Type <span class="required-star">*</span></label>
+                            <select name="enquirytype" id="enquirytype" class="form-control required"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 2: Personal Details ===== -->
+            <div class="public-form-section">
+                <div class="public-form-section-title"><i class="fa fa-user"></i> Personal Details</div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="firstname">First Name <span class="required-star">*</span></label>
+                            <input type="text" name="firstname" id="firstname" class="form-control required" maxlength="128" placeholder="Enter first name" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="lastname">Last Name</label>
+                            <input type="text" name="lastname" id="lastname" class="form-control" maxlength="128" placeholder="Enter last name" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="gender">Gender <span class="required-star">*</span></label>
+                            <select name="gender" id="gender" class="form-control required"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="age">Age <span class="required-star">*</span></label>
+                            <input type="text" name="age" id="age" class="form-control required" placeholder="Enter age" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="phonenumber_ip">Phone Number <span class="required-star">*</span></label>
+                            <input type="hidden" name="phonenumber" id="phonenumber" value="" />
+                            <input type="tel" id="phonenumber_ip" class="form-control required" placeholder="Enter phone number" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="emailaddress">Email Address <span class="required-star">*</span></label>
+                            <input type="email" name="emailaddress" id="emailaddress" class="form-control required" maxlength="128" placeholder="Enter email address" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="preferredcontactmethod">Preferred Contact Method</label>
+                            <select name="preferredcontactmethod" id="preferredcontactmethod" class="form-control"></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 3: Medical Information ===== -->
+            <div class="public-form-section">
+                <div class="public-form-section-title d-flex justify-content-between align-items-center">
+                    <span><i class="fa fa-notes-medical"></i> Medical Information</span>
+                    <button type="button" class="btn btn-sm btn-outline-success btn-add-medicalinfo"><i class="fa fa-plus mr-1"></i> Add</button>
+                </div>
+                <div id="medicalinfoContainer"></div>
+                <div id="medicalinfoEmpty" class="text-center text-muted py-3" style="font-size:0.9rem;">
+                    <i class="fa fa-info-circle mr-1"></i> Click "Add" to add medical condition details (optional)
+                </div>
+            </div>
+
+            <!-- ===== SECTION 4: Room & Date Preference (shown only if isroombookingrelated = Yes) ===== -->
+            <div class="public-form-section" id="roomDateSection" style="display:none">
+                <div class="public-form-section-title"><i class="fa fa-bed"></i> Room & Date Preference</div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="preferredroomtype">Preferred Room Type</label>
+                            <select name="preferredroomtype" id="preferredroomtype" class="form-control"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="preferreddateofarrival">Preferred Date of Arrival</label>
+                            <input type="text" name="preferreddateofarrival" id="preferreddateofarrival" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group">
+                            <label for="preferreddateofdeparture">Preferred Date of Departure</label>
+                            <input type="text" name="preferreddateofdeparture" id="preferreddateofdeparture" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-sm-6">
+                        <div class="form-group d-flex align-items-center mt-2">
+                            <label for="joinwaitinglist" class="mb-0 mr-3">Join Waiting List</label>
+                            <label class="toggle-switch mb-0">
+                                <input type="checkbox" name="joinwaitinglist" id="joinwaitinglist" value="true" />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECTION 5: Enquiry Details (Reason) ===== -->
+            <div class="public-form-section">
+                <div class="public-form-section-title"><i class="fa fa-comment-alt"></i> Enquiry Details</div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label for="enquiryreason">Enquiry Reason</label>
+                            <textarea name="enquiryreason" id="enquiryreason" class="form-control" rows="4" placeholder="Describe your enquiry or health concern in detail..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== Submit ===== -->
+            <div class="text-center mt-3 mb-2">
+                <button type="button" id="btnSubmit" class="btn btn-submit-enquiry">
+                    <i class="fa fa-paper-plane mr-2"></i>Submit Enquiry
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<!-- SweetAlert2 -->
+<link rel="stylesheet" href="~/components/sweetalert2/sweetalert2.min.css">
+<script src="~/components/sweetalert2/sweetalert2.min.js"></script>
+
+<!-- xdsoft datetimepicker -->
+<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+
+<!-- autoNumeric -->
+<script src="~/components/autonumeric/autoNumeric.js"></script>
+
+<!-- moment.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+
+<script>
+$(document).ready(function () {
+
+    // Set enquirydate to today
+    var currentDate = new Date().toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    $("#enquirydate").val(currentDate);
+
+    // autoNumeric for age
+    if ($('#age').data('autoNumeric') == undefined) {
+        $("#age").autoNumeric('init', { aSep: '', vMin: '0', vMax: '999' });
+    }
+
+    // intl-tel-input for phone number
+    var phonenumber_input = document.querySelector("#phonenumber_ip");
+    var itiphonenumber_input = window.intlTelInput(phonenumber_input, {
+        nationalMode: true,
+        initialCountry: "in",
+        preferredCountries: ['us', 'in', 'sg']
+    });
+    var handleChange_phonenumber_input = function () {
+        var text = "";
+        if (itiphonenumber_input.getNumber())
+            text = (itiphonenumber_input.isValidNumber()) ? itiphonenumber_input.getNumber() : "invalid";
+        $('#phonenumber').val(text);
+    };
+    phonenumber_input.addEventListener('change', handleChange_phonenumber_input);
+    phonenumber_input.addEventListener('keyup', handleChange_phonenumber_input);
+    phonenumber_input.addEventListener("countrychange", function () {
+        $('#phonenumber_ip').val("");
+        $('#phonenumber').val("");
+    });
+
+    // datetimepicker for arrival
+    $('#preferreddateofarrival').datetimepicker({
+        minDate: moment().add(1, 'days').toDate(),
+        timepicker: false,
+        scrollInput: false,
+        format: "d/m/Y",
+        formatDate: "d/m/Y",
+        onShow: function () { this.setOptions({ maxDate: false }); },
+        onSelectDate: function (dp, $input) {
+            // Set departure minDate to arrival date
+            var arrDate = $input.val();
+            if (arrDate) {
+                $('#preferreddateofdeparture').datetimepicker({ minDate: dp });
+            }
+        }
+    });
+
+    // datetimepicker for departure
+    $('#preferreddateofdeparture').datetimepicker({
+        minDate: moment().add(1, 'days').toDate(),
+        timepicker: false,
+        scrollInput: false,
+        format: "d/m/Y",
+        formatDate: "d/m/Y"
+    });
+
+    // Load lookups
+    var tenantid = $("#tenantid").val();
+    lookup_enquirytype(tenantid);
+    lookup_preferredroomtype(tenantid);
+    load_lookups();
+    load_medicalconditions();
+
+    // On enquiry type change, load isroombookingrelated and toggle room section
+    $("#enquirytype").change(function () {
+        var enquiryTypeId = $(this).val();
+        if (enquiryTypeId) {
+            lookup_change_enquirytype(enquiryTypeId);
+        } else {
+            $("#isroombookingrelated").val('');
+            $("#roomDateSection").slideUp(300);
+        }
+    });
+
+    // ===== Medical Info: Add Row =====
+    $("body").on("click", ".btn-add-medicalinfo", function () {
+        var idx = Math.floor(Math.random() * 100000 + 57);
+        $("#medicalinfoEmpty").hide();
+        var rowHtml =
+            '<div class="medicalinfo-row border rounded p-2 mb-2" id="medicalinfo' + idx + '">' +
+                '<div class="row align-items-end">' +
+                    '<div class="col-md-4 col-sm-6">' +
+                        '<div class="form-group mb-1">' +
+                            '<label>Medical Condition</label>' +
+                            '<select class="form-control medicalcondition" id="medicalcondition' + idx + '"></select>' +
+                            '<input type="hidden" class="conditionname" value="" />' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="col-md-3 col-sm-6">' +
+                        '<div class="form-group mb-1">' +
+                            '<label>Duration</label>' +
+                            '<select class="form-control duration"></select>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="col-md-3 col-sm-6">' +
+                        '<div class="form-group mb-1">' +
+                            '<label>Severity</label>' +
+                            '<select class="form-control severity"></select>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="col-md-2 col-sm-6 text-right">' +
+                        '<button type="button" class="btn btn-sm btn-outline-danger btn-remove-medicalinfo mb-1"><i class="fa fa-trash mr-1"></i>Remove</button>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        $("#medicalinfoContainer").append(rowHtml);
+
+        // Populate medical condition dropdown
+        var $dd = $("#medicalcondition" + idx);
+        $dd.empty().append("<option value=''>Choose</option>");
+        $.each(window._medicalConditions || [], function (i, item) {
+            $dd.append('<option value="' + item.MedicalConditionid + '">' + item.conditionname + '</option>');
+        });
+
+        // Populate duration & severity from lookups
+        buildLookupDropdown("#medicalinfo" + idx + " .duration", window._lookupDuration || '');
+        buildLookupDropdown("#medicalinfo" + idx + " .severity", window._lookupSeverity || '');
+    });
+
+    // ===== Medical Info: Remove Row =====
+    $("body").on("click", ".btn-remove-medicalinfo", function () {
+        $(this).closest(".medicalinfo-row").remove();
+        if ($("#medicalinfoContainer .medicalinfo-row").length === 0) {
+            $("#medicalinfoEmpty").show();
+        }
+    });
+
+    // jQuery validation
+    $("#formId").validate({
+        rules: {
+            firstname: { required: true },
+            gender: { required: true },
+            age: { required: true },
+            enquirytype: { required: true },
+            phonenumber_ip: { required: true }
+        },
+        messages: {
+            firstname: { required: "First name is required" },
+            gender: { required: "Gender is required" },
+            age: { required: "Age is required" },
+            enquirytype: { required: "Enquiry type is required" },
+            phonenumber_ip: { required: "Phone number is required" }
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("id") === "phonenumber_ip") {
+                error.insertAfter(element.closest('.iti'));
+            } else {
+                error.insertAfter(element);
+            }
+        }
+    });
+
+    // Submit
+    $("#btnSubmit").click(function () {
+        // Validate phone
+        var phoneVal = $('#phonenumber').val();
+        if (phoneVal === "invalid") {
+            swal({ title: 'Invalid Phone', text: 'Please enter a valid phone number.', type: 'warning', buttonsStyling: false, confirmButtonClass: 'btn btn-submit-enquiry' });
+            return;
+        }
+
+        if ($("#formId").valid()) {
+            // Collect medicalinfo rows
+            var emptyGuid = '00000000-0000-0000-0000-000000000000';
+            var medicalinfoData = [];
+            $(".medicalinfo-row").each(function (cnt) {
+                var mcVal = $(this).find('.medicalcondition').val();
+                medicalinfoData.push({
+                    medicalcondition: (mcVal && mcVal.length > 0) ? mcVal : emptyGuid,
+                    conditionname: $(this).find('.conditionname').val() || '',
+                    duration: $(this).find('.duration').val() || '',
+                    severity: $(this).find('.severity').val() || '',
+                    EnquiryForm_medicalinfoid: emptyGuid,
+                    craftmyapp_actionmethodname: 'Add_Enquiry',
+                    record_order: cnt,
+                    cma_client_row_id: $(this).attr('id').replace('medicalinfo', '')
+                });
+            });
+
+            // Fix empty Guid fields before serializing — prevent "Parameter 'g'" error
+            if (!$('#preferredroomtype').val()) { $('#preferredroomtype').append('<option value=""></option>'); $('#preferredroomtype').val(''); }
+
+            var formData = $("#formId").serialize();
+            // Append medicalinfo as indexed form fields
+            $.each(medicalinfoData, function (i, item) {
+                $.each(item, function (key, val) {
+                    formData += '&medicalinfo[' + i + '].' + key + '=' + encodeURIComponent(val);
+                });
+            });
+
+            $("#btnSubmit").prop("disabled", true).html('<i class="fa fa-spinner fa-spin mr-2"></i>Submitting...');
+
+            $.ajax({
+                url: '@Url.Action("Enquiry", "PublicEnquiry")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    $("#btnSubmit").prop("disabled", false).html('<i class="fa fa-paper-plane mr-2"></i>Submit Enquiry');
+                    try {
+                        var result = (typeof response === 'string') ? JSON.parse(response) : response;
+                        if (result.status === "Success") {
+                            swal({
+                                title: 'Enquiry Submitted Successfully!',
+                                text: 'Your enquiry number is ' + result.enquirynumber + '. Our team will get in touch with you shortly. A confirmation email has been sent.',
+                                type: 'success',
+                                buttonsStyling: false,
+                                confirmButtonClass: 'btn btn-submit-enquiry',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then(function () {
+                                                window.location = '@Url.Action("Login", "users")?tenantid='+$("#tenantid").val();
+                            });
+                        } else {
+                            swal({ title: 'Error!', text: response, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-submit-enquiry' });
+                        }
+                    } catch (e) {
+                        if (response && response.indexOf && response.indexOf("Success") > -1) {
+                            swal({
+                                title: 'Enquiry Submitted!',
+                                text: 'Your enquiry has been submitted successfully.',
+                                type: 'success',
+                                buttonsStyling: false,
+                                confirmButtonClass: 'btn btn-submit-enquiry',
+                                allowOutsideClick: false
+                            }).then(function () {
+                                        window.location = '@Url.Action("Login", "users")?tenantid='+$("#tenantid").val();
+                            });
+                        } else {
+                            swal({ title: 'Error!', text: response || 'Something went wrong.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-submit-enquiry' });
+                        }
+                    }
+                },
+                error: function () {
+                    $("#btnSubmit").prop("disabled", false).html('<i class="fa fa-paper-plane mr-2"></i>Submit Enquiry');
+                    swal({ title: 'Error!', text: 'Something went wrong. Please try again later.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-submit-enquiry' });
+                }
+            });
+        }
+    });
+});
+
+// ===== Lookup: Enquiry Type =====
+function lookup_enquirytype(tenantid) {
+    $.ajax({
+        url: '@Url.Action("lookup_enquirytype", "PublicEnquiry")',
+        dataType: 'json',
+        data: { "tenantid": tenantid },
+        success: function (data) {
+            if (data && data.length > 0) {
+                data = data.filter(item => item.enquiryname !== null);
+                data.sort((a, b) => String(a.enquiryname).toLowerCase().localeCompare(String(b.enquiryname).toLowerCase()));
+            }
+            var $dd = $("#enquirytype");
+            $dd.empty().append("<option value=''>Choose</option>");
+            $.each(data, function (i, item) {
+                $dd.append('<option value="' + item.EnquiryTypeid + '">' + item.enquiryname + '</option>');
+            });
+        },
+        error: function () {
+            console.log('Failed to load enquiry types.');
+        }
+    });
+}
+
+// ===== Lookup: Preferred Room Type =====
+function lookup_preferredroomtype(tenantid) {
+     
+    $.ajax({
+        url: '@Url.Action("lookup_preferredroomtype", "PublicEnquiry")',
+        dataType: 'json',
+        data: { "tenantid": tenantid },
+        success: function (data) {
+            
+
+                var data = data.filter(item => item.tenantid == tenantid) // filter first
+                .sort((a, b) =>
+                    String(a.name).toLowerCase()
+                    .localeCompare(String(b.name).toLowerCase())
+                );
+
+
+
+            var $dd = $("#preferredroomtype");
+            $dd.empty().append("<option value=''>Choose</option>");
+            $.each(data, function (i, item) {
+                $dd.append('<option value="' + item.RoomTypeid + '">' + item.name + '</option>');
+            });
+        },
+        error: function () {
+            console.log('Failed to load room types.');
+        }
+    });
+}
+
+// ===== Lookup: Entity lookups (gender, isroombookingrelated, preferredcontactmethod, enquiredvia, duration, severity) =====
+window._lookupDuration = '';
+window._lookupSeverity = '';
+
+function load_lookups() {
+    // Load EnquiryForm lookups
+    $.ajax({
+        url: '@Url.Action("get_lookups_by_entity", "PublicEnquiry")',
+        dataType: 'json',
+        data: { id: 'EnquiryForm' },
+        success: function (data) {
+            $.each(data, function (index, item) {
+                if (item.fieldname == "gender") {
+                    buildLookupDropdown("#gender", item.fielddesc);
+                }
+                if (item.fieldname == "preferredcontactmethod") {
+                    buildLookupDropdown("#preferredcontactmethod", item.fielddesc);
+                }
+                if (item.fieldname == "duration") {
+                    window._lookupDuration = item.fielddesc;
+                }
+                if (item.fieldname == "severity") {
+                    window._lookupSeverity = item.fielddesc;
+                }
+            });
+        },
+        error: function () {
+            var $gender = $("#gender");
+            if ($gender.find('option').length <= 1) {
+                $gender.empty().append("<option value=''>Choose</option>")
+                    .append("<option value='Male'>Male</option>")
+                    .append("<option value='Female'>Female</option>")
+                    .append("<option value='Other'>Other</option>");
+            }
+        }
+    });
+
+}
+
+// ===== Lookup: Medical Conditions =====
+window._medicalConditions = [];
+function load_medicalconditions() {
+    $.ajax({
+        url: '@Url.Action("lookup_medicalcondition", "PublicEnquiry")',
+        dataType: 'json',
+        data: { tenantid: $("#tenantid").val() },
+        success: function (data) {
+            if (data && data.length > 0) {
+                data = data.filter(function (item) { return item.conditionname !== null; });
+                data.sort(function (a, b) { return String(a.conditionname).toLowerCase().localeCompare(String(b.conditionname).toLowerCase()); });
+            }
+            window._medicalConditions = data || [];
+        },
+        error: function () {
+            console.log('Failed to load medical conditions.');
+        }
+    });
+}
+
+function buildLookupDropdown(selector, fielddesc, defaultVal) {
+    var $dd = $(selector);
+    $dd.empty().append("<option value=''>Choose</option>");
+    var options = fielddesc.split(',');
+    options.sort(function (a, b) { return a.trim().localeCompare(b.trim()); });
+    options.forEach(function (opt) {
+        opt = opt.trim();
+        if (defaultVal && defaultVal === opt) {
+            $dd.append('<option selected value="' + opt + '">' + opt + '</option>');
+        } else {
+            $dd.append('<option value="' + opt + '">' + opt + '</option>');
+        }
+    });
+}
+
+// ===== Lookup: On Enquiry Type change =====
+function lookup_change_enquirytype(enquiryTypeId) {
+    $.ajax({
+        url: '@Url.Action("lookup_change_enquirytype", "PublicEnquiry")',
+        dataType: 'json',
+        data: { "EnquiryTypeid": enquiryTypeId },
+        success: function (data) {
+            if (data && data.length > 0) {
+                var roomVal = data[0].isroombookingrelated;
+                         
+                $("#isroombookingrelated").val(roomVal);
+                if (roomVal === "Yes") {
+                    $("#roomDateSection").slideDown(300);
+                } else {
+                    $("#roomDateSection").slideUp(300);
+                }
+            } else {
+                $("#isroombookingrelated").val('');
+                $("#roomDateSection").slideUp(300);
+            }
+        },
+        error: function () {
+            $("#roomDateSection").slideUp(300);
+        }
+    });
+}
+</script>
+}

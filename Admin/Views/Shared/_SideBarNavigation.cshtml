@@ -1,0 +1,22 @@
+<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 02/20/2026 10:33:37 -->
+@using Microsoft.AspNetCore.Http
+<aside class="sidebar">
+<div class="scrollbar-inner">
+<div class="user">
+<div class="user__info" data-toggle="dropdown">
+<div>
+<div class="user__name" style="color: white">@Context.Session.GetString("NalamVazhausername")</div>
+</div>
+<i style="padding-left:20px;" class="fas fa-chevron-down"></i>
+</div>
+<div class="dropdown-menu">
+<a class="dropdown-item" href="@Url.Action("UpdateProfile","users")?usersid=@Context.Session.GetString("NalamVazhaloginUserID")">Update Profile</a>
+<a class="dropdown-item" href="@Url.Action("ChangePassword","users")?usersid=@Context.Session.GetString("NalamVazhaloginUserID")">Change Password</a>
+<a class="dropdown-item craftmyApp_logout_btn" href="@Url.Action("Logout","users", new { tenantid = Context.Session.GetString("NalamVazhachoosedtenantid") })">Logout</a>
+</div>
+</div>
+<ul class="navigation mainSideMenu">
+</ul>
+</div>
+</aside>
+

@@ -1,0 +1,805 @@
+/* ============================================
+   Login Page – NalamVazha
+   ============================================ */
+
+/* Page body */
+.login-page-body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  background: #f4f6f9;
+}
+
+/* Wrapper – side-by-side split */
+.login-page-wrapper {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ============================================
+   LEFT PANEL – Logo Bar + Carousel
+   ============================================ */
+.login-left-panel {
+  position: relative;
+  width: 55%;
+  min-height: 100vh;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Logo bar – compact top band, logo constrained */
+.login-left-logo-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 0.6rem 1.25rem 0.65rem;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  max-height: 56px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.login-left-logo {
+  display: block;
+  height: 32px;
+  max-height: 32px;
+  max-width: 140px;
+  width: auto;
+  object-fit: contain;
+  object-position: left center;
+}
+
+/* Logo band at top of right panel */
+.login-right-logo-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: var(--btnprimary, #2d5f44);
+  padding: 0.75rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-right-logo {
+  height: 50px;
+  max-width: 260px;
+  object-fit: contain;
+}
+
+/* Dark overlay on slider */
+.login-slider-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,40,30,0.15) 0%, rgba(0,40,30,0.5) 100%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Carousel fills entire left panel */
+.login-carousel,
+.login-carousel .carousel-inner,
+.login-carousel .carousel-item {
+  height: 100vh !important;
+}
+
+.login-slider-img {
+  width: 100%;
+  height: 100% !important;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* SVG slider images fill container */
+.login-slider-img[src$=".svg"] {
+  object-fit: fill;
+}
+
+/* Carousel transition */
+.login-carousel .carousel-item {
+  transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+}
+
+/* Hide default bootstrap carousel controls */
+.login-carousel .carousel-control-prev,
+.login-carousel .carousel-control-next,
+.login-carousel .carousel-indicators {
+  display: none !important;
+}
+
+/* Slide text overlay — bottom left */
+.login-slide-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  padding: 3rem 2.5rem 3.5rem;
+  background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 55%, transparent 100%);
+}
+
+.login-slide-content h2 {
+  color: #fff;
+  font-family: 'Source Sans 3', 'Segoe UI', Roboto, sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  line-height: 1.25;
+}
+
+.login-slide-content p {
+  color: rgba(255,255,255,0.92);
+  font-size: 1.05rem;
+  font-weight: 400;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 500px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.3);
+}
+
+/* Slide tag badge */
+.slide-tag {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  margin-bottom: 0.65rem;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Custom nav dots */
+.login-slide-nav {
+  position: absolute;
+  bottom: 1.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.slide-nav-btn {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.4);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.slide-nav-btn:hover {
+  background: rgba(255,255,255,0.7);
+}
+
+.slide-nav-btn.active {
+  width: 28px;
+  border-radius: 5px;
+  background: #fff;
+}
+
+/* ============================================
+   RIGHT PANEL – Login Form
+   ============================================ */
+.login-right-panel {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: safe center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 5rem 2.5rem 2rem;
+  background: #f9fafb;
+  overflow-y: auto;
+}
+
+.login-right-inner {
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Login form card – same style as demo (clear, visible) */
+.login-form-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.login-form-card .login {
+  width: 100%;
+}
+
+.login-form-card .alert {
+  font-size: 1.05rem;
+  padding: 0.9rem 1rem;
+}
+
+/* Login header – larger for better visibility */
+/* Password vs Email OTP — segmented control */
+.login-method-switch {
+  display: flex;
+  width: 100%;
+  gap: 0;
+  margin-bottom: 1.5rem;
+  padding: 4px;
+  background: #f1f5f9;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.login-method-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.65rem 0.75rem;
+  font-family: 'Source Sans 3', 'Segoe UI', Roboto, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  border-radius: 11px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s, box-shadow 0.2s;
+  line-height: 1.2;
+}
+
+.login-method-btn:hover {
+  color: #334155;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.login-method-btn.active {
+  color: #fff;
+  background: var(--btnprimary, #2d5f44);
+  box-shadow: 0 2px 8px rgba(45, 95, 68, 0.28);
+}
+
+.login-method-btn.active:hover {
+  color: #fff;
+  background: var(--theme-primary-hover, #1e4d36);
+}
+
+.login-method-btn i {
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+.login-otp-back-link {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.login-otp-link-sep {
+  color: #cbd5e1;
+  margin: 0 0.15rem;
+  user-select: none;
+}
+
+.login-header-section {
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.login-header-section h2 {
+  font-family: 'Source Sans 3', 'Segoe UI', Roboto, sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.35rem;
+  letter-spacing: -0.02em;
+}
+
+.login-header-section p {
+  color: #64748b;
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+/* Form fields – larger, clearer (demo style) */
+.login-field-group {
+  margin-bottom: 1.35rem;
+  width: 100%;
+}
+
+.login-field-group > label {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.login-input-group {
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fff;
+}
+
+.login-input-group:focus-within {
+  border-color: var(--btnprimary, #2d5f44);
+  box-shadow: 0 0 0 4px rgba(45,95,68,0.12);
+}
+
+.login-input-group .form-control {
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.9rem 1rem;
+  font-size: 1.2rem;
+  background: transparent;
+  height: auto;
+}
+
+.login-input-group .form-control::placeholder {
+  color: #94a3b8;
+}
+
+.login-input-group .input-group-addon {
+  background: transparent;
+  border: none;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  color: #94a3b8;
+}
+
+.forgot-link {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--btnprimary, #2d5f44);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.forgot-link:hover {
+  color: var(--theme-primary-hover, #1e4d36);
+  text-decoration: underline;
+}
+
+/* Login button – same as demo, clearly visible */
+.login-submit-wrap {
+  position: relative;
+  z-index: 2;
+}
+
+.login-submit-btn {
+  width: 100%;
+  padding: 1rem 1.25rem !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  border: none !important;
+  letter-spacing: 0.3px;
+  transition: transform 0.15s, box-shadow 0.2s;
+  position: relative;
+  z-index: 2;
+}
+.login-submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(45,95,68,0.25);
+}
+
+/* Error states */
+.login-field-group.has-error .login-input-group {
+  border-color: #ef4444;
+}
+.login-field-group.has-error .login-input-group:focus-within {
+  box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+}
+
+/* ============================================
+   Quick Action Cards – same style as demo (clearly visible)
+   ============================================ */
+.login-quick-actions {
+  margin-top: 2rem;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.login-divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0 1.25rem;
+  font-size: 1.1rem;
+  color: #94a3b8;
+  pointer-events: none;
+}
+.login-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e2e8f0;
+  pointer-events: none;
+}
+.login-divider span {
+  position: relative;
+  background: #fff;
+  padding: 0 1rem;
+  font-weight: 500;
+}
+
+.quick-action-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.quick-action-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.35rem;
+  border-radius: 14px;
+  border: 2px solid #e2e8f0;
+  background: #fff;
+  text-decoration: none !important;
+  color: inherit;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.quick-action-card:hover {
+  border-color: var(--btnprimary, #2d5f44);
+  background: #f0fdf4;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(45,95,68,0.1);
+  text-decoration: none !important;
+  color: inherit;
+}
+
+.qa-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.qa-register .qa-icon {
+  background: #f1f5f9;
+  color: var(--btnprimary, #2d5f44);
+}
+
+.qa-enquiry .qa-icon {
+  background: #f1f5f9;
+  color: var(--btnprimary, #2d5f44);
+}
+
+.qa-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.qa-text strong {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.qa-text span {
+  display: block;
+  font-size: 1.05rem;
+  color: #64748b;
+  line-height: 1.3;
+  margin-top: 0.15rem;
+}
+
+.qa-arrow {
+  color: #94a3b8;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s;
+}
+
+.quick-action-card:hover .qa-arrow {
+  color: var(--btnprimary, #2d5f44);
+  transform: translateX(3px);
+}
+
+/* ============================================
+   Version text
+   ============================================ */
+.build-version {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  margin: 1rem 0 0;
+}
+
+/* ============================================
+   Tenant logo in login
+   ============================================ */
+.tenant-logo-login {
+  max-height: 56px;
+  max-width: 180px;
+  object-fit: contain;
+}
+
+.tenant-name-login {
+  font-weight: 600;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+/* ============================================
+   Tenant Landing Page (Index)
+   ============================================ */
+.tenant-landing {
+  padding: 0.5rem 0;
+}
+
+.tenant-landing .tenant-landing-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.tenant-landing .tenant-landing-title h2 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.35rem;
+}
+
+.tenant-landing .tenant-landing-title p {
+  color: #64748b;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.tenant-landing .tenant-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.tenant-landing .tenant-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 1.25rem 1.5rem;
+  min-width: 180px;
+  max-width: 220px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1.5px solid #e8ecf1;
+}
+
+.tenant-landing .tenant-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(47, 107, 79, 0.12);
+  border-color: var(--btnprimary, #2d5f44);
+}
+
+.tenant-landing .tenant-card .tenant-logo-login {
+  max-height: 64px;
+  max-width: 140px;
+  object-fit: contain;
+}
+
+.tenant-landing .tenant-card .tenant-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--btnprimary, #2d5f44), var(--theme-primary-hover, #1e4d36));
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tenant-landing .tenant-card .tenant-card-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 0.85rem;
+  margin: 0;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.tenant-landing .tenant-empty {
+  text-align: center;
+  color: #64748b;
+  padding: 2rem;
+}
+
+.tenant-landing .btn-back-login {
+  margin-top: 1.25rem;
+  text-align: center;
+}
+
+.tenant-landing .btn-back-login a {
+  font-size: 0.85rem;
+  color: var(--btnprimary, #2d5f44);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.tenant-landing .btn-back-login a:hover {
+  color: var(--theme-primary-hover, #1e4d36);
+  text-decoration: underline;
+}
+
+/* ============================================
+   Legacy compatibility
+   ============================================ */
+.card.login-card {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  transform: none !important;
+  width: 100%;
+  max-width: 440px;
+  padding: 2rem 1.75rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Public Enquiry form overrides */
+.public-enquiry-form {
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+/* ============================================
+   Responsive – Tablet
+   ============================================ */
+@media (max-width: 991px) {
+  .login-left-panel {
+    width: 45%;
+  }
+
+  .login-slide-content {
+    padding: 2rem 2rem 4rem;
+  }
+
+  .login-slide-content h2 {
+    font-size: 1.4rem;
+  }
+
+  .login-right-panel {
+    padding: 2rem 1.5rem;
+  }
+}
+
+/* ============================================
+   Responsive – Small Tablet / Large Phone
+   ============================================ */
+@media (max-width: 767px) {
+  .login-page-wrapper {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto;
+  }
+
+  .login-page-body {
+    overflow: auto;
+    height: auto;
+  }
+
+  .login-left-panel {
+    width: 100%;
+    min-height: 300px;
+    height: 300px;
+  }
+
+  .login-carousel,
+  .login-carousel .carousel-inner,
+  .login-carousel .carousel-item {
+    height: 300px !important;
+  }
+
+  .login-left-logo-bar {
+    padding: 0.5rem 1rem;
+    min-height: 44px;
+    max-height: 48px;
+  }
+
+  .login-left-logo {
+    height: 28px;
+    max-height: 28px;
+    max-width: 120px;
+  }
+
+  .login-slide-content {
+    padding: 1.25rem 1.5rem 3.5rem;
+  }
+
+  .login-slide-content h2 {
+    font-size: 1.2rem;
+  }
+
+  .login-slide-content p {
+    font-size: 0.85rem;
+  }
+
+  .login-right-panel {
+    min-height: auto;
+    padding: 1.5rem 1rem;
+    background: #fff;
+  }
+
+  .login-form-card {
+    box-shadow: none;
+    border: none;
+    padding: 1rem 0;
+  }
+}
+
+/* ============================================
+   Responsive – Mobile
+   ============================================ */
+@media (max-width: 575px) {
+  .login-left-panel {
+    height: 240px;
+    min-height: 240px;
+  }
+
+  .login-carousel,
+  .login-carousel .carousel-inner,
+  .login-carousel .carousel-item {
+    height: 240px !important;
+  }
+
+  .login-slide-content h2 {
+    font-size: 1.05rem;
+  }
+
+  .login-right-inner {
+    max-width: 100%;
+  }
+
+  .quick-action-card {
+    padding: 0.75rem 0.85rem;
+  }
+}

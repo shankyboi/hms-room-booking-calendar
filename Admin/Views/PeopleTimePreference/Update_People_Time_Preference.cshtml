@@ -1,0 +1,1897 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/23/2026 14:01:33 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.PeopleTimePreferenceModel
+			@{
+			ViewData["Title"] = @Resource.updatepeopletimepreference;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Update_People_Time_Preference", "PeopleTimePreference", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.updatepeopletimepreference</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.PeopleTimePreferenceid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 shiftname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="shiftname">@Resource.peopletimepreference_shiftname <b class="iconRed">*</b></label>
+										<select name="shiftname" id="shiftname" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.shiftname)
+									<div id="shiftname-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+					<div class="col-sm-3 col-xs-12 p-2 workprofile_craftmyapp_container">
+						<div>
+							<div class="form-group form-group--float-above my-3">
+								<label for="workprofile">@Resource.peopletimepreference_workprofile <b class="iconRed">*</b></label>
+								<select name="workprofile" id="workprofile" class="form-control  required"></select>
+
+							</div>
+							@Html.ValidationMessageFor(model => model.workprofile)
+							<div id="workprofile-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 people_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="people">@Resource.peopletimepreference_people <b class="iconRed">*</b></label>
+										<select name="people" id="people" class="form-control  required"></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.people)
+									<div id="people-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+ <div class="col-sm-12 col-xs-12 mt-3 timepreference_craftmyapp_container"><div class="card card card-blue cma_dependent_band"><!--Dependent Time Preference Containder Block-->
+						<div class="card-head">
+							<header>
+								 @Resource.timepreference
+							</header>
+							<header>
+								<button type="button" class="btn cma_secondary_button button-common btn-add-timepreference pull-left"><span class="fa fa-plus"></span> Add</button>
+							</header>
+
+						</div>
+						<div class="card-body pt-0 pb-0 form-elements-group-container fluent-card-body commonContainer">
+							<div id="timepreferenceContainer" class="timepreferenceContainer">
+							</div>
+
+			
+						</div>
+					</div></div><!--Dependent Time Preference Containder Block-->
+					
+			 <script>
+(function () {
+	function timeStrToMinutes(t) {
+		if (t == null || t === '') return null;
+		var s = String(t).trim();
+		var m = s.match(/^(\d{1,2}):(\d{2})/);
+		if (!m) return null;
+		var h = parseInt(m[1], 10), mi = parseInt(m[2], 10);
+		if (isNaN(h) || isNaN(mi)) return null;
+		return h * 60 + mi;
+	}
+	window.updateTaskHoursFromTimesInRow = function ($row) {
+		var $th = $row.find('.taskhours');
+		if (!$th.length) return;
+		var sm = timeStrToMinutes($row.find('.taskstarttime').val());
+		var em = timeStrToMinutes($row.find('.taskendtime').val());
+		if (sm === null || em === null) {
+			$th.val('');
+			return;
+		}
+		var diff = em - sm;
+		if (diff < 0) diff += 24 * 60;
+		var hours = diff / 60;
+		var rounded = Math.round(hours * 100) / 100;
+		$th.val(rounded % 1 === 0 ? String(rounded) : rounded.toFixed(2));
+	};
+	$(document).on('change input', '.timepreference .taskstarttime, .timepreference .taskendtime', function () {
+		window.updateTaskHoursFromTimesInRow($(this).closest('.timepreference'));
+	});
+})();
+</script>
+			 <script>
+$(document).ready(function () {
+$("#people").change(function(){
+
+$.ajax({
+url: '@Url.Action("prefill_PeopleTimePreference_timepreference")',
+dataType: 'json',
+
+data:{"people":$("#people").val()},
+success: function(data) {
+ 
+var resultSet = data;
+$("#timepreferenceContainer").empty()
+$.each(resultSet, function(key, obj) {
+
+
+ 
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".timepreference").removeClass('showthelables');
+			   $(".btn-remove-row-timepreference").removeClass('btn-remove-row');
+				$("#timepreferenceContainer").prepend(
+				'<div class="row m-t-10 timepreference dependentContainerBorder" id="timepreference' + index + '">' +
+	
+				'<div class="col-sm-2 col-xs-12 p-2 clinicaltask_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="clinicaltask">@Resource.peopletimepreference_timepreference_clinicaltask <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.clinicaltask?obj.clinicaltask:'')+'" name="clinicaltask' + index + '" id="clinicaltask' + index + '"  type="connection_prefilled"  maxlength="256" class="clinicaltask form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 tasktype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="tasktype">@Resource.peopletimepreference_timepreference_tasktype</label>'+
+										buildselecttasktype(obj.tasktype, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="tasktype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="taskname">@Resource.peopletimepreference_timepreference_taskname</label>'+
+										buildselecttaskname(obj.taskname, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="taskname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 availableon_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="availableon">@Resource.peopletimepreference_timepreference_availableon</label>'+
+										buildselectPeopleTimePreference('availableon',obj.availableon, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="availableon' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskstarttime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="taskstarttime">@Resource.peopletimepreference_timepreference_taskstarttime <b class="iconRed">*</b></label>'+
+											'<input value="'+(obj.taskstarttime?obj.taskstarttime:'')+'" name="taskstarttime' + index + '" id="taskstarttime' + index + '"  type="time"  maxlength="256" class="taskstarttime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="taskstarttime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskendtime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="taskendtime">@Resource.peopletimepreference_timepreference_taskendtime <b class="iconRed">*</b></label>'+
+											'<input value="'+(obj.taskendtime?obj.taskendtime:'')+'" name="taskendtime' + index + '" id="taskendtime' + index + '"  type="time"  maxlength="256" class="taskendtime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="taskendtime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskhours_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="taskhours">@Resource.peopletimepreference_timepreference_taskhours <b class="iconRed">*</b></label>'+
+									'<input name="taskhours' + index + '" id="taskhours' + index + '" type="text" readonly="readonly" class="taskhours form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				 ' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-timepreference"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+
+				);
+  var cmafirstcontainer = $('.timepreferenceContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+					$('.removebtn' + cmafirstcontainer.replace('timepreference', '')).addClass('btn-remove-row');
+
+				$("#taskname"+index).select2()
+if($("#availableon" + index).length > 0) {
+																		   var dropdown = $("#availableon"+index);
+																		   var options = dropdown.find('option');
+																		   // Keep Available on days in the configured weekday order.
+																		   // options.sort((a, b) => (a && b ? $(b).is(':selected') - $(a).is(':selected') : 0));
+																			dropdown.html(options);
+																			$("#availableon"+index).SumoSelect({selectAll:true, csvDispCount:5})
+																			$("#availableon"+index)[0].sumo.reload()                               
+																		}
+if (typeof updateTaskHoursFromTimesInRow === 'function') { updateTaskHoursFromTimesInRow($('#timepreference' + index)); }
+ 
+				 
+
+				$(".tasktype").prop('disabled', true)
+$(".taskname").prop('disabled', true)
+// Available On remains editable on the update screen.
+$(".clinicaltask_craftmyapp_container").hide()
+
+
+				
+
+
+});
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+})
+
+
+})
+</script>
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.updatepeopletimepreference</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("PeopleTimePreference","edit")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<link href="~/components/sumoselect/sumoselect.css" rel="stylesheet" />
+<script src="~/components/sumoselect/jquery.sumoselect.js"></script>
+
+			
+			<script>
+var datatasktype
+function fill_tasktype() {
+$.ajax({
+url: '@Url.Action("get_all_TaskType")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.tasktypename !== null);
+				data.sort((a, b) =>
+					String(a.tasktypename).toLowerCase().localeCompare(String(b.tasktypename).toLowerCase()) 
+				);
+datatasktype=data
+}
+})
+}
+function buildselecttasktype(selected, index) {
+if (datatasktype == undefined) fill_tasktype()
+var select = '<select name="tasktype' + index + '" id="tasktype' + index + '"  class="tasktype form-control  " >'
+select = select + '<option value="">Choose</option>';
+if (datatasktype != null && datatasktype.length > 0)
+{
+$.each(datatasktype, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.TaskTypeid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.TaskTypeid  + '">' + optionDataInner.tasktypename  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.TaskTypeid+ '">' + optionDataInner.tasktypename + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.TaskTypeid + '">' + optionDataInner.tasktypename+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+<script>
+var datataskname
+function fill_taskname() {
+$.ajax({
+url: '@Url.Action("get_all_Task")',
+dataType: 'json',
+data:{"tenantid":"@Model.tenantid"},
+async:false,
+success: function(data) {
+data = data.filter(item => item.taskname !== null);
+				data.sort((a, b) =>
+					String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase()) 
+				);
+datataskname=data
+}
+})
+}
+function buildselecttaskname(selected, index) {
+if (datataskname == undefined) fill_taskname()
+var select = '<select name="taskname' + index + '" id="taskname' + index + '"  class="taskname form-control select2 select2-list  " >'
+select = select + '<option value="">Choose</option>';
+if (datataskname != null && datataskname.length > 0)
+{
+$.each(datataskname, function(index, optionDataInner) {
+if (selected != null  && selected != "")
+{
+if (optionDataInner.Taskid.toUpperCase() == selected.toUpperCase())
+{
+select = select + '<option selected value="' + optionDataInner.Taskid  + '">' + optionDataInner.taskname  + '</option>';
+}
+else
+{
+select = select + '<option value="' + optionDataInner.Taskid+ '">' + optionDataInner.taskname + '</option>';
+};
+}
+ else
+{
+ select = select + '<option value="' + optionDataInner.Taskid + '">' + optionDataInner.taskname+ '</option>';
+ }
+});
+}
+return select + '</select>';
+}
+</script>
+
+
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			<script>
+				$(document).ready(function () {
+			  $("body").on("click", ".btn-add-timepreference", function () {
+				
+	
+				var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".timepreference").removeClass('showthelables');
+			   $(".btn-remove-row-timepreference").removeClass('btn-remove-row');
+				$("#timepreferenceContainer").prepend(
+				'<div class="row m-t-10 timepreference dependentContainerBorder" id="timepreference' + index + '">' +
+					
+ 
+					'<div class="col-sm-2 col-xs-12 p-2 clinicaltask_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="clinicaltask">@Resource.peopletimepreference_timepreference_clinicaltask <b class="iconRed">*</b></label>'+
+									'<input  name="clinicaltask' + index + '" id="clinicaltask' + index + '"  type="connection_prefilled"  maxlength="256" class="clinicaltask form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 tasktype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="tasktype">@Resource.peopletimepreference_timepreference_tasktype</label>'+
+										buildselecttasktype('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="tasktype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="taskname">@Resource.peopletimepreference_timepreference_taskname</label>'+
+										buildselecttaskname('', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="taskname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 availableon_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="availableon">@Resource.peopletimepreference_timepreference_availableon</label>'+
+										buildselectPeopleTimePreference('availableon','', index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="availableon' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskstarttime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="taskstarttime">@Resource.peopletimepreference_timepreference_taskstarttime <b class="iconRed">*</b></label>'+
+											'<input  name="taskstarttime' + index + '" id="taskstarttime' + index + '"  type="time"  maxlength="256" class="taskstarttime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="taskstarttime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskendtime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="taskendtime">@Resource.peopletimepreference_timepreference_taskendtime <b class="iconRed">*</b></label>'+
+											'<input  name="taskendtime' + index + '" id="taskendtime' + index + '"  type="time"  maxlength="256" class="taskendtime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="taskendtime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskhours_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="taskhours">@Resource.peopletimepreference_timepreference_taskhours <b class="iconRed">*</b></label>'+
+									'<input name="taskhours' + index + '" id="taskhours' + index + '" type="text" readonly="readonly" class="taskhours form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				' <div class="col-sm-1 detele-common-icon"><button type="button" class="btn removebtn' + index + ' btn-danger  btn-remove-row-timepreference"><span class="fa fa-trash"></span></button></div>' +
+				'</div>'
+				
+				);
+					
+					
+					var cmafirstcontainer = $('#timepreferenceContainer:first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('timepreference', '')).addClass('btn-remove-row');
+				
+				$(".clinicaltask_craftmyapp_container").hide()
+
+				$("#taskname"+index).select2()
+if($("#availableon" + index).length > 0) {
+																		   var dropdown = $("#availableon"+index);
+																		   var options = dropdown.find('option');
+																		   // Keep Available on days in the configured weekday order.
+																		   // options.sort((a, b) => (a && b ? $(b).is(':selected') - $(a).is(':selected') : 0));
+																			dropdown.html(options);
+																			$("#availableon"+index).SumoSelect({selectAll:true, csvDispCount:5})
+																			$("#availableon"+index)[0].sumo.reload()                               
+																		}
+if (typeof updateTaskHoursFromTimesInRow === 'function') { updateTaskHoursFromTimesInRow($('#timepreference' + index)); }
+ 
+				
+				 
+
+				});
+				$('body').on('click', '.btn-remove-row-timepreference', function (e) {
+					 
+					 
+					
+					var timepreferenceRow = $(this).closest(".timepreference");
+					var index = timepreferenceRow.attr("id").replace("timepreference", "");
+					timepreferenceRow.remove();
+					
+					
+				});
+				})
+				</script>
+				
+			 
+
+@if (Model != null)
+{
+<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("getById_timepreference")',
+dataType: 'json',
+data:{"PeopleTimePreferenceid":"@Model.PeopleTimePreferenceid"},
+success: function(data) {
+ 
+var resultSet = data;
+$.each(resultSet, function(key, obj) {
+			  
+
+			var index = Math.floor(Math.random() * (100000 - 1 + 1) + 57);
+			 $(".timepreference").removeClass('showthelables');
+			   $(".btn-remove-row-timepreference").removeClass('btn-remove-row');
+				$("#timepreferenceContainer").prepend(
+				'<div class="row m-t-10 timepreference dependentContainerBorder" id="timepreference' + index + '">' +
+				'<input type="hidden" class="PeopleTimePreference_timepreferenceid" value="' + obj.PeopleTimePreference_timepreferenceid + '">'+
+				
+				'<div class="col-sm-2 col-xs-12 p-2 clinicaltask_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="clinicaltask">@Resource.peopletimepreference_timepreference_clinicaltask <b class="iconRed">*</b></label>'+
+									'<input value="'+(obj.clinicaltask?obj.clinicaltask:'')+'" name="clinicaltask' + index + '" id="clinicaltask' + index + '"  type="connection_prefilled"  maxlength="256" class="clinicaltask form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 tasktype_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="tasktype">@Resource.peopletimepreference_timepreference_tasktype</label>'+
+										buildselecttasktype(obj.tasktype, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="tasktype' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskname_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="taskname">@Resource.peopletimepreference_timepreference_taskname</label>'+
+										buildselecttaskname(obj.taskname, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="taskname' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 availableon_craftmyapp_container">'+
+								'<div>'+
+									'<div class="form-group form-group--float-above my-3" >'+ 
+										'<label for="availableon">@Resource.peopletimepreference_timepreference_availableon</label>'+
+										buildselectPeopleTimePreference('availableon',obj.availableon, index)+
+
+										'<i class="form-group__bar" ></i>'+
+									'</div>'+
+									'<div id="availableon' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+								'</div>'+
+							'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskstarttime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="taskstarttime">@Resource.peopletimepreference_timepreference_taskstarttime <b class="iconRed">*</b></label>'+
+											'<input value="'+(obj.taskstarttime?obj.taskstarttime:'')+'" name="taskstarttime' + index + '" id="taskstarttime' + index + '"  type="time"  maxlength="256" class="taskstarttime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="taskstarttime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskendtime_craftmyapp_container">'+
+									'<div>'+
+										'<div class="form-group form-group--float-above my-2" >'+ 
+											'<label for="taskendtime">@Resource.peopletimepreference_timepreference_taskendtime <b class="iconRed">*</b></label>'+
+											'<input value="'+(obj.taskendtime?obj.taskendtime:'')+'" name="taskendtime' + index + '" id="taskendtime' + index + '"  type="time"  maxlength="256" class="taskendtime form-control--active form-control mahat_transliterate form-control-lg required" />' +
+
+											'<i class="form-group__bar" ></i>'+
+										'</div>'+
+										'<div id="taskendtime' + index + '-error" class="help-block" style="display: none" role="alert"></div>'+
+									'</div>'+
+								'</div>'+
+'<div class="col-sm-2 col-xs-12 p-2 taskhours_craftmyapp_container">'+
+						'<div>'+
+							'<div class="form-group" >'+ 
+								'<label for="taskhours">@Resource.peopletimepreference_timepreference_taskhours <b class="iconRed">*</b></label>'+
+									'<input name="taskhours' + index + '" id="taskhours' + index + '" type="text" readonly="readonly" class="taskhours form-control--active form-control form-control-lg required" />' +
+
+							'</div>'+
+							
+						'</div>'+
+					'</div>'+
+ 
+
+				 
+				'</div>'
+				
+				);
+					
+					 var cmafirstcontainer = $('.timepreferenceContainer :first-child').attr("id")
+					$('#' + cmafirstcontainer).addClass('showthelables');
+					if(cmafirstcontainer)
+						$('.removebtn' + cmafirstcontainer.replace('timepreference', '')).addClass('btn-remove-row');
+
+				$("#taskname"+index).select2()
+if($("#availableon" + index).length > 0) {
+																		   var dropdown = $("#availableon"+index);
+																		   var options = dropdown.find('option');
+																		   // Keep Available on days in the configured weekday order.
+																		   // options.sort((a, b) => (a && b ? $(b).is(':selected') - $(a).is(':selected') : 0));
+																			dropdown.html(options);
+																			$("#availableon"+index).SumoSelect({selectAll:true, csvDispCount:5})
+																			$("#availableon"+index)[0].sumo.reload()                               
+																		}
+if (typeof updateTaskHoursFromTimesInRow === 'function') { updateTaskHoursFromTimesInRow($('#timepreference' + index)); }
+ 
+				
+																		if((obj.availableon?obj.availableon:'') !='')  { 
+																			var availableon_array = obj.availableon.split(',');
+																			for (var i = 0; i < availableon_array.length; i++)
+																			{
+																				$('select[name="availableon'+index+'"] option[value="' + availableon_array[i] + '"]').attr("selected", "selected")	
+																				$("#availableon"+index).trigger("change")
+																			}
+																		  }
+																		  if($("#availableon" + index).length > 0) {
+																		   var dropdown = $("#availableon"+index);
+																		   var options = dropdown.find('option');
+																		   // Keep Available on days in the configured weekday order.
+																		   // options.sort((a, b) => (a && b ? $(b).is(':selected') - $(a).is(':selected') : 0));
+																		   dropdown.html(options);
+																		  $("#availableon"+index).SumoSelect({selectAll:true, csvDispCount:5})
+																		  $("#availableon"+index)[0].sumo.reload()
+																		  
+																		  }
+
+				 
+  
+			var sendFilterDatataskname = {
+			"tenantid":$("#tenantid").val(),
+"tasktype":obj.tasktype
+			}
+
+
+			var currentRowID =index
+
+
+			$.ajax({
+			url: '@Url.Action("lookup_PeopleTimePreference_timepreference_taskname")',
+			dataType: 'json',
+			data: sendFilterDatataskname,
+			success: function(data) {
+
+				if (data.length > 0) {
+					data = data.filter(item => item.taskname !== null);
+					data.sort((a, b) =>
+						String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase()) 
+					);
+				}
+
+				var ddltarget_taskname="#taskname"+currentRowID
+
+				$(ddltarget_taskname).empty();
+				$(ddltarget_taskname).append("<option value=''>Choose</option>");
+				$.each(data, function(index_, optionDataInner) {
+					
+					if(obj.taskname.toUpperCase()==(optionDataInner.Taskid).toUpperCase())
+					$(ddltarget_taskname).append('<option selected value="' + optionDataInner.Taskid+ '">' + optionDataInner.taskname+ '</option>')
+					else
+					$(ddltarget_taskname).append('<option  value="' +  optionDataInner.Taskid+ '">' + optionDataInner.taskname+ '</option>')
+				});
+				$(ddltarget_taskname).select2()    
+			}
+
+
+			});
+ 
+
+
+				$(".clinicaltask_craftmyapp_container").hide()
+$(".tasktype").prop('disabled', true)
+$(".taskname").prop('disabled', true)
+// Available On remains editable on the update screen.
+
+				
+
+
+
+});
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+})
+</script>
+
+}
+
+<script>
+var dataPeopleTimePreference
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'PeopleTimePreference' },
+async:false,
+success: function(data) {
+dataPeopleTimePreference=data
+}
+})
+function buildselectPeopleTimePreference(columnName,selected, index) {
+if(columnName=='availableon')
+{
+var select;
+$.each(dataPeopleTimePreference, function(cnt, optionDataInner) {
+if(optionDataInner.fieldname=='availableon')
+{
+select = '<select name="availableon' + index + '" id="availableon' + index + '" multiple class="availableon " style="width:100%">'
+
+								
+										var options_availableon = optionDataInner.fielddesc.split(',');
+										var selectedSet = [];
+										if (selected != null && selected !== undefined) {
+											if (Array.isArray(selected)) {
+												selected.forEach(function (x) {
+													var t = (x == null ? '' : String(x)).trim();
+													if (t) selectedSet.push(t);
+												});
+											} else {
+												String(selected).split(',').forEach(function (s) {
+													var t = s.trim();
+													if (t) selectedSet.push(t);
+												});
+											}
+										}
+										// Keep Available on days in the order defined by the field configuration.
+										// options_availableon.sort(function (a, b) {
+										// 			return a.localeCompare(b);
+										// });
+										options_availableon.forEach(function(option_availableon){
+											var optTrim = (option_availableon == null ? '' : String(option_availableon)).trim();
+											var isSelected = selectedSet.some(function (sel) {
+												return sel.toLowerCase() === optTrim.toLowerCase();
+											});
+											if (isSelected)
+											select = select + '<option selected value="' + option_availableon + '">' + option_availableon+ '</option>'
+											else
+											select = select + '<option  value="' + option_availableon + '">' + option_availableon+ '</option>'
+										   
+										})  
+
+									
+select=select + '</select>';
+}
+})
+return select;
+}
+
+}
+</script>
+
+
+			<script>
+			
+			  function gettimepreference() {
+		 
+					$("#timepreference").val("");
+					var timepreferenceModel = [];
+
+				
+					
+					
+					var el = $('.timepreferenceContainer .timepreference');
+					
+					el.each(function (cnt) {
+					
+							timepreferenceAttributes = {}
+							
+							 timepreferenceAttributes['clinicaltask']=($(this).find('.clinicaltask').val() ? $(this).find('.clinicaltask').val().toString() :'')
+timepreferenceAttributes['tasktype']=($(this).find('.tasktype').val() ? $(this).find('.tasktype').val().toString() :'')
+timepreferenceAttributes['taskname']=($(this).find('.taskname').select2("val") ? $(this).find('.taskname').select2("val").toString() :'')
+timepreferenceAttributes['availableon']=($(this).find('.availableon').val() ? $(this).find('.availableon').val().toString() :'')
+timepreferenceAttributes['taskstarttime']=($(this).find('.taskstarttime').val() ? $(this).find('.taskstarttime').val().toString() :'')
+timepreferenceAttributes['taskendtime']=($(this).find('.taskendtime').val() ? $(this).find('.taskendtime').val().toString() :'')
+timepreferenceAttributes['taskhours']=$(this).find('.taskhours').val() ? $(this).find('.taskhours').val():0
+timepreferenceAttributes['PeopleTimePreference_timepreferenceid']=($(this).find('.PeopleTimePreference_timepreferenceid').val() != undefined ? $(this).find('.PeopleTimePreference_timepreferenceid').val().toString() : "00000000-0000-0000-0000-000000000000")
+timepreferenceAttributes['craftmyapp_actionmethodname']='Update_People_Time_Preference'
+timepreferenceAttributes['record_order']=cnt
+timepreferenceAttributes['cma_client_row_id']=$(this).attr("id").replace("timepreference","")
+
+							
+							timepreferenceModel.push(timepreferenceAttributes);
+					
+					
+					
+					});
+					 
+					return timepreferenceModel
+				
+				
+				}
+
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_People_Time_Preference")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_People_Time_Preference")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updatepeopletimepreference;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updatepeopletimepreference")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ var timepreferenceModel=gettimepreference()
+
+
+ 
+ 
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ for (var i = 0; i < timepreferenceModel.length; i++) {
+formdata.append("timepreference[" + i + "].clinicaltask", timepreferenceModel[i].clinicaltask)
+formdata.append("timepreference[" + i + "].record_order", timepreferenceModel[i].record_order)
+formdata.append("timepreference[" + i + "].cma_client_row_id", timepreferenceModel[i].cma_client_row_id)
+formdata.append("timepreference[" + i + "].tasktype", timepreferenceModel[i].tasktype)
+formdata.append("timepreference[" + i + "].taskname", timepreferenceModel[i].taskname)
+formdata.append("timepreference[" + i + "].availableon", timepreferenceModel[i].availableon)
+formdata.append("timepreference[" + i + "].taskstarttime", timepreferenceModel[i].taskstarttime)
+formdata.append("timepreference[" + i + "].taskendtime", timepreferenceModel[i].taskendtime)
+formdata.append("timepreference[" + i + "].taskhours", timepreferenceModel[i].taskhours)
+formdata.append("timepreference[" + i + "].PeopleTimePreference_timepreferenceid", timepreferenceModel[i].PeopleTimePreference_timepreferenceid)
+formdata.append("timepreference[" + i + "].PeopleTimePreferenceid", $("#PeopleTimePreferenceid").val())
+
+formdata.append("timepreference[" + i + "].craftmyapp_actionmethodname", 'Update_People_Time_Preference')
+}
+
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("PeopleTimePreference","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "PeopleTimePreference")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			<script>
+			$(document).ready(function () {
+				fill_tasktype()
+fill_taskname()
+
+				$("#tenantid").change(function(){
+						$("#timepreferenceContainer").empty()
+
+						fill_tasktype()
+fill_taskname()
+
+				})
+			
+
+			});
+			</script>
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+					<script>
+					var strshiftname;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.shiftname != null && Model.shiftname.ToString() != "")
+							{
+							<script>
+								 strshiftname="@Model.shiftname"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_PeopleTimePreference_shiftname(tenantid) {
+
+					var ddltarget_shiftname = $('#shiftname');
+					ddltarget_shiftname.empty();;
+					ddltarget_shiftname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_PeopleTimePreference_shiftname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.shiftname !== null);
+									data.sort((a, b) =>
+										String(a.shiftname).toLowerCase().localeCompare(String(b.shiftname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].Shiftid;
+									data[i].name = data[i].shiftname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_PeopleTimePreference_shiftname,
+						 templateSelection: formatSelectSelected_lookup_PeopleTimePreference_shiftname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strshiftname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_PeopleTimePreference_shiftname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].Shiftid == strshiftname) {
+											var option = new Option(data[i].shiftname,data[i].Shiftid, true, true);
+											ddltarget_shiftname.append(option).trigger('update');
+
+											ddltarget_shiftname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_PeopleTimePreference_shiftname(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.shiftname) {
+						var textValue = item.shiftname
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_PeopleTimePreference_shiftname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.shiftname;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_PeopleTimePreference_shiftname(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+
+<script>
+	var strworkprofile;
+</script>
+@if (Model != null)
+{
+	if (Model.workprofile != null && Model.workprofile.ToString() != "")
+	{
+		<script>
+			strworkprofile="@Model.workprofile"
+		</script>
+	}
+}
+<script>
+	function lookup_PeopleTimePreference_workprofile(tenantid) {
+
+	var sendFilterData = {
+		"tenantid":tenantid
+	}
+
+	$.ajax({
+	url: '@Url.Action("lookup_PeopleTimePreference_workprofile")',
+	dataType: 'json',
+	data: sendFilterData,
+	success: function(data) {
+
+			if (data.length > 0) {
+				data = data.filter(item => item.workprofilename !== null);
+				data.sort((a, b) =>
+					String(a.workprofilename).toLowerCase().localeCompare(String(b.workprofilename).toLowerCase())
+				);
+			}
+		   var ddltarget_workprofile="#workprofile"
+			$(ddltarget_workprofile).empty();
+
+			$(ddltarget_workprofile).append("<option value=''>Choose</option>");
+
+
+
+
+			$.each(data, function(index, optionDataInner) {
+
+						if(strworkprofile== optionDataInner.WorkProfileid){
+						$(ddltarget_workprofile).append('<option selected value="' + optionDataInner.WorkProfileid + '">' + optionDataInner.workprofilename+ '</option>')
+
+					   }
+						else
+						$(ddltarget_workprofile).append('<option  value="' + optionDataInner.WorkProfileid+ '">' + optionDataInner.workprofilename+ '</option>')
+
+
+			});
+
+
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+
+	}
+</script>
+<script>
+	$(document).ready(function(){
+
+		lookup_PeopleTimePreference_workprofile(str_tenantid)
+
+
+
+	})
+
+</script>
+					<script>
+					var strpeople;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.people != null && Model.people.ToString() != "")
+							{
+							<script>
+								 strpeople="@Model.people"
+							</script>
+							}
+						}
+					<script>
+					
+					function getPeopleTimePreferenceNamePart(value) {
+						if (value === null || value === undefined) return '';
+						var text = value.toString().trim();
+						return text.toLowerCase() === 'null' ? '' : text;
+					}
+
+					function getPeopleTimePreferencePeopleName(item) {
+						return [
+							getPeopleTimePreferenceNamePart(item && item.firstname),
+							getPeopleTimePreferenceNamePart(item && item.lastname)
+						].filter(function (part) { return part !== ''; }).join(' ');
+					}
+
+		function lookup_PeopleTimePreference_people(tenantid,workprofile) {
+
+					var ddltarget_people = $('#people');
+					ddltarget_people.empty();;
+					ddltarget_people.select2({
+						ajax: {
+							url: '@Url.Action("lookup_PeopleTimePreference_people")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+								"workprofile":workprofile,
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].Peopleid;
+									data[i].name = getPeopleTimePreferencePeopleName(data[i]);
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_PeopleTimePreference_people,
+						 templateSelection: formatSelectSelected_lookup_PeopleTimePreference_people
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+								"workprofile":workprofile,
+									'searchterm': strpeople || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_PeopleTimePreference_people")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].Peopleid == strpeople) {
+											var option = new Option(getPeopleTimePreferencePeopleName(data[i]),data[i].Peopleid, true, true);
+											ddltarget_people.append(option).trigger('update');
+
+											ddltarget_people.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_PeopleTimePreference_people(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text && item.text != "") {
+						var textValue = item.text;
+					}
+					else if (getPeopleTimePreferencePeopleName(item)) {
+						var textValue = getPeopleTimePreferencePeopleName(item)
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_PeopleTimePreference_people(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = getPeopleTimePreferencePeopleName(item);
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_PeopleTimePreference_people(str_tenantid,strworkprofile)
+								}, 3000)
+
+		$("#workprofile").change(function(){
+
+
+
+
+					lookup_PeopleTimePreference_people($("#tenantid").val(),$("#workprofile").val())
+
+
+
+
+				})
+
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_PeopleTimePreference_shiftname($("#tenantid").val())
+	lookup_PeopleTimePreference_workprofile($("#tenantid").val())
+	lookup_PeopleTimePreference_people($("#tenantid").val(),$("#workprofile").val())
+
+						})
+					
+
+					});
+					</script><script>
+function lookup_PeopleTimePreference_timepreference_taskname(tenantid,tasktype,currentRowID) {
+
+var sendFilterData = {
+	"tenantid":tenantid,
+"tasktype":tasktype
+}
+
+$.ajax({
+url: '@Url.Action("lookup_PeopleTimePreference_timepreference_taskname")',
+dataType: 'json',
+data: sendFilterData,
+success: function(data) {
+
+		if (data.length > 0) {
+			data = data.filter(item => item.taskname !== null);
+			data.sort((a, b) =>
+				String(a.taskname).toLowerCase().localeCompare(String(b.taskname).toLowerCase()) 
+			);
+		}
+	   var ddltarget_taskname="#taskname"+currentRowID
+		$(ddltarget_taskname).empty();
+		
+		$(ddltarget_taskname).append("<option value=''>Choose</option>");
+
+
+		
+
+		$.each(data, function(index, optionDataInner) {
+
+					
+					$(ddltarget_taskname).append('<option  value="' + optionDataInner.Taskid+ '">' + optionDataInner.taskname+ '</option>')
+						
+
+
+		});
+
+		$(ddltarget_taskname).select2()
+
+	
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+
+}
+</script>
+<script>
+						$(document).ready(function(){
+
+							 
+							
+									 $('body').on('change', '.tasktype', function (e) {
+			
+										var currentRowID =($(this).attr('id')).replace('tasktype','')
+										lookup_PeopleTimePreference_timepreference_taskname($("#tenantid").val(),$("#tasktype"+currentRowID).val(),currentRowID)
+
+									})
+
+
+
+						})
+						
+						</script>
+
+
+
+

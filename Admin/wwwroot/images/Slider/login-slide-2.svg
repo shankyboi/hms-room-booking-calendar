@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f4c3a;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#1a6b4a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d3d2e;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow2" cx="70%" cy="30%" r="50%">
+      <stop offset="0%" style="stop-color:#5ce0a8;stop-opacity:0.12" />
+      <stop offset="100%" style="stop-color:#0f4c3a;stop-opacity:0" />
+    </radialGradient>
+    <radialGradient id="glow2b" cx="20%" cy="70%" r="40%">
+      <stop offset="0%" style="stop-color:#7ee8b5;stop-opacity:0.08" />
+      <stop offset="100%" style="stop-color:#0f4c3a;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="800" fill="url(#bg2)"/>
+  <rect width="1200" height="800" fill="url(#glow2)"/>
+  <rect width="1200" height="800" fill="url(#glow2b)"/>
+  <!-- Grid pattern -->
+  <g opacity="0.04" stroke="#fff" stroke-width="1">
+    <line x1="0" y1="0" x2="0" y2="800"/><line x1="60" y1="0" x2="60" y2="800"/><line x1="120" y1="0" x2="120" y2="800"/>
+    <line x1="180" y1="0" x2="180" y2="800"/><line x1="240" y1="0" x2="240" y2="800"/><line x1="300" y1="0" x2="300" y2="800"/>
+    <line x1="360" y1="0" x2="360" y2="800"/><line x1="420" y1="0" x2="420" y2="800"/><line x1="480" y1="0" x2="480" y2="800"/>
+    <line x1="0" y1="0" x2="1200" y2="0"/><line x1="0" y1="60" x2="1200" y2="60"/><line x1="0" y1="120" x2="1200" y2="120"/>
+    <line x1="0" y1="180" x2="1200" y2="180"/><line x1="0" y1="240" x2="1200" y2="240"/><line x1="0" y1="300" x2="1200" y2="300"/>
+  </g>
+  <!-- Patient figure group -->
+  <g transform="translate(500, 200)" opacity="0.1">
+    <!-- Central figure -->
+    <circle cx="100" cy="40" r="35" fill="#7ee8b5"/>
+    <path d="M60,85 Q100,75 140,85 L150,200 Q100,210 50,200 Z" fill="#7ee8b5"/>
+    <!-- Surrounding care icons -->
+    <!-- Heart -->
+    <g transform="translate(-50, 20)">
+      <path d="M20,15 C20,5 30,0 35,8 C40,0 50,5 50,15 C50,30 35,40 35,40 C35,40 20,30 20,15Z" fill="#4ecca3" opacity="0.6"/>
+    </g>
+    <!-- Clipboard -->
+    <g transform="translate(220, 30)">
+      <rect x="0" y="5" width="40" height="55" rx="4" fill="#4ecca3" opacity="0.5"/>
+      <rect x="12" y="0" width="16" height="10" rx="3" fill="#4ecca3" opacity="0.7"/>
+      <line x1="10" y1="25" x2="30" y2="25" stroke="#0f4c3a" stroke-width="2"/>
+      <line x1="10" y1="35" x2="30" y2="35" stroke="#0f4c3a" stroke-width="2"/>
+      <line x1="10" y1="45" x2="25" y2="45" stroke="#0f4c3a" stroke-width="2"/>
+    </g>
+    <!-- Medicine -->
+    <g transform="translate(230, 150)">
+      <rect x="5" y="10" width="30" height="45" rx="4" fill="#5ce0a8" opacity="0.5"/>
+      <rect x="0" y="5" width="40" height="12" rx="3" fill="#5ce0a8" opacity="0.6"/>
+      <line x1="20" y1="28" x2="20" y2="48" stroke="#0f4c3a" stroke-width="2"/>
+      <line x1="12" y1="38" x2="28" y2="38" stroke="#0f4c3a" stroke-width="2"/>
+    </g>
+    <!-- Calendar -->
+    <g transform="translate(-60, 150)">
+      <rect x="0" y="8" width="45" height="42" rx="4" fill="#4ecca3" opacity="0.5"/>
+      <rect x="0" y="8" width="45" height="14" rx="4" fill="#4ecca3" opacity="0.7"/>
+      <circle cx="14" cy="35" r="4" fill="#0f4c3a" opacity="0.5"/>
+      <circle cx="31" cy="35" r="4" fill="#0f4c3a" opacity="0.5"/>
+    </g>
+    <!-- Connection lines -->
+    <line x1="100" y1="80" x2="-10" y2="40" stroke="#4ecca3" stroke-width="1.5" opacity="0.2" stroke-dasharray="5,5"/>
+    <line x1="100" y1="80" x2="240" y2="55" stroke="#4ecca3" stroke-width="1.5" opacity="0.2" stroke-dasharray="5,5"/>
+    <line x1="100" y1="150" x2="-20" y2="170" stroke="#4ecca3" stroke-width="1.5" opacity="0.2" stroke-dasharray="5,5"/>
+    <line x1="100" y1="150" x2="240" y2="175" stroke="#4ecca3" stroke-width="1.5" opacity="0.2" stroke-dasharray="5,5"/>
+  </g>
+  <!-- Floating leaves -->
+  <g transform="translate(80, 200) rotate(-20)" opacity="0.08">
+    <path d="M0,50 Q25,-8 65,0 Q25,25 0,50Z" fill="#7ee8b5"/>
+  </g>
+  <g transform="translate(1000, 400) rotate(30)" opacity="0.08">
+    <path d="M0,50 Q25,-8 65,0 Q25,25 0,50Z" fill="#7ee8b5"/>
+  </g>
+  <g transform="translate(900, 100) rotate(60)" opacity="0.06">
+    <path d="M0,70 Q35,-10 90,0 Q35,35 0,70Z" fill="#7ee8b5"/>
+  </g>
+  <!-- DNA helix hint -->
+  <g transform="translate(950, 300)" opacity="0.06">
+    <path d="M0,0 C20,20 40,20 60,0 C80,-20 100,-20 120,0 C140,20 160,20 180,0" fill="none" stroke="#fff" stroke-width="3"/>
+    <path d="M0,30 C20,10 40,10 60,30 C80,50 100,50 120,30 C140,10 160,10 180,30" fill="none" stroke="#fff" stroke-width="3"/>
+    <line x1="30" y1="10" x2="30" y2="20" stroke="#fff" stroke-width="2"/>
+    <line x1="90" y1="10" x2="90" y2="20" stroke="#fff" stroke-width="2"/>
+    <line x1="150" y1="10" x2="150" y2="20" stroke="#fff" stroke-width="2"/>
+  </g>
+  <!-- Bottom wave -->
+  <path d="M0,760 Q200,730 400,750 T800,740 T1200,755 V800 H0 Z" fill="#fff" opacity="0.03"/>
+</svg>

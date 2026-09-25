@@ -1,0 +1,1422 @@
+@using Microsoft.AspNetCore.Http
+@using Admin
+@using NalamVazha.Models
+@model IPDApplicationFormModel
+@{
+    ViewData["Title"] = "Transfer Room";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var sessionTenantId = Context.Session.GetString("NalamVazhachoosedtenantid") ?? "";
+    var modelTenantId = (Model?.tenantid != null && Model.tenantid != Guid.Empty) ? Model.tenantid.ToString() : "";
+    var tenantId = !string.IsNullOrWhiteSpace(sessionTenantId) ? sessionTenantId : modelTenantId;
+    var roomJson = Newtonsoft.Json.JsonConvert.SerializeObject(Model?.room ?? new List<IPDApplicationForm_roomModel>());
+    var totalDaysOfStay = 0;
+    var stayArrivalDmy = "";
+    var stayDepartureDmy = "";
+    if (Model?.preferreddatesofadmission != null)
+    {
+        var _first = true;
+        foreach (var pd in Model.preferreddatesofadmission)
+        {
+            totalDaysOfStay += pd.daysofstay;
+            if (_first) { stayArrivalDmy = pd.dateofarrival.ToString("dd-MMM-yyyy"); stayDepartureDmy = pd.dateofdeparture.ToString("dd-MMM-yyyy"); _first = false; }
+        }
+    }
+}
+
+<style>
+    .transfer-room-card { border: 1px solid #dbe7df; border-radius: 8px; padding: 14px; background: #fff; margin-bottom: 14px; }
+    .transfer-room-summary { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-top: 10px; }
+    .transfer-room-groups { display: flex; flex-direction: column; gap: 14px; margin-top: 12px; }
+    .transfer-room-type-group { border: 1px solid #dbe7df; border-radius: 8px; background: #f8fafc; padding: 12px; }
+    .transfer-room-type-group__header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+    .transfer-room-type-group__title { color: #176b4d; font-size: 15px; font-weight: 700; }
+    .transfer-room-type-group__meta { color: #64748b; font-size: 12px; white-space: nowrap; }
+    .transfer-room-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+    .transfer-room-option { border: 2px solid #e2e8f0; border-radius: 8px; padding: 12px; cursor: pointer; background: #fff; transition: .15s; }
+    .transfer-room-option:hover { border-color: #0ea5e9; box-shadow: 0 3px 10px rgba(14, 165, 233, .12); }
+    .transfer-room-option.selected { border-color: #16a34a; background: #f0fdf4; }
+    .transfer-room-option__title { font-weight: 700; color: #0f172a; }
+    .transfer-room-option__sub { font-size: 12px; color: #64748b; margin-top: 4px; }
+    .transfer-room-empty { padding: 18px; text-align: center; color: #64748b; background: #f8fafc; border-radius: 8px; }
+
+
+    .transfer-summary-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .transfer-summary-mini-card {
+        flex: 1 1 300px;
+        border: 1px solid #dbe7df;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 10px 12px;
+        min-height: 95px;
+    }
+
+    .transfer-summary-title {
+        font-weight: 700;
+        color: #176b4d;
+        margin-bottom: 6px;
+    }
+
+    .transfer-summary-mini-card div {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+</style>
+
+@using (Html.BeginForm("Transfer_Room", "IPDApplicationForm", FormMethod.Post, new { id = "formId" }))
+{
+    @Html.HiddenFor(m => m.IPDApplicationFormid)
+    <input type="hidden" name="room[0].allottedto" id="room_allottedto" />
+    <input type="hidden" name="room[0].roomnumber" id="room_roomnumber" />
+    <input type="hidden" name="room[0].fromdate" id="room_fromdate" />
+    <input type="hidden" name="room[0].todate" id="room_todate" />
+    <input type="hidden" name="room[0].costperday" id="room_costperday" />
+    <input type="hidden" name="room[0].record_order" value="1" />
+
+    <div class="card card-block contCard">
+        <div class="mobileHeader">
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <h4 class="formHdr"><i class="fa fa-exchange"></i> Transfer Room</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-block">
+            <div class="transfer-room-card">
+               @*  <ul class="nav nav-tabs mb-3" id="transferTabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-role="Patient" href="javascript:void(0)">
+                            Patient
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-role="Attendant" href="javascript:void(0)">
+                            Attendant
+                        </a>
+                    </li>
+                </ul>
+                <input type="hidden" id="transferRole" value="Patient" /> *@
+                <div class="row">
+                    <div class="col-sm-3 col-xs-12 p-2 transferfor_craftmyapp_container">
+                        <div>
+                            <div class="form-group form-group--float-above my-3">
+                                <label for="transferRole">Transfer For <b class="iconRed">*</b></label>
+
+                                <select name="transferRole" id="transferRole" multiple class="automaton_sumo_select required">
+                                    <option value="Patient">Patient</option>
+                                    <option value="Attendant">Attendant</option>
+                                </select>
+                            </div>
+
+                            <div id="transferRole-error" class="help-block" style="display:none" role="alert"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-xs-12 p-2">
+                        <label>Transfer Date <b class="iconRed">*</b></label>
+                        <input type="text" id="transferDate" class="form-control" autocomplete="off"  />
+                        <small class="form-text text-muted">New room starts on this date. Current room ends the previous day.</small>
+                    </div>
+                    <div class="col-sm-3 col-xs-12 p-2">
+                        <label>Transfer Until</label>
+                        <input type="text" id="transferToDate" class="form-control" readonly />
+                    </div>
+                    <div class="col-sm-3 col-xs-12 p-2">
+                        <label>Selected Room Cost / Day</label>
+                        <input type="text" id="selectedCostPerDay" class="form-control" readonly />
+                    </div>
+                </div>
+                <div id="currentRoomSummary" class="transfer-room-summary"></div>
+                <div style="margin-top:10px;">
+                    <button type="button" id="btnLoadRooms" class="btn cma_primary_button"><i class="fa fa-search"></i> Show Available Rooms</button>
+                </div>
+            </div>
+
+            <div class="transfer-room-card">
+                <h5 style="margin:0 0 8px;">Available Rooms</h5>
+                <div id="availableRooms" class="transfer-room-groups">
+                    <div class="transfer-room-empty">Choose transfer details and click Show Available Rooms.</div>
+                </div>
+            </div>
+
+            <div class="card-block" style="padding-left:0;padding-right:0;">
+                <button type="button" onclick="window.location.href=document.referrer" class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+                <button type="button" id="btnSubmitTransferRoom" class="btn cma_primary_button cma_save_button waves-effect pull-right">
+                    <i class="fa fa-check-circle"></i> Transfer Room
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+<link href="~/components/sumoselect/sumoselect.css" rel="stylesheet" />
+<script src="~/components/sumoselect/jquery.sumoselect.js"></script>
+<script>
+    var _currentRooms = @Html.Raw(roomJson);
+    var _roomTypes = {};
+    var _roomMap = {};
+    var _selectedRoom = null;
+    var _tenantId = '@tenantId';
+
+    var _transferSummaryError = '';
+    var _lastShownTransferSummaryError = '';
+
+
+    var _ipdApplicationFormId = $('#IPDApplicationFormid').val();
+
+    var _patientGender = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Convert.ToString(ViewBag.PatientGender ?? "")));
+    var _attendantGender = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Convert.ToString(ViewBag.AttendantGender ?? "")));
+
+    function field(obj, name) {
+        if (!obj) return null;
+        if (obj[name] !== undefined) return obj[name];
+        var lowerName = name.toLowerCase();
+        for (var key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key) && key.toLowerCase() === lowerName) {
+                return obj[key];
+            }
+        }
+        return null;
+    }
+
+    function parseDateValue(v) {
+        if (!v) return null;
+        if (typeof v === 'string' && v.indexOf('/Date(') === 0) return new Date(parseInt(v.substr(6), 10));
+        var d = new Date(v);
+        return isNaN(d.getTime()) ? null : d;
+    }
+
+    function ymd(d) {
+        if (!d) return '';
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    function dmy(d) {
+        if (!d) return '';
+        return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+    }
+
+    function dmyToDate(v) {
+        var parts = (v || '').split('/');
+        if (parts.length !== 3) return null;
+        var day = parseInt(parts[0], 10);
+        var month = parseInt(parts[1], 10);
+        var year = parseInt(parts[2], 10);
+        if (!day || !month || !year) return null;
+        var d = new Date(year, month - 1, day);
+        if (isNaN(d.getTime()) || d.getDate() !== day || d.getMonth() !== month - 1 || d.getFullYear() !== year) return null;
+        d.setHours(0, 0, 0, 0);
+        return d;
+    }
+
+    function addDays(d, days) {
+        var x = new Date(d.getTime());
+        x.setDate(x.getDate() + days);
+        return x;
+    }
+
+    function startOfDay(d) {
+        if (!d) return null;
+        var x = new Date(d.getTime());
+        x.setHours(0, 0, 0, 0);
+        return x;
+    }
+
+    function maxDate(a, b) {
+        if (!a) return b || null;
+        if (!b) return a || null;
+        return a > b ? a : b;
+    }
+    function minDate(a, b) {
+    if (!a) return b || null;
+    if (!b) return a || null;
+    return a < b ? a : b;
+    }
+    function todayDate() {
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return today;
+    }
+    function safeText(value) {
+    return (value || '').toString().trim();
+    }
+
+    function getTransferRoles() {
+    var selected = $('#transferRole').val();
+
+    if (!selected) {
+    return [];
+    }
+
+    if ($.isArray(selected)) {
+    return selected.filter(function (x) {
+    return safeText(x) !== '';
+    });
+    }
+
+    return [selected].filter(function (x) {
+    return safeText(x) !== '';
+    });
+    }
+    function currentAllocation(role) {
+    role = (role || '').toString();
+    if (role === '') return null;
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    var roleRooms = (_currentRooms || []).filter(function (r) {
+    var allotted = (field(r, 'allottedto') || '').toString();
+    var from = startOfDay(parseDateValue(field(r, 'fromdate')));
+    var to = startOfDay(parseDateValue(field(r, 'todate')));
+
+    // FIX: check if role is contained in allottedto (handles "Patient, Attendant")
+    var allottedParts = allotted.split(',').map(function(x) { return x.trim().toLowerCase(); });
+    return allottedParts.indexOf(role.toLowerCase()) !== -1 && from && to;
+    });
+
+    var matches = roleRooms.filter(function (r) {
+    var from = startOfDay(parseDateValue(field(r, 'fromdate')));
+    var to = startOfDay(parseDateValue(field(r, 'todate')));
+    return from <= today && to >= today;
+    });
+
+    if (!matches.length) matches = roleRooms;
+
+    matches.sort(function (a, b) {
+    return (parseDateValue(field(b, 'fromdate')) || 0) -
+    (parseDateValue(field(a, 'fromdate')) || 0);
+    });
+
+    return matches[0] || null;
+    }
+    function allocationsForRole(role) {
+    role = (role || '').toString().trim().toLowerCase();
+
+    return (_currentRooms || []).filter(function (r) {
+    var allotted = (field(r, 'allottedto') || '').toString();
+
+    var allottedParts = allotted.split(',').map(function (x) {
+    return x.trim().toLowerCase();
+    });
+
+    var from = startOfDay(parseDateValue(field(r, 'fromdate')));
+    var to = startOfDay(parseDateValue(field(r, 'todate')));
+
+    return allottedParts.indexOf(role) !== -1 && from && to;
+    }).sort(function (a, b) {
+    return (parseDateValue(field(a, 'fromdate')) || 0) -
+    (parseDateValue(field(b, 'fromdate')) || 0);
+    });
+    }
+
+    function roleStayBounds(role) {
+    var allocations = allocationsForRole(role);
+
+    if (!allocations.length) {
+    return {
+    allocations: [],
+    from: null,
+    to: null
+    };
+    }
+
+    var firstFrom = null;
+    var latestTo = null;
+
+    allocations.forEach(function (r) {
+    var from = startOfDay(parseDateValue(field(r, 'fromdate')));
+    var to = startOfDay(parseDateValue(field(r, 'todate')));
+
+    if (!firstFrom || from < firstFrom) {
+    firstFrom = from;
+    }
+
+    if (!latestTo || to > latestTo) {
+    latestTo = to;
+    }
+    });
+
+    return {
+    allocations: allocations,
+    from: firstFrom,
+    to: latestTo
+    };
+    }
+
+    function roomLabelById(roomId) {
+    roomId = (roomId || '').toString();
+
+    var room = _roomMap[roomId] || {};
+
+    return room.roomnumber ||
+    room.roomcode ||
+    room.RoomNumber ||
+    room.RoomCode ||
+    roomId ||
+    '-';
+    }
+
+    function getAllRoomLabelsForRole(role) {
+    var allocations = allocationsForRole(role);
+    var labels = [];
+
+    allocations.forEach(function (r) {
+    var roomId = (field(r, 'roomnumber') || '').toString();
+    var label = roomLabelById(roomId);
+
+    if (label && labels.indexOf(label) === -1) {
+    labels.push(label);
+    }
+    });
+
+    return labels.join(', ');
+    }
+
+    function getCurrentRoomDetailsForRole(role, fallbackAllocation) {
+    var allocation = currentAllocation(role) || fallbackAllocation || {};
+    var roomId = (field(allocation, 'roomnumber') || '').toString();
+    var room = _roomMap[roomId] || {};
+    var roomTypeId = (
+    field(allocation, 'roomtype') ||
+    field(room, 'roomtype') ||
+    field(room, 'roomtypeid') ||
+    ''
+    ).toString();
+    var roomType = _roomTypes[roomTypeId] || {};
+
+    var roomTypeName = (
+    field(roomType, 'name') ||
+    field(roomType, 'roomtypename') ||
+    field(room, 'roomtypename') ||
+    '-'
+    ).toString();
+
+    var allocationCost = field(allocation, 'costperday');
+    var fallbackCost = role === 'Attendant'
+    ? (field(roomType, 'attendantcostperday') || field(room, 'attendantcostperday'))
+    : (field(roomType, 'costperday') || field(room, 'costperday'));
+    var rawCost = allocationCost !== null && allocationCost !== undefined && allocationCost !== ''
+    ? allocationCost
+    : fallbackCost;
+    var effectiveCost = rawCost !== null && rawCost !== undefined && rawCost !== ''
+    ? Number(rawCost)
+    : NaN;
+
+    return {
+    roomTypeName: roomTypeName,
+    costPerDay: isFinite(effectiveCost) ? effectiveCost : null
+    };
+    }
+
+    function hasContinuousCoverage(role, fromDate, toDate) {
+    var allocations = allocationsForRole(role);
+
+    if (!allocations.length || !fromDate || !toDate) {
+    return false;
+    }
+
+    var checkDate = startOfDay(fromDate);
+    var endDate = startOfDay(toDate);
+
+    while (checkDate <= endDate) {
+    var covered = allocations.some(function (r) {
+    var from = startOfDay(parseDateValue(field(r, 'fromdate')));
+    var to = startOfDay(parseDateValue(field(r, 'todate')));
+
+    return from && to && from <= checkDate && to >= checkDate;
+    });
+
+    if (!covered) {
+    return false;
+    }
+
+    checkDate = addDays(checkDate, 1);
+    }
+
+    return true;
+    }
+    function transferDateBounds(role) {
+    var stay = roleStayBounds(role);
+
+    if (!stay.allocations.length) {
+    return {
+    current: null,
+    allocations: [],
+    min: null,
+    max: null,
+    from: null,
+    to: null
+    };
+    }
+
+    var today = todayDate();
+
+    return {
+    current: stay.allocations[stay.allocations.length - 1],
+    allocations: stay.allocations,
+
+    // Keeping Transfer Date behavior as-is: today/current date.
+    min: today,
+
+    // Transfer Until should be latest stay end date.
+    max: stay.to,
+    from: stay.from,
+    to: stay.to
+    };
+    }
+
+    function setTransferDatePickerBounds(role) {
+        var bounds = transferDateBounds(role);
+        var today = todayDate();
+        $('#transferDate').val(dmy(today));
+   
+        $('#room_fromdate').val(ymd(today));
+
+        if (!bounds.current || !bounds.min || !bounds.max || bounds.min > bounds.max) {
+            return bounds;
+        }
+        return bounds;
+    }
+
+    function setTransferActionsEnabled(enabled) {
+        $('#btnLoadRooms,#btnSubmitTransferRoom').prop('disabled', !enabled);
+    }
+
+    function showTransferDateValidation(message) {
+        swal({ title: 'Validation Failed', text: message, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+    }
+    function getTransferRoles() {
+    var selected = $('#transferRole').val();
+
+    if (!selected) {
+    return [];
+    }
+
+    if ($.isArray(selected)) {
+    return selected;
+    }
+
+    return [selected];
+    }
+    function validateTransferDate(showAlert) {
+    var selectedRoles = $('#transferRole').val();
+
+    if (!selectedRoles || selectedRoles.length === 0) {
+    if (showAlert) showTransferDateValidation('Please select Transfer For.');
+    return null;
+    }
+
+    if (!$.isArray(selectedRoles)) {
+    selectedRoles = [selectedRoles];
+    }
+
+    var hasPatient = selectedRoles.indexOf('Patient') !== -1;
+    var hasAttendant = selectedRoles.indexOf('Attendant') !== -1;
+
+    var boundsByRole = {};
+    var canTransfer = true;
+
+    selectedRoles.forEach(function (role) {
+    var bounds = transferDateBounds(role);
+    boundsByRole[role] = bounds;
+
+    if (!bounds.current || !bounds.from || !bounds.to) {
+    if (showAlert) {
+    showTransferDateValidation('No active ' + role + ' room allocation found.');
+    }
+    canTransfer = false;
+    return;
+    }
+
+    if (!bounds.max) {
+    if (showAlert) {
+    showTransferDateValidation('No valid transfer until date found for ' + role + '.');
+    }
+    canTransfer = false;
+    return;
+    }
+    });
+
+    if (!canTransfer) {
+    return null;
+    }
+
+    var transferDate = dmyToDate($('#transferDate').val()) || todayDate();
+    var transferUntil = null;
+
+    if (hasPatient && !hasAttendant) {
+    var patientBounds = boundsByRole['Patient'];
+    transferUntil = patientBounds.to;
+
+    if (transferDate > transferUntil) {
+    if (showAlert) {
+    showTransferDateValidation(
+    'Transfer date cannot be greater than Transfer Until date. Transfer Until is ' +
+    dmy(transferUntil) + '.'
+    );
+    }
+    return null;
+    }
+    }
+
+    if (!hasPatient && hasAttendant) {
+    var attendantBounds = boundsByRole['Attendant'];
+    transferUntil = attendantBounds.to;
+
+    if (transferDate > transferUntil) {
+    if (showAlert) {
+    showTransferDateValidation(
+    'Transfer date cannot be greater than Transfer Until date. Transfer Until is ' +
+    dmy(transferUntil) + '.'
+    );
+    }
+    return null;
+    }
+    }
+
+    if (hasPatient && hasAttendant) {
+    var patientBoundsBoth = boundsByRole['Patient'];
+    var attendantBoundsBoth = boundsByRole['Attendant'];
+
+    if (
+    ymd(patientBoundsBoth.from) !== ymd(attendantBoundsBoth.from) ||
+    ymd(patientBoundsBoth.to) !== ymd(attendantBoundsBoth.to)
+    ) {
+    if (showAlert) {
+    showTransferDateValidation(
+    'Sorry, Patient and Attendant cannot be transferred together because their stay dates are different.\n\n' +
+    'Patient stay: ' + dmy(patientBoundsBoth.from) + ' to ' + dmy(patientBoundsBoth.to) + '\n' +
+    'Attendant stay: ' + dmy(attendantBoundsBoth.from) + ' to ' + dmy(attendantBoundsBoth.to)
+    );
+    }
+    return null;
+    }
+
+    if (
+    !hasContinuousCoverage('Patient', patientBoundsBoth.from, patientBoundsBoth.to) ||
+    !hasContinuousCoverage('Attendant', attendantBoundsBoth.from, attendantBoundsBoth.to)
+    ) {
+    if (showAlert) {
+    showTransferDateValidation(
+    'Sorry, Patient and Attendant cannot be transferred together because one of the stay date ranges has missing room allocation dates.'
+    );
+    }
+    return null;
+    }
+
+    transferUntil = patientBoundsBoth.to;
+
+    if (transferDate > transferUntil) {
+    if (showAlert) {
+    showTransferDateValidation(
+    'Transfer date cannot be greater than Transfer Until date. Transfer Until is ' +
+    dmy(transferUntil) + '.'
+    );
+    }
+    return null;
+    }
+    }
+
+    return {
+    role: selectedRoles[0],
+    selectedRoles: selectedRoles,
+    boundsByRole: boundsByRole,
+    transferDate: transferDate,
+    newRoomFrom: transferDate,
+    toDate: transferUntil
+    };
+    }
+
+    function refreshCurrentSummary() {
+    var selectedRoles = $('#transferRole').val();
+
+    _transferSummaryError = '';
+
+    if (!selectedRoles || selectedRoles.length === 0) {
+    $('#currentRoomSummary').html('<span class="text-danger">Please select Transfer For.</span>');
+    $('#transferToDate').val('');
+    $('#room_todate').val('');
+    setTransferActionsEnabled(false);
+    return;
+    }
+
+    if (!$.isArray(selectedRoles)) {
+    selectedRoles = [selectedRoles];
+    }
+
+    _selectedRoom = null;
+    $('#room_roomnumber,#room_costperday').val('');
+    $('#selectedCostPerDay').val('');
+    $('#availableRooms').html('<div class="transfer-room-empty">Choose transfer details and click Show Available Rooms.</div>');
+
+    var summaryHtml = '';
+    var canTransfer = true;
+    var commonMax = null;
+    var errorMessages = [];
+
+    selectedRoles.forEach(function (role) {
+    var bounds = transferDateBounds(role);
+
+    if (!bounds.current || !bounds.from || !bounds.to) {
+    errorMessages.push('No active ' + role + ' room allocation found.');
+    canTransfer = false;
+    return;
+    }
+
+    if (!bounds.max) {
+    errorMessages.push('No valid transfer until date found for ' + role + '.');
+    canTransfer = false;
+    return;
+    }
+
+    commonMax = minDate(commonMax, bounds.to);
+
+    var allRoomLabels = getAllRoomLabelsForRole(role);
+    var currentRoomDetails = getCurrentRoomDetailsForRole(role, bounds.current);
+    var currentCostText = currentRoomDetails.costPerDay === null
+    ? '-'
+    : '&#8377; ' + currentRoomDetails.costPerDay.toFixed(2);
+
+    summaryHtml +=
+    '<div class="transfer-summary-mini-card">' +
+    '<div class="transfer-summary-title">' + transferRoomEscapeHtml(role) + '</div>' +
+    '<div>Rooms: <strong>' + transferRoomEscapeHtml(allRoomLabels) + '</strong></div>' +
+    '<div>Current Room Type: <strong>' + transferRoomEscapeHtml(currentRoomDetails.roomTypeName) + '</strong></div>' +
+    '<div>Current Cost/day: <strong>' + currentCostText + '</strong></div>' +
+    '<div>Stay: ' + dmy(bounds.from) + ' to ' + dmy(bounds.to) + '</div>' +
+    '<div>New Start: <strong>' + dmy(todayDate()) + '</strong></div>' +
+    '</div>';
+    });
+
+    var hasPatient = selectedRoles.indexOf('Patient') !== -1;
+    var hasAttendant = selectedRoles.indexOf('Attendant') !== -1;
+
+    if (hasPatient && hasAttendant) {
+    var patientBounds = transferDateBounds('Patient');
+    var attendantBounds = transferDateBounds('Attendant');
+
+    if (
+    !patientBounds.from || !patientBounds.to ||
+    !attendantBounds.from || !attendantBounds.to
+    ) {
+    errorMessages.push(
+    'Sorry, Patient and Attendant cannot be transferred together because one of them does not have a valid room allocation.'
+    );
+    canTransfer = false;
+    }
+    else if (
+    ymd(patientBounds.from) !== ymd(attendantBounds.from) ||
+    ymd(patientBounds.to) !== ymd(attendantBounds.to)
+    ) {
+    errorMessages.push(
+    'Sorry, Patient and Attendant cannot be transferred together because their stay dates are different.\n\n' +
+    'Patient stay: ' + dmy(patientBounds.from) + ' to ' + dmy(patientBounds.to) + '\n' +
+    'Attendant stay: ' + dmy(attendantBounds.from) + ' to ' + dmy(attendantBounds.to)
+    );
+    canTransfer = false;
+    }
+    else if (
+    !hasContinuousCoverage('Patient', patientBounds.from, patientBounds.to) ||
+    !hasContinuousCoverage('Attendant', attendantBounds.from, attendantBounds.to)
+    ) {
+    errorMessages.push(
+    'Sorry, Patient and Attendant cannot be transferred together because one of the stay date ranges has missing room allocation dates.'
+    );
+    canTransfer = false;
+    }
+
+    commonMax = patientBounds.to;
+    }
+
+    $('#currentRoomSummary').html(
+    summaryHtml
+    ? '<div class="transfer-summary-row">' + summaryHtml + '</div>'
+    : ''
+    );
+
+    if (canTransfer && commonMax) {
+    // Transfer Date remains as-is / today.
+    $('#transferDate').val(dmy(todayDate()));
+    $('#room_fromdate').val(ymd(todayDate()));
+
+    // Transfer Until only should be latest stay date.
+    $('#transferToDate').val(dmy(commonMax));
+    $('#room_todate').val(ymd(commonMax));
+    } else {
+    $('#transferToDate').val('');
+    $('#room_todate').val('');
+    }
+
+    if (errorMessages.length > 0) {
+    _transferSummaryError = errorMessages.join('\n\n');
+
+    if (_lastShownTransferSummaryError !== _transferSummaryError) {
+    _lastShownTransferSummaryError = _transferSummaryError;
+    showTransferDateValidation(_transferSummaryError);
+    }
+    } else {
+    _lastShownTransferSummaryError = '';
+    }
+
+    setTransferActionsEnabled(canTransfer);
+    }
+    function renderTransferSummary(role, currentRoomLabel, from, to) {
+    var transferDate = todayDate();
+    $('#transferDate').val(dmy(transferDate));
+        var newRoomFromHtml = '';
+        if (transferDate) {
+            newRoomFromHtml = '<br>New Room Starts From: <strong>' + dmy(transferDate) + '</strong>';
+        }
+        $('#currentRoomSummary').html(
+            '<strong>Current ' + role + ' allocation</strong><br>' +
+            'Current Room: <strong>' + currentRoomLabel + '</strong><br>' +
+            'Stay: ' + dmy(from) + ' to ' + dmy(to) +
+            newRoomFromHtml
+        );
+    }
+
+    function loadRoomMap(done) {
+        $.ajax({
+            url: '@Url.Action("get_all_Room", "IPDApplicationForm")',
+            dataType: 'json',
+            data: { tenantid: _tenantId },
+            success: function (data) {
+                _roomMap = {};
+                if ($.isArray(data)) {
+                    data.forEach(function (room) {
+                        var id = (room.Roomid || room.roomid || '').toString();
+                        if (id) _roomMap[id] = room;
+                    });
+                }
+                if (done) done();
+            },
+            error: function () { if (done) done(); }
+        });
+    }
+
+    function loadCurrentRooms(done) {
+        if ((_currentRooms || []).length) {
+            if (done) done();
+            return;
+        }
+
+        $.ajax({
+            url: '@Url.Action("getById_room", "IPDApplicationForm")',
+            dataType: 'json',
+            data: { IPDApplicationFormid: _ipdApplicationFormId },
+            success: function (data) {
+                _currentRooms = $.isArray(data) ? data : [];
+                if (done) done();
+            },
+            error: function () {
+                _currentRooms = [];
+                if (done) done();
+            }
+        });
+    }
+
+    function loadRoomTypes(done) {
+        $.ajax({
+            url: '@Url.Action("get_all_RoomType_Details", "IPDApplicationForm")',
+            dataType: 'json',
+            data: { tenantid: _tenantId },
+            success: function (data) {
+                _roomTypes = {};
+                if ($.isArray(data)) {
+                    data.forEach(function (rt) {
+                        var id = (rt.RoomTypeid || rt.roomtypeid || '').toString();
+                        if (id) _roomTypes[id] = rt;
+                    });
+                }
+                if (done) done();
+            },
+            error: function () { if (done) done(); }
+        });
+    }
+
+    function loadAvailableRooms() {
+        var validation = validateTransferDate(true);
+        if (!validation) {
+            return;
+        }
+
+        var role = validation.role;
+        var newRoomFrom = validation.newRoomFrom;
+        var toDate = validation.toDate;
+
+    var selectedRoles = getSelectedTransferRoles();
+
+    for (var i = 0; i < selectedRoles.length; i++) {
+    var roleGender = getGenderByRole(selectedRoles[i]);
+
+    if (!roleGender) {
+    swal({
+    title: 'Validation Failed',
+    text: selectedRoles[i] + ' gender is missing. Please check patient / attendant details before transfer.',
+    type: 'error',
+    buttonsStyling: false,
+    confirmButtonClass: 'btn btn-primary'
+    });
+    return;
+    }
+    }
+
+
+    $('#room_allottedto').val(selectedRoles.join(', '));
+        $('#room_fromdate').val(ymd(newRoomFrom));
+        $('#room_todate').val(ymd(toDate));
+        $('#availableRooms').html('<div class="transfer-room-empty"><i class="fa fa-spinner fa-spin"></i> Loading available rooms...</div>');
+
+        $.ajax({
+            url: '@Url.Action("get_Available_Rooms", "IPDApplicationForm")',
+            dataType: 'json',
+            data: { tenantid: _tenantId, occupancystatus: 'Empty', nextdaycheckin: dmy(newRoomFrom), nextdaycheckout: dmy(toDate) },
+            success: function (resp) {
+                var rooms = (resp && resp.detail) ? resp.detail : ($.isArray(resp) ? resp : []);
+                renderRooms(rooms, role);
+            },
+            error: function (xhr) {
+                $('#availableRooms').html('<div class="transfer-room-empty text-danger">' + (xhr.responseText || 'Failed to load rooms') + '</div>');
+            }
+        });
+    }
+
+    function transferRoomEscapeHtml(value) {
+        return $('<div>').text(value == null ? '' : value.toString()).html();
+    }
+
+    function renderRooms(rooms, role) {
+    if (!rooms || !rooms.length) {
+    $('#availableRooms').html('<div class="transfer-room-empty">No rooms available for the selected date range.</div>');
+    return;
+    }
+
+    var filteredRooms = rooms.filter(function (room) {
+    var occ = ((room.occupancystatus || room.occupancyStatus || '') + '').toLowerCase();
+    var maint = ((room.maintenancestatus || room.maintenanceStatus || '') + '').toLowerCase();
+
+    if (!(occ === 'empty' || occ === 'available' || occ === 'vacant' || occ === 'free')) {
+    return false;
+    }
+
+    if (maint === 'under maintenance') {
+    return false;
+    }
+
+    var rtId = (
+    room.roomtype ||
+    room.RoomType ||
+    room.roomtypeid ||
+    room.RoomTypeid ||
+    ''
+    ).toString();
+
+    var rt = _roomTypes[rtId] || {};
+
+    return isRoomTypeGenderSuitable(rt);
+    });
+
+    if (!filteredRooms.length) {
+    $('#availableRooms').html('<div class="transfer-room-empty">No rooms available for selected gender suitability.</div>');
+    return;
+    }
+
+    var selectedRoles = getSelectedTransferRoles();
+    var sortByPatientPrice = selectedRoles.indexOf('Patient') !== -1;
+    var groupedRooms = {};
+
+    filteredRooms.forEach(function (room) {
+        var roomId = (room.Roomid || room.roomid || '').toString();
+        var roomNo = (room.roomnumber || room.roomcode || room.RoomNumber || room.RoomCode || roomId).toString();
+        var rtId = (room.roomtype || room.RoomType || room.roomtypeid || room.RoomTypeid || '').toString();
+        var rt = _roomTypes[rtId] || {};
+        var roomTypeName = (
+            rt.name ||
+            rt.roomtypename ||
+            rt.RoomTypeName ||
+            room.roomtypename ||
+            room.RoomTypeName ||
+            'Other Room Type'
+        ).toString();
+
+        var patientCost = Number(
+            room.costperday ||
+            room.Costperday ||
+            room.CostPerDay ||
+            room.costPerDay ||
+            rt.costperday ||
+            rt.Costperday ||
+            0
+        ) || 0;
+
+        var attendantCost = Number(
+            room.attendantcostperday ||
+            room.Attendantcostperday ||
+            room.AttendantCostPerDay ||
+            room.attendantCostPerDay ||
+            rt.attendantcostperday ||
+            rt.Attendantcostperday ||
+            0
+        ) || 0;
+
+        var groupKey = rtId || roomTypeName.toLowerCase();
+        if (!groupedRooms[groupKey]) {
+            groupedRooms[groupKey] = {
+                name: roomTypeName,
+                maxPrice: 0,
+                rooms: []
+            };
+        }
+
+        var applicablePrice = sortByPatientPrice ? patientCost : attendantCost;
+        groupedRooms[groupKey].maxPrice = Math.max(groupedRooms[groupKey].maxPrice, applicablePrice);
+        groupedRooms[groupKey].rooms.push({
+            room: room,
+            roomId: roomId,
+            roomNo: roomNo,
+            roomType: rt,
+            patientCost: patientCost,
+            attendantCost: attendantCost,
+            applicablePrice: applicablePrice
+        });
+    });
+
+    var roomTypeGroups = Object.keys(groupedRooms).map(function (key) {
+        return groupedRooms[key];
+    });
+
+    roomTypeGroups.sort(function (a, b) {
+        if (b.maxPrice !== a.maxPrice) return b.maxPrice - a.maxPrice;
+        return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+    });
+
+    var html = '';
+
+    roomTypeGroups.forEach(function (group) {
+        group.rooms.sort(function (a, b) {
+            if (b.applicablePrice !== a.applicablePrice) return b.applicablePrice - a.applicablePrice;
+            return a.roomNo.localeCompare(b.roomNo, undefined, { numeric: true, sensitivity: 'base' });
+        });
+
+        html +=
+            '<section class="transfer-room-type-group">' +
+                '<div class="transfer-room-type-group__header">' +
+                    '<div class="transfer-room-type-group__title">' + transferRoomEscapeHtml(group.name) + '</div>' +
+                    '<div class="transfer-room-type-group__meta">' + group.rooms.length +
+                        (group.rooms.length === 1 ? ' room' : ' rooms') + ' &middot; Price: High to Low</div>' +
+                '</div>' +
+                '<div class="transfer-room-grid">';
+
+        group.rooms.forEach(function (item) {
+            var rt = item.roomType;
+            var genderSuitability =
+                rt.gendersuitability ||
+                rt.GenderSuitability ||
+                rt.genderSuitability ||
+                '-';
+
+            html += '<div class="transfer-room-option" ' +
+                'data-roomid="' + transferRoomEscapeHtml(item.roomId) + '" ' +
+                'data-patientcost="' + item.patientCost + '" ' +
+                'data-attendantcost="' + item.attendantCost + '">' +
+                '<div class="transfer-room-option__title">' + transferRoomEscapeHtml(item.roomNo) + '</div>' +
+                '<div class="transfer-room-option__sub">' + transferRoomEscapeHtml(group.name) + '</div>' +
+                '<div class="transfer-room-option__sub">Gender Suitability: ' + transferRoomEscapeHtml(genderSuitability) + '</div>' +
+                '<div class="transfer-room-option__sub">Patient Cost/day: &#8377; ' + item.patientCost.toFixed(2) + '</div>' +
+                '<div class="transfer-room-option__sub">Attendant Cost/day: &#8377; ' + item.attendantCost.toFixed(2) + '</div>' +
+                '</div>';
+        });
+
+        html += '</div></section>';
+    });
+
+    $('#availableRooms').html(html);
+    }
+
+    $(document).ready(function () {
+        
+    var sharedRoomConfirmed = false;
+
+    function isPatientAndAttendantSelected() {
+    var selectedRoles = $('#transferRole').val();
+
+    if (!selectedRoles) {
+    return false;
+    }
+
+    if (!$.isArray(selectedRoles)) {
+    selectedRoles = [selectedRoles];
+    }
+
+    return selectedRoles.indexOf('Patient') !== -1 &&
+    selectedRoles.indexOf('Attendant') !== -1;
+    }
+
+
+    console.log("Patient Gender:", _patientGender);
+    console.log("Attendant Gender:", _attendantGender);
+    $('#transferRole').SumoSelect({
+    placeholder: 'Select Here',
+    selectAll: true
+    });
+
+    $('#transferRole')[0].sumo.reload();
+
+
+
+        $('#transferDate').val(dmy(todayDate()));
+        loadRoomTypes(function () {
+            loadRoomMap(function () {
+                loadCurrentRooms(refreshCurrentSummary);
+            });
+        });
+        $('#transferRole').on('change', refreshCurrentSummary);
+        $('#btnLoadRooms').on('click', loadAvailableRooms);
+
+    $('#availableRooms').on('click', '.transfer-room-option', function () {
+    $('.transfer-room-option').removeClass('selected');
+    $(this).addClass('selected');
+
+    var patientCost = Number($(this).data('patientcost') || 0);
+    var attendantCost = Number($(this).data('attendantcost') || 0);
+
+    var selectedRoles = $('#transferRole').val();
+    if (!selectedRoles) selectedRoles = [];
+    if (!$.isArray(selectedRoles)) selectedRoles = [selectedRoles];
+
+    var hasPatient = selectedRoles.indexOf('Patient') !== -1;
+    var hasAttendant = selectedRoles.indexOf('Attendant') !== -1;
+
+    /*
+    Submit cost rule:
+    Patient only              -> patientCost
+    Attendant only            -> attendantCost
+    Patient + Attendant same room -> patientCost only
+    because your existing confirmation says attendant room cost will not be added separately.
+    */
+    var costToSubmit = 0;
+
+    if (hasPatient) {
+    costToSubmit = patientCost;
+    } else if (hasAttendant) {
+    costToSubmit = attendantCost;
+    }
+
+    _selectedRoom = {
+    roomId: $(this).data('roomid'),
+    patientCost: patientCost,
+    attendantCost: attendantCost,
+    cost: costToSubmit
+    };
+
+    $('#room_roomnumber').val(_selectedRoom.roomId);
+    $('#room_costperday').val(costToSubmit.toFixed(2));
+
+    if (hasPatient && hasAttendant) {
+    $('#selectedCostPerDay').val(
+    'Patient ₹ ' + patientCost.toFixed(2) +
+    ' | Attendant ₹ ' + attendantCost.toFixed(2) 
+    );
+    } else if (hasAttendant) {
+    $('#selectedCostPerDay').val('Attendant ₹ ' + attendantCost.toFixed(2));
+    } else {
+    $('#selectedCostPerDay').val('Patient ₹ ' + patientCost.toFixed(2));
+    }
+    });
+
+        $('#btnSubmitTransferRoom').on('click', function () {
+            var validation = validateTransferDate(true);
+            if (!validation) {
+                return;
+            }
+    var selectedRoles = $('#transferRole').val();
+
+    if (!selectedRoles) {
+    selectedRoles = [];
+    }
+
+    if (!$.isArray(selectedRoles)) {
+    selectedRoles = [selectedRoles];
+    }
+
+    $('#room_allottedto').val(selectedRoles.join(', '));
+            $('#room_fromdate').val(ymd(validation.newRoomFrom));
+            $('#room_todate').val(ymd(validation.toDate));
+
+            if (!$('#room_roomnumber').val()) {
+                swal({ title: 'Validation Failed', text: 'Please select the new room.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+                return;
+            }
+            if (Number($('#room_costperday').val() || 0) <= 0) {
+                swal({ title: 'Validation Failed', text: 'Room cost per day should be greater than zero.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+                return;
+            }
+    if (isPatientAndAttendantSelected() && sharedRoomConfirmed === false) {
+    swal({
+    title: 'Confirm Single Room',
+    text: 'Patient and Attendant are selected for the same room. Attendant room cost will not be added separately. Do you want to continue?',
+    type: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Continue',
+    cancelButtonText: 'Cancel',
+    buttonsStyling: false,
+    confirmButtonClass: 'btn btn-primary',
+    cancelButtonClass: 'btn btn-secondary',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false
+    }).then(function () {
+    sharedRoomConfirmed = true;
+    $('#btnSubmitTransferRoom').trigger('click');
+    });
+
+    return;
+    }
+    sharedRoomConfirmed = false;
+            $('.page-loader').show();
+            var transferFormData = new FormData($('#formId')[0]);
+            transferFormData.append('tenantid', _tenantId);
+            $.ajax({
+                url: '@Url.Action("Transfer_Room", "IPDApplicationForm")',
+                type: 'POST',
+                data: transferFormData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    $('.page-loader').hide();
+                    if (data === 'Success') {
+                        window.location = '@Url.Action("Dashboard", "FrontDesk")';
+                    } else {
+                        swal({ title: 'Error !!', text: data, type: 'error', showCancelButton: false, confirmButtonText: 'OK' });
+                    }
+                },
+                error: function (xhr) {
+                    $('.page-loader').hide();
+                    swal({ title: 'Contact Administrator !', text: xhr.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+                }
+            });
+        });
+    });
+</script>
+<script>
+    function safeLower(value) {
+    return (value || '').toString().trim().toLowerCase();
+    }
+
+    function normalizeGender(value) {
+    var g = safeLower(value)
+    .replace(/[-_]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+    if (g === 'm') return 'male';
+    if (g === 'f') return 'female';
+
+    if (g === 'others' || g === 'other gender' || g === 'transgender') {
+    return 'other';
+    }
+
+    if (g === 'male') return 'male';
+    if (g === 'female') return 'female';
+    if (g === 'other') return 'other';
+
+    return '';
+    }
+
+    function normalizeGenderToken(value) {
+    return (value || '')
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[-_]/g, '')
+    .replace(/\s+/g, '');
+    }
+
+    function getAllowedGendersFromRoomType(roomType) {
+    var genderSuitability =
+    roomType.gendersuitability ||
+    roomType.GenderSuitability ||
+    roomType.genderSuitability ||
+    roomType.Gendersuitability ||
+    '';
+
+    genderSuitability = (genderSuitability || '').toString().trim();
+
+    /*
+    Requirement:
+    All means the word "All" must be present in gendersuitability.
+    Empty/null should NOT be treated as All.
+    */
+    if (!genderSuitability) {
+    return [];
+    }
+
+    var hasAll = false;
+    var allowed = [];
+
+    genderSuitability
+    .split(/[,\|\/;&]+|\band\b/i)
+    .forEach(function (part) {
+    var token = normalizeGenderToken(part);
+
+    if (!token) return;
+
+    token = token.replace(/others/g, 'other');
+
+    if (
+    token === 'all' ||
+    token === 'allgender' ||
+    token === 'allgenders'
+    ) {
+    hasAll = true;
+    return;
+    }
+
+    var gender = normalizeGender(token);
+
+    if (gender && allowed.indexOf(gender) === -1) {
+    allowed.push(gender);
+    }
+    });
+
+    /*
+    Empty array means unrestricted ONLY when All is present.
+    Example: Female,Male,All => All present => unrestricted.
+    */
+    if (hasAll) {
+    return ['all'];
+    }
+
+    return allowed;
+    }
+
+    function isRoomTypeSuitableForGender(roomType, personGender) {
+    personGender = normalizeGender(personGender);
+
+    if (!personGender) {
+    return false;
+    }
+
+    var allowedGenders = getAllowedGendersFromRoomType(roomType);
+
+    if (!allowedGenders.length) {
+    return false;
+    }
+
+    // All is common for Male, Female, Other
+    if (allowedGenders.indexOf('all') !== -1) {
+    return true;
+    }
+
+    // Male -> Male
+    // Female -> Female
+    // Other -> Other
+    return allowedGenders.indexOf(personGender) !== -1;
+    }
+
+    function getSelectedTransferRoles() {
+    var selected = $('#transferRole').val();
+
+    if (!selected) {
+    return [];
+    }
+
+    if ($.isArray(selected)) {
+    return selected.filter(function (x) {
+    return safeLower(x) !== '';
+    });
+    }
+
+    return [selected].filter(function (x) {
+    return safeLower(x) !== '';
+    });
+    }
+
+    function getGenderByRole(role) {
+    role = safeLower(role);
+
+    if (role === 'patient') {
+    return normalizeGender(_patientGender);
+    }
+
+    if (role === 'attendant') {
+    return normalizeGender(_attendantGender);
+    }
+
+    return '';
+    }
+
+    function isRoomTypeGenderSuitable(roomType) {
+    var selectedRoles = getSelectedTransferRoles();
+
+    if (!selectedRoles.length) {
+    return false;
+    }
+
+    /*
+    Transfer gender rule:
+
+    Patient selected:
+    Patient gender must match RoomType gendersuitability.
+
+    Attendant selected:
+    Attendant gender must match RoomType gendersuitability.
+
+    Patient + Attendant selected:
+    Same selected room must be suitable for both genders.
+
+    Male   -> Male OR All
+    Female -> Female OR All
+    Other  -> Other OR All
+    */
+    return selectedRoles.every(function (role) {
+    var personGender = getGenderByRole(role);
+
+    if (!personGender) {
+    return false;
+    }
+
+    return isRoomTypeSuitableForGender(roomType, personGender);
+    });
+    }
+
+    // Update page header: Transfer Room - Patient Name (Booking Ref)
+    $(function() {
+        var _name = '@Html.Raw((Model?.patientname != null && Model.patientname != Guid.Empty ? "" : (Model?.firstname + " " + Model?.lastname).Trim()))'.trim()
+                 || '@Html.Raw(((Model?.firstname ?? "") + " " + (Model?.lastname ?? "")).Trim())'.trim();
+        var _ref  = '@Html.Raw(Model?.bookingreferencenumber ?? "")'.trim();
+        var _backBtn  = '<a href="javascript:void(0);" onclick="window.location.href = document.referrer"><i class="fa fa-angle-left" aria-hidden="true"></i></a>';
+        var _nameHtml = _name ? '<span class="ipd-header-name">' + _name + '</span>' : '';
+        var _refHtml  = _ref ? ' /<span class="ipd-header-ref ipd-header-bookingref">' + _ref + '</span>' : '';
+        var _durationDays = @totalDaysOfStay;
+        var _stayFrom = '@Html.Raw(stayArrivalDmy)';
+        var _stayTo = '@Html.Raw(stayDepartureDmy)';
+        var _durHtml = _durationDays > 0 ? '<span class="patient-header-dos">DOS - ' + _durationDays + (_durationDays === 1 ? ' Day' : ' Days') + ((_stayFrom && _stayTo) ? ': ' + _stayFrom + ' - ' + _stayTo : '') + '</span>' : '';
+        $("div.page-header-box h1").html(_backBtn + _nameHtml + _refHtml + _durHtml);
+    });
+</script>
+
+<style>
+    .ipd-header-name { font-weight: 700; font-size: 20px; text-transform: capitalize; letter-spacing: 0.5px; }
+
+    .ipd-header-ref {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d5f44;
+    letter-spacing: 0.5px;
+    margin-left: 4px;
+    }
+
+    .ipd-header-bookingref {
+    font-weight: 700;
+    font-size: 18px;
+    color: #2f6b4f;
+    }
+</style>

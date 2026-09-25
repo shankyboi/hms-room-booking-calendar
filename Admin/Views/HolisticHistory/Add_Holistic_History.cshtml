@@ -1,0 +1,177 @@
+@model NalamVazha.Models.HolisticHistoryModel
+
+@{
+    ViewData["Title"] = "Holistic History - Screening";
+    var ipdFormid = ViewBag.IPDFormid as string;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using System.Text.Json
+@using System.Text.Json.Serialization
+
+@{
+    // Map saved answers (json) into a dictionary so we can pre-check checkboxes/radios and fill text.
+    // Expected shape: { "f0000": ["Low","Medium"], "f0010": "Yes", "f0012": "some text" }
+    var answersDict = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+    try
+    {
+        var raw = string.IsNullOrWhiteSpace(Model.holisticanswers) ? "{}" : Model.holisticanswers;
+        answersDict = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(raw) ?? new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+    }
+    catch
+    {
+        answersDict = new Dictionary<string, JsonElement>(StringComparer.OrdinalIgnoreCase);
+    }
+
+    string getText(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key)) return "";
+        if (!answersDict.TryGetValue(key, out var v)) return "";
+        if (v.ValueKind == JsonValueKind.String) return v.GetString() ?? "";
+        return v.ToString();
+    }
+
+    bool isOptionSelected(string key, string option)
+    {
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(option)) return false;
+        if (!answersDict.TryGetValue(key, out var v)) return false;
+
+        if (v.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var el in v.EnumerateArray())
+            {
+                if (el.ValueKind == JsonValueKind.String && string.Equals(el.GetString(), option, StringComparison.OrdinalIgnoreCase))
+                    return true;
+                if (string.Equals(el.ToString(), option, StringComparison.OrdinalIgnoreCase))
+                    return true;
+            }
+            return false;
+        }
+
+        if (v.ValueKind == JsonValueKind.String)
+            return string.Equals(v.GetString(), option, StringComparison.OrdinalIgnoreCase);
+
+        return string.Equals(v.ToString(), option, StringComparison.OrdinalIgnoreCase);
+    }
+}
+
+ 
+
+<style>
+    .hh-card { border:1px solid #e5e7eb; border-radius:10px; background:#fff; }
+    .hh-section-title { font-weight:700; color:#0f172a; }
+    .hh-field-label { font-weight:600; color:#111827; }
+</style>
+
+<div class="container-fluid px-2 py-3">
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="hh-card p-3">
+                <div class="d-flex align-items-center justify-content-between gap-3 flex-wrap">
+                    <div>
+                        <div class="hh-section-title" style="font-size:18px;">Holistic History Screening</div>
+                        <div style="color:#64748b; font-size:13px;">
+                            Linked to IPD Form: <span>@(string.IsNullOrWhiteSpace(ipdFormid) ? "N/A" : ipdFormid)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (ViewData["message"] != null)
+    {
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="alert alert-info mb-0">@ViewData["message"]</div>
+            </div>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-12">
+            <div class="hh-card p-3">
+                @using (Html.BeginForm("Add_Holistic_History", "HolisticHistory", FormMethod.Post, new { @class = "w-100" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden" name="IPDFormid" value="@(ipdFormid ?? "")" />
+                    <input type="hidden" name="tenantid" value="@(Model.tenantid.HasValue ? Model.tenantid.Value.ToString() : "")" />
+
+                    <div class="accordion" id="hhAccordion">
+                        @{
+                            var secIdx = 0;
+                        }
+                        @foreach (var section in (Model.sections ?? new List<NalamVazha.Models.HolisticHistorySectionModel>()))
+                        {
+                            var secId = $"hh_sec_{secIdx}";
+                            <div class="accordion-item mb-2" style="border:1px solid #e5e7eb;">
+                                <h2 class="accordion-header" id="@($"{secId}_hdr")">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="@($"#{secId}_body")" aria-expanded="false" aria-controls="@($"{secId}_body")">
+                                        <span>@(section.title)</span>
+                                    </button>
+                                </h2>
+                                <div id="@($"{secId}_body")" class="accordion-collapse" aria-labelledby="@($"{secId}_hdr")" data-bs-parent="#hhAccordion">
+                                    <div class="accordion-body">
+                                        @foreach (var field in (section.fields ?? new List<NalamVazha.Models.HolisticHistoryFieldModel>()))
+                                        {
+                                            <div class="mb-3">
+                                                <div class="hh-field-label mb-1">@field.label</div>
+
+                                                @if ((field.inputType ?? "").Equals("checkbox", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    if (field.options != null && field.options.Count > 0)
+                                                    {
+                                                        <div class="row g-2">
+                                                            @foreach (var opt in field.options)
+                                                            {
+                                                                <div class="col-12 col-md-6">
+                                                                    <label class="form-check mb-0">
+                                                                        <input class="form-check-input" type="checkbox" name="@field.fieldId" value="@opt" checked="@(isOptionSelected(field.fieldId, opt) ? "checked" : null)" />
+                                                                        <span class="form-check-label">@opt</span>
+                                                                    </label>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="text" class="form-control" name="@field.fieldId" value="@getText(field.fieldId)" />
+                                                    }
+                                                }
+                                                else if ((field.inputType ?? "").Equals("radio", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    <div class="row g-2">
+                                                        @foreach (var opt in (field.options ?? new List<string>()))
+                                                        {
+                                                            <div class="col-12 col-md-6">
+                                                                <label class="form-check mb-0">
+                                                                    <input class="form-check-input" type="radio" name="@field.fieldId" value="@opt" checked="@(isOptionSelected(field.fieldId, opt) ? "checked" : null)" />
+                                                                    <span class="form-check-label">@opt</span>
+                                                                </label>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <input type="text" class="form-control" name="@field.fieldId" value="@getText(field.fieldId)" />
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            secIdx++;
+                        }
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-3 gap-2">
+                        <button type="submit" class="btn btn-primary cma_primary_button">Submit</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,782 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:43:47 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					 @model NalamVazha.Models.EnquiryFormModel
+					@{
+					ViewData["Title"] = "Enquiry Form";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+							
+						<div class="row" id="reworksection" style="display:none">
+							<div class="col-sm-12">
+								<div class="review-common-title rework">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+										<path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+										<path d="M12 8V12" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+										<path d="M12 16H12.01" stroke="#EBB700" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+									</svg>
+									<label>Reason for Re-work : </label><span class="auto_cls_reviewcomments"> </span>
+								</div>
+							</div>
+						</div>
+		 
+						<div class="row" id="rejectedsection" style="display:none">
+							<div class="col-sm-12">
+								<div class="review-common-title rejected">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+										<path d="M7.86 2H16.14L22 7.86V16.14L16.14 22H7.86L2 16.14V7.86L7.86 2Z" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+										<path d="M12 8V12" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+										<path d="M12 16H12.01" stroke="#FF0000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+									</svg>
+									<label>Reason for Rejection : </label><span class="auto_cls_reviewcomments"> </span>
+								</div>
+							</div>
+						</div>
+						  <div id="cma_printableArea" style="padding:20px">
+							
+							<div class="row printablerow"> 
+							<div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Enquiry Form</b>
+							</h3>
+				
+							<br />
+							</div>
+							<div class="col-sm-12 revisions" style="display:none;">
+					<div class="card-head">
+						<header><span class="auto_cls_quotenumber"></span></header>
+						
+						<ul class="nav nav-tabs tabs-vessels pull-right">
+							<li class="dropdown">
+								<a href="javascript:void(0);" class="cma_highlight" data-toggle="dropdown">
+								<i class="md md-more-vert"></i><sup class="badge style-danger number_of_records"></sup>
+								</a>
+								<ul class="dropdown-menu dropleft animation-expand allrecords">
+								</ul><!--end .dropdown-menu -->
+							</li><!--end .dropdown -->
+
+
+						</ul>
+					</div>   
+				</div>           
+							 
+							 
+				<div class="col-sm-12 col-xs-12 mt-3 BasicInfo_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.basicinfo</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 enquirynumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="enquirynumber">@Resource.enquiryform_enquirynumber</label><br>
+										<span class="auto_cls_enquirynumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 enquirydate_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="enquirydate">@Resource.enquiryform_enquirydate</label><br>
+										<span class="auto_cls_enquirydate"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 enquirytype_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="enquirytype">@Resource.enquiryform_enquirytype</label><br>
+										<span class="auto_cls_enquirytype"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 isroombookingrelated_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="isroombookingrelated">@Resource.enquiryform_isroombookingrelated</label><br>
+										<span class="auto_cls_isroombookingrelated"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 patientname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientname">@Resource.enquiryform_patientname</label><br>
+										<span class="auto_cls_patientname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 firstname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="firstname">@Resource.enquiryform_firstname</label><br>
+										<span class="auto_cls_firstname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 lastname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="lastname">@Resource.enquiryform_lastname</label><br>
+										<span class="auto_cls_lastname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 gender_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="gender">@Resource.enquiryform_gender</label><br>
+										<span class="auto_cls_gender"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 age_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="age">@Resource.enquiryform_age</label><br>
+										<span class="auto_cls_age"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 phonenumber_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="phonenumber">@Resource.enquiryform_phonenumber</label><br>
+										<span class="auto_cls_phonenumber"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 emailaddress_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="emailaddress">@Resource.enquiryform_emailaddress</label><br>
+										<span class="auto_cls_emailaddress"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 preferredcontactmethod_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="preferredcontactmethod">@Resource.enquiryform_preferredcontactmethod</label><br>
+										<span class="auto_cls_preferredcontactmethod"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 enquiryreason_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="enquiryreason">@Resource.enquiryform_enquiryreason</label><br>
+										<span class="auto_cls_enquiryreason"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 enquiredvia_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="enquiredvia">@Resource.enquiryform_enquiredvia</label><br>
+										<span class="auto_cls_enquiredvia"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent medicalinfoContainerBodyParent hide"><!--Dependent Medical Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.medicalinfo
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="medicalinfoContainer" class="table table-bordered mb-0 medicalinfoContainer">
+							<thead id="medicalinfoContainerHead">
+								<th>Medical Condition</th>
+<th>Condition Name</th>
+<th>Duration</th>
+<th>Severity</th>
+
+
+							</thead>
+							
+							<tbody id="medicalinfoContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Medical Info Containder Block-->
+			 
+			
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 RoomandDateRequest_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.roomanddaterequest</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 preferredroomtype_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="preferredroomtype">@Resource.enquiryform_preferredroomtype</label><br>
+										<span class="auto_cls_preferredroomtype"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 preferreddateofarrival_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="preferreddateofarrival">@Resource.enquiryform_preferreddateofarrival</label><br>
+										<span class="auto_cls_preferreddateofarrival"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 preferreddateofdeparture_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="preferreddateofdeparture">@Resource.enquiryform_preferreddateofdeparture</label><br>
+										<span class="auto_cls_preferreddateofdeparture"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+<div class="col-sm-3 col-xs-12 p-2 joinwaitinglist_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="joinwaitinglist">@Resource.enquiryform_joinwaitinglist</label><br>
+										<span class="auto_cls_joinwaitinglist"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 enquirystatus_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="enquirystatus">@Resource.enquiryform_enquirystatus</label><br>
+										<span class="auto_cls_enquirystatus"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 verifiedstatus_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="verifiedstatus">@Resource.enquiryform_verifiedstatus</label><br>
+										<span class="auto_cls_verifiedstatus"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+							
+								   <div class="col-sm-12 col-xs-12 mt-3 review_logs_parent hide">
+												<!--Dependent review_logs Containder Block-->
+											   <div class="card card card-blue cma_dependent_band">
+												<div class="card-head">
+														<header>
+															 Review Log
+														</header>
+						   
+													</div>
+												<div class="card-body fluent-card-body commonContainer">
+						 
+														<div class="col-12">
+																<div class="col-12">
+														<ul class="nav nav-tabs tab-nav-right" role="tablist">
+															<li role="presentation" class="active"><a href="#home" data-toggle="tab"><i class="fa fa-calendar"></i></a></li>
+															<li role="presentation"><a href="#profile" data-toggle="tab"><i class="fa fa-history"></i></a></li>
+								
+														</ul>
+
+														<div class="tab-content">
+																<div role="tabpanel" class="tab-pane fade in active" id="home">
+																		<div class="table-responsive-lg">
+																		<table id="review_logsContainer" class="table table-bordered mb-0 review_logsContainer">
+																		<thead id="review_logsContainerHead">
+																		<th>Reviewed On</th>
+																		<th>Reviewed By</th>
+																		<th>Status</th>
+																		<th>Comments</th>
+ 
+																		</thead>
+
+																		<tbody id="review_logsContainerBody">
+																		</tbody>
+
+																		</table>
+																		</div>
+									
+																</div>
+																<div role="tabpanel" class="tab-pane fade" id="profile">
+																		<div class="table-responsive-lg">
+																			<table id="review_logs_historyContainer" class="table table-bordered mb-0 review_logsContainer">
+																			<thead id="review_logsContainerHead">
+																			<th>Enquiry Number</th>
+																			<th>Reviewed On</th>
+																			<th>Reviewed By</th>
+																			<th>Status</th>
+																			<th>Comments</th>
+ 
+																			</thead>
+
+																			<tbody id="review_logs_historyContainerBody">
+																			</tbody>
+
+																			</table>
+																		</div>
+																</div>
+								 
+														</div>
+
+
+														  
+														</div>
+														</div>
+													</div>
+												</div>
+											</div>   			 
+								<div class="col-sm-12 p-2 auto_review_comments">
+									<div>
+										<div class="form-group form-group--float-above my-3" > 
+											<label>Review Comments</label><br>
+											<textarea id="reviewcomments" readonly class="form-control auto_cls_reviewcomments" name="reviewcomments"></textarea>
+											<i class="form-group__bar"></i>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-12 col-xs-12 "> 
+									<div class="btn-group pull-right" id="verifiedstatus_buttons">
+									</div>
+								</div>				 
+							</div>
+						 </div>
+						<div id="comparisonContainer"></div>  
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								   
+									<button type="button"  onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					 
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('EnquiryForm.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+					function fill_EnquiryForm_view_data(id){
+						var  EnquiryFormid = id?id: getUrlVars()["EnquiryFormid"];
+					   
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_EnquiryForm")',
+												dataType: 'json',
+												data:{EnquiryFormid: EnquiryFormid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+	
+															if (obj[''] !== undefined) { $('#').val(obj['']); }
+
+															
+															
+
+															if(key=='automaton_EnquiryForm_medicalinfo'){
+																			$('#medicalinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + EnquiryFormid +'&section=automaton_EnquiryForm_medicalinfo_history'
+																					 $(".medicalinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("EnquiryForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicalinfoauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.medicalinfoContainerBodyParent').removeClass('hide')      
+																			   $('#medicalinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicalinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+															
+															if(key=='verifiedstatus'){
+																 var headerElement = $("div.page-header-box h1");
+
+															  if (obj[key] == 'Rejected'){
+																	$("#rejectedsection").show()
+											headerElement.append(`
+						<div class="review_title">
+							<a href="#" id="rejecticon_header" style="display: block;">
+								<svg width="18" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+									<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+									<g id="SVGRepo_iconCarrier">
+										<circle cx="12" cy="12" r="9" stroke="#FFFFFF"></circle>
+										<path d="M18 18L6 6" stroke="#FFFFFF"></path>
+									</g>
+								</svg>
+								Rejected
+							</a>
+						</div>
+					`);
+		}
+							else if (obj[key] == 'Rework'){
+								$("#reworksection").show()
+								headerElement.append(`<div class="review_title">
+
+			<a href="#" id="reworkicon_header" style="display: block;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="16" viewBox="0 0 18 16" fill="none" id="reworkicon_header_icon">
+	<path d="M1 1.77637V6.44426H5.36364" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+	<path d="M16.9999 14.2236V9.55566H12.6362" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+	<path d="M15.1745 5.66605C14.8057 4.55104 14.1788 3.55414 13.3524 2.76839C12.526 1.98264 11.5269 1.43365 10.4485 1.17263C9.3701 0.91161 8.24745 0.947078 7.18532 1.27572C6.12318 1.60437 5.15618 2.21548 4.37455 3.05203L1 6.44404M17 9.55596L13.6255 12.948C12.8438 13.7845 11.8768 14.3956 10.8147 14.7243C9.75255 15.0529 8.6299 15.0884 7.55148 14.8274C6.47307 14.5664 5.47404 14.0174 4.64761 13.2316C3.82119 12.4459 3.1943 11.449 2.82545 10.3339" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  </svg> Rework </a>
+
+				</div>`);
+				}
+																if(obj[key]=='Ready For Review'){
+var Actions=getAutho("EnquiryForm","list_verify")
+if(Actions != undefined){
+    $('.auto_checker_action').show();
+    $('#reviewcomments').attr('readonly', false);
+    $('#').attr('readonly', false);
+} } else {
+    $('#reviewcomments').attr('readonly', true);
+    $('#').attr('readonly', true);
+}
+
+
+														  
+
+
+															}	
+															  if (key == 'automaton_review_logs') {
+																$('#review_logsContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+																   $('#review_logsContainerBody').append(get_dependent_table(obj[key]))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logsContainerBody').append('No Data Available')
+																}
+
+															}
+															if (key == 'automaton_review_logs_history') {
+																$('#review_logs_historyContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+
+																			
+
+
+
+																		const jsonData = JSON.parse(obj[key])
+																		const distinctQuotes = {};
+																			 let  IdsSet = new Set();
+																		jsonData.forEach(item => {
+																			const quoteNumber = item["Enquiry Number"];
+																			const EnquiryFormid = item["EnquiryFormid"];
+																			distinctQuotes[EnquiryFormid] = quoteNumber;
+																			 IdsSet.add(EnquiryFormid);
+																		});
+																		$(".allrecords").empty()
+
+																					 const IdsSetString = [...IdsSet].join(',');
+
+																					localStorage.setItem('EnquiryForm_Compare', IdsSetString);
+
+
+																		var cnt=0;
+for (const EnquiryFormid in distinctQuotes) {
+				if (distinctQuotes.hasOwnProperty(EnquiryFormid)) {
+	 
+								var requestcard = '<li id="' + EnquiryFormid + '">' +
+								'<a href="#" class="vessel-id-text">' +
+								'<span class="_cma_pda">' + distinctQuotes[EnquiryFormid] + '</span>'+
+
+
+								'<span class="material-icons create_pda_and_download_from_cloud" id="' + EnquiryFormid + '">'+
+
+								'</span>' +
+
+
+								'</a>' +
+
+								'</div>' +
+								'</li>'
+
+								cnt=cnt+1;
+
+
+								$(".allrecords").append(requestcard)
+
+								$("#" + EnquiryFormid).click(function () {
+								$('.page-loader').show()
+								fill_EnquiryForm_view_data($(this).attr('id'))
+
+								$('.page-loader').hide()
+
+
+
+								})
+								if(cnt >0){
+								$(".revisions").show()
+								}
+
+								$(".number_of_records").html(cnt)
+
+				}
+}
+
+																		
+
+																		$.each(jsonData, function(index, item) {
+																		delete item.EnquiryFormid;
+																		});
+
+																		var jsonWithoutEnquiryFormid = JSON.stringify(jsonData, null, 2);
+																		$('#review_logs_historyContainerBody').append(get_dependent_table(jsonWithoutEnquiryFormid))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logs_historyContainerBody').append('No Data Available')
+																}
+
+															}
+
+													}
+												}
+
+												})
+
+				   }
+				   
+					 function redirectToSamePage() {
+						// Get the current URL
+						const currentUrl = window.location.href;
+		
+						// Check if the URL already contains query parameters
+						if (currentUrl.indexOf('?') > -1) {
+							// If there are already query parameters, append '&iscompare=Y'
+							window.location.href = currentUrl + '&iscompare=Y';
+						} else {
+							// If there are no query parameters, append '?iscompare=Y'
+							window.location.href = currentUrl + '?iscompare=Y';
+						}
+					}
+					$(document).ready(function () {
+
+$(".auto_checker_action").hide()
+
+$("body").on("click",'.auto_checker_action',function(){
+
+if((this.id =='Rejected' || this.id=='Rework') &&   $("#reviewcomments").val()==''){                                                       
+															swal({
+															title: 'Validation !',
+															text: "Please enter Review Comments",
+															type: 'error',
+															buttonsStyling: false,
+															confirmButtonClass: 'btn btn-primary',
+															allowOutsideClick: false,
+															allowEscapeKey: false,
+															allowEnterKey: false
+															}) 
+															$("#reviewcomments").focus()
+															return;
+														}else{
+
+	setTimeout(() => {
+	var  EnquiryFormid = getUrlVars()["EnquiryFormid"];
+ var postData = {
+						EnquiryFormid: EnquiryFormid,
+						verifiedstatus: this.id,
+						reviewcomments: $("#reviewcomments").val()
+					};
+
+		postData[''] = $('#').val();
+
+
+$.ajax({
+    url: '@Url.Action("verify_EnquiryForm")',
+    method: 'POST',
+    contentType: 'application/json',
+    dataType: 'json',
+    data: JSON.stringify(postData),
+    success: function(data) {
+        if (data == "201.1") {
+            swal({
+                title: 'Success',
+                text: "Your review has been updated!",
+                type: 'success',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-primary',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+            }).then(() => {
+                  if (document.referrer && document.referrer !== window.location.href) {
+				window.location = document.referrer;
+			} else if (window.history.length > 1) {
+				// Go back in history if possible
+				window.history.back();
+			} else {
+				window.location.reload();
+			}
+            });
+            
+           fill_EnquiryForm_view_data()
+        } else {
+            // The server returned an error message (string)
+            swal({
+                title: 'Error',
+                text: data || "An error occurred",
+                type: 'error',
+                buttonsStyling: false,
+                confirmButtonClass: 'btn btn-danger'
+            });
+        }
+    },
+    error: function(xhr, status, error) {
+        // AJAX error (network, server error, etc.)
+        swal({
+            title: 'Error',
+            text: "An error occurred while processing your request. Please try again.",
+            type: 'error',
+            buttonsStyling: false,
+            confirmButtonClass: 'btn btn-danger'
+        });
+    }
+});
+	},1);
+}
+
+
+})
+
+$.ajax({
+	url: '@Url.Action("get_lookups_by_entity","lookups")',
+	dataType: 'json',
+	data:{id: 'EnquiryForm' },
+	success: function(data) {
+
+	$.each(data, function(index, optionDataInner) {
+	if(optionDataInner.fieldname=="verifiedstatus"){
+			var ddltarget_verifiedstatus = "#verifiedstatus_buttons"
+
+			$(ddltarget_verifiedstatus).empty()
+
+			if(optionDataInner.fieldname=="verifiedstatus"){
+	 
+					var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+					options_verifiedstatus.forEach(function(option_verifiedstatus){
+						if(option_verifiedstatus !='Ready For Review' && option_verifiedstatus !='Revised'){
+ var displayText = option_verifiedstatus;
+						if (option_verifiedstatus === "Approved") {
+							displayText = "Approve";
+						}
+						else if
+						(option_verifiedstatus === "Rejected") {
+							displayText = "Reject";
+						}
+						$(ddltarget_verifiedstatus).append('<button style="display:none" class="btn btn-primary   auto_checker_action" id='+option_verifiedstatus+'>'+displayText+'</button>')
+	
+						}		
+					})  
+					fill_EnquiryForm_view_data()
+				}
+
+
+	}
+	})
+
+
+}
+
+})
+
+					
+
+
+ 
+
+
+
+
+					});
+					 
+					</script>
+					 
+					

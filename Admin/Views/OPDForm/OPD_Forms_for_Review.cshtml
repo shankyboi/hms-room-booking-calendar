@@ -1,0 +1,1815 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:58 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.OPDFormModel
+					@{
+					ViewData["Title"] = @Resource.opdformsforreview;
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+					<style>
+					.rv-badge-blacklisted,
+					.rv-badge-category {
+						display: inline-flex;
+						align-items: center;
+						gap: 3px;
+						border-radius: 4px;
+						font-size: 10px;
+						font-weight: 700;
+						line-height: 1.2;
+						padding: 2px 5px;
+						white-space: nowrap;
+					}
+					.rv-badge-blacklisted { background: #fee2e2; color: #b91c1c; }
+					.rv-badge-category { background: #e0f2fe; color: #075985; }
+					.rv-badge-category--none { background: #f1f5f9; color: #64748b; }
+					</style>
+
+					<div class="card maker_checker_card" style="padding:20px;">
+					<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<h3 class="formHdr">@Resource.opdformsforreview</h3>
+					</div>
+					</div>
+					</div><!--form_card_header-->
+					<div class="card-body" style="padding:1px;padding-top:0px;">
+
+					@if(TempData["errMessage"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["errMessage"]
+					</div>
+					</div>
+					</div>
+					}
+
+					@if(TempData["message"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["message"]
+					</div>
+					</div>
+					</div>
+					}
+
+					<input type="hidden" id="OPDFormid" name="OPDFormid"/>
+					<div class="row">
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+								<div class="form-group form-group--float-above my-3" >
+								<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+								<select name="tenantid" id="tenantid" class="form-control">
+								</select>
+								<i class="form-group__bar"></i>
+								</div>
+
+								<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2 patientname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="patientname">@Resource.opdform_patientname</label>
+										<select name="patientname" id="patientname"  class="form-control select2 select2-list  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientname)
+									<div id="patientname-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 col-xs-12 p-2 verifiedstatus_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" >
+										<label for="verifiedstatus">@Resource.opdform_verifiedstatus</label>
+										<select name="verifiedstatus" id="verifiedstatus" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.verifiedstatus)
+									<div id="verifiedstatus-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 p-2">
+
+												<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+
+												</div>
+								</div>
+
+					<div class="row"><div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+					<table id="tblOPDForm" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+					<thead class="thead-default">
+					<tr>
+					<th id="selectall" style="background: #ffffff;"><input name="select_all" value="1" style="text-align:left;" id="mah_tbl_select_all" type="checkbox" /></th>
+					<th>@Resource.opdform_bookingreferencenumber</th>
+<th>@Resource.opdform_patientname</th>
+								<th>@Resource.opdform_appointmentmode</th>
+								<th>@Resource.opdform_task</th>
+<th>@Resource.opdform_preferreddoctor</th>
+								<th>@Resource.opdform_verifiedstatus</th>
+								<th>@Resource.appointmentpreferences</th>
+<th>@Resource.tenantdisplayname</th>
+
+					<th class="all">Action</th>
+
+
+					</tr>
+					</thead>
+					<tbody></tbody>
+
+					</table>
+					</div>
+
+					</div>
+
+
+					</div>
+
+					</div>
+					</div>
+
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+
+					 <script src="~/js/dtpager.js"></script>
+
+					<script type="text/javascript">
+
+					var arr_selected_for_verification = [];
+
+					function fill_OPDForm()
+					{
+
+						var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"patientname":$("#patientname").val(),
+"verifiedstatus":$("#verifiedstatus").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+
+
+
+
+
+
+
+
+		 dataTableId="#tblOPDForm";
+		 reachedEOF = false;
+		 totalRecordsCount = 0;
+		 currentPageNumber = 1;
+		 fetchingDataFromApi = false;
+
+		var pagerControlsTemplate = "<div id='pager_container' class='dataTables_paginate'>"
+			+ "<button type='button' id='pager_btn_previous' onClick='pager_gotoPreviousPage(this);' class='paginate_button previous'>Previous</button>"
+			+ "<span>Page <input type='number' id='pager_txt_currentpage' min='1' max='^MAXPAGE^' maxlength='10' size='10' onFocus='this.oldValue=this.value;' onChange='pager_gotoPage(this);'/> of <span id='pager_lbl_pagecount'></span></span>"
+			+ "<select id='pager_ddl_pagesize' onChange='pager_pageSizeChanged(this);'>"
+			+ "<option value='50' selected>50 rows</option>"
+			+ "<option value='100'>100 rows</option>"
+			+ "<option value='200'>200 rows</option>"
+			+ "<option value='500'>500 rows</option>"
+			+ "<option value='^Everything^'>Everything</option>"
+			+ "</select>"
+			+ "<button type='button' id='pager_btn_next' onClick='pager_gotoNextPage(this);' class='paginate_button next'>Next</button>"
+			+ "</div>";
+
+	var table=$("#tblOPDForm").DataTable({
+	columnDefs: [{
+	 targets: -1,
+	 title: '<i class="fa fa-pencil fa-lg"></i>'
+  }],
+	paging:false,
+	destroy:true,
+	serverSide: true,
+	filter: true,
+	"orderMulti": false,
+	searchDelay: 2000,
+	autoWidth: false,
+	"order": [],"aaSorting": [],
+	autoWidth: !1,responsive:!0,
+	language: {
+	searchPlaceholder: "Search for records..."
+	},
+	 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+	dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+
+	buttons: [{
+	extend: "excelHtml5",
+	title: "List Of OPDForm Data"
+	}, {
+	extend: "csvHtml5",
+	title: "List Of OPDForm Data"
+	}, {
+	extend: "print",
+	title: "List Of OPDForm Data"
+	}],
+ initComplete: function(a, b) {
+
+ if(table.page.info().recordsTotal > 0){
+																				 var d =  table.row(':eq(0)').data();
+																				table.$('tr:first').addClass('trbg');
+																				//fill_OPDForm_view_data(d.opdformid)
+																				 $("#OPDFormid").val(d.opdformid)
+
+																				}
+
+	  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+
+		if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+	 $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+		<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+	  `);
+		 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+			$("#cma_card_tab_action_container").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			`);
+		}
+ }
+
+var Actions=getAutho("OPDForm","create")
+		if(Actions != undefined){
+			var create_URL = "@Url.Action("entry.viewname", "OPDForm")"
+			create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+<div class="dataTables_buttons actions">
+					<button style="display:none" class="btn btn-rounded add-row-btn add-review-btn" type="button" onclick="showFormAlert()">
+						Review
+					</button>
+
+		<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.opdform_bookingreferencenumber
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.opdform_patientname
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.opdform_appointmentmode
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+																  <li>
+																	<label> @Resource.opdform_task
+	 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																  </li>
+<li>
+																<label> @Resource.opdform_preferreddoctor
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+																  </li>
+	<li>
+																<label> @Resource.opdform_verifiedstatus
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.appointmentpreferences
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+
+									</ul>
+									</div>
+
+		 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+		</div>
+	  `.replace("create_URL", create_URL))
+}
+	$("#cma_card_tab_action_container .card-lst").remove();
+	$("#cma_card_tab_action_container_action_btn").empty()
+	$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+
+
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+			else{
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+		<div class="dataTables_buttons actions">
+					<button style="display:none" class="btn btn-rounded add-row-btn add-review-btn" type="button" onclick="showFormAlert()">
+						Review
+					</button>
+
+		<div class="dataTables_buttons actions">
+		 <div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.opdform_bookingreferencenumber
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.opdform_patientname
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.opdform_appointmentmode
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+																  <li>
+																	<label> @Resource.opdform_task
+	 <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+																  </li>
+<li>
+																<label> @Resource.opdform_preferreddoctor
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+																  </li>
+	<li>
+																<label> @Resource.opdform_verifiedstatus
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.appointmentpreferences
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+
+									</ul>
+									</div>
+		</div>
+	  `)
+}
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+if (!$(pagerContainerId).length) {
+		$(dataTableId + '_info').parent().append(
+					pagerControlsTemplate.replace('^Everything^', totalRecordsCount).replace('^MAXPAGE^', pager_getPageCount())
+				);
+}
+				//$(dataTableId + '_info').hide();
+				$(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+				pager_setCurrentPageNumber(1);
+				pager_onPageChanged();
+
+			fill_OPDForm_count(this,sendFilterData);
+
+	}
+	 ,columns: [
+		{
+					"bSearchable": false,
+					"bSortable": false,
+					data: 'opdformid', render: function (data, types, row) {
+						var opdformid = row.opdformid;
+						var found = 0;
+						var checkbox = ''
+							if (row.verifiedstatus == "Ready For Review" || row.verifiedstatus == "Ready For OPD Review") {
+							if (arr_selected_for_verification.length != 0) {
+								arr_selected_for_verification.forEach(function (item) {
+
+
+									if (item == opdformid) {
+										found = 1;
+										checkbox = '<input type="checkbox" checked class="editor-active" name="opdformcheck" id="' + opdformid + '"> ';
+
+									}
+
+
+								});
+								if (found == 0)
+									checkbox = '<input type="checkbox"  class="editor-active" name="opdformcheck" id="' + opdformid + '"> ';
+
+							}
+							else {
+								checkbox = '<input type="checkbox"  class="editor-active" name="opdformcheck" id="' + opdformid + '"> ';
+							}
+
+						}
+
+
+
+
+
+						return checkbox;
+
+
+					},
+					className: "dt-body-left"
+				},
+		{data: 'bookingreferencenumber'},
+{data: 'patientname_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('PatientProfile','detail')
+ if(row["patientname_master"]==null) {
+ return '-'
+}else {
+
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "PatientProfile")?PatientProfileid=" + row['patientname']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+var _bl = (row["blacklisted"]||"No").toString().toLowerCase();
+var _cat = (row["patientcategoryname"]||"Not Categorized").toString().trim();
+var _badges = "";
+if(_bl==="yes") _badges += "<span class=\"rv-badge-blacklisted\"><i class=\"fa fa-ban\" style=\"font-size:8px;\"></i> Blacklisted</span> ";
+if(_cat && _cat!=="Not Categorized") _badges += "<span class=\"rv-badge-category\"><i class=\"fa fa-tag\" style=\"font-size:8px;\"></i> "+_cat+"</span>";
+else _badges += "<span class=\"rv-badge-category rv-badge-category--none\"><i class=\"fa fa-tag\" style=\"font-size:8px;\"></i> Uncat.</span>";
+var _nameLink = '<a  href="' + DETAIL_URL  + '">'+ row["patientname_master"]+ '</a>';
+return _nameLink + (_badges ? "<div style=\"margin-top:3px;display:flex;flex-wrap:wrap;gap:3px;\">"+_badges+"</div>" : "");
+}else {
+
+return row['patientname_master']
+}
+}
+}},
+{data: 'appointmentmode', defaultContent: '-'},
+	{data: 'task_master',
+	defaultContent: '-',
+	mRender: function (data, type, row) {
+	var Actions_=getAutho('Task','detail')
+	var taskName = row["task_master"] || row["taskname"] || row["task_name"];
+	 if(taskName==null || taskName === "") {
+	 return '-'
+	}else {
+
+	if(Actions_ !=  undefined)
+	{
+	var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Task")?Taskid=" + row['task']
+	DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+	return '<a  href="' + DETAIL_URL  + '">'+ taskName + '</a>'
+	}else {
+
+	return taskName
+	}
+	}
+	}},
+{data: 'preferreddoctor_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('People','detail')
+ if(row["preferreddoctor_master"]==null) {
+ return '-'
+}else {
+
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "People")?Peopleid=" + row['preferreddoctor']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["preferreddoctor_master"]+ '</a>'
+}else {
+
+return row['preferreddoctor_master']
+}
+}
+}},
+	{data: 'verifiedstatus'},
+{
+									data: 'automaton_opdform_appointmentpreferences',
+									defaultContent: '-',
+									mRender: function(data, type, row) {
+										var appointmentPreferences = row['automaton_opdform_appointmentpreferences'] || row['automaton_OPDForm_appointmentpreferences'];
+										if (appointmentPreferences == null)
+										{
+											return '-'
+										}
+										else
+										{
+											return get_dependent_li_l(appointmentPreferences);
+
+										}
+									}
+								},
+{data: '_tenantname'},
+
+			{
+				"sName": "opdformid",
+				"bSearchable": false,
+				"bSortable": false,
+				data: 'opdformid', "className": "dt-center",
+				mRender: function(data, type, row) {
+				var Actions=getAuthoController("OPDForm")
+				var appendMessage='';
+				if(Actions !=undefined)
+				{
+				for (var index = 0; index < Actions.length; ++index) {
+				var entry = Actions[index];
+
+				if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+				var URL = "@Url.Action("entry.viewname", "OPDForm")?OPDFormid=" + row["opdformid"]
+				URL = URL.replace("entry.viewname", entry.actionmethodname);
+				 if ((entry.viewname == "maker_detail") || (entry.viewname == "checker_detail")) {
+					appendMessage += '<a href="' + URL + '" class="dropdown-item">' + entry.actiondisplayname + '</a>'
+				}
+					else if(entry.viewname=="delete" && (row["verifiedstatus"]=="Ready For Review" || row["verifiedstatus"]=="Rework"|| row["verifiedstatus"]=="Ready For OPD Review" || row["verifiedstatus"]=="OPD Rework"))
+				{
+					 appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>'
+
+
+				}
+
+				else
+				{
+						 if(row["verifiedstatus"]=="Ready For Review" || row["verifiedstatus"]=="Rework"|| row["verifiedstatus"]=="Ready For OPD Review" || row["verifiedstatus"]=="OPD Rework")
+						appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>'
+				}
+
+				}
+
+				}
+						if(row["verifiedstatus"]=="Approved" || row["verifiedstatus"]=="OPD Approved"){
+						appendMessage += '<a href="@Url.Action("OPD_Consultation_Fee", "OPDForm")?OPDFormid='+ row["opdformid"] + '" class="dropdown-item"><i class="fa fa-file-text"></i> View Billing</a>';
+						}
+					if(appendMessage =="")
+				{
+				return '-'
+
+				}
+				else
+				{
+					return '<div class="dropdown actions__item">' +
+				'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+				'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+
+
+				'</div>' +
+				'</div>'
+				}
+
+
+
+				}
+				else
+				{
+				return '-'
+
+				}
+
+
+				}
+				}
+
+
+	 ],
+
+		ajax: function (data, callback, settings) {
+		fetchingDataFromApi = true;
+		sendFilterData.searchterm = data.search.value;
+		sendFilterData.pagesize = pageSize;
+		sendFilterData.pagenumber =  (currentPageNumber - 1);
+		var sortParams = [];
+		for (var i = 0; i < data.order.length; i++) {
+			var colIndex = data.order[i].column;
+			var sortDirection = data.order[i].dir;
+			var columnName = data.columns[colIndex].data;
+
+			var sortParam = {};
+			sortParam["col"] = columnName;
+			sortParam["dir"] = sortDirection;
+
+			sortParams.push(sortParam);
+		}
+		sendFilterData.sortFieldsJson =  JSON.stringify(sortParams);
+		$.ajax({
+		url: "@Url.Action("get_OPD_Forms_for_Review", "OPDForm")",
+		type: 'GET',
+		dataType: 'json',
+		data: sendFilterData,
+
+		success: function(responsedata) {
+
+				 fetchingDataFromApi = false;
+				//to let grid say no data available and all other flows get through
+				if (responsedata.detail == null) {
+					responsedata.detail = [];
+				}
+				totalRecordsCount = responsedata.count;
+				if (responsedata.detail.length < pageSize) {
+					reachedEOF = true;
+				}
+
+				setTimeout(function () {
+				callback({
+					data: responsedata.detail,
+					recordsTotal: responsedata.count
+				  });
+				}, 50);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			fetchingDataFromApi = false;
+
+			if (JSON.stringify(jqXHR.responseText) == "API Authorization failed") {
+					swal({
+					title: 'Failed!',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+					 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function() {
+					window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+			}
+			else
+			{
+					swal({
+					title: 'Contact Administrator !',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+			}
+		}
+		});
+		},
+		"infoCallback": function(settings, start, end, max, total, pre)
+		{
+				var startRowCount = (pageSize * currentPageNumber) - pageSize + 1;
+				var endRowCount = $(dataTableId).DataTable().rows().count() + startRowCount - 1;
+				var pagingInfo = 'Showing ' + startRowCount + ' to ' + endRowCount + ' of ' + totalRecordsCount + ' entries';
+
+				return pagingInfo;
+		}
+
+
+})
+
+
+ $('body').on('click', '.ColVis_collection li', function(a) {
+	event.stopPropagation();
+  });
+
+ $('body').on('change', '.colvis_switch', function(a) {
+	var column = table.column($(this).attr('data-column'));
+	column.visible(!column.visible());
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+											$.ajax({
+												url: '@Url.Action("get_lookups_by_entity","lookups")',
+												dataType: 'json',
+												data:{id: 'OPDForm' },
+												success: function(data) {
+
+												$.each(data, function(index, optionDataInner) {
+												if(optionDataInner.fieldname=="verifiedstatus"){
+												var ddltarget_verifiedstatus = "#verifiedstatus_buttons"
+
+												$(ddltarget_verifiedstatus).empty()
+
+												if(optionDataInner.fieldname=="verifiedstatus"){
+
+												var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+												options_verifiedstatus.forEach(function(option_verifiedstatus){
+															if(option_verifiedstatus !='Ready For Review' && option_verifiedstatus !='Ready For OPD Review')
+													 $(ddltarget_verifiedstatus).append('<button class="btn btn-primary   auto_checker_action" style="display:none;" id='+option_verifiedstatus+'>'+option_verifiedstatus+'</button>')
+
+												})
+
+											}
+
+
+												}
+												})
+
+
+										}
+
+										})
+											$("#viewDetails_Auto").hide()
+											//$(".dataTables_length").hide()
+											$(".dataTables_filter").hide()
+											$(".dataTables_info").hide()
+											$(".dataTables_paginate").hide()
+
+
+
+													$('#tblOPDForm').on('click','.odd,.even' , function(e){
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+
+
+											$('#tblOPDForm tr').removeClass("trbg");
+											$(this).addClass("trbg")
+
+												var $row = $(this).closest('tr');
+												var data = table.row($row).data();
+												var OPDFormid = data.opdformid;
+												$("#OPDFormid").val(OPDFormid)
+
+													//fill_OPDForm_view_data(OPDFormid)
+
+												})
+
+
+												$("body").on("click",'.auto_checker_action',function(){
+														if((this.id =='Rejected' || this.id=='Rework') &&   $("#reviewcomments").val()==''){
+
+															swal({
+															title: 'Validation !',
+															text: "Please enter Review Comments",
+															type: 'error',
+															buttonsStyling: false,
+															confirmButtonClass: 'btn btn-primary',
+															 allowOutsideClick: false,
+															allowEscapeKey: false,
+															allowEnterKey: false
+															})
+															return;
+														}else{
+															setTimeout(() => {
+																var postData = {
+																	OPDFormid: $("#OPDFormid").val(),
+																	verifiedstatus: this.id,
+																	reviewcomments: $("#reviewcomments").val()
+																};
+																postData[''] = $('#').val();
+
+																$.ajax({
+																url: '@Url.Action("verify_OPDForm")',
+																 method: 'POST',
+																contentType: 'application/json',
+																dataType: 'json',
+																data: JSON.stringify(postData),
+
+																success: function(data) {
+
+																		window.location.reload()
+
+
+																}
+
+															})
+														},1);
+													}
+
+
+												})
+					}
+	  function fill_pagination(callback) {
+		if ((reachedEOF || fetchingDataFromApi) && currentPageNumber !=1) {
+			return;
+		}
+		fetchingDataFromApi = true;
+		 var order = $(dataTableId).DataTable().order();
+			var sortParams = [];
+
+			for (var i = 0; i < order.length; i++) {
+				var colIndex = order[i][0];
+				var sortDirection = order[i][1];
+				var columnName = $(dataTableId).DataTable().settings()[0].aoColumns[colIndex].data;
+
+				var sortParam = {
+					col: columnName,
+					dir: sortDirection
+				};
+
+				sortParams.push(sortParam);
+			}
+			var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"patientname":$("#patientname").val(),
+"verifiedstatus":$("#verifiedstatus").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+			sendFilterData.searchterm = $(".dt-global-search").val();
+		sendFilterData.sortFieldsJson= JSON.stringify(sortParams);
+		var currentPage = $(dataTableId).DataTable().page();
+
+		$.ajax({
+			url: "@Url.Action("get_OPD_Forms_for_Review", "OPDForm")",
+			type: 'GET',
+			dataType: 'json',
+			data: sendFilterData,
+			success: function (responsedata) {
+				if (responsedata != null && responsedata.detail.length > 0) {
+					if (responsedata.detail.length < pageSize) {
+						reachedEOF = true;
+					}
+
+					api_response_data = responsedata.detail;
+					var table = $(dataTableId).DataTable();
+					table.rows().remove();
+					table.rows.add(responsedata.detail).draw();
+				}
+				else {
+					reachedEOF = true;
+				}
+				fetchingDataFromApi = false;
+				if (callback != undefined) {
+					callback();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				fetchingDataFromApi = false;
+				if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+					swal({
+						title: 'Failed!',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+												allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function () {
+						window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+				}
+				else {
+					swal({
+						title: 'Contact Administrator !',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+				}
+			}
+		});
+
+
+	}
+
+
+
+					function fill_OPDForm_view_data(OPDFormid){
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_OPDForm")',
+												dataType: 'json',
+												data:{OPDFormid: OPDFormid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															if (obj[''] !== undefined) { $('#').val(obj['']); }
+
+
+
+
+
+															if(key=='verifiedstatus'){
+
+																 var headerElement = $("div.page-header-box h1");
+																 if(obj['reviewcomments'] != undefined)
+																	headerElement.html('OPD Forms for Review - <span class="' + obj[key].replace(/ /g, "_").toLowerCase() +'">' + obj[key] +'</span> <span class="hdrcomments ' + obj[key].replace(/ /g, "_").toLowerCase() +'"> ' + obj['reviewcomments'] + ' </span>');
+																 else
+																	headerElement.html('OPD Forms for Review - <span class="' + obj[key].replace(/ /g, "_").toLowerCase() +'">' + obj[key] +'</span>');
+
+																					if(obj[key]=='Approved'|| obj[key]=='Rejected' || obj[key] == 'OPD Approved' || obj[key] == 'OPD Rejected')
+																		$("#reviewcomments").attr('readonly','readonly')
+															}
+																if(obj[key]=='Ready For Review' || obj[key] == 'Ready For OPD Review'){
+var Actions=getAutho("OPDForm","checker_detail")
+if(Actions != undefined){
+    $('.auto_checker_action').show();
+    $('#reviewcomments').attr('readonly', false);
+    $('#').attr('readonly', false);
+} else {
+    $('#reviewcomments').attr('readonly', true);
+    $('#').attr('readonly', true);
+}}
+
+
+															  if (key == 'automaton_review_logs') {
+																$('#review_logsContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+																	$('#review_logsContainerBody').append(get_dependent_table(obj[key]))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logsContainerBody').append('No Data Available')
+																}
+
+															}
+															if (key == 'automaton_review_logs_history') {
+																$('#review_logs_historyContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+																		const jsonData = JSON.parse(obj[key])
+																		$.each(jsonData, function(index, item) {
+																		delete item.OPDFormid;
+																		});
+
+																		var jsonWithoutOPDFormid = JSON.stringify(jsonData, null, 2);
+																		$('#review_logs_historyContainerBody').append(get_dependent_table(jsonWithoutOPDFormid))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logs_historyContainerBody').append('No Data Available')
+																}
+
+															}
+															if(key=='automaton_OPDForm_medicalinfo'){
+																			$('#medicalinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_medicalinfo_history'
+																					 $(".medicalinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("OPDForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicalinfoauditheaderlink").parent().hide()
+																				}
+
+																			   $('.medicalinfoContainerBodyParent').removeClass('hide')
+																			   $('#medicalinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicalinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_OPDForm_medicationinfo'){
+																			$('#medicationinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_medicationinfo_history'
+																					 $(".medicationinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("OPDForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicationinfoauditheaderlink").parent().hide()
+																				}
+
+																			   $('.medicationinfoContainerBodyParent').removeClass('hide')
+																			   $('#medicationinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicationinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_OPDForm_medicalrecords'){
+																			$('#medicalrecordsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + OPDFormid +'&section=automaton_OPDForm_medicalrecords_history'
+																					 $(".medicalrecordsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("OPDForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicalrecordsauditheaderlink").parent().hide()
+																				}
+
+																			   $('.medicalrecordsContainerBodyParent').removeClass('hide')
+																			   $('#medicalrecordsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicalrecordsContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='medicalrecordfile'){
+																			$('.auto_cls_medicalrecordfile').empty()
+																			if(obj[key] !=null)  {
+
+																			var uploaded_medicalrecordfile = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_medicalrecordfile.length; i++) {
+
+
+																				if (uploaded_medicalrecordfile[i] != "") {
+																							var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_medicalrecordfile[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+
+																					iterate = iterate + 1;
+																						 $('.auto_cls_medicalrecordfile').append('<a href=' + filepath + ' class="medicalrecordfile filedisplay"><i class="fa fa-file"></i></a>')
+
+																				}
+
+
+																			}
+
+
+																		  }
+
+
+																	}
+
+
+													}
+												}
+
+												})
+
+												}
+
+					$(document).ready(function () {
+					$('body').on('change', '.dt-global-search', function(event) {
+					  reachedEOF = false;
+
+					  pager_setCurrentPageNumber(1);
+					  fill_pagination(pager_onPageChanged);
+
+					  $(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+					});
+
+
+					fill_OPDForm()
+
+
+					var Actions=getAuthoController("OPDForm")
+					if(Actions == undefined || Actions.length == 0){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}
+
+
+
+
+					});
+
+
+					$("body").on("click", "[data-table-action]", function(a) {
+					a.preventDefault();
+					var b = $(this).data("table-action");
+					console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+					if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+					var c = $(this).closest(".card");
+					c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+					}
+					});
+					</script>
+					<script>
+var strverifiedstatus;
+</script>
+@if (Model != null)
+{
+if (Model.verifiedstatus != null && Model.verifiedstatus.ToString() != "")
+{
+<script>
+strverifiedstatus = "@Model.verifiedstatus";
+</script>
+}
+}
+
+					<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'OPDForm' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+
+
+											if(optionDataInner.fieldname=="verifiedstatus"){
+												var ddltarget_verifiedstatus = "#verifiedstatus"
+												$(ddltarget_verifiedstatus).empty();
+												$(ddltarget_verifiedstatus).append("<option value=''>Choose</option>")
+												var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+												options_verifiedstatus.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_verifiedstatus.forEach(function(option_verifiedstatus){
+													if(strverifiedstatus== option_verifiedstatus){
+													$(ddltarget_verifiedstatus).append('<option selected value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+
+													}
+													else
+													$(ddltarget_verifiedstatus).append('<option  value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+
+												})
+
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+})
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+})
+}
+}
+})
+})
+
+</script>
+
+
+								<script>
+								$(document).ready(function () {
+								$("#tenantid").change(function(){
+								fill_OPDForm();
+								})
+
+								$("#btnFilter").click(function(){
+								fill_OPDForm();
+								})
+								});
+								</script>
+
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+
+
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+})
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+})
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+
+
+
+
+					 <script>
+
+
+	$('#mah_tbl_select_all').on('click', function () {
+		var table = $("#tblOPDForm").DataTable();
+		var rows = table.rows({ 'search': 'applied' }).nodes();
+
+		// Check/uncheck all checkboxes in the table
+		var isChecked = this.checked;
+		$('input[name="opdformcheck"]', rows).prop('checked', isChecked);
+
+		// Clear the arrays if no checkboxes are checked
+		if (!isChecked) {
+
+			$(".add-review-btn").hide();
+		} else {
+			// Show review button when items are checked
+			$(".add-review-btn").show();
+		}
+
+		// Process checked checkboxes and add values to arrays
+		$('input[name="opdformcheck"]:checked', rows).each(function () {
+			var checkboxId = $(this).attr('id');
+			var $tr = $(this).closest('tr');
+
+
+			var detailId = $tr.find('td:eq(0) > input').attr('id');
+
+			// Check if the detailId is not in the arr_selected_for_verification array
+			if (!arr_selected_for_verification.includes(detailId)) {
+
+
+
+
+				var id = $tr.find('td:eq(0) > input').attr('id');
+
+
+				arr_selected_for_verification.push(id);
+
+			}
+
+		});
+
+
+
+	});
+</script>
+
+<script>
+
+
+	$(document).ready(function () {
+
+		// Function to handle checkbox change
+		function handleCheckboxChange() {
+			var isChecked = $(this).is(':checked');
+			var checkboxId = $(this).attr('id');
+			$(".add-review-btn").show()
+			if (isChecked) {
+
+
+
+
+				var $tr = $(this).closest('tr');
+
+				var id = $tr.find('td:eq(0) > input').attr('id');
+
+
+				arr_selected_for_verification.push(id);
+
+
+
+
+
+			} else {
+
+
+				var $tr = $(this).closest('tr');
+
+				var a = $tr.find('td:eq(0) > input').attr('id');
+				var index = arr_selected_for_verification.indexOf(a);
+
+
+
+				if (index !== -1) {
+					arr_selected_for_verification.splice(index, 1);
+
+				}
+
+			}
+
+
+ var table = $("#tblOPDForm").DataTable();
+			var checkedCount = $('input[name="opdformcheck"]:checked', table.rows({ 'search': 'applied' }).nodes()).length;
+
+			if (checkedCount > 0) {
+				$(".add-review-btn").show();
+			} else {
+				$(".add-review-btn").hide();
+				// Also uncheck the select all checkbox
+				$('#mah_tbl_select_all').prop('checked', false);
+			}
+
+ var table = $("#tblOPDForm").DataTable();
+			var checkedCount = $('input[name="opdformcheck"]:checked', table.rows({ 'search': 'applied' }).nodes()).length;
+
+			if (checkedCount > 0) {
+				$(".add-review-btn").show();
+			} else {
+				$(".add-review-btn").hide();
+				// Also uncheck the select all checkbox
+				$('#mah_tbl_select_all').prop('checked', false);
+			}
+		}
+
+
+		// Delegate the event to the DataTable for dynamically created checkboxes
+		$('#tblOPDForm').on('change', "input[name='opdformcheck']", handleCheckboxChange);
+	});
+</script>
+
+
+<script>
+
+	function VerifyOPDForm(pvar_verifiedstatus) {
+		$('.page-loader').show();
+
+
+			var str_selected_for_verification = arr_selected_for_verification.join(',')
+			$.ajax({
+				url: '@Url.Action("verify_OPDForm")',
+				method: 'POST',
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify({
+					opdformid: str_selected_for_verification,
+					verifiedstatus: pvar_verifiedstatus,
+					reviewcomments: $("#bulk_reviewcomments").val()
+				}),
+				success: function (data) {
+
+					window.location.reload();
+
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					 window.location.reload();
+				}
+			});
+
+
+
+	}
+
+
+
+</script>
+<script>
+	function showFormAlert() {
+		if (arr_selected_for_verification.length > 0) {
+		// Define your SweetAlert content
+		const content = document.createElement('div');
+		content.innerHTML = '<label>Review Comments</label><br><textarea id="bulk_reviewcomments" class="form-control" placeholder="Enter Review Comments"></textarea><br><span id="verified_reject_message" style="color:red;display:none;" >Please enter Review Comments</span><div class="btn-group pull-right" id="verifiedstatus_buttons"><button class="btn btn-primary" id="Rework_" style="display: block;">Rework</button><button class="btn btn-primary" id="Approved_" style="display: block;">Approve</button><button class="btn btn-primary" id="Rejected_" style="display: block;">Reject</button></div>';
+
+		  $.colorbox({
+				html: content,
+				width: '80%', // Set the width as needed
+				onComplete: function () {
+					// Do additional setup if needed after the content is displayed
+				}
+			});
+
+		// Attach event listeners to your buttons
+		document.getElementById('Rework_').addEventListener('click', handleButtonClick);
+		document.getElementById('Approved_').addEventListener('click', handleButtonClick);
+		document.getElementById('Rejected_').addEventListener('click', handleButtonClick);
+	  }else{
+						swal({
+							title: 'Validation !',
+							text: "Please select items to be reviewed",
+							type: 'error',
+							buttonsStyling: false,
+							confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+							})
+
+			}
+	}
+
+	function handleButtonClick(event) {
+		$('#verified_reject_message').hide();
+		const inputValue = document.getElementById('bulk_reviewcomments').value;
+
+		// Check which button was clicked
+		const clickedButtonId = event.target.id;
+
+		if ((clickedButtonId === 'Rejected_' || clickedButtonId=='Rework_') && !inputValue) {
+			 $('#verified_reject_message').show();
+		} else {
+		 VerifyOPDForm(clickedButtonId.replace('_', ''))
+		}
+
+		// Prevent the default behavior of the button (which closes the Swal alert)
+		event.stopPropagation();
+	}
+
+
+
+
+</script>
+					<script>
+
+$(document).ready(function () {
+
+
+$('body').on('click', '.list_status', function(a) {
+$("#verifiedstatus").val($(this).attr('id'))
+
+fill_OPDForm()
+});
+
+
+});
+function fill_OPDForm_count(datato,sendFilterdata) {
+
+
+var countofstatus = ''
+
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data: {
+id: 'OPDForm'
+},
+success: function(data) {
+
+$.ajax({
+url: '@Url.Action("count_of_OPDForm")',
+dataType: 'json',
+data: sendFilterdata,
+success: function(rowData) {
+
+num=0;
+$.each(data, function(index, optionDataInner) {
+if (optionDataInner.fieldname == "verifiedstatus") {
+
+
+var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+options_verifiedstatus.forEach(function(option_verifiedstatus) {
+var found=0;
+$.each(rowData, function(index_count, optionDataInner_count) {
+	if (optionDataInner_count.verifiedstatus == option_verifiedstatus){
+		found=1
+					var verifiedclass = option_verifiedstatus.replace(/[\s-]/g, '').toLowerCase();
+					num+=Number(optionDataInner_count.count)
+		countofstatus += `<div class="col-sm-2">
+			<div class="list list_status ${verifiedclass}" id="${option_verifiedstatus}">
+				<span><p class="tlt-txt">${option_verifiedstatus}</p></span><div class="lst-num">
+							<label>${optionDataInner_count.count}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+				</div>
+			</div>
+		</div>`
+
+	}
+
+
+});
+if(found==0){
+		var verifiedclass = option_verifiedstatus.replace(/[\s-]/g, '').toLowerCase();
+		countofstatus += `<div class="col-sm-2">
+			<div class="list list_status ${verifiedclass}" id="${option_verifiedstatus}">
+				<span><p class="tlt-txt">${option_verifiedstatus}</p></span><div class="lst-num">
+							<label>0</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+				</div>
+			</div>
+		</div>`
+
+}
+
+
+
+})
+
+
+
+$(datato).closest(".dataTables_wrapper").find(".dataTables__top").prepend(
+	`<div class="card-lst"><div class="col-sm-2">
+			<div class="list list_status all" id="">
+				<span><p class="tlt-txt">All</p></span><div class="lst-num">
+							<label>${num}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+				</div>
+			</div>
+		</div>` +
+
+countofstatus + '</div>')
+
+
+
+
+}
+})
+
+
+}
+
+})
+
+
+
+
+}
+
+})
+}
+</script>
+					<script>
+					var strpatientname;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientname != null && Model.patientname.ToString() != "")
+							{
+							<script>
+								 strpatientname="@Model.patientname"
+							</script>
+							}
+						}
+					<script>
+
+
+					function lookup_OPDForm_patientname(tenantid) {
+
+					var ddltarget_patientname = $('#patientname');
+					ddltarget_patientname.empty();;
+					ddltarget_patientname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_OPDForm_patientname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase())
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientProfileid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_OPDForm_patientname,
+						 templateSelection: formatSelectSelected_lookup_OPDForm_patientname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_OPDForm_patientname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientProfileid == strpatientname) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname,data[i].PatientProfileid, true, true);
+											ddltarget_patientname.append(option).trigger('update');
+
+											ddltarget_patientname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function escapeOPDPatientLookupText(value) {
+					return $('<span>').text(value || '').html();
+				}
+
+				function buildOPDPatientLookupBadges(item) {
+					var blacklisted = (item.blacklisted || '').toString().toLowerCase();
+					var deceased = item.deceased === true || item.deceased === 'True' || item.deceased === 'true';
+					var category = $.trim((item.patientcategoryname || '').toString());
+					var badges = [];
+					if (blacklisted === 'yes') {
+						badges.push('<span style="display:inline-flex;align-items:center;gap:3px;border-radius:4px;background:#fee2e2;color:#b91c1c;font-size:10px;font-weight:700;padding:2px 5px;margin-right:4px;"><i class="fa fa-ban"></i> Blacklisted</span>');
+					}
+					if (deceased) {
+						badges.push('<span style="display:inline-flex;align-items:center;gap:3px;border-radius:4px;background:#e2e8f0;color:#334155;font-size:10px;font-weight:700;padding:2px 5px;margin-right:4px;"><i class="fa fa-cross"></i> Deceased</span>');
+					}
+					if (category && category !== 'Not Categorized') {
+						badges.push('<span style="display:inline-flex;align-items:center;gap:3px;border-radius:4px;background:#e0f2fe;color:#075985;font-size:10px;font-weight:700;padding:2px 5px;margin-right:4px;"><i class="fa fa-tag"></i> ' + escapeOPDPatientLookupText(category) + '</span>');
+					}
+					return badges.length ? '<div style="margin-top:3px;display:flex;flex-wrap:wrap;gap:3px;">' + badges.join('') + '</div>' : '';
+				}
+
+				function formatSelectSelected_lookup_OPDForm_patientname(item) {
+
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text) {
+						var textValue = item.text;
+					}
+					else if (item.firstname || item.lastname) {
+						var textValue = item.firstname+ ' ' + item.lastname
+					}
+
+					return textValue || 'Choose';
+				}
+				function formatSelectOption_lookup_OPDForm_patientname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = $.trim((item.firstname || '') + ' ' + (item.lastname || '')) || item.text || '';
+					return $('<span><span>' + escapeOPDPatientLookupText(textValue) + '</span>' + buildOPDPatientLookupBadges(item) + '</span>');
+
+				 }
+
+
+
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_OPDForm_patientname(str_tenantid)
+								}, 3000)
+
+
+
+
+						})
+
+						</script>
+
+<script>
+					$(document).ready(function () {
+
+						$("#tenantid").change(function(){
+								 lookup_OPDForm_patientname($("#tenantid").val())
+
+						})
+
+
+					});
+					</script>
+

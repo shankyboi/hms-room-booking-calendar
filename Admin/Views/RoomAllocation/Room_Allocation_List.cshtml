@@ -1,0 +1,1132 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:43:13 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.RoomAllocationModel
+					@{
+					ViewData["Title"] = @Resource.roomallocationlist;
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="card " style="padding:20px;">
+					<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<h3 class="formHdr">@Resource.roomallocationlist</h3>
+					</div>
+					</div>
+					</div><!--form_card_header-->
+					<div class="card-body" style="padding:1px;padding-top:0px;">
+
+					@if(TempData["errMessage"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["errMessage"]
+					</div>
+					</div>
+					</div>
+					}
+
+					@if(TempData["message"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["message"]
+					</div>
+					</div>
+					</div>
+					}
+
+					<input type="hidden" id="RoomAllocationid" name="RoomAllocationid"/>
+					<div class="row">
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+								<div class="form-group form-group--float-above my-3" > 
+								<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+								<select name="tenantid" id="tenantid" class="form-control">
+								</select>
+								<i class="form-group__bar"></i>
+								</div>
+
+								<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="ipdno">@Resource.roomallocation_ipdno</label>
+										<select name="ipdno" id="ipdno" class="form-control"></select>
+									</div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="block">@Resource.roomallocation_block</label>
+										<select name="block" id="block" class="form-control"></select>
+									</div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="building">@Resource.roomallocation_building</label>
+										<select name="building" id="building" class="form-control"></select>
+									</div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="floor">@Resource.roomallocation_floor</label>
+										<select name="floor" id="floor" class="form-control"></select>
+									</div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="room">@Resource.roomallocation_room</label>
+										<select name="room" id="room" class="form-control"></select>
+									</div>
+								</div>
+								</div>
+								<div class="col-sm-2 p-2">
+									<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+								</div>
+								
+								</div>
+
+					<div class="row"><div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+					<table id="tblRoomAllocation" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+					<thead class="thead-default">
+					<tr>
+					
+					<th>@Resource.roomallocation_roomallocationno</th>
+<th>@Resource.roomallocation_ipdno</th>
+<th>@Resource.roomallocation_block</th>
+<th>@Resource.roomallocation_building</th>
+<th>@Resource.roomallocation_floor</th>
+<th>@Resource.roomallocation_room</th>
+<th>@Resource.roomallocation_fromdate</th>
+<th>@Resource.roomallocation_todate</th>
+<th>@Resource.roomallocation_status</th>
+<th>@Resource.tenantdisplayname</th>
+
+					<th class="all">Action</th>
+					
+
+					</tr>
+					</thead>
+					<tbody></tbody>
+					
+					</table>
+					</div>
+
+					</div>
+					
+					
+					</div>
+					
+					</div>
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					
+					 <script src="~/js/dtpager.js"></script>
+
+					<script type="text/javascript">
+
+					var arr_selected_for_verification = [];
+
+					// The grid renders IPD No/Block/Building/Floor/Room using the joined display
+					// columns (bookingreferencenumber, block_master, building_master, floor_master,
+					// room_master), but the "Room_Allocation_List" SQL function's ORDER BY only
+					// recognizes the underlying column names (ipdno, block, building, floor, room).
+					// Sending the display column name for sorting silently no-ops in that function,
+					// so translate it here before it goes to the API.
+					var ROOM_ALLOCATION_SORT_COLUMN_MAP = {
+						'bookingreferencenumber': 'ipdno',
+						'block_master': 'block',
+						'building_master': 'building',
+						'floor_master': 'floor',
+						'room_master': 'room'
+					};
+					function mapRoomAllocationSortColumn(columnName) {
+						return ROOM_ALLOCATION_SORT_COLUMN_MAP[columnName] || columnName;
+					}
+
+					function fill_RoomAllocation()
+					{
+
+						var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"ipdno":$("#ipdno").val(),
+								"block":$("#block").val(),
+								"building":$("#building").val(),
+								"floor":$("#floor").val(),
+								"room":$("#room").val(),
+								
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+						
+
+					
+
+					
+
+
+					
+		 dataTableId="#tblRoomAllocation";
+		 reachedEOF = false;
+		 totalRecordsCount = 0;
+		 currentPageNumber = 1;
+		 fetchingDataFromApi = false;
+	
+		var pagerControlsTemplate = "<div id='pager_container' class='dataTables_paginate'>"
+			+ "<button type='button' id='pager_btn_previous' onClick='pager_gotoPreviousPage(this);' class='paginate_button previous'>Previous</button>"
+			+ "<span>Page <input type='number' id='pager_txt_currentpage' min='1' max='^MAXPAGE^' maxlength='10' size='10' onFocus='this.oldValue=this.value;' onChange='pager_gotoPage(this);'/> of <span id='pager_lbl_pagecount'></span></span>"
+			+ "<select id='pager_ddl_pagesize' onChange='pager_pageSizeChanged(this);'>"
+			+ "<option value='50' selected>50 rows</option>"
+			+ "<option value='100'>100 rows</option>"
+			+ "<option value='200'>200 rows</option>"
+			+ "<option value='500'>500 rows</option>"
+			+ "<option value='^Everything^'>Everything</option>"
+			+ "</select>"
+			+ "<button type='button' id='pager_btn_next' onClick='pager_gotoNextPage(this);' class='paginate_button next'>Next</button>"
+			+ "</div>";
+
+	var table=$("#tblRoomAllocation").DataTable({
+	columnDefs: [{ 
+	 targets: -1,
+	 title: '<i class="fa fa-pencil fa-lg"></i>'
+  }],
+	paging:false,
+	destroy:true,
+	serverSide: true,
+	filter: true,
+	"orderMulti": false,
+	searchDelay: 2000,
+	autoWidth: false,
+	"order": [],"aaSorting": [],
+	autoWidth: !1,responsive:!0,
+	language: {
+	searchPlaceholder: "Search for records..."
+	},
+	 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+	dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+  
+	buttons: [{
+	extend: "excelHtml5",
+	title: "List Of RoomAllocation Data"
+	}, {
+	extend: "csvHtml5",
+	title: "List Of RoomAllocation Data"
+	}, {
+	extend: "print",
+	title: "List Of RoomAllocation Data"
+	}],
+ initComplete: function(a, b) {
+
+
+
+	  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+	  if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+		$(this).closest(".dataTables_wrapper").find(".dataTables_length").prepend(`
+			<i class="automatonShowFilter actions__item mdi material-icons" title="Filter" aria-label="Filter">filter_alt</i>
+		`);
+	  }
+
+var Actions=getAutho("RoomAllocation","create")
+		if(Actions != undefined){
+			var create_URL = "@Url.Action("entry.viewname", "RoomAllocation")"
+			create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+			
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`   
+
+	   
+		<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.roomallocation_roomallocationno
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_ipdno
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_block
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_building
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_floor
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_room
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_fromdate
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_todate
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_status
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+
+		 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+		</div>
+	  `.replace("create_URL", create_URL))
+}
+	$("#cma_card_tab_action_container .card-lst").remove();
+	$("#cma_card_tab_action_container_action_btn").empty()
+	$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+	   
+
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+			else{
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(` 
+		
+		
+		<div class="dataTables_buttons actions">
+		 <div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.roomallocation_roomallocationno
+ <input type="checkbox" class="colvis_switch" data-column="0" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_ipdno
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_block
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_building
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_floor
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_room
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_fromdate
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_todate
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.roomallocation_status
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+		</div>
+	  `)
+}
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+if (!$(pagerContainerId).length) {
+		$(dataTableId + '_info').parent().append(
+					pagerControlsTemplate.replace('^Everything^', totalRecordsCount).replace('^MAXPAGE^', pager_getPageCount())
+				);
+}
+				//$(dataTableId + '_info').hide();
+				$(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+				pager_setCurrentPageNumber(1);
+				pager_onPageChanged();
+
+			
+
+	}
+	 ,columns: [
+		 
+		{data: 'roomallocationno'},
+{data: 'bookingreferencenumber',
+mRender: function (data, type, row) {
+var Actions_=getAutho('IPDApplicationForm','detail')
+ if(row["bookingreferencenumber"]==null) {
+ return '-'
+}else {
+
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "IPDApplicationForm")?IPDApplicationFormid=" + row['ipdno']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["bookingreferencenumber"]+ ' - ' + row["ipdno_master"]+ '</a>'
+}else {
+
+return row['bookingreferencenumber'] + ' - ' + row['ipdno_master']
+}
+}
+}},
+{data: 'block_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('Block','detail')
+ if(row["block_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Block")?Blockid=" + row['block']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["block_master"]+ '</a>' 
+}else {
+ 
+return row['block_master'] 
+}
+}
+}},
+{data: 'building_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('Building','detail')
+ if(row["building_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Building")?Buildingid=" + row['building']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["building_master"]+ '</a>' 
+}else {
+ 
+return row['building_master'] 
+}
+}
+}},
+{data: 'floor_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('Floor','detail')
+ if(row["floor_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Floor")?Floorid=" + row['floor']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["floor_master"]+ '</a>' 
+}else {
+ 
+return row['floor_master'] 
+}
+}
+}},
+{data: 'room_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('Room','detail')
+ if(row["room_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Room")?Roomid=" + row['room']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["room_master"]+ '</a>' 
+}else {
+ 
+return row['room_master'] 
+}
+}
+}},
+{data: 'fromdate'},
+{data: 'todate'},
+{data: 'status'},
+{data: '_tenantname'},
+
+		{
+					"sName": "roomallocationid",
+					"bSearchable": false,
+					"bSortable": false,
+					data: 'roomallocationid', "className": "dt-center",
+					mRender: function(data, type, row) {
+					var Actions=getAuthoController("RoomAllocation")
+					var appendMessage='';
+					if(Actions !=undefined)
+					{
+					for (var index = 0; index < Actions.length; ++index) {
+					var entry = Actions[index];
+
+					if(entry.viewname=="delete" || entry.viewname=="remove_room_allocation" || entry.actionmethodname=="Remove_Room_Allocation")
+					continue;
+
+					if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+					var URL = "@Url.Action("entry.viewname", "RoomAllocation")?RoomAllocationid=" + row["roomallocationid"]
+					URL = URL.replace("entry.viewname", entry.actionmethodname);
+			 
+					if(entry.viewname=="delete")
+					{
+						
+						appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>' 	
+				   
+				
+					}
+					
+					else if(entry.viewname=="detail")
+					{
+						var DETAIL_URL = "@Url.Action("entry.actionmethodname", "RoomAllocation")?RoomAllocationid=" + row["roomallocationid"]
+						DETAIL_URL = DETAIL_URL.replace("entry.actionmethodname", entry.actionmethodname);
+						appendMessage+='<a href="' + DETAIL_URL + '" class="dropdown-item">View</a>' 			
+ }
+					else
+					{
+					 
+						appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>' 
+					}
+			 
+					}					 
+						 
+					}
+								
+					if(appendMessage =="")
+					{
+					return '-'
+
+					}
+					else
+					{
+					return '<div class="dropdown actions__item">' +
+					'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+					'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+		 
+
+					'</div>' +
+					'</div>'
+					}
+
+
+
+					}
+					else
+					{
+					return '-'
+
+					}
+
+
+					}
+					}
+	
+
+	 ],
+
+		ajax: function (data, callback, settings) {
+		fetchingDataFromApi = true;
+		sendFilterData.searchterm = data.search.value;
+		sendFilterData.pagesize = pageSize;
+		sendFilterData.pagenumber =  (currentPageNumber - 1);
+		var sortParams = [];
+		for (var i = 0; i < data.order.length; i++) {
+			var colIndex = data.order[i].column;
+			var sortDirection = data.order[i].dir;
+			var columnName = mapRoomAllocationSortColumn(data.columns[colIndex].data);
+
+			var sortParam = {};
+			sortParam["col"] = columnName;
+			sortParam["dir"] = sortDirection;
+
+			sortParams.push(sortParam);
+		}
+		sendFilterData.sortFieldsJson =  JSON.stringify(sortParams);
+		$.ajax({
+		url: "@Url.Action("get_Room_Allocation_List", "RoomAllocation")",
+		type: 'GET',
+		dataType: 'json',
+		data: sendFilterData,
+
+		success: function(responsedata) {
+
+				 fetchingDataFromApi = false;
+				//to let grid say no data available and all other flows get through
+				if (responsedata.detail == null) {
+					responsedata.detail = [];
+				}
+				totalRecordsCount = responsedata.count;
+				if (responsedata.detail.length < pageSize) {
+					reachedEOF = true;
+				}
+		
+				setTimeout(function () {
+				callback({
+					data: responsedata.detail,
+					recordsTotal: responsedata.count
+				  });
+				}, 50);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			fetchingDataFromApi = false;
+
+			if (JSON.stringify(jqXHR.responseText) == "API Authorization failed") {
+					swal({
+					title: 'Failed!',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+					 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function() {
+					window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+			}
+			else
+			{
+					swal({
+					title: 'Contact Administrator !',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+			}
+		}
+		});
+		},
+		"infoCallback": function(settings, start, end, max, total, pre)
+		{
+				var startRowCount = (pageSize * currentPageNumber) - pageSize + 1;
+				var endRowCount = $(dataTableId).DataTable().rows().count() + startRowCount - 1;
+				var pagingInfo = 'Showing ' + startRowCount + ' to ' + endRowCount + ' of ' + totalRecordsCount + ' entries';
+
+				return pagingInfo;
+		}
+
+
+})
+	 
+	  
+ $('body').on('click', '.ColVis_collection li', function(a) {
+	event.stopPropagation();
+  });
+ 
+ $('body').on('change', '.colvis_switch', function(a) {
+	var column = table.column($(this).attr('data-column'));
+	column.visible(!column.visible());
+  });
+
+
+ 
+
+  
+	 
+
+
+	
+
+
+							
+					}
+	  function fill_pagination(callback) {
+		if ((reachedEOF || fetchingDataFromApi) && currentPageNumber !=1) {
+			return;
+		}
+		fetchingDataFromApi = true;
+		 var order = $(dataTableId).DataTable().order();
+			var sortParams = [];
+
+			for (var i = 0; i < order.length; i++) {
+				var colIndex = order[i][0];
+				var sortDirection = order[i][1];
+				var columnName = mapRoomAllocationSortColumn($(dataTableId).DataTable().settings()[0].aoColumns[colIndex].data);
+
+				var sortParam = {
+					col: columnName,
+					dir: sortDirection
+				};
+
+				sortParams.push(sortParam);
+			}
+			var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"ipdno":$("#ipdno").val(),
+								"block":$("#block").val(),
+								"building":$("#building").val(),
+								"floor":$("#floor").val(),
+								"room":$("#room").val(),
+								
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+			sendFilterData.searchterm = $(".dt-global-search").val();
+		sendFilterData.sortFieldsJson= JSON.stringify(sortParams);
+		var currentPage = $(dataTableId).DataTable().page();
+  
+		$.ajax({
+			url: "@Url.Action("get_Room_Allocation_List", "RoomAllocation")",
+			type: 'GET',
+			dataType: 'json',
+			data: sendFilterData,
+			success: function (responsedata) {
+				if (responsedata != null && responsedata.detail.length > 0) {
+					if (responsedata.detail.length < pageSize) {
+						reachedEOF = true;
+					}
+
+					api_response_data = responsedata.detail;
+					var table = $(dataTableId).DataTable();
+					table.rows().remove();
+					table.rows.add(responsedata.detail).draw();
+				}
+				else {
+					reachedEOF = true;
+				}
+				fetchingDataFromApi = false;
+				if (callback != undefined) {
+					callback();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				fetchingDataFromApi = false;
+				if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+					swal({
+						title: 'Failed!',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+												allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function () {
+						window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+				}
+				else {
+					swal({
+						title: 'Contact Administrator !',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+				}
+			}
+		});
+
+
+	}
+
+
+
+						
+
+					$(document).ready(function () {
+					$('body').on('change', '.dt-global-search', function(event) {
+					  reachedEOF = false;
+
+					  pager_setCurrentPageNumber(1);
+					  fill_pagination(pager_onPageChanged);
+
+					  $(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+					});
+
+
+					fill_RoomAllocation()
+
+
+					var Actions=getAutho("RoomAllocation","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}
+
+
+
+
+					});
+					
+
+					$("body").on("click", "[data-table-action]", function(a) {
+					a.preventDefault();
+					var b = $(this).data("table-action");
+					console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+					if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+					var c = $(this).closest(".card");
+					c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+					}
+					});
+					</script>
+					
+					
+					
+					
+								<script>
+								$(document).ready(function () {
+								$("#tenantid").change(function(){
+								resetRoomAllocationLocationFilters();
+								initializeRoomAllocationFilters();
+								fill_RoomAllocation();
+								})
+
+								$("#block").change(function(){
+								$("#building").val("").trigger("change.select2");
+								$("#floor").empty().append("<option value=''>Choose</option>").select2();
+								$("#room").empty().append("<option value=''>Choose</option>").select2();
+								lookup_RoomAllocation_building(getRoomAllocationTenantId(), $("#block").val());
+								})
+
+								$("#building").change(function(){
+								$("#floor").val("").trigger("change.select2");
+								$("#room").empty().append("<option value=''>Choose</option>").select2();
+								lookup_RoomAllocation_floor(getRoomAllocationTenantId(), $("#block").val(), $("#building").val());
+								})
+
+								$("#floor").change(function(){
+								$("#room").val("").trigger("change.select2");
+								lookup_RoomAllocation_room(getRoomAllocationTenantId(), $("#block").val(), $("#building").val(), $("#floor").val());
+								})
+
+								$("#btnFilter").click(function(){
+								fill_RoomAllocation();
+								})
+								});
+								</script> 
+
+<script>
+
+function getRoomAllocationTenantId() {
+	return ($("#tenantid").val() ? $("#tenantid").val() : str_tenantid);
+}
+
+function getRoomAllocationIPDDisplayName(item) {
+	return [item.firstname, item.lastname].filter(function (name) {
+		return name != null && $.trim(name) != "";
+	}).join(' ');
+}
+
+function resetRoomAllocationLocationFilters() {
+	$("#ipdno").empty();
+	$("#block").empty();
+	$("#building").empty().append("<option value=''>Choose</option>").select2();
+	$("#floor").empty().append("<option value=''>Choose</option>").select2();
+	$("#room").empty().append("<option value=''>Choose</option>").select2();
+}
+
+function initializeRoomAllocationFilters() {
+	var tenantid = getRoomAllocationTenantId();
+	lookup_RoomAllocation_ipdno(tenantid);
+	lookup_RoomAllocation_block(tenantid);
+}
+
+function lookup_RoomAllocation_ipdno(tenantid) {
+	var ddltarget_ipdno = $('#ipdno');
+	ddltarget_ipdno.empty();
+	ddltarget_ipdno.select2({
+		placeholder: 'Choose',
+		allowClear: true,
+		ajax: {
+			url: '@Url.Action("lookup_RoomAllocation_ipdno")',
+			dataType: 'json',
+			data: function (params) {
+				return {
+					"tenantid": tenantid,
+					"searchterm": params.term || '',
+					"pagesize": typeof typeaheadpagesize !== "undefined" ? typeaheadpagesize : 50,
+					"pagenumber": params.page || 1
+				};
+			},
+			delay: 500,
+			processResults: function (data, params) {
+				var pageSize = typeof typeaheadpagesize !== "undefined" ? typeaheadpagesize : 50;
+				data = data || [];
+				for (var i = 0; i < data.length; i++) {
+					data[i].id = data[i].IPDApplicationFormid;
+					data[i].name = getRoomAllocationIPDDisplayName(data[i]);
+				}
+				return {
+					results: data,
+					pagination: {
+						more: data.length == pageSize
+					}
+				};
+			}
+		},
+		templateResult: function (item) {
+			return item.loading ? item.text : (item.name || item.text);
+		},
+		templateSelection: function (item) {
+			return item.name || item.text;
+		}
+	});
+}
+
+function loadRoomAllocationOptions(selector, url, data, valueField, textField) {
+	$.ajax({
+		url: url,
+		dataType: 'json',
+		data: data,
+		success: function(options) {
+			options = options || [];
+			var ddltarget = $(selector);
+			ddltarget.empty();
+			ddltarget.append("<option value=''>Choose</option>");
+			$.each(options, function(index, optionDataInner) {
+				if (optionDataInner[textField] != null) {
+					ddltarget.append('<option value="' + optionDataInner[valueField] + '">' + optionDataInner[textField] + '</option>');
+				}
+			});
+			ddltarget.select2();
+		}
+	});
+}
+
+function lookup_RoomAllocation_block(tenantid) {
+	loadRoomAllocationOptions("#block", '@Url.Action("lookup_RoomAllocation_block")', {"tenantid": tenantid}, "Blockid", "blockname");
+}
+
+function lookup_RoomAllocation_building(tenantid, block) {
+	if (!block) {
+		$("#building").empty().append("<option value=''>Choose</option>").select2();
+		return;
+	}
+	loadRoomAllocationOptions("#building", '@Url.Action("lookup_RoomAllocation_building")', {"tenantid": tenantid, "block": block}, "Buildingid", "buildingname");
+}
+
+function lookup_RoomAllocation_floor(tenantid, block, building) {
+	if (!block || !building) {
+		$("#floor").empty().append("<option value=''>Choose</option>").select2();
+		return;
+	}
+	loadRoomAllocationOptions("#floor", '@Url.Action("lookup_RoomAllocation_floor")', {"tenantid": tenantid, "block": block, "building": building}, "Floorid", "floorname");
+}
+
+function lookup_RoomAllocation_room(tenantid, block, building, floor) {
+	if (!block || !building || !floor) {
+		$("#room").empty().append("<option value=''>Choose</option>").select2();
+		return;
+	}
+	loadRoomAllocationOptions("#room", '@Url.Action("lookup_RoomAllocation_room")', {"tenantid": tenantid, "block": block, "building": building, "floor": floor}, "Roomid", "roomnumber");
+}
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+	initializeRoomAllocationFilters();
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+	initializeRoomAllocationFilters();
+}
+});
+</script>
+
+
+					
+					
+					 
+					

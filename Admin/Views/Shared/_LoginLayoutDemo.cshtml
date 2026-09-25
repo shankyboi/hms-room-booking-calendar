@@ -1,0 +1,51 @@
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in — NalamVazha</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:300italic,400italic,300,400,500,700,900' rel='stylesheet' type='text/css' />
+    <link rel="stylesheet" href="~/css/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/variables.css" />
+    <link rel="stylesheet" href="~/css/login-demo.css" />
+    <link rel="icon" type="image/x-icon" href="~/images/Logo/White-fav.svg" />
+    <script src="~/components/jquery/jquery.min.js"></script>
+    <script src="~/components/jquery/jquery.validate.js"></script>
+    <script src="~/components/jquery/additional-methods.min.js"></script>
+</head>
+<body class="demo-login-body">
+    <div class="demo-login-wrap">
+        <!-- Left: Brand panel -->
+        <aside class="demo-brand-panel">
+            <div class="demo-brand-inner">
+                <img src="@Url.Content("~/images/logo/Nalam-white-Logo.svg")" alt="NalamVazha" class="demo-brand-logo" onerror="this.style.display='none'; this.nextElementSibling?.classList.remove('demo-logo-fallback--hide');" />
+                <span class="demo-logo-fallback demo-logo-fallback--hide">NalamVazha</span>
+                <p class="demo-brand-tagline">Healthcare & wellness, rooted in tradition</p>
+                <div class="demo-brand-features">
+                    <span><i class="fa fa-shield-alt"></i> Secure access</span>
+                    <span><i class="fa fa-heart"></i> Patient-first</span>
+                    <span><i class="fa fa-leaf"></i> Holistic care</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right: Form panel -->
+        <main class="demo-form-panel">
+            <div class="demo-form-inner">
+                @RenderBody()
+                <p class="demo-build">Build @Configuration.GetSection("settings")["versionnumber"]</p>
+                <a href="@Url.Action("Login", "users")" class="demo-switch-link">← Back to standard login</a>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    @RenderSection("Scripts", required: false)
+   @*  <script src="~/js/mobile-numeric-input.js"></script> *@
+</body>
+</html>

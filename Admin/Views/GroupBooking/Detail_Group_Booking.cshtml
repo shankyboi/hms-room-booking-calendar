@@ -1,0 +1,257 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 06/18/2026 05:34:29 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.GroupBookingModel
+					@{
+					ViewData["Title"] = "Group Booking";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+						   
+							
+							<div class="row printablerow"  style="padding:20px"> 
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Group Booking</b>
+							</h3>
+				
+							<br />
+							</div>
+							<div class="col-sm-3 col-xs-12 p-2 groupcode_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="groupcode">@Resource.groupbooking_groupcode</label><br>
+										<span class="auto_cls_groupcode"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 groupname_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="groupname">@Resource.groupbooking_groupname</label><br>
+										<span class="auto_cls_groupname"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 countofmembers_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="countofmembers">@Resource.groupbooking_countofmembers</label><br>
+										<span class="auto_cls_countofmembers"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent patientinfoContainerBodyParent hide"><!--Dependent Patient Info Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.patientinfo
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="patientinfoContainer" class="table table-bordered mb-0 patientinfoContainer">
+							<thead id="patientinfoContainerHead">
+								<th>Name</th>
+<th>Email ID</th>
+<th>Phone Number</th>
+
+
+							</thead>
+							
+							<tbody id="patientinfoContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Patient Info Containder Block-->
+			 
+			
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent contactsContainerBodyParent hide"><!--Dependent Contacts Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.contacts
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="contactsContainer" class="table table-bordered mb-0 contactsContainer">
+							<thead id="contactsContainerHead">
+								<th>Person</th>
+<th>Mobile</th>
+<th>Email</th>
+
+
+							</thead>
+							
+							<tbody id="contactsContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Contacts Containder Block-->
+			 
+			
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('GroupBooking.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_GroupBooking_view_data(){
+
+					   var  GroupBookingid = getUrlVars()["GroupBookingid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_GroupBooking")',
+												dataType: 'json',
+												data:{GroupBookingid: GroupBookingid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='automaton_GroupBooking_patientinfo'){
+																			$('#patientinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + GroupBookingid +'&section=automaton_GroupBooking_patientinfo_history'
+																					 $(".patientinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("GroupBooking","versionhistory")
+																				if(Actions == undefined){
+																				$("patientinfoauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.patientinfoContainerBodyParent').removeClass('hide')      
+																			   $('#patientinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.patientinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_GroupBooking_contacts'){
+																			$('#contactsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + GroupBookingid +'&section=automaton_GroupBooking_contacts_history'
+																					 $(".contactsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("GroupBooking","versionhistory")
+																				if(Actions == undefined){
+																				$("contactsauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.contactsContainerBodyParent').removeClass('hide')      
+																			   $('#contactsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.contactsContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_GroupBooking_view_data()
+
+
+					/*var Actions=getAutho("GroupBooking","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						
+						$(document).ready(function () {
+							
+						});
+					</script>
+					
+					
+					

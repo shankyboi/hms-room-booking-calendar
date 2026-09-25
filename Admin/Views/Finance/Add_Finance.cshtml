@@ -1,0 +1,2753 @@
+
+			<!-- This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 08/03/2026 10:01:34 -->
+			@using Microsoft.AspNetCore.Http
+			@inject IHttpContextAccessor HttpContextAccessor
+			@using Microsoft.Extensions.Configuration
+			@inject IConfiguration Configuration
+			@using Admin;
+			@model NalamVazha.Models.FinanceModel
+			@{
+			ViewData["Title"] = @Resource.addfinance;
+
+			Layout = "~/Views/Shared/_Layout.cshtml";
+			
+			}
+
+			@using(Html.BeginForm("Add_Finance", "Finance", FormMethod.Post, new { enctype="multipart/form-data", @id = "formId"}))
+			{
+
+			<div class="card card-block contCard"><!--Form_Main_Card-->
+				<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+						<div class="col-sm-12 col-xs-12">
+							<h4 class="formHdr">@Resource.addfinance</h4>
+						</div>
+					</div>
+				</div><!--form_card_header-->
+				<!--form_error_display-->
+				@if(ViewData["message"] != null)
+				{
+				<div class="row">
+				<div class="col-sm-12 col-xs-12">
+				<div class="alert alert-danger alert-dismissible ">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">x</span>
+				</button>
+				Info :  @ViewData["message"]
+				</div>
+				</div>
+				</div>
+				}
+				
+				
+				 
+				
+				<!--form_error_display-->
+				<div class=""><!--form_inner_card-->
+					<div class="card-block"><!--form_inner_card_block-->
+						@Html.HiddenFor(m => m.Financeid)
+						    
+						 
+
+						
+						<div class="row"><!--field_container_row-->
+							<!--fieldsStartsHere-->
+							   <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+						<div>
+						<div class="form-group form-group--float-above my-3" > 
+						<label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+						<select name="tenantid" id="tenantid" class="form-control tenant_display">
+						</select>
+						<i class="form-group__bar"></i>
+						</div>
+						
+						<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+						</div>
+						</div>		
+								<div class="col-sm-3 col-xs-12 p-2 paymentdate_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paymentdate">@Resource.finance_paymentdate</label>
+										<select name="paymentdate" id="paymentdate" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.paymentdate)
+									<div id="paymentdate-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 paymentmode_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paymentmode">@Resource.finance_paymentmode</label>
+										<select name="paymentmode" id="paymentmode" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.paymentmode)
+									<div id="paymentmode-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 receiptnumber_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="receiptnumber">@Resource.finance_receiptnumber</label>
+										<select name="receiptnumber" id="receiptnumber" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.receiptnumber)
+									<div id="receiptnumber-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 patient_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patient">@Resource.finance_patient</label>
+										<select name="patient" id="patient" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patient)
+									<div id="patient-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 receivablefor_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="receivablefor">@Resource.finance_receivablefor</label>
+										<select name="receivablefor" id="receivablefor" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.receivablefor)
+									<div id="receivablefor-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 bookingreferencenumber_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="bookingreferencenumber">@Resource.finance_bookingreferencenumber</label>
+										<select name="bookingreferencenumber" id="bookingreferencenumber" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.bookingreferencenumber)
+									<div id="bookingreferencenumber-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 billedamount_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="billedamount">@Resource.finance_billedamount</label>
+										<select name="billedamount" id="billedamount" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.billedamount)
+									<div id="billedamount-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 receivedamount_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="receivedamount">@Resource.finance_receivedamount</label>
+										<select name="receivedamount" id="receivedamount" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.receivedamount)
+									<div id="receivedamount-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 pendingamount_craftmyapp_container">
+						<div>
+							<div class="form-group" > 
+								<label for="pendingamount">@Resource.finance_pendingamount</label>
+								@Html.TextBoxFor(m => m.pendingamount, new {@type="text",@min="0",@max="99999999", @class = "form-control form-control-lg " })
+
+								 @Html.ValidationMessageFor(model => model.pendingamount)
+							</div>
+						</div>
+					</div>
+<div class="col-sm-3 col-xs-12 p-2 paymentstatus_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="paymentstatus">@Resource.finance_paymentstatus</label>
+										<select name="paymentstatus" id="paymentstatus" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.paymentstatus)
+									<div id="paymentstatus-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 collectedby_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="collectedby">@Resource.finance_collectedby</label>
+										<select name="collectedby" id="collectedby" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.collectedby)
+									<div id="collectedby-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 refundmode_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="refundmode">@Resource.finance_refundmode</label>
+										<select name="refundmode" id="refundmode" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.refundmode)
+									<div id="refundmode-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 refundedamount_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="refundedamount">@Resource.finance_refundedamount</label>
+										<select name="refundedamount" id="refundedamount" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.refundedamount)
+									<div id="refundedamount-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 refundedby_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="refundedby">@Resource.finance_refundedby</label>
+										<select name="refundedby" id="refundedby" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.refundedby)
+									<div id="refundedby-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 remarks_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="remarks">@Resource.finance_remarks</label>
+										<select name="remarks" id="remarks" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.remarks)
+									<div id="remarks-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+
+
+							<!--fieldsEndsHere-->	
+						</div><!--field_container_row-->
+
+
+						<div class="card-block"><!--form_button_card_block-->
+							<button type="button" onclick="window.location.href = document.referrer"  class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+							<button type="button" id="btnSubmit" class="btn cma_primary_button  cma_save_button waves-effect pull-right">@Resource.addfinance</button>
+						</div><!--form_button_card_block-->
+
+
+					</div><!--form_inner_card_block-->
+				</div><!--form_inner_card-->
+			</div><!--Form_Main_Card-->
+
+			}<!--EndFORM-->
+
+
+			
+			 <!--from_cma_script-->
+			 <script type="text/javascript">
+				$(document).ready(function () {
+
+
+				var Actions=getAutho("Finance","create")
+				if(Actions == undefined){
+				window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+				}
+
+
+				});
+				</script>
+			
+			<script>
+$(document).ready(function () {
+$("#pendingamount").autoNumeric('init',{aSep: '',vMin: '0',vMax: '99999999'})
+})
+</script>
+
+			
+			
+			 
+@if (Model != null)
+{
+<script>
+str_tenantid = "@Model.tenantid"
+</script>
+}
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+			
+			<script>
+			
+			
+			
+			</script>
+			
+  
+ 
+							<script>
+							var posturl='';
+							</script>
+
+							 @if (Model == null)
+							 {
+								 <script>
+								posturl = '@Url.Action("Add_Finance")';
+								$('.error-file').hide()
+								</script>
+							}else{
+	   
+									<script>
+												   posturl = '@Url.Action("Update_Finance")';
+			 
+														  </script>    			              
+							  
+	 
+														ViewData["Title"] = @Resource.updatefinance;
+														 <script>
+				   
+													 $("#btnSubmit").html("@Resource.updatefinance")
+														  </script>    
+ 
+ 
+							}
+
+<script>
+$(document).ready(function () {
+	
+	
+		   
+				$.validator.addMethod("invalidphone", function (value, element) {
+				if (value == 'invalid') {
+				return false;
+				}
+				return true;
+				}, "Please enter valid value");
+
+										$('#formId').validate({
+										ignore: ":hidden:not(.invalidphone)",
+										highlight: function(element) {
+										$(element).closest('.form-group').addClass('has-error');
+										$(element).closest('.form-group').removeClass('has-success');
+										$(element).addClass('form-control-error');
+										$(element).removeClass('form-control-success');
+										},
+										unhighlight: function(element) {
+										$(element).closest('.form-group').removeClass('has-error');
+										$(element).closest('.form-group').addClass('has-success');
+										$(element).addClass('form-control-success');
+										$(element).removeClass('form-control-error');
+										},
+										errorElement: 'span',
+										errorClass: 'help-block',
+										errorPlacement: function (error, element) {
+													if (element.hasClass("invalidphone")) {
+															error.addClass("invalidphoneerror");
+															error.insertAfter(element);
+														} else {
+															error.insertAfter(element);
+														}
+												}
+										});
+	 
+var validator = $("#formId").validate({ /* settings */ });
+ 
+$("#btnSubmit").click(function(){
+ 
+ 
+ 
+
+ 
+ 
+
+if ($("#formId").valid()){
+ $(".page-loader").show()
+ 
+ var form = $('#formId')[0];
+ var formdata = new FormData(form);
+
+ 
+
+ 
+ 
+ if (!validateFormDataFiles(formdata)) {
+				$(".page-loader").hide();
+				return false;
+			}
+ 
+
+ 
+$.ajax({
+url: posturl,
+type:'POST',
+enctype: 'multipart/form-data',
+processData: false,   
+contentType: false,
+cache: false,
+data: formdata,
+success: function(data) {
+  
+  $(".page-loader").hide();
+ if(data=="Success"){
+ $(".page-loader").hide();
+
+	var Actions_=getAutho("Finance","list")
+	if(Actions_ !=  undefined)
+	{
+		var list_URL = "@Url.Action("entry.viewname", "Finance")"
+																		list_URL = list_URL.replace("entry.viewname", Actions_.actionmethodname);
+																		window.location=list_URL;
+	 
+	}
+   
+ }
+	
+else if(data=="Session Expired"){
+
+			  swal({
+										title: "Error !!",
+										text: data,
+										type: "error",
+										showCancelButton: false,
+										confirmButtonText: "OK",
+										allowOutsideClick: false,
+										allowEscapeKey: false,
+										allowEnterKey: false
+										}).then(function() {
+										 window.location = "@Url.Action("Logout", "users")"		})
+					 
+		 }
+	else {
+								$(".page-loader").hide();
+								swal({
+									title: "Error !!",
+									text: data,
+
+									type: "error",
+									showCancelButton: false,
+									confirmButtonText: "OK",
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+								})
+
+
+							}
+
+ 
+},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	}) 
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+	}) 
+	}
+	}
+})
+
+
+
+
+}else{
+validator.focusInvalid();
+swal({
+title: 'Validation Failed !',
+text: "Please check your entry",
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+ })
+}
+})
+})
+
+function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+			function validateFormDataFiles(formdata) {
+		const MAX_FILE_SIZE =@Configuration.GetSection("FileUploadSettings")["MultipartBodyFileLimit"]; 
+			const MAX_TOTAL_SIZE = @Configuration.GetSection("FileUploadSettings")["MultipartBodyTotalLimit"]; 
+
+		let totalSize = 0;
+		let fileCount = 0;
+		let largeFiles = [];
+
+		// Iterate through all entries in FormData
+		for (let [key, value] of formdata.entries()) {
+			if (value instanceof File) {
+				fileCount++;
+				totalSize += value.size;
+
+				if (value.size > MAX_FILE_SIZE) {
+					largeFiles.push({
+						name: value.name,
+						size: value.size,
+						field: key
+					});
+				}
+			}
+		}
+
+		// No files uploaded
+		if (fileCount === 0) {
+			return true;
+		}
+
+		// Check for oversized individual files
+		if (largeFiles.length > 0) {
+			let fileList = largeFiles.map(file =>
+				`<li style="text-align: left; margin-bottom: 8px; font-family: inherit;">
+					<span style="font-weight: bold; font-family: inherit;">${file.name}</span><br>
+					<span style="color: #e74c3c; font-size: 0.9em; font-family: inherit;">Size: ${formatFileSize(file.size)}</span>
+				</li>`
+			).join('');
+
+			swal({
+				icon: 'error',
+				title: 'File Too Large',
+				html: `
+					<div style="text-align: left; font-family: inherit;">
+						<p style="margin-bottom: 15px; font-family: inherit;">The following files exceed the maximum allowed size of <strong style="font-family: inherit;">${formatFileSize(MAX_FILE_SIZE)}</strong>:</p>
+						<ul style="padding-left: 20px; margin-bottom: 20px; font-family: inherit;">
+							${fileList}
+						</ul>
+						<p style="color: #7f8c8d; font-size: 0.9em; font-family: inherit;">Please reduce the file sizes and try again.</p>
+					</div>
+				`,
+				confirmButtonText: 'Cancel',
+				confirmButtonColor: '#e74c3c',
+				width: '600px'
+				
+			});
+			return false;
+		}
+
+		// Check total size
+		if (totalSize > MAX_TOTAL_SIZE) {
+			const oversizeAmount = totalSize - MAX_TOTAL_SIZE;
+
+			swal({
+				icon: 'warning',
+				title: 'Total Upload Size Exceeded',
+				html: `
+					<div style="text-align: center; font-family: inherit;">
+						<div style="font-size: 3rem; color: #f39c12; margin-bottom: 15px;">📦</div>
+						<p style="margin-bottom: 10px; font-family: inherit;">You are trying to upload <strong style="font-family: inherit;">${fileCount} files</strong> with total size of:</p>
+						<h3 style="color: #e74c3c; margin: 15px 0; font-family: inherit;">${formatFileSize(totalSize)}</h3>
+						<p style="margin-bottom: 15px; font-family: inherit;">Maximum allowed total size is:</p>
+						<h3 style="color: #27ae60; margin: 15px 0; font-family: inherit;">${formatFileSize(MAX_TOTAL_SIZE)}</h3>
+						<p style="color: #e74c3c; font-weight: bold; margin-top: 20px; font-family: inherit;">
+							You need to reduce by: ${formatFileSize(oversizeAmount)}
+						</p>
+					</div>
+				`,
+				confirmButtonText: 'Reduce File Sizes',
+				confirmButtonColor: '#f39c12',
+				width: '500px',
+				
+			});
+			return false;
+		}
+
+		return true;
+	}
+
+
+</script>
+
+
+			
+			
+			
+			
+
+			 
+			 
+			    
+
+
+
+			 <!--to_cma_script-->
+			
+					<script>
+					var strpaymentdate;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.paymentdate != null && Model.paymentdate.ToString() != "")
+							{
+							<script>
+								 strpaymentdate="@Model.paymentdate"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_paymentdate(tenantid) {
+
+					var ddltarget_paymentdate = $('#paymentdate');
+					ddltarget_paymentdate.empty();;
+					ddltarget_paymentdate.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_paymentdate")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.paymentdate !== null);
+									data.sort((a, b) =>
+										String(a.paymentdate).toLowerCase().localeCompare(String(b.paymentdate).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].paymentdate;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_paymentdate,
+						 templateSelection: formatSelectSelected_lookup_Finance_paymentdate
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpaymentdate || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_paymentdate")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strpaymentdate) {
+											var option = new Option(data[i].paymentdate,data[i].BillingPaymentid, true, true);
+											ddltarget_paymentdate.append(option).trigger('update');
+
+											ddltarget_paymentdate.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_paymentdate(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.paymentdate) {
+						var textValue = item.paymentdate
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_paymentdate(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.paymentdate;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_paymentdate(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strpaymentmode;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.paymentmode != null && Model.paymentmode.ToString() != "")
+							{
+							<script>
+								 strpaymentmode="@Model.paymentmode"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_paymentmode(tenantid) {
+
+					var ddltarget_paymentmode = $('#paymentmode');
+					ddltarget_paymentmode.empty();;
+					ddltarget_paymentmode.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_paymentmode")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.paymentmode !== null);
+									data.sort((a, b) =>
+										String(a.paymentmode).toLowerCase().localeCompare(String(b.paymentmode).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].paymentmode;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_paymentmode,
+						 templateSelection: formatSelectSelected_lookup_Finance_paymentmode
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpaymentmode || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_paymentmode")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strpaymentmode) {
+											var option = new Option(data[i].paymentmode,data[i].BillingPaymentid, true, true);
+											ddltarget_paymentmode.append(option).trigger('update');
+
+											ddltarget_paymentmode.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_paymentmode(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.paymentmode) {
+						var textValue = item.paymentmode
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_paymentmode(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.paymentmode;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_paymentmode(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strreceiptnumber;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.receiptnumber != null && Model.receiptnumber.ToString() != "")
+							{
+							<script>
+								 strreceiptnumber="@Model.receiptnumber"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_receiptnumber(tenantid) {
+
+					var ddltarget_receiptnumber = $('#receiptnumber');
+					ddltarget_receiptnumber.empty();;
+					ddltarget_receiptnumber.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_receiptnumber")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.receivableno !== null);
+									data.sort((a, b) =>
+										String(a.receivableno).toLowerCase().localeCompare(String(b.receivableno).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].Receivableid;
+									data[i].name = data[i].receivableno;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_receiptnumber,
+						 templateSelection: formatSelectSelected_lookup_Finance_receiptnumber
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strreceiptnumber || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_receiptnumber")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].Receivableid == strreceiptnumber) {
+											var option = new Option(data[i].receivableno,data[i].Receivableid, true, true);
+											ddltarget_receiptnumber.append(option).trigger('update');
+
+											ddltarget_receiptnumber.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_receiptnumber(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.receivableno) {
+						var textValue = item.receivableno
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_receiptnumber(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.receivableno;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_receiptnumber(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strpatient;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patient != null && Model.patient.ToString() != "")
+							{
+							<script>
+								 strpatient="@Model.patient"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_patient(tenantid) {
+
+					var ddltarget_patient = $('#patient');
+					ddltarget_patient.empty();;
+					ddltarget_patient.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_patient")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientProfileid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_patient,
+						 templateSelection: formatSelectSelected_lookup_Finance_patient
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatient || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_patient")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientProfileid == strpatient) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname,data[i].PatientProfileid, true, true);
+											ddltarget_patient.append(option).trigger('update');
+
+											ddltarget_patient.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_patient(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname) {
+						var textValue = item.firstname+ ' ' + item.lastname
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_patient(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_patient(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strreceivablefor;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.receivablefor != null && Model.receivablefor.ToString() != "")
+							{
+							<script>
+								 strreceivablefor="@Model.receivablefor"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_receivablefor(tenantid,patient) {
+
+					var ddltarget_receivablefor = $('#receivablefor');
+					ddltarget_receivablefor.empty();;
+					ddltarget_receivablefor.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_receivablefor")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.receivablefor !== null);
+									data.sort((a, b) =>
+										String(a.receivablefor).toLowerCase().localeCompare(String(b.receivablefor).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].receivablefor;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_receivablefor,
+						 templateSelection: formatSelectSelected_lookup_Finance_receivablefor
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strreceivablefor || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_receivablefor")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strreceivablefor) {
+											var option = new Option(data[i].receivablefor,data[i].BillingPaymentid, true, true);
+											ddltarget_receivablefor.append(option).trigger('update');
+
+											ddltarget_receivablefor.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_receivablefor(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.receivablefor) {
+						var textValue = item.receivablefor
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_receivablefor(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.receivablefor;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_receivablefor(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_receivablefor($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strbookingreferencenumber;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.bookingreferencenumber != null && Model.bookingreferencenumber.ToString() != "")
+							{
+							<script>
+								 strbookingreferencenumber="@Model.bookingreferencenumber"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_bookingreferencenumber(tenantid,patient) {
+
+					var ddltarget_bookingreferencenumber = $('#bookingreferencenumber');
+					ddltarget_bookingreferencenumber.empty();;
+					ddltarget_bookingreferencenumber.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_bookingreferencenumber")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.ipdnumber !== null);
+									data.sort((a, b) =>
+										String(a.ipdnumber).toLowerCase().localeCompare(String(b.ipdnumber).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].ipdnumber+ ' ' + data[i].opdnumber;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_bookingreferencenumber,
+						 templateSelection: formatSelectSelected_lookup_Finance_bookingreferencenumber
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strbookingreferencenumber || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_bookingreferencenumber")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strbookingreferencenumber) {
+											var option = new Option(data[i].ipdnumber+ ' ' + data[i].opdnumber,data[i].BillingPaymentid, true, true);
+											ddltarget_bookingreferencenumber.append(option).trigger('update');
+
+											ddltarget_bookingreferencenumber.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_bookingreferencenumber(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.ipdnumber+ ' ' + item.opdnumber) {
+						var textValue = item.ipdnumber+ ' ' + item.opdnumber
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_bookingreferencenumber(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.ipdnumber+ ' ' + item.opdnumber;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_bookingreferencenumber(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_bookingreferencenumber($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strbilledamount;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.billedamount != null && Model.billedamount.ToString() != "")
+							{
+							<script>
+								 strbilledamount="@Model.billedamount"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_billedamount(tenantid,patient) {
+
+					var ddltarget_billedamount = $('#billedamount');
+					ddltarget_billedamount.empty();;
+					ddltarget_billedamount.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_billedamount")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.amount !== null);
+									data.sort((a, b) =>
+										String(a.amount).toLowerCase().localeCompare(String(b.amount).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].amount;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_billedamount,
+						 templateSelection: formatSelectSelected_lookup_Finance_billedamount
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strbilledamount || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_billedamount")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strbilledamount) {
+											var option = new Option(data[i].amount,data[i].BillingPaymentid, true, true);
+											ddltarget_billedamount.append(option).trigger('update');
+
+											ddltarget_billedamount.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_billedamount(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.amount) {
+						var textValue = item.amount
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_billedamount(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.amount;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_billedamount(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_billedamount($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strreceivedamount;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.receivedamount != null && Model.receivedamount.ToString() != "")
+							{
+							<script>
+								 strreceivedamount="@Model.receivedamount"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_receivedamount(tenantid,patient) {
+
+					var ddltarget_receivedamount = $('#receivedamount');
+					ddltarget_receivedamount.empty();;
+					ddltarget_receivedamount.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_receivedamount")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.receivedamount !== null);
+									data.sort((a, b) =>
+										String(a.receivedamount).toLowerCase().localeCompare(String(b.receivedamount).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].receivedamount;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_receivedamount,
+						 templateSelection: formatSelectSelected_lookup_Finance_receivedamount
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strreceivedamount || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_receivedamount")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strreceivedamount) {
+											var option = new Option(data[i].receivedamount,data[i].BillingPaymentid, true, true);
+											ddltarget_receivedamount.append(option).trigger('update');
+
+											ddltarget_receivedamount.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_receivedamount(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.receivedamount) {
+						var textValue = item.receivedamount
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_receivedamount(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.receivedamount;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_receivedamount(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_receivedamount($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strpaymentstatus;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.paymentstatus != null && Model.paymentstatus.ToString() != "")
+							{
+							<script>
+								 strpaymentstatus="@Model.paymentstatus"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_paymentstatus(tenantid,patient) {
+
+					var ddltarget_paymentstatus = $('#paymentstatus');
+					ddltarget_paymentstatus.empty();;
+					ddltarget_paymentstatus.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_paymentstatus")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.paymentstatus !== null);
+									data.sort((a, b) =>
+										String(a.paymentstatus).toLowerCase().localeCompare(String(b.paymentstatus).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].paymentstatus;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_paymentstatus,
+						 templateSelection: formatSelectSelected_lookup_Finance_paymentstatus
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strpaymentstatus || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_paymentstatus")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strpaymentstatus) {
+											var option = new Option(data[i].paymentstatus,data[i].BillingPaymentid, true, true);
+											ddltarget_paymentstatus.append(option).trigger('update');
+
+											ddltarget_paymentstatus.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_paymentstatus(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.paymentstatus) {
+						var textValue = item.paymentstatus
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_paymentstatus(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.paymentstatus;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_paymentstatus(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_paymentstatus($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strcollectedby;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.collectedby != null && Model.collectedby.ToString() != "")
+							{
+							<script>
+								 strcollectedby="@Model.collectedby"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_collectedby(tenantid,patient) {
+
+					var ddltarget_collectedby = $('#collectedby');
+					ddltarget_collectedby.empty();;
+					ddltarget_collectedby.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_collectedby")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.collectedby !== null);
+									data.sort((a, b) =>
+										String(a.collectedby).toLowerCase().localeCompare(String(b.collectedby).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].collectedby;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_collectedby,
+						 templateSelection: formatSelectSelected_lookup_Finance_collectedby
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strcollectedby || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_collectedby")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strcollectedby) {
+											var option = new Option(data[i].collectedby,data[i].BillingPaymentid, true, true);
+											ddltarget_collectedby.append(option).trigger('update');
+
+											ddltarget_collectedby.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_collectedby(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.collectedby) {
+						var textValue = item.collectedby
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_collectedby(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.collectedby;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_collectedby(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_collectedby($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strrefundmode;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.refundmode != null && Model.refundmode.ToString() != "")
+							{
+							<script>
+								 strrefundmode="@Model.refundmode"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_refundmode(tenantid,patient) {
+
+					var ddltarget_refundmode = $('#refundmode');
+					ddltarget_refundmode.empty();;
+					ddltarget_refundmode.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_refundmode")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.refundmode !== null);
+									data.sort((a, b) =>
+										String(a.refundmode).toLowerCase().localeCompare(String(b.refundmode).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].refundmode;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_refundmode,
+						 templateSelection: formatSelectSelected_lookup_Finance_refundmode
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strrefundmode || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_refundmode")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strrefundmode) {
+											var option = new Option(data[i].refundmode,data[i].BillingPaymentid, true, true);
+											ddltarget_refundmode.append(option).trigger('update');
+
+											ddltarget_refundmode.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_refundmode(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.refundmode) {
+						var textValue = item.refundmode
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_refundmode(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.refundmode;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_refundmode(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_refundmode($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strrefundedamount;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.refundedamount != null && Model.refundedamount.ToString() != "")
+							{
+							<script>
+								 strrefundedamount="@Model.refundedamount"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_refundedamount(tenantid,patient) {
+
+					var ddltarget_refundedamount = $('#refundedamount');
+					ddltarget_refundedamount.empty();;
+					ddltarget_refundedamount.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_refundedamount")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.refundedamount !== null);
+									data.sort((a, b) =>
+										String(a.refundedamount).toLowerCase().localeCompare(String(b.refundedamount).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].refundedamount;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_refundedamount,
+						 templateSelection: formatSelectSelected_lookup_Finance_refundedamount
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strrefundedamount || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_refundedamount")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strrefundedamount) {
+											var option = new Option(data[i].refundedamount,data[i].BillingPaymentid, true, true);
+											ddltarget_refundedamount.append(option).trigger('update');
+
+											ddltarget_refundedamount.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_refundedamount(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.refundedamount) {
+						var textValue = item.refundedamount
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_refundedamount(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.refundedamount;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_refundedamount(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_refundedamount($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strrefundedby;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.refundedby != null && Model.refundedby.ToString() != "")
+							{
+							<script>
+								 strrefundedby="@Model.refundedby"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_refundedby(tenantid,patient) {
+
+					var ddltarget_refundedby = $('#refundedby');
+					ddltarget_refundedby.empty();;
+					ddltarget_refundedby.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_refundedby")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.refundedby !== null);
+									data.sort((a, b) =>
+										String(a.refundedby).toLowerCase().localeCompare(String(b.refundedby).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].refundedby;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_refundedby,
+						 templateSelection: formatSelectSelected_lookup_Finance_refundedby
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strrefundedby || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_refundedby")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strrefundedby) {
+											var option = new Option(data[i].refundedby,data[i].BillingPaymentid, true, true);
+											ddltarget_refundedby.append(option).trigger('update');
+
+											ddltarget_refundedby.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_refundedby(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.refundedby) {
+						var textValue = item.refundedby
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_refundedby(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.refundedby;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_refundedby(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_refundedby($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+					<script>
+					var strremarks;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.remarks != null && Model.remarks.ToString() != "")
+							{
+							<script>
+								 strremarks="@Model.remarks"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_Finance_remarks(tenantid,patient) {
+
+					var ddltarget_remarks = $('#remarks');
+					ddltarget_remarks.empty();;
+					ddltarget_remarks.select2({
+						ajax: {
+							url: '@Url.Action("lookup_Finance_remarks")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.remarks !== null);
+									data.sort((a, b) =>
+										String(a.remarks).toLowerCase().localeCompare(String(b.remarks).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].BillingPaymentid;
+									data[i].name = data[i].remarks;
+								}
+								return {
+									results: data,
+									pagination: {
+										more: data != null && data.length == typeaheadpagesize
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_Finance_remarks,
+						 templateSelection: formatSelectSelected_lookup_Finance_remarks
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+"patient":patient,
+
+									'searchterm': strremarks || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_Finance_remarks")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].BillingPaymentid == strremarks) {
+											var option = new Option(data[i].remarks,data[i].BillingPaymentid, true, true);
+											ddltarget_remarks.append(option).trigger('update');
+
+											ddltarget_remarks.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_Finance_remarks(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.text != "") {
+						var textValue = item.text;
+					}
+					else if (item.remarks) {
+						var textValue = item.remarks
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_Finance_remarks(item) {
+					if (item.loading) {
+						return item.text;
+					}
+
+					var textValue = item.remarks;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_Finance_remarks(str_tenantid,strpatient)
+								}, 3000)
+							
+							$("#patient").change(function(){
+									 
+										 
+									  
+									 
+										lookup_Finance_remarks($("#tenantid").val(),$("#patient").val()) 
+									   
+								   
+
+
+									})
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_Finance_paymentdate($("#tenantid").val())
+lookup_Finance_paymentmode($("#tenantid").val())
+lookup_Finance_receiptnumber($("#tenantid").val())
+lookup_Finance_patient($("#tenantid").val())
+lookup_Finance_receivablefor($("#tenantid").val(),$("#patient").val())
+lookup_Finance_bookingreferencenumber($("#tenantid").val(),$("#patient").val())
+lookup_Finance_billedamount($("#tenantid").val(),$("#patient").val())
+lookup_Finance_receivedamount($("#tenantid").val(),$("#patient").val())
+lookup_Finance_paymentstatus($("#tenantid").val(),$("#patient").val())
+lookup_Finance_collectedby($("#tenantid").val(),$("#patient").val())
+lookup_Finance_refundmode($("#tenantid").val(),$("#patient").val())
+lookup_Finance_refundedamount($("#tenantid").val(),$("#patient").val())
+lookup_Finance_refundedby($("#tenantid").val(),$("#patient").val())
+lookup_Finance_remarks($("#tenantid").val(),$("#patient").val())
+
+						})
+					
+
+					});
+					</script>
+
+
+
+

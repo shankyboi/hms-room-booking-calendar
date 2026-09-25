@@ -1,0 +1,490 @@
+@using Microsoft.AspNetCore.Http
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Intern Doctor Dashboard";
+    var uname = Context.Session.GetString("NalamVazhaloggedinusername") ?? "Intern Doctor";
+}
+
+<style>
+    /* ══════════════════════════════════════════════════════════════════
+       Intern Doctor Dashboard
+       ══════════════════════════════════════════════════════════════════ */
+    :root {
+        --id-green:  #2d5f44;
+        --id-teal:   #0f766e;
+        --id-amber:  #d97706;
+        --id-red:    #dc2626;
+        --id-purple: #7c3aed;
+        --id-blue:   #1d4ed8;
+    }
+
+    .id-wrap { padding: 0 0 40px; }
+
+    /* ── Header ── */
+    .id-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        margin-top: 12px;
+        padding-bottom: 14px;
+        border-bottom: 2px solid #e2e8f0;
+    }
+    .id-header__avatar {
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        background: var(--id-teal);
+        color: #fff;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 18px; font-weight: 700;
+        flex-shrink: 0;
+    }
+    .id-header__title {
+        font-size: 20px; font-weight: 700; color: #1e293b; flex: 1;
+    }
+    .id-header__title small {
+        font-size: 14px; font-weight: 400; color: #64748b; margin-left: 6px;
+    }
+    .id-header__badge {
+        background: var(--id-teal); color: #fff;
+        font-size: 11px; font-weight: 600;
+        padding: 4px 10px; border-radius: 20px;
+        letter-spacing: .4px;
+    }
+
+    /* ── Stat cards ── */
+    .id-stats {
+        display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;
+    }
+    .id-stat {
+        background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+        padding: 14px 20px; min-width: 130px; text-align: center;
+        box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    }
+    .id-stat__val { font-size: 26px; font-weight: 700; color: #1e293b; }
+    .id-stat__lbl { font-size: 11px; color: #64748b; margin-top: 2px; text-transform: uppercase; letter-spacing: .5px; }
+    .id-stat--pending .id-stat__val { color: var(--id-amber); }
+    .id-stat--done    .id-stat__val { color: var(--id-teal); }
+
+    /* ── Toolbar ── */
+    .id-toolbar {
+        display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+        margin-bottom: 14px;
+    }
+    .id-toolbar__title {
+        font-size: 15px; font-weight: 700; color: #1e293b;
+        display: flex; align-items: center; gap: 6px; flex: 1;
+    }
+    .id-toolbar__title i { color: var(--id-teal); }
+    .id-search {
+        display: flex; align-items: center; gap: 6px;
+        background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;
+        padding: 6px 12px; min-width: 240px;
+    }
+    .id-search i { color: #94a3b8; font-size: 13px; }
+    .id-search input {
+        border: none; background: transparent; outline: none;
+        font-size: 13px; color: #1e293b; width: 100%;
+    }
+    .id-filter-select {
+        border: 1px solid #e2e8f0; border-radius: 8px;
+        background: #f8fafc; padding: 6px 10px;
+        font-size: 13px; color: #334155; outline: none; cursor: pointer;
+    }
+    .id-refresh-btn {
+        display: flex; align-items: center; gap: 6px;
+        background: var(--id-teal); color: #fff; border: none; border-radius: 8px;
+        padding: 7px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+    .id-refresh-btn:hover { background: #0d6460; }
+
+    /* ── Table card ── */
+    .id-card {
+        background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+        box-shadow: 0 1px 4px rgba(0,0,0,.07); overflow: hidden;
+    }
+    .id-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .id-table thead { background: #f1f5f9; }
+    .id-table th {
+        padding: 11px 14px; text-align: left;
+        font-size: 11px; font-weight: 700; color: #475569;
+        text-transform: uppercase; letter-spacing: .6px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .id-table td {
+        padding: 13px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle;
+    }
+    .id-table tbody tr:last-child td { border-bottom: none; }
+    .id-table tbody tr:hover { background: #fafbfc; }
+
+    /* ── Patient cell ── */
+    .id-patient { display: flex; align-items: center; gap: 10px; }
+    .id-avatar {
+        width: 34px; height: 34px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .id-avatar--m { background: #3b82f6; }
+    .id-avatar--f { background: #ec4899; }
+    .id-patient__name { font-weight: 600; color: #1e293b; }
+    .id-patient__meta { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+    /* ── Status pills ── */
+    .id-pill {
+        display: inline-block; border-radius: 20px; font-size: 11px; font-weight: 600;
+        padding: 3px 10px; white-space: nowrap;
+    }
+    .id-pill--amber  { background: #fef3c7; color: #92400e; }
+    .id-pill--green  { background: #dcfce7; color: #166534; }
+    .id-pill--blue   { background: #dbeafe; color: #1e40af; }
+    .id-pill--teal   { background: #ccfbf1; color: #0f5a52; }
+    .id-pill--purple { background: #ede9fe; color: #5b21b6; }
+    .id-pill--red    { background: #fee2e2; color: #991b1b; }
+    .id-pill--gray   { background: #f1f5f9; color: #475569; }
+
+    /* ── Action buttons ── */
+    .id-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .id-act {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 6px 12px; border-radius: 7px; font-size: 12px; font-weight: 600;
+        text-decoration: none; cursor: pointer; white-space: nowrap; border: none;
+        transition: opacity .15s;
+    }
+    .id-act:hover { opacity: .85; text-decoration: none; }
+    .id-act--review {
+        background: var(--id-teal); color: #fff;
+    }
+    .id-act--view {
+        background: #e0f2fe; color: #0369a1;
+    }
+    .id-act--done {
+        background: #dcfce7; color: #166534;
+        cursor: default; pointer-events: none;
+    }
+
+    /* ── Empty / loading states ── */
+    .id-empty {
+        text-align: center; padding: 48px 20px; color: #94a3b8;
+    }
+    .id-empty i { font-size: 32px; display: block; margin-bottom: 10px; }
+    .id-loading { text-align: center; padding: 32px; color: #64748b; }
+
+    /* ── Pagination ── */
+    .id-pager {
+        display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+        padding: 12px 16px; border-top: 1px solid #f1f5f9; font-size: 12px; color: #64748b;
+    }
+    .id-pager__btn {
+        background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;
+        padding: 4px 10px; cursor: pointer; color: #334155; font-size: 12px;
+    }
+    .id-pager__btn:disabled { opacity: .4; cursor: default; }
+</style>
+
+<div class="id-wrap container-fluid">
+
+    <!-- Header -->
+    <div class="id-header">
+        <div class="id-header__avatar">
+            @(string.IsNullOrEmpty(uname) ? "ID" : uname.Substring(0, Math.Min(2, uname.Length)).ToUpper())
+        </div>
+        <div class="id-header__title">
+            Intern Doctor Dashboard
+            <small>@uname</small>
+        </div>
+        <span class="id-header__badge"><i class="fa fa-user-md"></i>&nbsp;Intern Doctor</span>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="id-stats">
+        <div class="id-stat id-stat--pending">
+            <div class="id-stat__val" id="idStatPending">—</div>
+            <div class="id-stat__lbl">Pending Review</div>
+        </div>
+        <div class="id-stat id-stat--done">
+            <div class="id-stat__val" id="idStatDone">—</div>
+            <div class="id-stat__lbl">Reviewed</div>
+        </div>
+        <div class="id-stat">
+            <div class="id-stat__val" id="idStatTotal">—</div>
+            <div class="id-stat__lbl">Total IPD</div>
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="id-toolbar">
+        <div class="id-toolbar__title">
+            <i class="fa fa-bed"></i> IPD Screening Queue
+        </div>
+        <div class="id-search">
+            <i class="fa fa-search"></i>
+            <input type="text" id="idSearch" placeholder="Search patient, booking ID…" oninput="idFilterRows()" />
+        </div>
+        <select class="id-filter-select" id="idStatusFilter" onchange="idLoadIPD()">
+            <option value="">All Statuses</option>
+            <option value="Screening completed by the patient - Intern Doctor Review Pending" selected>Pending Review</option>
+            <option value="Screening completed by the patient">Reviewed</option>
+            <option value="Provisional Confirmed">Provisional Confirmed</option>
+            <option value="Awaiting Doctor Screening">Awaiting Doctor Screening</option>
+        </select>
+        <button class="id-refresh-btn" onclick="idLoadIPD()">
+            <i class="fa fa-refresh"></i> Refresh
+        </button>
+    </div>
+
+    <!-- Table -->
+    <div class="id-card">
+        <div style="overflow-x:auto;">
+            <table class="id-table" id="idIPDTable">
+                <thead>
+                    <tr>
+                        <th>Patient</th>
+                        <th>Booking ID</th>
+                        <th>Package / Room</th>
+                        <th>Booked From</th>
+                        <th>Booking Status</th>
+                        <th>Verified Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="idIPDList">
+                    <tr>
+                        <td colspan="7">
+                            <div class="id-loading"><i class="fa fa-spinner fa-spin"></i> Loading…</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="id-pager" id="idPager" style="display:none;">
+            <button class="id-pager__btn" id="idPrevBtn" onclick="idPrevPage()"><i class="fa fa-chevron-left"></i> Prev</button>
+            <span id="idPageInfo">Page 1</span>
+            <button class="id-pager__btn" id="idNextBtn" onclick="idNextPage()"><i class="fa fa-chevron-right"></i> Next</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    /* ── Config ── */
+    var ID_TENANT_ID  = '@(Context.Session.GetString("NalamVazhachoosedtenantid") ?? "")';
+    var ID_LOGIN_ID   = '@(Context.Session.GetString("NalamVazhaloginUserID") ?? "")';
+
+    var ID_IPD_LIST_URL  = '@Url.Action("get_IPD_Application_Forms_for_Review", "IPDApplicationForm")';
+    var ID_VIEW_IPD_URL  = '@Url.Action("View_IPD_Application_Form", "IPDApplicationForm")';
+    var ID_ASSESS_URL    = '@Url.Action("Add_Assessment", "Assessment")';
+
+    var _idPageSize    = 20;
+    var _idPage        = 0;
+    var _idAllRows     = [];
+    var _idFiltered    = [];
+    var _idDisplayed   = [];
+
+    /* ── Helpers ── */
+    function idEsc(s) {
+        var d = document.createElement('div');
+        d.textContent = (s == null ? '' : s);
+        return d.innerHTML;
+    }
+    function idPick(row, keys, fallback) {
+        for (var i = 0; i < keys.length; i++) {
+            var v = row[keys[i]];
+            if (v !== undefined && v !== null && String(v).trim() !== '') return v;
+        }
+        return fallback !== undefined ? fallback : '';
+    }
+    function idFmtDate(s) {
+        if (!s) return '—';
+        try {
+            var d = new Date(s);
+            if (isNaN(d.getTime())) return s;
+            return d.getDate() + ' ' + ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()] + ' ' + d.getFullYear();
+        } catch(e) { return s; }
+    }
+    function idInitials(name) {
+        return (name || '?').split(' ').map(function(w){ return w[0] || ''; }).join('').substring(0,2).toUpperCase();
+    }
+
+    /* ── Build booking status pill ── */
+    function idBsPill(bs) {
+        var cl = 'id-pill--blue';
+        var b  = (bs || '').toLowerCase();
+        if (b.indexOf('intern doctor review pending') !== -1) cl = 'id-pill--amber';
+        else if (b.indexOf('screening completed') !== -1 && b.indexOf('draft') === -1) cl = 'id-pill--green';
+        else if (b.indexOf('draft') !== -1)          cl = 'id-pill--amber';
+        else if (b.indexOf('provisional') !== -1)    cl = 'id-pill--amber';
+        else if (b.indexOf('rework') !== -1)         cl = 'id-pill--amber';
+        else if (b.indexOf('reject') !== -1)         cl = 'id-pill--red';
+        else if (b.indexOf('cancelled') !== -1)      cl = 'id-pill--red';
+        else if (b.indexOf('admitted') !== -1)        cl = 'id-pill--green';
+        return bs ? '<span class="id-pill ' + cl + '">' + idEsc(bs) + '</span>' : '<span style="color:#94a3b8;">—</span>';
+    }
+
+    /* ── Build verified status pill ── */
+    function idVsPill(vs) {
+        var cl = 'id-pill--gray';
+        if ((vs || '').indexOf('Approved') !== -1)       cl = 'id-pill--green';
+        else if ((vs || '').indexOf('Doctor') !== -1)    cl = 'id-pill--purple';
+        else if ((vs || '').indexOf('Reject') !== -1)    cl = 'id-pill--red';
+        else if ((vs || '').toLowerCase().indexOf('rework') !== -1) cl = 'id-pill--amber';
+        return vs ? '<span class="id-pill ' + cl + '">' + idEsc(vs) + '</span>' : '<span style="color:#94a3b8;">—</span>';
+    }
+
+    /* ── Build action buttons ── */
+    function idBuildActions(row) {
+        var id        = idPick(row, ['ipdapplicationformid', 'IPDApplicationFormid'], '');
+        var patientid = idPick(row, ['patientname', 'PatientName', 'patientid'], '');
+        var brn       = idPick(row, ['bookingreferencenumber', 'BookingReferenceNumber'], '');
+        var bs        = (idPick(row, ['bookingstatus', 'BookingStatus'], '') || '').trim();
+
+        var links = '';
+
+        /* View Details — always shown */
+        links += '<a href="' + ID_VIEW_IPD_URL + '?IPDApplicationFormid=' + encodeURIComponent(id) + '" class="id-act id-act--view" title="View Details">' +
+                 '<i class="fa fa-eye"></i> View</a>';
+
+        /* Review & Approve Assessment — shown when patient has completed and submitted for intern doctor review */
+        if (bs === 'Screening completed by the patient - Doctor Review Pending' || bs === 'Awaiting Doctor Screening') {
+            var reviewURL = ID_ASSESS_URL
+                + '?ipdform='       + encodeURIComponent(id)
+                + '&patientname='   + encodeURIComponent(patientid)
+                + '&ipdformnumber=' + encodeURIComponent(brn)
+                + '&interndoctorupdate=1';
+            links += '<a href="' + reviewURL + '" class="id-act id-act--review" title="Review &amp; Approve Assessment">' +
+                     '<i class="fa fa-check-circle"></i> Review &amp; Approve Assessment</a>';
+        }
+
+        /* Reviewed badge — intern doctor has already reviewed */
+        if (bs === 'Screening completed by the patient') {
+            links += '<span class="id-act id-act--done"><i class="fa fa-check-circle"></i> Reviewed</span>';
+        }
+
+        return links ? '<div class="id-actions">' + links + '</div>'
+                     : '<span style="color:#94a3b8;font-size:11px;">—</span>';
+    }
+
+    /* ── Render rows ── */
+    function idRender(rows) {
+        var tbody = document.getElementById('idIPDList');
+        if (!tbody) return;
+        if (!rows || rows.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="7"><div class="id-empty"><i class="fa fa-bed"></i>No IPD records found</div></td></tr>';
+            document.getElementById('idPager').style.display = 'none';
+            return;
+        }
+        var html = '';
+        rows.forEach(function(row) {
+            var name    = idPick(row, ['patientname_master', 'firstname', 'patientname'], '—');
+            var gender  = idPick(row, ['gender'], '');
+            var age     = idPick(row, ['age', 'ageinYears'], '');
+            var brn     = idPick(row, ['bookingreferencenumber', 'BookingReferenceNumber'], '—');
+            var pkg     = idPick(row, ['packagename_master', 'packagename', 'roompreference_master'], '—');
+            var booked  = idFmtDate(idPick(row, ['createddate', 'createdDate', 'createdon'], ''));
+            var bs      = idPick(row, ['bookingstatus', 'BookingStatus'], '');
+            var vs      = idPick(row, ['verifiedstatus', 'VerifiedStatus'], '');
+            var avCls   = (gender === 'F' || gender === 'Female') ? 'id-avatar--f' : 'id-avatar--m';
+
+            html += '<tr>' +
+                '<td>' +
+                    '<div class="id-patient">' +
+                        '<span class="id-avatar ' + avCls + '">' + idInitials(name) + '</span>' +
+                        '<div>' +
+                            '<div class="id-patient__name">' + idEsc(name) + '</div>' +
+                            '<div class="id-patient__meta">' + idEsc(gender) + (age ? ', ' + idEsc(age) + ' y' : '') + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</td>' +
+                '<td style="font-weight:600;color:#334155;">' + idEsc(brn) + '</td>' +
+                '<td>' + idEsc(pkg) + '</td>' +
+                '<td>' + booked + '</td>' +
+                '<td>' + idBsPill(bs) + '</td>' +
+                '<td>' + idVsPill(vs) + '</td>' +
+                '<td>' + idBuildActions(row) + '</td>' +
+            '</tr>';
+        });
+        tbody.innerHTML = html;
+    }
+
+    /* ── Client-side search filter ── */
+    function idFilterRows() {
+        var q = (document.getElementById('idSearch').value || '').toLowerCase().trim();
+        _idFiltered = q
+            ? _idAllRows.filter(function(row) {
+                var name = (idPick(row, ['patientname_master','firstname'], '') + ' ' +
+                            idPick(row, ['bookingreferencenumber'], '') + ' ' +
+                            idPick(row, ['bookingstatus'], '')).toLowerCase();
+                return name.indexOf(q) !== -1;
+              })
+            : _idAllRows.slice();
+        _idPage = 0;
+        idRenderPage();
+    }
+
+    /* ── Paginated render ── */
+    function idRenderPage() {
+        var start = _idPage * _idPageSize;
+        _idDisplayed = _idFiltered.slice(start, start + _idPageSize);
+        idRender(_idDisplayed);
+        var total = _idFiltered.length;
+        var totalPages = Math.max(1, Math.ceil(total / _idPageSize));
+        document.getElementById('idPageInfo').textContent =
+            'Page ' + (_idPage + 1) + ' of ' + totalPages + ' (' + total + ' records)';
+        document.getElementById('idPrevBtn').disabled = _idPage === 0;
+        document.getElementById('idNextBtn').disabled = (_idPage + 1) >= totalPages;
+        document.getElementById('idPager').style.display = total > _idPageSize ? '' : 'none';
+        idUpdateStats();
+    }
+    function idPrevPage() { if (_idPage > 0) { _idPage--; idRenderPage(); } }
+    function idNextPage() {
+        if ((_idPage + 1) * _idPageSize < _idFiltered.length) { _idPage++; idRenderPage(); }
+    }
+
+    /* ── Stats ── */
+    function idUpdateStats() {
+        var pending  = _idAllRows.filter(function(r){ return (idPick(r,['bookingstatus'],'') || '').trim() === 'Screening completed by the patient - Intern Doctor Review Pending'; }).length;
+        var reviewed = _idAllRows.filter(function(r){ return (idPick(r,['bookingstatus'],'') || '').trim() === 'Screening completed by the patient'; }).length;
+        document.getElementById('idStatPending').textContent = pending;
+        document.getElementById('idStatDone').textContent    = reviewed;
+        document.getElementById('idStatTotal').textContent   = _idAllRows.length;
+    }
+
+    /* ── Load IPD list ── */
+    function idLoadIPD() {
+        var tbody = document.getElementById('idIPDList');
+        tbody.innerHTML = '<tr><td colspan="7"><div class="id-loading"><i class="fa fa-spinner fa-spin"></i> Loading&hellip;</div></td></tr>';
+        var status = document.getElementById('idStatusFilter').value;
+        var url = ID_IPD_LIST_URL
+            + '?tenantid='       + encodeURIComponent(ID_TENANT_ID)
+            + '&patientname='    + ''
+            + '&bookingstatus='  + encodeURIComponent(status)
+            + '&verifiedstatus=' + ''
+            + '&pagesize=500&pagenumber=0&searchterm=';
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                var rows = [];
+                if (data && data.detail && Array.isArray(data.detail)) {
+                    rows = data.detail;
+                } else if (Array.isArray(data)) {
+                    rows = data;
+                }
+                _idAllRows   = rows;
+                _idFiltered  = rows.slice();
+                _idPage      = 0;
+                idRenderPage();
+            },
+            error: function(xhr) {
+                tbody.innerHTML = '<tr><td colspan="7"><div class="id-empty"><i class="fa fa-exclamation-triangle"></i>Failed to load data. Please refresh.</div></td></tr>';
+            }
+        });
+    }
+
+    /* ── Init ── */
+    $(document).ready(function() {
+        idLoadIPD();
+    });
+</script>

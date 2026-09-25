@@ -1,0 +1,1080 @@
+@using Microsoft.AspNetCore.Http
+@using Admin
+@using NalamVazha.Models
+@model IPDApplicationFormModel
+@{
+    ViewData["Title"] = "Extend Stay";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var sessionTenantId = Context.Session.GetString("NalamVazhachoosedtenantid") ?? "";
+    var modelTenantId = (Model?.tenantid != null && Model.tenantid != Guid.Empty) ? Model.tenantid.ToString() : "";
+    var tenantId = !string.IsNullOrWhiteSpace(sessionTenantId) ? sessionTenantId : modelTenantId;
+    var roomJson = Newtonsoft.Json.JsonConvert.SerializeObject(Model?.room ?? new List<IPDApplicationForm_roomModel>());
+    var hasAttendantAllocation = Model?.room?.Any(room =>
+        room.roomnumber.HasValue &&
+        room.fromdate.HasValue &&
+        room.todate.HasValue &&
+        !string.IsNullOrWhiteSpace(room.allottedto) &&
+        room.allottedto.Split(',').Any(role =>
+            string.Equals(role.Trim(), "Attendant", StringComparison.OrdinalIgnoreCase))) == true;
+    var totalDaysOfStay = 0;
+    var stayArrivalDmy = "";
+    var stayDepartureDmy = "";
+    if (Model?.preferreddatesofadmission != null)
+    {
+        var _first = true;
+        foreach (var pd in Model.preferreddatesofadmission)
+        {
+            totalDaysOfStay += pd.daysofstay;
+            if (_first) { stayArrivalDmy = pd.dateofarrival.ToString("dd-MMM-yyyy"); stayDepartureDmy = pd.dateofdeparture.ToString("dd-MMM-yyyy"); _first = false; }
+        }
+    }
+}
+
+<style>
+    .extend-stay-card {
+        border: 1px solid #dbe7df;
+        border-radius: 8px;
+        padding: 14px;
+        background: #fff;
+        margin-bottom: 14px;
+    }
+
+    .extend-stay-summary {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px;
+        margin-top: 10px;
+    }
+
+    .extend-stay-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+    }
+
+    .extend-stay-option {
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 12px;
+        cursor: pointer;
+        background: #fff;
+        transition: .15s;
+    }
+
+        .extend-stay-option:hover {
+            border-color: #ca8a04;
+            box-shadow: 0 3px 10px rgba(202, 138, 4, .12);
+        }
+
+        .extend-stay-option.selected {
+            border-color: #16a34a;
+            background: #f0fdf4;
+        }
+
+    .extend-stay-option__title {
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .extend-stay-option__sub {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 4px;
+    }
+
+    .extend-stay-empty {
+        padding: 18px;
+        text-align: center;
+        color: #64748b;
+        background: #f8fafc;
+        border-radius: 8px;
+    }
+
+    .extend-summary-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .extend-summary-mini-card {
+        flex: 1 1 300px;
+        border: 1px solid #dbe7df;
+        border-radius: 8px;
+        background: #ffffff;
+        padding: 10px 12px;
+        min-height: 95px;
+    }
+
+    .extend-summary-title {
+        font-weight: 700;
+        color: #176b4d;
+        margin-bottom: 6px;
+    }
+
+    .extend-summary-mini-card div {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .extendfor_craftmyapp_container,
+    .extendfor_craftmyapp_container .SumoSelect {
+        position: relative;
+        z-index: var(--z-menu-above-modal, 1060);
+    }
+
+    .extendfor_craftmyapp_container .SumoSelect.open {
+        z-index: calc(var(--z-menu-above-modal, 1060) + 1);
+    }
+
+    .extendfor_craftmyapp_container #extendRole.SumoUnder {
+        pointer-events: none;
+    }
+
+</style>
+
+@using (Html.BeginForm("Extend_Stay", "IPDApplicationForm", FormMethod.Post, new { id = "formId" }))
+{
+    @Html.HiddenFor(m => m.IPDApplicationFormid)
+    <input type="hidden" name="room[0].allottedto" id="room_allottedto" />
+    <input type="hidden" name="room[0].roomnumber" id="room_roomnumber" />
+    <input type="hidden" name="room[0].fromdate" id="room_fromdate" />
+    <input type="hidden" name="room[0].todate" id="room_todate" />
+    <input type="hidden" name="room[0].costperday" id="room_costperday" />
+    <input type="hidden" name="room[0].record_order" value="1" />
+
+    <div class="card card-block contCard">
+        <div class="mobileHeader">
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <h4 class="formHdr"><i class="fa fa-calendar-plus-o"></i> Extend Stay</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-block">
+            <div class="extend-stay-card">
+                <div class="row">
+                    <div class="col-sm-3 col-xs-12 p-2 extendfor_craftmyapp_container">
+                        <div>
+                            <div class="form-group form-group--float-above my-3">
+                                <label for="extendRole">Extend For <b class="iconRed">*</b></label>
+
+                                <select name="extendRole" id="extendRole" multiple class="automaton_sumo_select required notranslate" translate="no">
+                                    <option value="Patient" class="notranslate" translate="no">Patient</option>
+                                    @if (hasAttendantAllocation)
+                                    {
+                                        <option value="Attendant" class="notranslate" translate="no">Attendant</option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div id="extendRole-error" class="help-block" style="display:none" role="alert"></div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3 col-xs-12 p-2">
+                        <label>Extension From</label>
+                        <input type="text" id="extensionFromDate" class="form-control" readonly />
+                    </div>
+                    <div class="col-sm-3 col-xs-12 p-2">
+                        <label>New Checkout Date <b class="iconRed">*</b></label>
+                        <input type="text" id="newCheckoutDate" class="form-control" autocomplete="off" placeholder="dd/mm/yyyy" />
+                    </div>
+                    <div class="col-sm-3 col-xs-12 p-2">
+                        <label>Selected Room Cost / Day</label>
+                        <input type="text" id="selectedCostPerDay" class="form-control" readonly />
+                    </div>
+                </div>
+                <div id="currentStaySummary" class="extend-stay-summary"></div>
+                <div style="margin-top:10px;">
+                    <button type="button" id="btnLoadRooms" class="btn cma_primary_button"><i class="fa fa-search"></i> Show Available Rooms</button>
+                </div>
+            </div>
+
+            <div class="extend-stay-card">
+                <h5 style="margin:0 0 8px;">Available Rooms for Extension</h5>
+                <div id="availableRooms" class="extend-stay-grid">
+                    <div class="extend-stay-empty">Choose extension details and click Show Available Rooms.</div>
+                </div>
+            </div>
+
+            <div class="card-block" style="padding-left:0;padding-right:0;">
+                <button type="button" onclick="window.location.href=document.referrer" class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+                <button type="button" id="btnSubmitExtendStay" class="btn cma_primary_button cma_save_button waves-effect pull-right">
+                    <i class="fa fa-check-circle"></i> Extend Stay
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+<link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+<script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+<script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+
+<link href="~/components/sumoselect/sumoselect.css" rel="stylesheet" />
+<script src="~/components/sumoselect/jquery.sumoselect.js"></script>
+
+<script>
+    var _currentRooms = @Html.Raw(roomJson);
+    var _roomTypes = {};
+    var _roomMap = {};
+    var _selectedRoom = null;
+    var _tenantId = '@tenantId';
+    var _patientGender = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Convert.ToString(ViewBag.PatientGender ?? "")));
+    var _attendantGender = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Convert.ToString(ViewBag.AttendantGender ?? "")));
+    function parseDateValue(v) {
+    if (!v) return null;
+    if (typeof v === 'string' && v.indexOf('/Date(') === 0) return new Date(parseInt(v.substr(6), 10));
+    var d = new Date(v);
+    return isNaN(d.getTime()) ? null : d;
+    }
+    function ymd(d) {
+    if (!d) return '';
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+    function dmy(d) {
+    if (!d) return '';
+    return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+    }
+    function dmyToDate(v) {
+    var parts = (v || '').split('/');
+    if (parts.length !== 3) return null;
+    var d = new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+    return isNaN(d.getTime()) ? null : d;
+    }
+    function addDays(d, days) {
+    var x = new Date(d.getTime());
+    x.setDate(x.getDate() + days);
+    return x;
+    }
+    function extensionDays(fromDate, toDate) {
+    if (!fromDate || !toDate) return 0;
+    var msPerDay = 24 * 60 * 60 * 1000;
+    var f = new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate());
+    var t = new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate());
+    var diff = Math.round((t - f) / msPerDay) + 1;
+    return diff > 0 ? diff : 0;
+    }
+    function updateExtensionDays() {
+    var extensionFrom = dmyToDate($('#extensionFromDate').val());
+    var newCheckout = dmyToDate($('#newCheckoutDate').val());
+    var days = extensionDays(extensionFrom, newCheckout);
+    if (days > 0) {
+    $('#lblExtensionDays').text('(' + days + ' day' + (days === 1 ? '' : 's') + ')');
+    } else {
+    $('#lblExtensionDays').text('');
+    }
+    }
+    function applyCheckoutDateLimit() {
+    var extensionFrom = dmyToDate($('#extensionFromDate').val());
+    if (!extensionFrom) return;
+
+    var newCheckout = dmyToDate($('#newCheckoutDate').val());
+    if (!newCheckout || newCheckout < extensionFrom) {
+    newCheckout = extensionFrom;
+    $('#newCheckoutDate').val(dmy(newCheckout));
+    $('#room_todate').val(ymd(newCheckout));
+    }
+
+    var checkoutDatePicker = $('#newCheckoutDate').data('xdsoft_datetimepicker');
+
+    $('#newCheckoutDate').datetimepicker('setOptions', {
+    minDate: dmy(extensionFrom),
+    startDate: false
+    });
+
+    if (checkoutDatePicker && checkoutDatePicker.data('xdsoft_datetime')) {
+    checkoutDatePicker.data('xdsoft_datetime').setCurrentTime(newCheckout);
+    }
+    }
+
+    function safeLower(value) {
+    return (value || '').toString().trim().toLowerCase();
+    }
+
+    function normalizeGender(value) {
+    var g = safeLower(value)
+    .replace(/[-_]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+    if (g === 'm') return 'male';
+    if (g === 'f') return 'female';
+
+    if (g === 'others' || g === 'other gender' || g === 'transgender') {
+    return 'other';
+    }
+
+    if (g === 'male') return 'male';
+    if (g === 'female') return 'female';
+    if (g === 'other') return 'other';
+
+    return '';
+    }
+
+    function normalizeGenderToken(value) {
+    return (value || '')
+    .toString()
+    .trim()
+    .toLowerCase()
+    .replace(/[-_]/g, '')
+    .replace(/\s+/g, '');
+    }
+
+    function getSelectedExtendRoles() {
+    var selected = $('#extendRole').val();
+
+    if (!selected) {
+    return [];
+    }
+
+    if ($.isArray(selected)) {
+    return selected.filter(function (x) {
+    return safeLower(x) !== '';
+    });
+    }
+
+    return [selected].filter(function (x) {
+    return safeLower(x) !== '';
+    });
+    }
+
+    function getGenderByRole(role) {
+    role = safeLower(role);
+
+    if (role === 'patient') {
+    return normalizeGender(_patientGender);
+    }
+
+    if (role === 'attendant') {
+    return normalizeGender(_attendantGender);
+    }
+
+    return '';
+    }
+
+    function getRoomTypeGenderSuitability(roomType) {
+    return roomType.gendersuitability ||
+    roomType.GenderSuitability ||
+    roomType.genderSuitability ||
+    roomType.Gendersuitability ||
+    roomType["Gender Suitability"] ||
+    roomType["gender suitability"] ||
+    '';
+    }
+
+    function getAllowedGendersFromRoomType(roomType) {
+    var genderSuitability = getRoomTypeGenderSuitability(roomType);
+
+    genderSuitability = (genderSuitability || '').toString().trim();
+
+    /*
+    Requirement:
+    Male   -> Male OR All
+    Female -> Female OR All
+    Other  -> Other OR All
+
+    Important:
+    Empty/null should NOT be treated as All.
+    All should work only when "All" is present in gendersuitability.
+    */
+    if (!genderSuitability) {
+    return [];
+    }
+
+    var hasAll = false;
+    var allowed = [];
+
+    genderSuitability
+    .split(/[,\|\/;&]+|\band\b/i)
+    .forEach(function (part) {
+    var token = normalizeGenderToken(part);
+
+    if (!token) return;
+
+    token = token.replace(/others/g, 'other');
+
+    if (
+    token === 'all' ||
+    token === 'allgender' ||
+    token === 'allgenders'
+    ) {
+    hasAll = true;
+    return;
+    }
+
+    var gender = normalizeGender(token);
+
+    if (gender && allowed.indexOf(gender) === -1) {
+    allowed.push(gender);
+    }
+    });
+
+    if (hasAll) {
+    return ['all'];
+    }
+
+    return allowed;
+    }
+
+    function isRoomTypeSuitableForGender(roomType, personGender) {
+    personGender = normalizeGender(personGender);
+
+    if (!personGender) {
+    return false;
+    }
+
+    var allowedGenders = getAllowedGendersFromRoomType(roomType);
+
+    if (!allowedGenders.length) {
+    return false;
+    }
+
+    if (allowedGenders.indexOf('all') !== -1) {
+    return true;
+    }
+
+    return allowedGenders.indexOf(personGender) !== -1;
+    }
+
+    function isRoomTypeGenderSuitable(roomType) {
+    var selectedRoles = getSelectedExtendRoles();
+
+    if (!selectedRoles.length) {
+    return false;
+    }
+
+    /*
+    Extend Stay gender rule:
+    Patient selected   -> patient gender must match room type
+    Attendant selected -> attendant gender must match room type
+    Patient + Attendant selected -> room must support both genders
+    */
+    return selectedRoles.every(function (role) {
+    var personGender = getGenderByRole(role);
+
+    if (!personGender) {
+    return false;
+    }
+
+    return isRoomTypeSuitableForGender(roomType, personGender);
+    });
+    }
+
+    function allocationHasRole(allottedTo, role) {
+    var savedRoles = (allottedTo || '')
+    .toString()
+    .split(',')
+    .map(function (x) {
+    return safeLower(x);
+    })
+    .filter(function (x) {
+    return x !== '';
+    });
+
+    return savedRoles.indexOf(safeLower(role)) !== -1;
+    }
+
+    function allocationsForRole(role) {
+    return (_currentRooms || []).filter(function (r) {
+    return allocationHasRole(r.allottedto, role);
+    }).sort(function (a, b) {
+    return (parseDateValue(a.fromdate) || 0) - (parseDateValue(b.fromdate) || 0);
+    });
+    }
+
+    function roomLabelById(roomId) {
+    roomId = (roomId || '').toString();
+
+    var room = _roomMap[roomId] || {};
+
+    return room.roomnumber ||
+    room.roomcode ||
+    room.RoomNumber ||
+    room.RoomCode ||
+    roomId ||
+    '-';
+    }
+
+    function getAllRoomLabelsForRole(role) {
+    var allocations = allocationsForRole(role);
+    var labels = [];
+
+    allocations.forEach(function (r) {
+    var roomId = (r.roomnumber || '').toString();
+    var label = roomLabelById(roomId);
+
+    if (label && labels.indexOf(label) === -1) {
+    labels.push(label);
+    }
+    });
+
+    return labels.join(', ');
+    }
+
+    function roleStaySummary(role) {
+    var allocations = allocationsForRole(role);
+
+    if (!allocations.length) {
+    return {
+    allocations: [],
+    stayFrom: null,
+    stayTo: null,
+    extensionFrom: null,
+    rooms: ''
+    };
+    }
+
+    var stayFrom = null;
+    var stayTo = null;
+
+    allocations.forEach(function (r) {
+    var from = parseDateValue(r.fromdate);
+    var to = parseDateValue(r.todate);
+
+    if (from && (!stayFrom || from < stayFrom)) {
+    stayFrom = from;
+    }
+
+    if (to && (!stayTo || to > stayTo)) {
+    stayTo = to;
+    }
+    });
+
+    return {
+    allocations: allocations,
+    stayFrom: stayFrom,
+    stayTo: stayTo,
+    extensionFrom: stayTo ? addDays(stayTo, 1) : null,
+    rooms: getAllRoomLabelsForRole(role)
+    };
+    }
+
+    function hasMismatchedCombinedStayDates() {
+    var selectedRoles = getSelectedExtendRoles();
+
+    if (selectedRoles.indexOf('Patient') === -1 ||
+    selectedRoles.indexOf('Attendant') === -1) {
+    return false;
+    }
+
+    var patientSummary = roleStaySummary('Patient');
+    var attendantSummary = roleStaySummary('Attendant');
+
+    if (!patientSummary.stayTo || !attendantSummary.stayTo) {
+    return false;
+    }
+
+    return patientSummary.stayTo.getTime() !== attendantSummary.stayTo.getTime();
+    }
+
+    function showCombinedStayDateValidation() {
+    if (!hasMismatchedCombinedStayDates()) {
+    return true;
+    }
+
+    swal({
+    title: 'Different Stay Dates',
+    text: 'Patient and Attendant cannot be extended together because their current stay dates are different. Please select only Patient or Attendant, or align their stay dates first.',
+    type: 'error',
+    buttonsStyling: false,
+    confirmButtonClass: 'btn btn-primary'
+    });
+
+    return false;
+    }
+
+    function currentAllocation(role) {
+    var matches = (_currentRooms || []).filter(function (r) {
+    return allocationHasRole(r.allottedto, role);
+    });
+
+    matches.sort(function (a, b) {
+    return (parseDateValue(b.todate) || 0) - (parseDateValue(a.todate) || 0);
+    });
+
+    return matches[0] || null;
+    }
+    function refreshCurrentSummary() {
+    var selectedRoles = getSelectedExtendRoles();
+
+    if (!selectedRoles.length) {
+    $('#currentStaySummary').html('<span class="text-danger">Please select Extend For.</span>');
+    $('#extensionFromDate,#newCheckoutDate,#room_fromdate,#room_todate').val('');
+    return;
+    }
+
+    _selectedRoom = null;
+    $('#room_roomnumber,#room_costperday').val('');
+    $('#selectedCostPerDay').val('');
+    $('#availableRooms').html('<div class="extend-stay-empty">Choose extension details and click Show Available Rooms.</div>');
+
+    var summaryHtml = '';
+    var firstExtensionStart = null;
+    var defaultNewCheckout = null;
+    var canExtend = true;
+
+    selectedRoles.forEach(function (role) {
+    var summary = roleStaySummary(role);
+
+    if (!summary.allocations.length || !summary.stayFrom || !summary.stayTo) {
+    summaryHtml +=
+    '<div class="extend-summary-mini-card">' +
+    '<div class="extend-summary-title">' + role + '</div>' +
+    '<div class="text-danger">No active ' + role + ' room allocation found.</div>' +
+    '</div>';
+
+    canExtend = false;
+    return;
+    }
+
+    var extensionStart = summary.extensionFrom;
+
+    if (!firstExtensionStart) {
+    firstExtensionStart = extensionStart;
+    defaultNewCheckout = addDays(extensionStart, 1);
+    }
+
+    summaryHtml +=
+    '<div class="extend-summary-mini-card">' +
+    '<div class="extend-summary-title">' + role + '</div>' +
+    '<div>Rooms: <strong>' + summary.rooms + '</strong></div>' +
+    '<div>Current Stay: ' + dmy(summary.stayFrom) + ' to ' + dmy(summary.stayTo) + '</div>' +
+    '<div>Extension From: <strong>' + dmy(extensionStart) + '</strong></div>' +
+    '</div>';
+    });
+
+    if (hasMismatchedCombinedStayDates()) {
+    canExtend = false;
+    summaryHtml +=
+    '<div class="col-sm-12" style="margin-top:8px;">' +
+    '<div class="alert alert-danger" style="margin-bottom:0;">' +
+    'Patient and Attendant have different current stay dates. Extend them separately or align their stay dates first.' +
+    '</div></div>';
+    }
+
+    $('#currentStaySummary').html(
+    '<div class="extend-summary-row">' + summaryHtml + '</div>' +
+    '<div style="margin-top:8px;"><span id="lblExtensionDays" class="text-success" style="font-weight:600;"></span></div>'
+    );
+
+    if (canExtend && firstExtensionStart) {
+    $('#extensionFromDate').val(dmy(firstExtensionStart));
+    $('#newCheckoutDate').val(dmy(defaultNewCheckout));
+    $('#room_fromdate').val(ymd(firstExtensionStart));
+    $('#room_todate').val(ymd(defaultNewCheckout));
+    applyCheckoutDateLimit();
+    } else {
+    $('#extensionFromDate,#newCheckoutDate,#room_fromdate,#room_todate').val('');
+    }
+
+    updateExtensionDays();
+    }
+    function loadRoomMap(done) {
+    $.ajax({
+    url: '@Url.Action("get_all_Room", "IPDApplicationForm")',
+    dataType: 'json',
+    data: { tenantid: _tenantId },
+    success: function (data) {
+    _roomMap = {};
+    if ($.isArray(data)) {
+    data.forEach(function (room) {
+    var id = (room.Roomid || room.roomid || '').toString();
+    if (id) _roomMap[id] = room;
+    });
+    }
+    if (done) done();
+    },
+    error: function () { if (done) done(); }
+    });
+    }
+    function loadRoomTypes(done) {
+    $.ajax({
+    url: '@Url.Action("get_all_RoomType_Details", "IPDApplicationForm")',
+    dataType: 'json',
+    data: { tenantid: _tenantId },
+    success: function (data) {
+    _roomTypes = {};
+    if ($.isArray(data)) {
+    data.forEach(function (rt) {
+    var id = (rt.RoomTypeid || rt.roomtypeid || '').toString();
+    if (id) _roomTypes[id] = rt;
+    });
+    }
+    if (done) done();
+    },
+    error: function () { if (done) done(); }
+    });
+    }
+    function loadAvailableRooms() {
+    var selectedRoles = getSelectedExtendRoles();
+
+    if (!showCombinedStayDateValidation()) {
+    return;
+    }
+
+    for (var i = 0; i < selectedRoles.length; i++) {
+    var roleGender = getGenderByRole(selectedRoles[i]);
+
+    if (!roleGender) {
+    swal({
+    title: 'Validation Failed',
+    text: selectedRoles[i] + ' gender is missing. Please check patient / attendant details before extension.',
+    type: 'error',
+    buttonsStyling: false,
+    confirmButtonClass: 'btn btn-primary'
+    });
+    return;
+    }
+    }
+    if (!selectedRoles.length) {
+    swal({ title: 'Validation Failed', text: 'Please select Extend For.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+    return;
+    }
+
+    var role = selectedRoles[0];
+    var extensionFrom = dmyToDate($('#extensionFromDate').val());
+    var newCheckout = dmyToDate($('#newCheckoutDate').val());
+
+    if (!extensionFrom || !newCheckout || newCheckout < extensionFrom) {
+    swal({ title: 'Validation Failed', text: 'New checkout date should be on or after the extension start date.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+    return;
+    }
+
+    $('#room_allottedto').val(selectedRoles.join(','));
+    $('#room_fromdate').val(ymd(extensionFrom));
+    $('#room_todate').val(ymd(newCheckout));
+    $('#availableRooms').html('<div class="extend-stay-empty"><i class="fa fa-spinner fa-spin"></i> Loading available rooms...</div>');
+
+    $.ajax({
+    url: '@Url.Action("get_Available_Rooms", "IPDApplicationForm")',
+    dataType: 'json',
+    data: { tenantid: _tenantId, occupancystatus: 'Empty', nextdaycheckin: dmy(extensionFrom), nextdaycheckout: dmy(newCheckout) },
+    success: function (resp) {
+    var rooms = (resp && resp.detail) ? resp.detail : ($.isArray(resp) ? resp : []);
+    renderRooms(rooms, role);
+    },
+    error: function (xhr) {
+    $('#availableRooms').html('<div class="extend-stay-empty text-danger">' + (xhr.responseText || 'Failed to load rooms') + '</div>');
+    }
+    });
+    }
+    function renderRooms(rooms, role) {
+    if (!rooms || !rooms.length) {
+    $('#availableRooms').html('<div class="extend-stay-empty">No rooms available for the extension date range.</div>');
+    return;
+    }
+
+    var filteredRooms = rooms.filter(function (room) {
+    var rtId = (
+    room.roomtype ||
+    room.RoomType ||
+    room.roomtypeid ||
+    room.RoomTypeid ||
+    room.RoomTypeId ||
+    ''
+    ).toString();
+
+    var rt = _roomTypes[rtId] || {};
+
+    return isRoomTypeGenderSuitable(rt);
+    });
+
+    if (!filteredRooms.length) {
+    $('#availableRooms').html('<div class="extend-stay-empty">No rooms available for selected gender suitability.</div>');
+    return;
+    }
+
+    var html = '';
+
+    filteredRooms.forEach(function (room) {
+    var roomId = (room.Roomid || room.roomid || '').toString();
+    var roomNo = (room.roomnumber || room.roomcode || roomId).toString();
+
+    var rtId = (
+    room.roomtype ||
+    room.RoomType ||
+    room.roomtypeid ||
+    room.RoomTypeid ||
+    room.RoomTypeId ||
+    ''
+    ).toString();
+
+    var rt = _roomTypes[rtId] || {};
+
+    var selectedRoles = getSelectedExtendRoles();
+
+    var patientCost =
+    room.costperday ||
+    room.Costperday ||
+    room.CostPerDay ||
+    room.costPerDay ||
+    0;
+
+    var attendantCost =
+    room.attendantcostperday ||
+    room.Attendantcostperday ||
+    room.AttendantCostPerDay ||
+    room.attendantCostPerDay ||
+    0;
+
+    patientCost = Number(patientCost || 0);
+    attendantCost = Number(attendantCost || 0);
+
+    var hasPatient = selectedRoles.indexOf('Patient') !== -1;
+    var hasAttendant = selectedRoles.indexOf('Attendant') !== -1;
+
+    /*
+    Submit cost rule:
+    Patient only                  -> room.costperday
+    Attendant only                -> room.attendantcostperday
+    Patient + Attendant same room -> room.costperday only
+    */
+    var cost = 0;
+
+    if (hasPatient) {
+    cost = patientCost;
+    } else if (hasAttendant) {
+    cost = attendantCost;
+    }
+
+    var genderSuitability = getRoomTypeGenderSuitability(rt) || '-';
+
+    html += '<div class="extend-stay-option" ' +
+    'data-roomid="' + roomId + '" ' +
+    'data-cost="' + Number(cost || 0) + '" ' +
+    'data-patientcost="' + patientCost + '" ' +
+    'data-attendantcost="' + attendantCost + '">' +
+
+    '<div class="extend-stay-option__title">' + roomNo + '</div>' +
+    '<div class="extend-stay-option__sub">' + (rt.name || 'Room') + '</div>' +
+    '<div class="extend-stay-option__sub">Gender Suitability: ' + genderSuitability + '</div>' +
+    '<div class="extend-stay-option__sub">Patient Cost/day: &#8377; ' + patientCost.toFixed(2) + '</div>' +
+    '<div class="extend-stay-option__sub">Attendant Cost/day: &#8377; ' + attendantCost.toFixed(2) + '</div>' +
+    '</div>';
+    });
+
+    $('#availableRooms').html(html);
+    }
+    $(document).ready(function () {
+
+    function initializeExtendRoleSelect() {
+    var extendRole = $('#extendRole')[0];
+    if (!extendRole) return;
+
+    if (extendRole.sumo) {
+    extendRole.sumo.reload();
+    $('#extendRole').closest('.SumoSelect').addClass('notranslate').attr('translate', 'no');
+    bindExtendRoleOpenFallback();
+    return;
+    }
+
+    $('#extendRole').SumoSelect({
+    placeholder: 'Select Here',
+    selectAll: true,
+    forceCustomRendering: true
+    });
+
+    $('#extendRole').closest('.SumoSelect').addClass('notranslate').attr('translate', 'no');
+    $('#extendRole').closest('.SumoSelect').find('.CaptionCont,.optWrapper,.options,.opt,label,span').addClass('notranslate').attr('translate', 'no');
+    bindExtendRoleOpenFallback();
+    }
+
+    function bindExtendRoleOpenFallback() {
+    var extendRole = $('#extendRole')[0];
+    if (!extendRole || !extendRole.sumo) return;
+
+    var sumoSelect = $('#extendRole').closest('.SumoSelect')[0];
+    if (!sumoSelect || sumoSelect.getAttribute('data-extend-role-fallback') === 'Y') return;
+
+    sumoSelect.setAttribute('data-extend-role-fallback', 'Y');
+    sumoSelect.addEventListener('click', function (evt) {
+    var target = evt.target;
+
+    if (target.closest && target.closest('.optWrapper')) {
+    return;
+    }
+
+    if (!(target.closest && target.closest('.CaptionCont')) && target.id !== 'extendRole') {
+    return;
+    }
+
+    evt.preventDefault();
+    evt.stopPropagation();
+    evt.stopImmediatePropagation();
+
+    if (extendRole.sumo.is_opened) {
+    extendRole.sumo.hideOpts();
+    } else {
+    extendRole.sumo.showOpts();
+    }
+    }, true);
+    }
+
+    setTimeout(initializeExtendRoleSelect, 0);
+
+    $('#newCheckoutDate').datetimepicker({
+    timepicker: false,
+    scrollInput: false,
+    format: 'd/m/Y',
+    formatDate: 'd/m/Y',
+    onShow: function () {
+    var selectedCheckout = dmyToDate($('#newCheckoutDate').val());
+    var datePickerState = this.data('xdsoft_datetime');
+    if (selectedCheckout && datePickerState) {
+    datePickerState.setCurrentTime(selectedCheckout);
+    }
+    }
+    });
+    loadRoomTypes(function () { loadRoomMap(refreshCurrentSummary); });
+    $('#extendRole').on('change', function () {
+    refreshCurrentSummary();
+    showCombinedStayDateValidation();
+    });
+    $('#newCheckoutDate').on('change', function () {
+    applyCheckoutDateLimit();
+    $('#room_todate').val(ymd(dmyToDate($(this).val())));
+    updateExtensionDays();
+    });
+    $('#btnLoadRooms').on('click', loadAvailableRooms);
+    $('#availableRooms').on('click', '.extend-stay-option', function () {
+    $('.extend-stay-option').removeClass('selected');
+    $(this).addClass('selected');
+
+    var patientCost = Number($(this).data('patientcost') || 0);
+    var attendantCost = Number($(this).data('attendantcost') || 0);
+
+    var selectedRoles = getSelectedExtendRoles();
+
+    var hasPatient = selectedRoles.indexOf('Patient') !== -1;
+    var hasAttendant = selectedRoles.indexOf('Attendant') !== -1;
+
+    var costToSubmit = 0;
+
+    if (hasPatient) {
+    costToSubmit = patientCost;
+    } else if (hasAttendant) {
+    costToSubmit = attendantCost;
+    }
+
+    _selectedRoom = {
+    roomId: $(this).data('roomid'),
+    patientCost: patientCost,
+    attendantCost: attendantCost,
+    cost: costToSubmit
+    };
+
+    $('#room_roomnumber').val(_selectedRoom.roomId);
+    $('#room_costperday').val(costToSubmit.toFixed(2));
+
+    if (hasPatient && hasAttendant) {
+    $('#selectedCostPerDay').val(
+    'Patient ₹ ' + patientCost.toFixed(2) +
+    ' | Attendant ₹ ' + attendantCost.toFixed(2) 
+    );
+    } else if (hasAttendant) {
+    $('#selectedCostPerDay').val('Attendant ₹ ' + attendantCost.toFixed(2));
+    } else {
+    $('#selectedCostPerDay').val('Patient ₹ ' + patientCost.toFixed(2));
+    }
+    });
+    $('#btnSubmitExtendStay').on('click', function () {
+    if (!showCombinedStayDateValidation()) {
+    return;
+    }
+
+    if (!$('#room_roomnumber').val()) {
+    swal({ title: 'Validation Failed', text: 'Please select the room for extension.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+    return;
+    }
+    if (Number($('#room_costperday').val() || 0) <= 0) {
+    swal({ title: 'Validation Failed', text: 'Room cost per day should be greater than zero.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+    return;
+    }
+
+    var selectedRoles = getSelectedExtendRoles();
+
+    if (selectedRoles.indexOf('Patient') !== -1 && selectedRoles.indexOf('Attendant') !== -1) {
+    swal({
+    title: 'Confirm Shared Room Extension',
+    text: 'Patient and Attendant are selected for the same room extension. Attendant room cost will not be added separately. Do you want to continue?',
+    type: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Continue',
+    cancelButtonText: 'Cancel',
+    buttonsStyling: false,
+    confirmButtonClass: 'btn btn-primary',
+    cancelButtonClass: 'btn btn-secondary',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false
+    }).then(function () {
+    $('#btnSubmitExtendStay').data('confirmed', true);
+    $('#btnSubmitExtendStay').trigger('click');
+    });
+
+    if ($('#btnSubmitExtendStay').data('confirmed') !== true) {
+    return;
+    }
+
+    $('#btnSubmitExtendStay').data('confirmed', false);
+    }
+
+    $('.page-loader').show();
+    var extendFormData = new FormData($('#formId')[0]);
+    extendFormData.append('tenantid', _tenantId);
+    $.ajax({
+    url: '@Url.Action("Extend_Stay", "IPDApplicationForm")',
+    type: 'POST',
+    data: extendFormData,
+    processData: false,
+    contentType: false,
+    success: function (data) {
+    $('.page-loader').hide();
+    if (data === 'Success') {
+    window.location = '@Url.Action("Dashboard", "FrontDesk")';
+    } else {
+    swal({ title: 'Error !!', text: data, type: 'error', showCancelButton: false, confirmButtonText: 'OK' });
+    }
+    },
+    error: function (xhr) {
+    $('.page-loader').hide();
+    swal({ title: 'Contact Administrator !', text: xhr.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary' });
+    }
+    });
+    });
+    });
+
+    // Update page header: Extend Stay - Patient Name (Booking Ref)
+    $(function() {
+        var _name = '@Html.Raw(((Model?.firstname ?? "") + " " + (Model?.lastname ?? "")).Trim())'.trim();
+        var _ref  = '@Html.Raw(Model?.bookingreferencenumber ?? "")'.trim();
+        var _backBtn  = '<a href="javascript:void(0);" onclick="window.location.href = document.referrer"><i class="fa fa-angle-left" aria-hidden="true"></i></a>';
+        var _nameHtml = _name ? '<span class="ipd-header-name">' + _name + '</span>' : '';
+        var _refHtml  = _ref ? ' / <span class="ipd-header-ref ipd-header-bookingref">' + _ref + '</span>' : '';
+        var _durationDays = @totalDaysOfStay;
+        var _stayFrom = '@Html.Raw(stayArrivalDmy)';
+        var _stayTo = '@Html.Raw(stayDepartureDmy)';
+        var _durHtml = _durationDays > 0 ? '<span class="patient-header-dos">DOS - ' + _durationDays + (_durationDays === 1 ? ' Day' : ' Days') + ((_stayFrom && _stayTo) ? ': ' + _stayFrom + ' - ' + _stayTo : '') + '</span>' : '';
+        $("div.page-header-box h1").html(_backBtn + _nameHtml + _refHtml + _durHtml);
+    });
+</script>
+
+<style>
+    .ipd-header-name { font-weight: 700; font-size: 20px; text-transform: capitalize; letter-spacing: 0.5px; }
+
+    .ipd-header-ref {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d5f44;
+    letter-spacing: 0.5px;
+    margin-left: 4px;
+    }
+
+    .ipd-header-bookingref {
+    font-weight: 700;
+    font-size: 18px;
+    color: #2f6b4f;
+    }
+</style>

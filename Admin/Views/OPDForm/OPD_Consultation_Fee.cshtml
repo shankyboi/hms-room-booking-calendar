@@ -1,0 +1,1341 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@using Admin;
+@using Newtonsoft.Json.Linq
+@model NalamVazha.Models.BillingPaymentModel
+@{
+    ViewData["Title"] = "OPD Billing Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string bookingRef  = ViewBag.BookingReference ?? "-";
+    string patientName = ViewBag.PatientName      ?? "-";
+    string patientHeaderDisplay = ViewBag.PatientHeaderDisplay ?? patientName;
+    string doctorName  = ViewBag.DoctorName       ?? "-";
+    string opdFormid   = ViewBag.OPDFormid        ?? "";
+    string receivablefor  = ViewBag.receivablefor       ?? "OPD New";
+    string tenantName = Context.Session.GetString("NalamVazhachoosedtenantname") ?? "";
+    if (string.IsNullOrWhiteSpace(tenantName))
+        tenantName = "Nalam Vazha";
+
+    var summary  = ViewBag.BillingSummary as NalamVazha.Models.OPDBillingSummaryModel;
+	decimal discountConcessionAmount = summary == null ? 0m : summary.discountamount + summary.concessionamount;
+    var feeRows  = ViewBag.FeeRows as JArray ?? new JArray();
+    decimal totalFee = ViewBag.TotalFee is decimal tf ? tf : 0m;
+    bool hasConsultationFeeReceivable = ViewBag.HasConsultationFeeReceivable is bool hasFee ? hasFee : feeRows.Any();
+
+    string sessionRole = Context.Session.GetString("NalamVazhauserrole") ?? "";
+    string verifiedStatus = ViewBag.VerifiedStatus ?? "";
+    string normalizedVerifiedStatus = verifiedStatus.Replace(" ", "").Replace("_", "").Replace("-", "").ToLowerInvariant();
+    bool isCancelledOpd = normalizedVerifiedStatus.StartsWith("cancelled") || normalizedVerifiedStatus.StartsWith("canceled");
+}
+<script>
+    function getOPDBillingReturnUrl() {
+        try {
+            var requested = new URLSearchParams(window.location.search).get('returnurl');
+            if (requested && requested.charAt(0) === '/' && requested.indexOf('//') !== 0) return requested;
+        } catch (e) { }
+        return document.referrer || '/';
+    }
+    $(document).ready(function () {
+        var opdHeaderText = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(patientHeaderDisplay));
+        if (!opdHeaderText || opdHeaderText === "-") return;
+        var backBtn = '<a href="javascript:void(0);" onclick="window.location.href = getOPDBillingReturnUrl()"><i class="fa fa-angle-left" aria-hidden="true"></i></a>';
+        $("div.page-header-box h1").html(backBtn + '<span class="opd-header-name">' + $('<div/>').text(opdHeaderText).html() + '</span>');
+    });
+</script>
+<style>
+    .opd-header-name { font-weight: 700; font-size: 20px; text-transform: capitalize; letter-spacing: 0.5px; }
+</style>
+<div class="card card-block contCard">
+    <div class="mobileHeader">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="formHdr"><i class="fa fa-stethoscope"></i> OPD Billing Dashboard</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-block">
+
+        @if (TempData["message"] != null)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">x</span></button>
+                        Info : @TempData["message"]
+                    </div>
+                </div>
+            </div>
+        }
+        @if (TempData["errMessage"] != null)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">x</span></button>
+                        @TempData["errMessage"]
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Patient / Booking Info -->
+        <div class="row">
+            @if (Context.Session.GetString("NalamVazhauserrole") != "Frontdesk Admin")
+            {
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label class="control-label">Booking Reference</label>
+                    <p class="form-control-static"><strong>@bookingRef</strong></p>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label class="control-label">Patient Name</label>
+                    <p class="form-control-static"><strong>@patientName</strong></p>
+                </div>
+            </div>
+            }
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <label class="control-label">Consulting Doctor</label>
+                    <p class="form-control-static"><strong>@doctorName</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+
+        <!-- Fee Schedule — shown only when balance is still due -->
+        @if (hasConsultationFeeReceivable && (summary == null || summary.balance > 0))
+        {
+            <h5><i class="fa fa-table"></i> Consultation Fee Schedule</h5>
+            if (!feeRows.Any())
+            {
+                <div class="row">
+                    <div class="col-sm-8">
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle"></i> No consultation fee receivable found for this OPD form.
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-sm-8">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr class="active">
+                                    <th>Receivable No</th>
+                                    <th>Receivable For</th>
+                                    <th>Date</th>
+                                    <th class="text-right">Fee (&#8377;)</th>
+                                    <th class="text-right">Paid (&#8377;)</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in feeRows)
+                                {
+                                    var feeAmt     = decimal.TryParse(item["amount"]?.ToString(),     System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var _fa) ? _fa : 0m;
+                                    var paidAmt    = decimal.TryParse(item["paidamount"]?.ToString(), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var _pa) ? _pa : 0m;
+                                    var feeStatus  = item["paymentstatus"]?.ToString() ?? "";
+                                    <tr>
+                                        <td>@(item["receivableno"]?.ToString() ?? "-")</td>
+                                        <td>@(item["receivablefor"]?.ToString() ?? "-")</td>
+                                        <td>@(item["receivabledate"]?.ToString() ?? "-")</td>
+                                        <td class="text-right"><strong>&#8377; @feeAmt.ToString("N2")</strong></td>
+                                        <td class="text-right @(paidAmt > 0 ? "text-success" : "")"><strong>&#8377; @paidAmt.ToString("N2")</strong></td>
+                                        <td>
+                                            @if (string.Equals(feeStatus, "Paid", StringComparison.OrdinalIgnoreCase))
+                                            { <span class="label label-success">Paid</span> }
+                                            else if (string.Equals(feeStatus, "Partially Paid", StringComparison.OrdinalIgnoreCase))
+                                            { <span class="label label-warning">Partially Paid</span> }
+                                            else
+                                            { <span class="label label-default">Pending</span> }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="active">
+                                    <td colspan="3"><strong>Total Consultation Fee</strong></td>
+                                    <td class="text-right"><strong>&#8377; @totalFee.ToString("N2")</strong></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><strong>Fee Summary</strong></div>
+                            <div class="panel-body text-center">
+                                @if (totalFee > 0)
+                                {
+                                    <i class="fa fa-stethoscope fa-3x text-info"></i>
+                                    <p style="margin-top:8px;">
+                                        <strong>Total Fee</strong><br />
+                                        <span class="text-info" style="font-size:1.4em;">&#8377; @totalFee.ToString("N2")</span>
+                                    </p>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-clock-o fa-3x text-muted"></i>
+                                    <p class="text-muted" style="margin-top:8px;"><strong>No fee configured</strong></p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <hr />
+        }
+
+        @if (sessionRole.Equals("Frontdesk Admin", StringComparison.OrdinalIgnoreCase)
+            && isCancelledOpd && summary != null && summary.netpaid > 0)
+        {
+            <div class="text-right" style="margin-top:15px;">
+                <a class="btn btn-warning" href="@Url.Action("Cancel_OPD", "OPDForm", new { OPDFormid = opdFormid, triggerrefund = true, returnurl = Context.Request.Query["returnurl"].ToString() })">
+                    <i class="fa fa-undo"></i> Trigger Refund
+                </a>
+            </div>
+        }
+
+        <!-- Billing Summary Table -->
+        @if (hasConsultationFeeReceivable && summary != null)
+        {
+            <h5><i class="fa fa-table"></i> Billing Summary</h5>
+            <div class="row">
+                <div class="col-sm-8">
+                    <table class="table table-bordered table-striped">
+                        <tbody>
+                            <tr class="active">
+                                <td><strong>Grouped Charges / Subtotal</strong></td>
+                                <td class="text-right"><strong>&#8377; @summary.totalcharge.ToString("N2")</strong></td>
+                            </tr>
+							@if (discountConcessionAmount > 0m)
+							{
+								<tr><td>Discount / Concession</td><td class="text-right text-success">&#8377; @Math.Abs(discountConcessionAmount).ToString("N2")</td></tr>
+							}
+							@if (summary.depositcreditadjustment > 0m)
+							{
+								<tr><td>Deposit / Credit Adjustment</td><td class="text-right text-success">- &#8377; @summary.depositcreditadjustment.ToString("N2")</td></tr>
+							}
+                            <tr class="success">
+                                <td><strong>Total Amount Paid</strong></td>
+                                <td class="text-right"><strong class="text-success">&#8377; @summary.totalpaid.ToString("N2")</strong></td>
+                            </tr>
+                            @if (summary.totalrefunded > 0)
+                            {
+                                <tr>
+                                    <td><strong>Amount Refunded</strong></td>
+                                    <td class="text-right"><strong class="text-warning">- &#8377; @summary.totalrefunded.ToString("N2")</strong></td>
+                                </tr>
+                                <tr class="success">
+                                    <td><strong>Net Paid</strong></td>
+                                    <td class="text-right"><strong class="text-success">&#8377; @summary.netpaid.ToString("N2")</strong></td>
+                                </tr>
+                            }
+                            @if (summary.refunddue > 0)
+                            {
+                                <tr class="warning">
+                                    <td><strong>Refund Due</strong></td>
+                                    <td class="text-right"><strong class="text-warning">&#8377; @summary.refunddue.ToString("N2")</strong></td>
+                                </tr>
+                            }
+                            <tr class="info">
+                                <td><strong>Current Amount Payable</strong></td>
+                                <td class="text-right"><strong>&#8377; @summary.currentamountpayable.ToString("N2")</strong></td>
+                            </tr>
+                            <tr class="@(summary.balance > 0 ? "danger" : "success")">
+                                <td><strong>Remaining Balance</strong></td>
+                                <td class="text-right">
+                                    <strong class="@(summary.balance > 0 ? "text-danger" : "text-success")">
+                                        &#8377; @summary.balance.ToString("N2")
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Amount in Words</strong></td>
+                                <td class="text-right">@summary.amountinwords</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-sm-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><strong>Payment Status</strong></div>
+                        <div class="panel-body text-center">
+                            @if (summary.refunddue > 0)
+                            {
+                                <i class="fa fa-undo fa-3x text-warning"></i>
+                                <p class="text-warning"><strong>Refund Due: &#8377; @summary.refunddue.ToString("N2")</strong></p>
+                            }
+                            else if (summary.balance <= 0)
+                            {
+                                <i class="fa fa-check-circle fa-3x text-success"></i>
+                                <p class="text-success"><strong>Fully Paid</strong></p>
+                            }
+                            else
+                            {
+                                <i class="fa fa-exclamation-circle fa-3x text-warning"></i>
+                                <p class="text-warning"><strong>Balance Due: &#8377; @summary.balance.ToString("N2")</strong></p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (sessionRole.Equals("Frontdesk Admin", StringComparison.OrdinalIgnoreCase) && summary.refunddue > 0)
+            {
+                <div class="text-right" style="margin-top:15px;">
+                    <a class="btn btn-warning" href="@Url.Action("Cancel_OPD", "OPDForm", new { OPDFormid = opdFormid, triggerrefund = true, overpaymentrefund = true })">
+                        <i class="fa fa-undo"></i> Refund Excess Amount
+                    </a>
+                </div>
+            }
+        }
+
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- Razorpay Payment — patients only, shown only when balance > 0         -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+@if (!hasConsultationFeeReceivable)
+{
+    <div class="card card-block contCard" style="margin-top:5px;" id="opdReceivableDetails">
+        <div class="mobileHeader">
+            <div class="row">
+                <div class="col-sm-12 col-xs-12">
+                    <h4 class="formHdr"><i class="fa fa-inr"></i> Receivable Details</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-block">
+            @if (sessionRole == "Frontdesk Admin" && ViewBag.CanAddReceivable == true)
+            {
+                <div id="create-receivable-status-msg" class="alert" style="display:none;"></div>
+                @using (Html.BeginForm("Add_Receivable", "Receivable", FormMethod.Post, new { enctype = "multipart/form-data", @id = "createReceivableForm" }))
+                {
+                    <input type="hidden" name="tenantid" value="@Model.tenantid" />
+                    <input type="hidden" name="patientname" value="@Model.patientname" />
+                    <input type="hidden" name="opdnumber" value="@Model.opdnumber" />
+                    <input type="hidden" name="receivabledate" value="@DateTime.Now.ToString("dd/MM/yyyy")" />
+                    <input type="hidden" name="paidamount" value="0" />
+                    <input type="hidden" name="paymentstatus" value="Pending" />
+
+                    <div class="row">
+                        <div class="col-sm-3 col-xs-12 p-2">
+                            <div class="form-group">
+                                <label>Receivable For <b class="iconRed">*</b></label>
+                                <input type="text" name="receivablefor" id="create_receivablefor" class="form-control required" value="@receivablefor" maxlength="256" readonly />
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12 p-2">
+                            <div class="form-group">
+                                <label>Patient Name</label>
+                                <input type="text" class="form-control" value="@patientName" readonly />
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12 p-2">
+                            <div class="form-group">
+                                <label>OPD Reference</label>
+                                <input type="text" class="form-control" value="@bookingRef" readonly />
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12 p-2">
+                            <div class="form-group">
+                                <label>Currency</label>
+                                <input type="text" class="form-control" value="INR" readonly />
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-xs-12 p-2">
+                            <div class="form-group">
+                                <label>Amount in INR <b class="iconRed">*</b></label>
+                                <input type="text" name="amount" id="create_receivable_amount" class="form-control form-control-lg required" min="0" max="9999999999999999" />
+                            </div>
+                        </div>
+                        <div class="col-sm-9 col-xs-12 p-2">
+                            <div class="form-group">
+                                <label>Remarks</label>
+                                <textarea name="remarks" id="create_receivable_remarks" class="form-control form-control-lg mahat_transliterate" maxlength="256">Manual OPD consultation fee receivable - @receivablefor</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a>
+                        <button type="button" id="btnCreateReceivable" class="btn cma_primary_button cma_save_button waves-effect pull-right">
+                            Save Receivable
+                        </button>
+                    </div>
+                }
+            }
+            else if (sessionRole != "Frontdesk Admin")
+            {
+                <div class="alert alert-info">
+                    <i class="fa fa-info-circle"></i>
+                    App info: Consultation fee is not generated yet. Once the front desk enters the receivable amount, the health seeker can pay the outstanding amount through Razorpay from this billing page.
+                </div>
+                <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    A receivable cannot be added at the current OPD stage.
+                </div>
+                <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a>
+            }
+        </div>
+    </div>
+}
+
+@if (hasConsultationFeeReceivable && summary != null && summary.balance > 0 && !isCancelledOpd && sessionRole!="Frontdesk Admin")
+{
+    <div id="payment-status-msg" class="alert" style="display:none; margin-top:10px;"></div>
+    <div class="card card-block contCard" style="margin-top:15px;">
+        <div class="card-block">
+            <div class="row" style="margin-top:10px;">
+                <div class="col-sm-6 col-xs-6">
+                    <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a>
+                </div>
+                <div class="col-sm-6 col-xs-6 text-right">
+                    <button id="btn-opd-pay" class="btn btn-success btn-lg" type="button">
+                        <i class="fa fa-credit-card"></i>&nbsp; Pay &#8377; @summary.balance.ToString("N2") via Razorpay
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- Front-Desk Manual Payment Form — staff only, shown only when balance > 0 -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+@if (!hasConsultationFeeReceivable && sessionRole == "Frontdesk Admin" && ViewBag.CanAddReceivable == true)
+{
+    <script>
+        $(document).ready(function () {
+            $("#create_receivable_amount").autoNumeric('init', { aSep: '', vMin: '0.00', vMax: '9999999999999999.00' });
+            $("#createReceivableForm").validate({
+                ignore: ":hidden",
+                highlight: function (el) { $(el).closest('.form-group').addClass('has-error').removeClass('has-success'); },
+                unhighlight: function (el) { $(el).closest('.form-group').removeClass('has-error').addClass('has-success'); },
+                errorElement: 'span',
+                errorClass: 'help-block'
+            });
+
+            $("#btnCreateReceivable").click(function () {
+                var rawAmount = $("#create_receivable_amount").autoNumeric('get') || $("#create_receivable_amount").val();
+                var amount = parseFloat(rawAmount);
+                if (!$("#createReceivableForm").valid() || isNaN(amount) || amount <= 0) {
+                    swal({ title: 'Validation Failed !', text: 'Please enter a valid receivable amount.', type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false });
+                    return;
+                }
+
+                $(".page-loader").show();
+                var payload = {
+                    tenantid: '@Model.tenantid',
+                    patientname: '@Model.patientname',
+                    opdnumber: '@Model.opdnumber',
+                    receivablefor: $("#create_receivablefor").val(),
+                    amount: amount,
+                    remarks: $("#create_receivable_remarks").val(),
+                    craftmyapp_actionmethodname: "Add_Receivable"
+                };
+
+                $.ajax({
+                    url: '@Url.Action("Add_OPD_Manual_Receivable", "OPDForm")',
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    cache: false,
+                    data: JSON.stringify(payload),
+                    success: function (data) {
+                        $(".page-loader").hide();
+                        if (data && data.message == "201.1") {
+                            $("#create-receivable-status-msg").removeClass("alert-danger").addClass("alert-success").text("Receivable saved. Loading billing details...").show();
+                            var returnUrl = new URLSearchParams(window.location.search).get('returnurl') || '';
+                            window.location.replace('@Url.Action("OPD_Consultation_Fee", "OPDForm")?OPDFormid=@opdFormid&_=' + new Date().getTime()
+                                + (returnUrl ? '&returnurl=' + encodeURIComponent(returnUrl) : ''));
+                        } else if (data == "Session Expired") {
+                            swal({ title: "Error !!", text: data, type: "error", showCancelButton: false, confirmButtonText: "OK", allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false }).then(function () { window.location = "@Url.Action("Logout", "users")"; });
+                        } else {
+                            $("#create-receivable-status-msg").removeClass("alert-success").addClass("alert-danger").text(data).show();
+                        }
+                    },
+                    error: function (jqXHR) {
+                        $(".page-loader").hide();
+                        swal({ title: 'Contact Administrator !', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false });
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+@if (hasConsultationFeeReceivable && summary != null && summary.balance > 0 && !isCancelledOpd && sessionRole == "Frontdesk Admin")
+{
+    @using (Html.BeginForm("Add_Billing_Payment", "BillingPayment", FormMethod.Post, new { enctype = "multipart/form-data", @id = "formId" }))
+    {
+        <div class="card card-block contCard" style="margin-top:5px;" id="frontdeskPaymentForm">
+            <div class="mobileHeader">
+                <div class="row">
+                    <div class="col-sm-12 col-xs-12">
+                        <h4 class="formHdr"><i class="fa fa-inr"></i> Receive Payment (Front Desk)</h4>
+                    </div>
+                </div>
+            </div>
+
+            @if (ViewData["message"] != null)
+            {
+                <div class="row">
+                    <div class="col-sm-12 col-xs-12">
+                        <div class="alert alert-danger alert-dismissible">
+                            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">x</span></button>
+                            Info: @ViewData["message"]
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="">
+                <div class="card-block">
+                    @Html.HiddenFor(m => m.BillingPaymentid)
+                    @Html.HiddenFor(m => m.craftmyapp_actionmethodname)
+                    @Html.HiddenFor(m => m.patientvisit)
+
+                    <div class="row">
+                        <!-- Tenant -->
+                        <div class="col-sm-3 col-xs-12 p-2 tenantSection">
+                            <div>
+                                <div class="form-group form-group--float-above my-3">
+                                    <label for="tenantid" class="tenant_display tenant_label">@Resource.tenantdisplayname</label>
+                                    <select name="tenantid" id="tenantid" class="form-control tenant_display"></select>
+                                    <i class="form-group__bar"></i>
+                                </div>
+                                <div id="tenantid-error" class="help-block" style="display:none" role="alert"></div>
+                            </div>
+                        </div>
+
+                <!-- Payment For -->
+                <div class="col-sm-3 col-xs-12 p-2 receivablefor_craftmyapp_container">
+                    <div>
+                        <div class="form-group form-group--float-above my-3">
+                            <label for="receivablefor">@Resource.billingpayment_receivablefor <b class="iconRed">*</b></label>
+                            <select disabled name="receivablefor" id="receivablefor" class="form-control select2 select2-list required"></select>
+                        </div>
+                        @Html.ValidationMessageFor(model => model.receivablefor)
+                        <div id="receivablefor-error" class="help-block" style="display:none" role="alert"></div>
+                    </div>
+                </div>
+
+                        <!-- Patient Name -->
+                        <div class="col-sm-3 col-xs-12 p-2 patientname_craftmyapp_container">
+                            <div>
+                                <div class="form-group form-group--float-above my-3">
+                                    <label for="patientname">@Resource.billingpayment_patientname</label>
+                                    <select disabled name="patientname" id="patientname" class="form-control"></select>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.patientname)
+                                <div id="patientname-error" class="help-block" style="display:none" role="alert"></div>
+                            </div>
+                        </div>
+
+                        <!-- OPD Number (hidden UUID, display booking reference) -->
+                        <div class="col-sm-3 col-xs-12 p-2 opdnumber_craftmyapp_container">
+                            <div>
+                                <div class="form-group">
+                                    <label>OPD Reference</label>
+                                    <input type="hidden" name="opdnumber" value="@Model.opdnumber" />
+                                    <input type="text" class="form-control" value="@bookingRef" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Currency -->
+                        <div class="col-sm-3 col-xs-12 p-2 currency_craftmyapp_container">
+                            <div>
+                                <div class="form-group form-group--float-above my-3">
+                                    <label for="currency">@Resource.billingpayment_currency <b class="iconRed">*</b></label>
+                                    <select disabled name="currency" id="currency" class="form-control required"></select>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.currency)
+                                <div id="currency-error" class="help-block" style="display:none" role="alert"></div>
+                            </div>
+                        </div>
+
+                        <!-- Amount -->
+                        <div class="col-sm-3 col-xs-12 p-2 amount_craftmyapp_container">
+                            <div>
+                                <div class="form-group">
+                                    <label for="amount">@Resource.billingpayment_amount <b class="iconRed">*</b></label>
+                                    @Html.TextBox("amount", Model.amount, "{0:0.00}", new { @type = "text", @min = "0", @max = "9999999999999999", @class = "form-control form-control-lg required" })
+                                    @Html.ValidationMessageFor(model => model.amount)
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Mode -->
+                        <div class="col-sm-3 col-xs-12 p-2 paymentmode_craftmyapp_container">
+                            <div>
+                                <div class="form-group form-group--float-above my-3">
+                                    <label for="paymentmode">@Resource.billingpayment_paymentmode <b class="iconRed">*</b></label>
+                                    <select name="paymentmode" id="paymentmode" class="form-control select2 select2-list required"></select>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.paymentmode)
+                                <div id="paymentmode-error" class="help-block" style="display:none" role="alert"></div>
+                            </div>
+                        </div>
+
+                        <!-- Transaction Info -->
+                        <div class="col-sm-12 col-xs-12 mt-3 TransactionInfo_craftmyapp_container">
+                            <div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+                                <div class="card-head">
+                                    <header>@Resource.transactioninfo</header>
+                                </div>
+                                <div class="card-body card-container-Padding-NoShadow">
+                                    <div class="row">
+                                        <div class="col-sm-3 col-xs-12 p-2 transactionreference_craftmyapp_container">
+                                            <div>
+                                                <div class="form-group">
+                                                    <label for="transactionreference">Payment Reference / Cheque / DD No <b id="transactionreferencerequired" style="display:none" class="iconRed">*</b></label>
+                                                    @Html.TextBoxFor(m => m.transactionreference, new { @type = "text", @maxlength = "128", @class = "form-control form-control-lg" })
+                                                    @Html.ValidationMessageFor(model => model.transactionreference)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3 col-xs-12 p-2 bankname_craftmyapp_container">
+                                            <div>
+                                                <div class="form-group">
+                                                    <label for="bankname">@Resource.billingpayment_bankname <b id="banknamerequired" style="display:none" class="iconRed">*</b></label>
+                                                    @Html.TextBoxFor(m => m.bankname, new { @type = "text", @maxlength = "128", @class = "form-control form-control-lg mahat_transliterate" })
+                                                    @Html.ValidationMessageFor(model => model.bankname)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3 col-xs-12 p-2 chequedddate_craftmyapp_container">
+                                            <div>
+                                                <div class="form-group form-group--float-above my-2">
+                                                    <label for="chequedddate">Cheque or DD Date <b id="chequedddaterequired" style="display:none" class="iconRed">*</b></label>
+                                                    @Html.TextBoxFor(m => m.chequedddate, "{0:dd/MM/yyyy}", new { @placeholder = "dd/mm/yyyy", @type = "text", @autocomplete = "off", @class = "form-control form-control-lg" })
+                                                    <i class="form-group__bar"></i>
+                                                </div>
+                                                @Html.ValidationMessageFor(model => model.chequedddate)
+                                                <div id="chequedddate-error" class="help-block" style="display:none" role="alert"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3 col-xs-12 p-2 paymentstatus_craftmyapp_container">
+                                            <div>
+                                                <div class="form-group form-group--float-above my-3">
+                                                    <label for="paymentstatus">@Resource.billingpayment_paymentstatus <b class="iconRed">*</b></label>
+                                                    <select name="paymentstatus" id="paymentstatus" class="form-control select2 select2-list required"></select>
+                                                </div>
+                                                @Html.ValidationMessageFor(model => model.paymentstatus)
+                                                <div id="paymentstatus-error" class="help-block" style="display:none" role="alert"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3 col-xs-12 p-2 collectedby_craftmyapp_container">
+                                            <div>
+                                                <div class="form-group form-group--float-above my-3">
+                                                    <label for="collectedby">@Resource.billingpayment_collectedby</label>
+                                                    <select name="collectedby" id="collectedby" class="form-control select2 select2-list"></select>
+                                                </div>
+                                                @Html.ValidationMessageFor(model => model.collectedby)
+                                                <div id="collectedby-error" class="help-block" style="display:none" role="alert"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Counter ID -->
+                        <div class="col-sm-3 col-xs-12 p-2 counterid_craftmyapp_container">
+                            <div>
+                                <div class="form-group form-group--float-above my-3">
+                                    <label for="counterid">@Resource.billingpayment_counterid</label>
+                                    <select name="counterid" id="counterid" class="form-control"></select>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.counterid)
+                                <div id="counterid-error" class="help-block" style="display:none" role="alert"></div>
+                            </div>
+                        </div>
+
+                        <!-- Remarks -->
+                        <div class="col-sm-12 col-xs-12 p-2 remarks_craftmyapp_container">
+                            <div>
+                                <div class="form-group form-group--float-above my-3">
+                                    <label for="remarks">@Resource.billingpayment_remarks</label>
+                                    @Html.TextAreaFor(m => m.remarks, new { @minlength = "0", @maxlength = "256", @class = "form-control form-control-lg mahat_transliterate" })
+                                    <i class="form-group__bar"></i>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.remarks)
+                                <div id="remarks-error" class="help-block" style="display:none" role="alert"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-block">
+                        <button type="button" onclick="window.location.href = getOPDBillingReturnUrl()" class="btn btn-secondary cma_cancel_button waves-effect">@Resource.back</button>
+                <button type="button" id="btnSubmit" class="btn cma_primary_button cma_save_button waves-effect pull-right">Receive Amount</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<!-- Back button card (shown when no balance is due) -->
+@if (hasConsultationFeeReceivable && (isCancelledOpd || summary == null || summary.balance <= 0))
+{
+    <div class="card card-block contCard" style="margin-top:15px;">
+        <div class="card-block">
+            <div class="row">
+                <div class="col-sm-12">
+                    <a href="javascript:history.back()" class="btn btn-default"><i class="fa fa-arrow-left"></i> Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- Scripts                                                               -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+@* ── Front-desk manual payment scripts (staff only) ── *@
+@if (hasConsultationFeeReceivable && summary != null && summary.balance > 0 && !isCancelledOpd && sessionRole == "Frontdesk Admin")
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var Actions = getAutho("BillingPayment", "create");
+            if (Actions == undefined) {
+                window.location = "@Url.Action("RoleAuthorizationFailed", "users")";
+            }
+        });
+    </script>
+
+<script>
+var strreceivablefor = '@receivablefor';
+</script>
+
+    <script>
+        var strcurrency = 'INR';
+    </script>
+    @if (Model != null && !string.IsNullOrEmpty(Model.currency))
+    {
+        <script>strcurrency = "@Model.currency";</script>
+    }
+
+    <script>
+        var strpaymentmode;
+        var isFrontdeskAdmin = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(string.Equals(sessionRole, "Frontdesk Admin", StringComparison.OrdinalIgnoreCase)));
+    </script>
+    @if (Model != null && !string.IsNullOrEmpty(Model.paymentmode))
+    {
+        <script>strpaymentmode = "@Model.paymentmode";</script>
+    }
+
+    <script>
+        var strpaymentstatus = 'Success';
+    </script>
+    @if (Model != null && !string.IsNullOrEmpty(Model.paymentstatus))
+    {
+        <script>strpaymentstatus = "@Model.paymentstatus";</script>
+    }
+
+    <script>
+        var strcounterid = 'Front Desk';
+    </script>
+    @if (Model != null && !string.IsNullOrEmpty(Model.counterid))
+    {
+        <script>strcounterid = "@Model.counterid";</script>
+    }
+
+    <script>
+        var strcollectedby = "@Context.Session.GetString("NalamVazhaloginUserID")";
+    </script>
+    @if (Model != null && Model.collectedby != null && Model.collectedby.ToString() != "")
+    {
+        <script>strcollectedby = "@Model.collectedby";</script>
+    }
+
+    <script>
+        $(document).ready(function () {
+            $("#conversionrate").val("1");
+            $(".conversionrate_craftmyapp_container").hide();
+            $(".receivedamount_craftmyapp_container").hide();
+
+            $("#amount").autoNumeric('init', { aSep: '', vMin: '0.00', vMax: '9999999999999999.00' });
+            var _balanceAmount = '@Model.amount.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)';
+            $("#amount").autoNumeric('set', _balanceAmount);
+        });
+    </script>
+
+    <link href="~/components/xdsoft_datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+    <script src="~/components/xdsoft_datetimepicker/php-date-formatter.min.js"></script>
+    <script src="~/components/xdsoft_datetimepicker/jquery.datetimepicker.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#chequedddate').datetimepicker({
+                timepicker: false, scrollInput: false,
+                format: "d/m/Y", formatDate: "d/m/Y"
+            });
+        });
+    </script>
+
+    <script>
+        function updateTransactionInfoVisibility() {
+            var paymentMode = ($("#paymentmode").val() || "").trim();
+            var isCash = paymentMode == "Cash";
+            var isNonCash = paymentMode != "" && !isCash;
+            var isChequeOrDD = paymentMode == "Cheque" || paymentMode == "Demand Draft (DD)";
+
+            $(".transactionreference_craftmyapp_container").toggle(isNonCash);
+            $(".bankname_craftmyapp_container").toggle(isChequeOrDD);
+            $(".chequedddate_craftmyapp_container").toggle(isChequeOrDD);
+
+            $('#transactionreference').attr('required', isNonCash);
+            $('#transactionreferencerequired').toggle(isNonCash);
+            $('#chequedddate').attr('required', isChequeOrDD);
+            $('#chequedddaterequired').toggle(isChequeOrDD);
+
+            if (!isNonCash) {
+                $('#transactionreference').val('');
+            }
+            if (!isChequeOrDD) {
+                $('#bankname').val('');
+                $('#chequedddate').val('');
+            }
+        }
+
+        $(document).ready(function () {
+            updateTransactionInfoVisibility();
+            $("#paymentmode").change(updateTransactionInfoVisibility);
+        });
+    </script>
+
+<!-- Lookups: receivablefor, currency, paymentmode, paymentstatus, counterid -->
+<script>
+$(document).ready(function () {
+    $.ajax({
+        url: '@Url.Action("get_lookups_by_entity", "lookups")',
+        dataType: 'json',
+        data: { id: 'BillingPayment' },
+        success: function (data) {
+            $.each(data, function (index, optionDataInner) {
+                if (optionDataInner.fieldname == "receivablefor") {
+                    var ddl = "#receivablefor"; $(ddl).empty(); $(ddl).append("<option value=''>Choose</option>");
+                    var receivableOptions = optionDataInner.fielddesc.split(',').map(function (o) { return $.trim(o); }).filter(Boolean);
+                    var hasSelectedReceivable = false;
+                    receivableOptions.sort(function (a, b) { return a.localeCompare(b); }).forEach(function (o) {
+                        var isSelected = strreceivablefor && strreceivablefor.toLowerCase() == o.toLowerCase();
+                        if (isSelected) hasSelectedReceivable = true;
+                        $(ddl).append('<option ' + (isSelected ? 'selected ' : '') + 'value="' + o + '">' + o + '</option>');
+                    });
+                    if (strreceivablefor && !hasSelectedReceivable) {
+                        $(ddl).append('<option selected value="' + strreceivablefor + '">' + strreceivablefor + '</option>');
+                    }
+                    $(ddl).val(strreceivablefor).trigger('change');
+                    $(ddl).select2();
+                }
+                if (optionDataInner.fieldname == "currency") {
+                    var ddl = "#currency"; $(ddl).empty(); $(ddl).append("<option value=''>Choose</option>");
+                    optionDataInner.fielddesc.split(',').sort(function (a, b) { return a.localeCompare(b); }).forEach(function (o) {
+                        $(ddl).append('<option ' + (strcurrency == o ? 'selected ' : '') + ' value="' + o + '">' + o + '</option>');
+                    });
+                }
+                if (optionDataInner.fieldname == "paymentmode") {
+                    var ddl = "#paymentmode"; $(ddl).empty(); $(ddl).append("<option value=''>Choose</option>");
+                    var paymentModeOptions = optionDataInner.fielddesc.split(',').map(function (o) { return $.trim(o); }).filter(Boolean);
+                    if (isFrontdeskAdmin) {
+                        paymentModeOptions = paymentModeOptions.filter(function (o) {
+                            return o.toLowerCase() != "razorpay";
+                        });
+                        if (strpaymentmode && strpaymentmode.toLowerCase() == "razorpay") {
+                            strpaymentmode = "";
+                        }
+                    }
+                    paymentModeOptions.sort(function (a, b) { return a.localeCompare(b); }).forEach(function (o) {
+                        $(ddl).append('<option ' + (strpaymentmode == o ? 'selected ' : '') + ' value="' + o + '">' + o + '</option>');
+                    }); $(ddl).select2(); updateTransactionInfoVisibility();
+                }
+                if (optionDataInner.fieldname == "paymentstatus") {
+                    var ddl = "#paymentstatus"; $(ddl).empty(); $(ddl).append("<option value=''>Choose</option>");
+                    optionDataInner.fielddesc.split(',').sort(function (a, b) { return a.localeCompare(b); }).forEach(function (o) {
+                        $(ddl).append('<option ' + (strpaymentstatus == o ? 'selected ' : '') + ' value="' + o + '">' + o + '</option>');
+                    }); $(ddl).select2();
+                }
+                if (optionDataInner.fieldname == "counterid") {
+                    var ddl = "#counterid"; $(ddl).empty(); $(ddl).append("<option value=''>Choose</option>");
+                    optionDataInner.fielddesc.split(',').sort(function (a, b) { return a.localeCompare(b); }).forEach(function (o) {
+                        $(ddl).append('<option ' + (strcounterid == o ? 'selected ' : '') + ' value="' + o + '">' + o + '</option>');
+                    });
+                }
+            });
+        },
+        error: function (jqXHR) {
+            if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+                swal({ title: 'Failed!', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false }).then(function () { window.location = "@Url.Action("AuthorizationFailed", "users")"; });
+            else
+                swal({ title: 'Contact Administrator !', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false });
+        }
+    });
+});
+</script>
+
+    <!-- Lookup: collected by -->
+    <script>
+        function getOPDConsultationFeeUserName(item) {
+            return $.trim([item && item.firstname, item && item.lastname].filter(Boolean).join(' '));
+        }
+
+        function keepOPDCollectedByDropdownBelow() {
+            var ddl = $("#collectedby");
+            var select2 = ddl.data('select2');
+            if (!select2 || !select2.$container || !select2.dropdown || !select2.dropdown.$dropdownContainer) return;
+
+            var $container = select2.$container;
+            var $dropdownContainer = select2.dropdown.$dropdownContainer;
+            var $dropdown = $dropdownContainer.find('.select2-dropdown');
+            var offset = $container.offset();
+            var $offsetParent = $dropdownContainer.offsetParent();
+            var parentOffset = { top: 0, left: 0 };
+
+            if ($offsetParent.length && $offsetParent[0] !== document.body && $offsetParent[0] !== document.documentElement) {
+                parentOffset = $offsetParent.offset();
+            }
+
+            $container.removeClass('select2-container--above').addClass('select2-container--below');
+            $dropdown.removeClass('select2-dropdown--above').addClass('select2-dropdown--below');
+            $dropdownContainer.css({
+                top: offset.top + $container.outerHeight(false) - parentOffset.top,
+                left: offset.left - parentOffset.left,
+                width: $container.outerWidth(false)
+            });
+        }
+
+        function bindOPDCollectedByDropdownPosition(ddl) {
+            ddl.off('select2:open.opdCollectedByPosition');
+            ddl.on('select2:open.opdCollectedByPosition', function () {
+                setTimeout(keepOPDCollectedByDropdownBelow, 0);
+            });
+        }
+
+        function lookup_BillingPayment_collectedby(tenantid) {
+            var ddl = $("#collectedby");
+            if (!ddl.length) return;
+
+            $.ajax({
+                url: '@Url.Action("lookup_BillingPayment_collectedby", "BillingPayment")',
+                dataType: 'json',
+                data: { tenantid: tenantid },
+                success: function (data) {
+                    if (ddl.data('select2')) {
+                        ddl.select2('destroy');
+                    }
+
+                    ddl.empty();
+                    ddl.append(new Option('Choose', ''));
+
+                    if (data && data.length > 0) {
+                        data = data.filter(function (item) { return item && item.firstname !== null; });
+                        data.sort(function (a, b) {
+                            return String(a.firstname || '').toLowerCase().localeCompare(String(b.firstname || '').toLowerCase());
+                        });
+                    }
+
+                    $.each(data || [], function (index, optionDataInner) {
+                        var userName = getOPDConsultationFeeUserName(optionDataInner);
+                        var option = new Option(userName, optionDataInner.usersid, false, strcollectedby == optionDataInner.usersid);
+                        ddl.append(option);
+                    });
+
+                    ddl.val(strcollectedby || '').trigger('change');
+                    ddl.select2({ width: '100%' });
+                    bindOPDCollectedByDropdownPosition(ddl);
+                },
+                error: function (jqXHR) {
+                    if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+                        swal({ title: 'Failed!', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false }).then(function () { window.location = "@Url.Action("AuthorizationFailed", "users")"; });
+                    } else {
+                        swal({ title: 'Contact Administrator !', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false });
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            lookup_BillingPayment_collectedby(str_tenantid);
+            $("#tenantid").on("change", function () {
+                lookup_BillingPayment_collectedby($(this).val());
+            });
+        });
+    </script>
+
+    <!-- Tenant dropdown -->
+    @if (Model != null)
+    {
+        <script>str_tenantid = "@Model.tenantid"</script>
+    }
+    <script>
+        function createOptionElement(value, label, className) {
+            var option = document.createElement("option"); option.value = value; option.textContent = label; option.className = className; return option;
+        }
+        function populateDropdown(data) {
+            var dropdown = document.getElementById("tenantid");
+            dropdown.innerHTML = '<option value=""> Choose </option>';
+            var groupedOptions = {}; var filteredData = []; var uniqueNames = new Set();
+            data.forEach(function (item) { if (!uniqueNames.has(item.businessname)) { filteredData.push(item); uniqueNames.add(item.businessname); } });
+            filteredData.forEach(function (item) { if (!item.parentid) { dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup")); } else { if (!groupedOptions[item.parentid]) groupedOptions[item.parentid] = []; groupedOptions[item.parentid].push(item); } });
+            Object.keys(groupedOptions).forEach(function (parentid) { var p = dropdown.querySelector('[value="' + parentid + '"]'); groupedOptions[parentid].forEach(function (c) { p.insertAdjacentElement('afterend', createOptionElement(c.tenantid, c.businessname, "optionChild")); }); });
+            filteredData.forEach(function (item) { if (!item.parentid && !groupedOptions[item.tenantid]) { var p = dropdown.querySelector('[value="' + item.tenantid + '"]'); if (item.natureofbusiness?.indexOf("Lead") !== -1) p.classList.add("optionNoChildLead"); else p.classList.add("optionNoChild"); } });
+            $("#tenantid").val(str_tenantid); $("#tenantid").select2(); $("#tenantid").find('.optionChild').prepend('&nbsp;&nbsp;&nbsp;');
+        }
+        $(document).ready(function () {
+            if ("@Context.Session.GetString("NalamVazhashowtenant")" == "Y") {
+                $.ajax({
+                    url: '@Url.Action("get_project_tenant", "tenant")', dataType: 'json', data: { "businesstype": "Healthcare Provider", "tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")" },
+                    success: function (data) { populateDropdown(data); },
+                    error: function (jqXHR) { swal({ title: 'Contact Administrator !', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false }); }
+                });
+            } else { $(".tenant_display").hide(); }
+        });
+    </script>
+
+    <!-- Form submit -->
+    <script>
+        var posturl = '@Url.Action("Add_Billing_Payment", "BillingPayment")';
+    </script>
+    <script>
+        $(document).ready(function () {
+            $.validator.addMethod("invalidphone", function (value, element) { return value != 'invalid'; }, "Please enter valid value");
+            $('#formId').validate({
+                ignore: ":hidden:not(.invalidphone)",
+                highlight: function (el) { $(el).closest('.form-group').addClass('has-error').removeClass('has-success'); $(el).addClass('form-control-error').removeClass('form-control-success'); },
+                unhighlight: function (el) { $(el).closest('.form-group').removeClass('has-error').addClass('has-success'); $(el).addClass('form-control-success').removeClass('form-control-error'); },
+                errorElement: 'span', errorClass: 'help-block',
+                errorPlacement: function (error, element) { if (element.hasClass("invalidphone")) { error.addClass("invalidphoneerror"); } error.insertAfter(element); }
+            });
+            var validator = $("#formId").validate({});
+
+    $("#btnSubmit").click(function () {
+        if ($("#formId").valid()) {
+            $(".page-loader").show();
+            $('#receivablefor').prop('disabled', false);
+            $('#patientname').prop('disabled', false);
+            $('#currency').prop('disabled', false);
+            var form = $('#formId')[0];
+            var formdata = new FormData(form);
+            $.ajax({
+                url: posturl, type: 'POST', enctype: 'multipart/form-data', processData: false, contentType: false, cache: false, data: formdata,
+                success: function (data) {
+                    $(".page-loader").hide();
+                    if (data == "Success") {
+                                        window.location = getOPDBillingReturnUrl();
+                    } else if (data == "Session Expired") {
+                        swal({ title: "Error !!", text: data, type: "error", showCancelButton: false, confirmButtonText: "OK", allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false }).then(function () { window.location = "@Url.Action("Logout", "users")"; });
+                    } else {
+                        $('#receivablefor').prop('disabled', true); $('#patientname').prop('disabled', true); $('#currency').prop('disabled', true);
+                        $(".page-loader").hide();
+                        swal({ title: "Error !!", text: data, type: "error", showCancelButton: false, confirmButtonText: "OK", allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false });
+                    }
+                },
+                error: function (jqXHR) {
+                    $('#receivablefor').prop('disabled', true); $('#patientname').prop('disabled', true); $('#currency').prop('disabled', true);
+                    $(".page-loader").hide();
+                    if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+                        swal({ title: 'Failed!', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false }).then(function () { window.location = "@Url.Action("AuthorizationFailed", "users")"; });
+                    else
+                        swal({ title: 'Contact Administrator !', text: jqXHR.responseText, type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false });
+                }
+            });
+        } else {
+            validator.focusInvalid();
+            swal({ title: 'Validation Failed !', text: "Please check your entry", type: 'error', buttonsStyling: false, confirmButtonClass: 'btn btn-primary', allowOutsideClick: false, allowEscapeKey: false, allowEnterKey: false });
+        }
+    });
+});
+</script>
+
+    <!-- Patient name lookup (pre-filled) -->
+    <script>
+        var strpatientname;
+    </script>
+    @if (Model != null && Model.patientname != null && Model.patientname.ToString() != "")
+    {
+        <script>strpatientname = "@Model.patientname";</script>
+    }
+    <script>
+        function getOPDConsultationFeeNamePart(value) {
+            if (value === null || value === undefined) return '';
+            var text = value.toString().trim();
+            return text.toLowerCase() === 'null' ? '' : text;
+        }
+
+        function getOPDConsultationFeePatientName(item) {
+            return [
+                getOPDConsultationFeeNamePart(item && item.firstname),
+                getOPDConsultationFeeNamePart(item && item.lastname),
+                getOPDConsultationFeeNamePart(item && item.mobilenumber)
+            ].filter(function (part) { return part !== ''; }).join(' ');
+        }
+
+        function lookup_BillingPayment_patientname(tenantid) {
+            var ddl = $('#patientname'); ddl.empty();
+            ddl.select2({
+                ajax: {
+                    url: '@Url.Action("lookup_BillingPayment_patientname", "BillingPayment")', dataType: 'json',
+                    data: function (p) { return { "tenantid": tenantid, 'searchterm': p.term || '', 'pagesize': typeaheadpagesize, 'pagenumber': p.page || 1 }; }, delay: 500,
+                    processResults: function (data, p) {
+                        if (data.length > 0) { data = data.filter(i => i.firstname !== null); data.sort((a, b) => String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase())); }
+                        for (var i = 0; i < data.length; i++) { data[i].id = data[i].PatientProfileid; data[i].name = getOPDConsultationFeePatientName(data[i]); }
+                        return { results: data, pagination: { more: data != null && data.length == typeaheadpagesize } };
+                    }
+                },
+                placeholder: 'Choose', minimumResultsForSearch: typeaheadpagesize,
+                templateResult: function (i) { return i.loading ? i.text : getOPDConsultationFeePatientName(i); },
+                templateSelection: function (i) { return !i ? 'Choose' : i.text || getOPDConsultationFeePatientName(i); }
+            });
+            $.ajax({
+                url: '@Url.Action("lookup_BillingPayment_patientname", "BillingPayment")', dataType: 'json',
+                data: { "tenantid": tenantid, 'searchterm': strpatientname || '', 'pagesize': typeaheadpagesize, 'pagenumber': 1 },
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        if (data[i].PatientProfileid == strpatientname) {
+                            var o = new Option(getOPDConsultationFeePatientName(data[i]), data[i].PatientProfileid, true, true);
+                            ddl.append(o).trigger('update');
+                        }
+                    }
+                }
+            });
+        }
+        $(document).ready(function () { setTimeout(function () { lookup_BillingPayment_patientname(str_tenantid); }, 3000); });
+    </script>
+}
+
+@* ── Razorpay OPD payment scripts (Health Seekers only) ── *@
+@if (hasConsultationFeeReceivable && summary != null && summary.balance > 0 && sessionRole == "Health Seeker")
+{
+    <!-- ══════════════════════════════════════════════════════════════════
+         Razorpay OPD Payment — mirrors Initiate_Payment.cshtml (IPD flow)
+         ══════════════════════════════════════════════════════════════════ -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var opdFormId              = '@opdFormid';
+        var createOpdOrderUrl      = '@Url.Action("Create_OPD_Razorpay_Order", "OPDForm")';
+        var completeOpdPaymentUrl  = '@Url.Action("Complete_OPD_Payment", "OPDForm")';
+        var failOpdPaymentUrl      = '@Url.Action("Fail_OPD_Payment", "OPDForm")';
+        var opdPatientDashboardUrl = '@Url.Action("Index", "PatientDashboard")';
+        var opdActivePaymentRequestId = null;
+        var opdPaymentCompleting = false;
+
+        document.getElementById('btn-opd-pay').addEventListener('click', function () {
+            var btn = this;
+            opdCleanupRazorpayOverlay();
+            if (typeof Razorpay === 'undefined') {
+                opdShowError('Razorpay checkout could not be loaded. Please check your network and try again.');
+                opdResetBtn(btn);
+                return;
+            }
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Awaiting Payment...';
+
+            opdFetchWithTimeout(createOpdOrderUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ OPDFormid: opdFormId })
+            }, 30000)
+            .then(opdParsePaymentResponse)
+            .then(function (order) {
+                if (!order || !order.order_id) {
+                    opdShowError(order && order.error ? order.error : 'Failed to create payment order. Please try again.');
+                    opdResetBtn(btn);
+                    return;
+                }
+                opdActivePaymentRequestId = order.paymentrequestid;
+                opdPaymentCompleting = false;
+                var options = {
+                    key:         order.razorpay_key_id,
+                    amount:      order.amount,
+                    currency:    order.currency || 'INR',
+                    name:        @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(tenantName)),
+                    description: order.description,
+                    order_id:    order.order_id,
+                    prefill:     { name: order.name, contact: order.contact },
+                    theme:       { color: '#3399cc' },
+                    handler: function (response) {
+                        opdPaymentCompleting = true;
+                        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Recording Payment...';
+                        opdCompletePayment(response, order.paymentrequestid);
+                    },
+                    modal: {
+                        ondismiss: function () {
+                            opdCleanupRazorpayOverlay();
+                            if (!opdPaymentCompleting && opdActivePaymentRequestId) {
+                                opdRecordPaymentFailure({
+                                    error: {
+                                        code: 'modal_dismissed',
+                                        description: 'Razorpay checkout was closed before payment completion.',
+                                        source: 'customer',
+                                        step: 'checkout',
+                                        reason: 'popup_closed',
+                                        metadata: { order_id: order.order_id, payment_id: '' }
+                                    }
+                                }, opdActivePaymentRequestId);
+                            }
+                            opdActivePaymentRequestId = null;
+                            opdResetBtn(btn);
+                        }
+                    }
+                };
+                var rzp = new Razorpay(options);
+                rzp.on('payment.failed', function (response) {
+                    opdRecordPaymentFailure(response, order.paymentrequestid);
+                    opdShowError('Payment failed: ' + (response.error.description || 'Unknown error'));
+                    opdCleanupRazorpayOverlay();
+                    opdActivePaymentRequestId = null;
+                    opdResetBtn(btn);
+                });
+                rzp.open();
+            })
+            .catch(function (err) {
+                opdShowError('Error: ' + err.message);
+                opdActivePaymentRequestId = null;
+                opdResetBtn(btn);
+            });
+        });
+
+        function opdCompletePayment(rzpResponse, paymentrequestid) {
+            var payload = {
+                OPDFormid:              opdFormId,
+                paymentrequestid:       paymentrequestid,
+                razorpay_order_id:      rzpResponse.razorpay_order_id,
+                razorpay_payment_id:    rzpResponse.razorpay_payment_id,
+                razorpay_signature:     rzpResponse.razorpay_signature,
+                amount:                 rzpResponse.amount
+            };
+            opdFetchWithTimeout(completeOpdPaymentUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }, 45000)
+            .then(opdParsePaymentResponse)
+            .then(function (result) {
+                if (result && (result.success === true || result.message === '"201.1"' || result.message === '201.1')) {
+                    opdActivePaymentRequestId = null;
+                    opdShowSuccess('Payment successful! Redirecting to your dashboard...');
+                    setTimeout(function () {
+                        window.location.href = opdPatientDashboardUrl;
+                    }, 2000);
+                } else {
+                    opdShowError('Payment recorded but status update failed. Please contact the front desk.');
+                    opdResetBtn(document.getElementById('btn-opd-pay'));
+                }
+            })
+            .catch(function (err) {
+                opdShowError('Error recording payment: ' + err.message);
+                opdResetBtn(document.getElementById('btn-opd-pay'));
+            });
+        }
+
+        function opdRecordPaymentFailure(response, paymentrequestid, useBeacon) {
+            var error = (response && response.error) ? response.error : {};
+            var metadata = error.metadata || {};
+            var payload = {
+                OPDFormid: opdFormId,
+                paymentrequestid: paymentrequestid,
+                razorpay_order_id: metadata.order_id || '',
+                razorpay_payment_id: metadata.payment_id || '',
+                error_code: error.code || '',
+                error_description: error.description || '',
+                error_source: error.source || '',
+                error_step: error.step || '',
+                error_reason: error.reason || '',
+                failed_at: new Date().toISOString()
+            };
+
+            if (useBeacon && navigator.sendBeacon) {
+                try {
+                    var blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+                    navigator.sendBeacon(failOpdPaymentUrl, blob);
+                    return;
+                } catch (e) { }
+            }
+
+            fetch(failOpdPaymentUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).catch(function () { });
+        }
+
+        window.addEventListener('pagehide', function () {
+            if (!opdPaymentCompleting && opdActivePaymentRequestId) {
+                opdRecordPaymentFailure({
+                    error: {
+                        code: 'page_unloaded',
+                        description: 'Payment page was refreshed or left before completion.',
+                        source: 'customer',
+                        step: 'checkout',
+                        reason: 'page_unloaded',
+                        metadata: { order_id: '', payment_id: '' }
+                    }
+                }, opdActivePaymentRequestId, true);
+                opdActivePaymentRequestId = null;
+            }
+        });
+
+        function opdFetchWithTimeout(url, options, timeoutMs) {
+            if (!window.AbortController) return fetch(url, options);
+            var controller = new AbortController();
+            var timer = setTimeout(function () { controller.abort(); }, timeoutMs);
+            var requestOptions = Object.assign({}, options, { signal: controller.signal });
+            return fetch(url, requestOptions).finally(function () { clearTimeout(timer); });
+        }
+
+        function opdParsePaymentResponse(res) {
+            return res.text().then(function (text) {
+                var data = {};
+                try { data = text ? JSON.parse(text) : {}; }
+                catch (e) { data = { error: text }; }
+                if (!res.ok) {
+                    throw new Error(data.error || data.message || data.Message || text || 'Payment request failed.');
+                }
+                return data;
+            });
+        }
+
+        function opdShowError(msg) {
+            var el = document.getElementById('payment-status-msg');
+            el.className = 'alert alert-danger';
+            el.innerHTML = '<strong>Error:</strong> ' + msg;
+            el.style.display = 'block';
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        function opdShowSuccess(msg) {
+            var el = document.getElementById('payment-status-msg');
+            el.className = 'alert alert-success';
+            el.innerHTML = '<strong>Success!</strong> ' + msg;
+            el.style.display = 'block';
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        function opdResetBtn(btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa fa-credit-card"></i>&nbsp; Pay &#8377; @summary.balance.ToString("N2") via Razorpay';
+        }
+        function opdCleanupRazorpayOverlay() {
+            try {
+                document.querySelectorAll('.razorpay-backdrop').forEach(function (el) {
+                    if (el && el.parentNode) el.parentNode.removeChild(el);
+                });
+                document.body.classList.remove('razorpay-checkout-frame');
+                document.body.style.overflow = '';
+            } catch (e) { }
+        }
+    </script>
+}

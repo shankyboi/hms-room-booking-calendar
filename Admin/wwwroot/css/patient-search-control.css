@@ -1,0 +1,606 @@
+/* ============================================
+   Reusable Patient Search Control
+   Outlook-style filter panel + inline results
+   ============================================ */
+
+/* ── Wrapper positioning for dropdown ── */
+.psc-container {
+  position: relative;
+}
+
+/* ── Main wrapper ── */
+.psc-wrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+}
+
+.psc-search-bar {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #d2d6dc;
+  border-radius: 6px;
+  background: #fff;
+  overflow: hidden;
+  min-height: 38px;
+  transition: border-color 0.2s;
+}
+
+.psc-search-bar:focus-within {
+  border-color: var(--btnprimary, #2d5f44);
+  box-shadow: 0 0 0 2px rgba(45, 95, 68, 0.12);
+}
+
+/* ── Text input ── */
+.psc-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 13px;
+  padding: 6px 12px;
+  min-width: 100px;
+  background: transparent;
+}
+
+.psc-input::placeholder {
+  color: #94a3b8;
+}
+
+/* ── Search icon btn inside bar ── */
+.psc-search-btn {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  padding: 0 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.psc-search-btn:hover {
+  color: var(--btnprimary, #2d5f44);
+}
+
+/* ── Filter toggle button inside bar ── */
+.psc-filter-toggle {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 14px;
+  padding: 0 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s, background 0.2s;
+  border-left: 1px solid #e5e7eb;
+}
+
+.psc-filter-toggle:hover {
+  color: var(--btnprimary, #2d5f44);
+  background: #f0faf5;
+}
+
+.psc-filter-toggle.active {
+  color: var(--btnprimary, #2d5f44);
+  background: #f0faf5;
+}
+
+/* ── Quick-Add button ── */
+.psc-add-btn, .psc-add-btn:hover {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--btnprimary, #2d5f44);
+    border-radius: 6px;
+    background: var(--btnprimary, #2d5f44) !important;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    transition: opacity 0.2s, box-shadow 0.2s;
+}
+
+.psc-add-btn:hover {
+  opacity: 0.7;
+  box-shadow: 0 2px 8px rgba(45, 95, 68, 0.25);
+}
+
+/* ══════════════════════════════════════════════
+   Outlook-style Filter Panel
+   ══════════════════════════════════════════════ */
+.psc-filter-panel {
+  display: none;
+  position: absolute;
+  z-index: 1055;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  margin-top: 4px;
+  overflow: hidden;
+  animation: psc-panel-in 0.15s ease;
+}
+
+.psc-filter-panel.is-open {
+  display: block;
+}
+
+@keyframes psc-panel-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Filter header ── */
+.psc-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.psc-filter-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.psc-filter-title i {
+  color: var(--btnprimary, #2d5f44);
+  margin-right: 6px;
+  font-size: 12px;
+}
+
+.psc-filter-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.psc-filter-close:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+/* ── Filter body ── */
+.psc-filter-body {
+  padding: 10px 14px 6px;
+}
+
+/* ── Grid layout – side by side ── */
+.psc-filter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.psc-filter-input {
+  font-size: 13px !important;
+  padding: 6px 10px !important;
+  height: 34px !important;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #fff;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+
+.psc-filter-input:focus {
+  border-color: var(--btnprimary, #2d5f44);
+  box-shadow: 0 0 0 2px rgba(45, 95, 68, 0.1);
+  outline: none;
+}
+
+/* ── Filter footer ── */
+.psc-filter-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 10px 16px;
+  border-top: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.psc-filter-footer .btn {
+  font-size: 13px;
+  padding: 5px 18px;
+}
+
+/* ══════════════════════════════════════════════
+   Dropdown results
+   ══════════════════════════════════════════════ */
+.psc-results-dropdown {
+  position: absolute;
+  z-index: 1060;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  max-height: 360px;
+  overflow-y: auto;
+  display: none;
+}
+
+.psc-results-dropdown.is-open {
+  display: block;
+}
+
+/* Single result item */
+.psc-result-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s;
+}
+
+.psc-result-item:last-child {
+  border-bottom: none;
+}
+
+.psc-result-item:hover,
+.psc-result-item.is-focused {
+  background: #f0faf5;
+}
+
+.psc-result-avatar {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--btnprimary, #2d5f44), #198754);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+.psc-result-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.psc-result-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.psc-result-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.psc-result-meta {
+  font-size: 11px;
+  color: #64748b;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 1px;
+}
+
+.psc-result-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.psc-result-meta i {
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.psc-patient-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.psc-patient-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 2px 5px;
+  white-space: nowrap;
+}
+
+.psc-patient-badge i {
+  font-size: 9px;
+}
+
+.psc-patient-badge--danger {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.psc-patient-badge--dark {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.psc-patient-badge--category {
+  background: #e0f2fe;
+  color: #075985;
+}
+
+/* "Select" indicator on right */
+.psc-result-select-hint {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: #94a3b8;
+  padding: 2px 8px;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  background: #f8fafc;
+}
+
+.psc-result-item:hover .psc-result-select-hint {
+  color: var(--btnprimary, #2d5f44);
+  border-color: var(--btnprimary, #2d5f44);
+  background: #f0faf5;
+}
+
+/* Loading / empty states */
+.psc-results-loading,
+.psc-results-empty {
+  text-align: center;
+  padding: 18px 14px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.psc-results-loading i {
+  margin-right: 6px;
+}
+
+/* ══════════════════════════════════════════════
+   Selected patient chip
+   ══════════════════════════════════════════════ */
+.psc-selected-chip {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  background: #f0faf5;
+  border: 1px solid #d1e8dc;
+  border-radius: 6px;
+  padding: 6px 12px;
+  width: 100%;
+}
+
+.psc-selected-chip.is-visible {
+  display: flex;
+}
+
+.psc-selected-chip .psc-result-avatar {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  font-size: 12px;
+}
+
+.psc-selected-name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.psc-selected-meta {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.psc-selected-clear {
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.psc-selected-clear:hover {
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+/* ══════════════════════════════════════════════
+   Quick-Add Modal
+   ══════════════════════════════════════════════ */
+.psc-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: var(--z-overlay, 1040);
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.psc-modal-overlay.is-open {
+  display: flex;
+}
+
+.psc-modal {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: psc-modal-in 0.2s ease;
+}
+
+@keyframes psc-modal-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.psc-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e8ecf1;
+  background: #f8fafc;
+}
+
+.psc-modal__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.psc-modal__title i {
+  color: var(--btnprimary, #2d5f44);
+  margin-right: 8px;
+}
+
+.psc-modal__close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.psc-modal__close:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.psc-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.psc-modal__body .form-group {
+  margin-bottom: 14px;
+}
+
+.psc-modal__body label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.psc-modal__body .list_card_section .form-group label,
+.psc-modal__body .list_card_section .form-group--float-above label {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #334155 !important;
+  margin-bottom: 4px;
+}
+
+.psc-modal__body .form-control {
+  font-size: 13px;
+}
+
+.psc-modal__body .psc-required-error {
+  display: block;
+  margin-top: 3px;
+  font-size: 12px;
+  color: #ef4444 !important;
+}
+
+/* Override themestyles.css: .list_card_section .form-group span uses a
+   black !important color for uploader spans. Validation text must stay red. */
+.psc-modal-overlay .psc-modal__body .list_card_section .form-group span.psc-required-error {
+  color: #ef4444 !important;
+}
+
+.psc-modal__body .required-label::after {
+  content: " *";
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.psc-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 14px 20px;
+  border-top: 1px solid #e8ecf1;
+  background: #f8fafc;
+}
+
+.psc-modal__footer .btn {
+  font-size: 13px;
+  padding: 6px 20px;
+}
+
+/* ══════════════════════════════════════════════
+   Responsive
+   ══════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .psc-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .psc-modal {
+    max-width: 95vw;
+    margin: 10px;
+  }
+}

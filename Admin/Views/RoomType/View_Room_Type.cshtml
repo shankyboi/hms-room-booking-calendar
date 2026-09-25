@@ -1,0 +1,529 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:41:21 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.RoomTypeModel
+					@{
+					ViewData["Title"] = "Room Type";
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="">
+						 
+					<div class="">
+
+						  <div id="cma_printableArea">
+						   
+							
+							<div class="row printablerow"  style="padding:20px"> 
+							  <div class="col-sm-12 col-xs-12 p-1 entityname_craftmyapp_viewcontainer show-on-pdf" style="display:none;text-align:left">
+							<h3>
+							<img src="~/images/logo.png" style="height:60px;width:60px;">
+							<b>Room Type</b>
+							</h3>
+				
+							<br />
+							</div>
+							 
+				<div class="col-sm-12 col-xs-12 mt-3 RoomTypeInfo_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.roomtypeinfo</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 name_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="name">@Resource.roomtype_name</label><br>
+										<span class="auto_cls_name"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 prebookingdaylimit_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="prebookingdaylimit">@Resource.roomtype_prebookingdaylimit</label><br>
+										<span class="auto_cls_prebookingdaylimit"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 minbookingdays_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="minbookingdays">@Resource.roomtype_minbookingdays</label><br>
+										<span class="auto_cls_minbookingdays"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 maxbookingdays_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="maxbookingdays">@Resource.roomtype_maxbookingdays</label><br>
+										<span class="auto_cls_maxbookingdays"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 concessoneligibility_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="concessoneligibility">@Resource.roomtype_concessoneligibility</label><br>
+										<span class="auto_cls_concessoneligibility"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 suitabilityforvip_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="suitabilityforvip">@Resource.roomtype_suitabilityforvip</label><br>
+										<span class="auto_cls_suitabilityforvip"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 gendersuitability_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="gendersuitability">@Resource.roomtype_gendersuitability</label><br>
+										<span class="auto_cls_gendersuitability"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 roomtypeicon_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="roomtypeicon">@Resource.roomtype_roomtypeicon</label><br>
+										<span class="auto_cls_roomtypeicon"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+<div class="col-sm-3 col-xs-12 p-2 deposittype_craftmyapp_viewcontainer" style="display:none">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="deposittype">@Resource.roomtype_deposittype</label><br>
+										<span class="auto_cls_deposittype"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 PricingforHealthSeeker_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.pricingforhealthseeker</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 costperday_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="costperday">@Resource.roomtype_costperday</label><br>
+										<span class="auto_cls_costperday"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 advanceperday_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="advanceperday">@Resource.roomtype_advanceperday</label><br>
+										<span class="auto_cls_advanceperday"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 bookingdeposit_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="bookingdeposit">@Resource.roomtype_bookingdeposit</label><br>
+										<span class="auto_cls_bookingdeposit"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 variableofbookingdays_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="variableofbookingdays">@Resource.roomtype_variableofbookingdays</label><br>
+										<span class="auto_cls_variableofbookingdays"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 PricingforAttendant_craftmyapp_container"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.pricingforattendant</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 attendantcostperday_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="attendantcostperday">@Resource.roomtype_attendantcostperday</label><br>
+										<span class="auto_cls_attendantcostperday"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 attendantadvanceperday_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="attendantadvanceperday">@Resource.roomtype_attendantadvanceperday</label><br>
+										<span class="auto_cls_attendantadvanceperday"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 attendantbookingdeposit_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="attendantbookingdeposit">@Resource.roomtype_attendantbookingdeposit</label><br>
+										<span class="auto_cls_attendantbookingdeposit"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 attendantvariableofbookingdays_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="attendantvariableofbookingdays">@Resource.roomtype_attendantvariableofbookingdays</label><br>
+										<span class="auto_cls_attendantvariableofbookingdays"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 HourlyCharges_craftmyapp_container" style="display:none;"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.hourlycharges</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 hourlychargesapplicable_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="hourlychargesapplicable">@Resource.roomtype_hourlychargesapplicable</label><br>
+										<span class="auto_cls_hourlychargesapplicable"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 chargeperhour_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="chargeperhour">@Resource.roomtype_chargeperhour</label><br>
+										<span class="auto_cls_chargeperhour"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+
+			 <div class="col-sm-12 col-xs-12 mt-3 dependentContainerBodyParent refundpolicyContainerBodyParent hide"><!--Dependent Refund Policy Containder Block-->
+					<div class="card card card-blue cma_dependent_band">
+					<div class="card-head">
+							<header>
+								 @Resource.refundpolicy
+							</header>
+							 
+						</div>
+					<div class="card-body fluent-card-body commonContainer">
+						 <div class="col-12">
+							<div class="table-responsive-lg">
+							<table id="refundpolicyContainer" class="table table-bordered mb-0 refundpolicyContainer">
+							<thead id="refundpolicyContainerHead">
+								<th>Refund Type</th>
+<th>Cancellation By</th>
+<th>Cancellation Window (Days)</th>
+<th>Refund Percentage</th>
+
+
+							</thead>
+							
+							<tbody id="refundpolicyContainerBody"> 
+							</tbody>
+							
+							</table>
+							</div>
+								</div>
+						</div>
+					  </div>
+				  </div><!--Dependent Refund Policy Containder Block-->
+			 
+			
+ 
+				<div class="col-sm-12 col-xs-12 mt-3 BillingPolicy_craftmyapp_container" style="display:none;"><!--form_group_div_block-->
+					<div class="card card-blue card-section cma_section_band list_card_section list_card_tablet">
+							<div class="card-head">
+								<header>@Resource.billingpolicy</header>
+							</div>
+							<div class="card-body card-container-Padding-NoShadow">
+								<div class="row">
+										<div class="col-sm-3 col-xs-12 p-2 billingwaiverfordelayedstart_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="billingwaiverfordelayedstart">@Resource.roomtype_billingwaiverfordelayedstart</label><br>
+										<span class="auto_cls_billingwaiverfordelayedstart"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 waiverpercentage_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="waiverpercentage">@Resource.roomtype_waiverpercentage</label><br>
+										<span class="auto_cls_waiverpercentage"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+<div class="col-sm-3 col-xs-12 p-2 roomtransfercost_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="roomtransfercost">@Resource.roomtype_roomtransfercost</label><br>
+										<span class="auto_cls_roomtransfercost"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+
+								</div>
+							</div>
+					</div>
+				</div><!--form_group_div_block-->
+			 
+<div class="col-sm-3 col-xs-12 p-2 description_craftmyapp_viewcontainer">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="description">@Resource.roomtype_description</label><br>
+										<span class="auto_cls_description"></span>
+										<i class="form-group__bar" ></i>
+									</div>
+								</div>
+							</div>
+
+											 
+											 
+							</div>
+						 </div>
+						 <div id="comparisonContainer"></div>
+						 <div class="row">
+								<div class="col-sm-12 col-xs-12">
+								 
+								 <button type="button" onclick="window.location.href = document.referrer" class="btn btn-secondary cma_cancel_button cma_back_button waves-effect">@Resource.back</button>            
+
+								</div>
+							</div>					
+  
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					 
+					 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+					<script type="text/javascript">
+					 function download() {
+							const element = document.getElementById('cma_printableArea');
+
+							const elementsToHide = document.querySelectorAll('.show-on-pdf');
+
+							// Hide the elements
+							elementsToHide.forEach(function (el) {
+							el.style.display = '';
+							});
+
+							html2pdf()
+							.from(element)
+							.save('RoomType.pdf')
+							.then(function () {
+							// Show the hidden elements after generating PDF
+							elementsToHide.forEach(function (el) {
+							el.style.display = 'none';
+							});
+							});
+					}
+
+					function fill_RoomType_view_data(){
+
+					   var  RoomTypeid = getUrlVars()["RoomTypeid"];
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_RoomType")',
+												dataType: 'json',
+												data:{RoomTypeid: RoomTypeid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+													
+															
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															
+															if(key=='roomtypeicon'){
+																			$('.auto_cls_roomtypeicon').empty()
+																			if(obj[key] !=null)  {            
+																		  
+																			var uploaded_roomtypeicon = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_roomtypeicon.length; i++) {
+
+
+																				if (uploaded_roomtypeicon[i] != "") {
+																						var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_roomtypeicon[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																					if (iterate == 1)
+																						$('.auto_cls_roomtypeicon').append('<a href=' + filepath + ' class="imgroomtypeicon auto_clr_roomtypeicon"><img  src=' + filepath + ' width="100px" alt="img"/></a>')
+																					else
+
+																						$('.auto_cls_roomtypeicon').append('<div style="display:none"> <a href=' + filepath + ' class="imgroomtypeicon auto_clr_roomtypeicon"><img  src=' + filepath + ' width="100px" alt="img"/></a></div>')
+		 
+																				}
+
+
+																			}
+
+																			$('body').on('click', 'a.imgroomtypeicon', function (e) {
+																			e.preventDefault();
+																			$('.imgroomtypeicon').colorbox({ rel: '.imgroomtypeicon', width: "90%", height: "80%" });
+																			$.colorbox({ open: true });
+																			});
+
+
+
+
+																					}
+
+
+																	}
+if(key=='automaton_RoomType_refundpolicy'){
+																			$('#refundpolicyContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + RoomTypeid +'&section=automaton_RoomType_refundpolicy_history'
+																					 $(".refundpolicyauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("RoomType","versionhistory")
+																				if(Actions == undefined){
+																				$("refundpolicyauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.refundpolicyContainerBodyParent').removeClass('hide')      
+																			   $('#refundpolicyContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.refundpolicyContainerBodyParent').addClass('hide')
+																			}
+																	}
+
+
+															
+
+													}
+
+													if (obj) {
+$(".auto_cls_bookingdeposit").html(
+    obj.bookingdeposit !== null && obj.bookingdeposit !== undefined
+        ? obj.bookingdeposit
+        : '-'
+);
+$(".auto_cls_attendantbookingdeposit").html(
+    obj.attendantbookingdeposit !== null && obj.attendantbookingdeposit !== undefined
+        ? obj.attendantbookingdeposit
+        : '-'
+);
+if (obj.hasOwnProperty('deposittype') && obj.deposittype) {
+    str_visible_deposittype = obj.deposittype;
+} else {
+    str_visible_deposittype = ''; 
+}
+if (str_visible_deposittype === "Variable") {
+    $(".variableofbookingdays_craftmyapp_viewcontainer").show();
+    $(".attendantvariableofbookingdays_craftmyapp_viewcontainer").show();
+} else {
+    $(".variableofbookingdays_craftmyapp_viewcontainer").hide();
+    $(".attendantvariableofbookingdays_craftmyapp_viewcontainer").hide();
+}
+}
+
+												}
+
+												})
+
+				   }
+				   
+
+					$(document).ready(function () {
+
+
+					fill_RoomType_view_data()
+
+
+					/*var Actions=getAutho("RoomType","list")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}*/
+
+
+
+
+					});
+					 
+					</script>
+
+					
+					<script type="text/javascript">
+						var str_visible_deposittype;
+var str_visible_deposittype;
+
+						$(document).ready(function () {
+							$(".variableofbookingdays_craftmyapp_viewcontainer").hide();
+$(".attendantvariableofbookingdays_craftmyapp_viewcontainer").hide();
+
+						});
+					</script>
+					
+					
+					

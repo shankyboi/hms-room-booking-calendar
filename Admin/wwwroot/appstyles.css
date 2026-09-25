@@ -1,0 +1,1072 @@
+/* App shell footer: keep the page body between the fixed header and footer. */
+:root {
+	--app-footer-left: 64px;
+	--app-footer-height: 80px;
+	--app-footer-clearance: 104px;
+}
+
+body.menubar-hoverable.header-fixed {
+	padding-bottom: var(--app-footer-clearance) !important;
+}
+
+#content,
+.main-content {
+	min-height: calc(100vh - 70px - var(--app-footer-height));
+	padding-bottom: var(--app-footer-clearance) !important;
+}
+
+/* .main-content is nested directly inside #content, and body wraps both, so
+   stacking the same footer-clearance padding on all three compounds it into
+   ~3x the space the fixed footer actually needs, leaving a large blank gap
+   before it. Scoped to the FrontDesk Dashboard (marked by .fd-dash) per
+   request, rather than changing this footer-clearance behavior everywhere:
+   only .main-content keeps the padding here, since it's the innermost of the
+   three and directly touches the visible content. */
+body:has(.fd-dash).menubar-hoverable.header-fixed {
+	padding-bottom: 0 !important;
+}
+body:has(.fd-dash) #content {
+	padding-bottom: 0 !important;
+}
+
+/* ── Footer shell ── */
+.page_footer {
+	left: var(--app-footer-left) !important;
+	width: calc(100vw - var(--app-footer-left)) !important;
+	height: var(--app-footer-height) !important;
+	padding: 0 24px !important;
+	align-items: center !important;
+	justify-content: space-between !important;
+	box-sizing: border-box;
+	display: flex !important;
+}
+
+/* ── Side logo figures ── */
+.page_footer .footer-side-logo {
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 2px;
+	min-width: 0;
+	flex-shrink: 0;
+}
+
+.page_footer .footer-side-logo img {
+	display: block;
+	width: auto !important;
+	max-width: 220px !important;
+	max-height: 64px !important;
+	height: auto !important;
+	object-fit: contain !important;
+}
+
+.page_footer .footer-side-logo span {
+	font-size: 10px;
+	color: var(--body-text, #888);
+	white-space: nowrap;
+	margin-top: 2px;
+}
+
+/* Thajos figure stays at the far right */
+.page_footer .footer-thajos {
+	margin-left: auto;
+	align-items: flex-end;
+}
+
+/* ── Center partner logos ── */
+.footer-center-logos {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	flex: 1;
+	overflow: hidden;
+}
+
+.footer-center-logos img {
+	display: block;
+	width: auto !important;
+	max-width: 110px !important;
+	max-height: 52px !important;
+	height: auto !important;
+	object-fit: contain !important;
+	flex-shrink: 0;
+}
+
+/* ── Legacy figure selectors (safety net) ── */
+.page_footer figure {
+	min-width: 0;
+}
+
+.page_footer figure img,
+.page_footer > img {
+	display: block;
+	width: auto !important;
+	max-width: 160px !important;
+	max-height: 52px !important;
+	height: auto !important;
+	object-fit: contain !important;
+}
+
+.page_footer figure span {
+	margin-top: 2px;
+	white-space: nowrap;
+	font-size: 10px;
+}
+
+/* ── Sidebar-pinned (wide screens) ── */
+@media (min-width: 1200px) {
+	body.menubar-pin {
+		--app-footer-left: 240px;
+	}
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+	:root {
+		--app-footer-left: 0px;
+		--app-footer-height: 64px;
+		--app-footer-clearance: 84px;
+	}
+
+	.page_footer {
+		padding: 0 12px !important;
+	}
+
+	.footer-center-logos {
+		gap: 10px;
+	}
+
+	.footer-center-logos img {
+		max-width: 70px !important;
+		max-height: 38px !important;
+	}
+
+	.page_footer .footer-side-logo img {
+		max-width: 90px !important;
+		max-height: 38px !important;
+	}
+}
+.cal-practitioner-header {
+	height: auto !important;
+}
+
+.fd-clinical-calendar-btn--today:hover {
+	color: #475569;
+}
+
+#main-menu #dropdown_container .menu-dropdown ul li a, .gui-controls > li.open > .menu-dropdown ul li a {
+	width: 100% !important;
+}
+
+.occ-view-btn.is-active:hover {
+	color: #394950 !important;
+}
+
+.occupancy-calendar-wrap #occupancyCalendar .scheduler_default_rowheader:hover, .occupancy-calendar-wrap #occupancyCalendar .scheduler_default_rowheader_inner:hover {
+	background: #394950 !important;
+}
+
+.occupancy-calendar-wrap #occupancyCalendar .scheduler_default_rowheader,
+.occupancy-calendar-wrap #occupancyCalendar .scheduler_default_rowheader_inner,
+.scheduler_default_timeheadergroup .scheduler_default_timeheadergroup_inner,
+.scheduler_default_timeheadergroup .scheduler_default_timeheadercol_inner, #PatientProfileContainer .pp-card__banner
+#ppPrintCardModal .pp-card__banner {
+	background: var(--btnprimary) !important;
+}
+
+.rgb-group__header {
+	background: var(--btnprimary) !important;
+}
+
+.scheduler_default_timeheadercol_inner.scheduler_default_timeheader_cell_inner {
+	background: var(--btnprimary) !important;
+}
+
+.SumoSelect > .CaptionCont > span {
+	font-size: 13px;
+	font-family: 'Roboto', sans-serif !important;
+}
+
+	.SumoSelect > .CaptionCont > span.placeholder {
+		color: #000 !important;
+	}
+
+.SumoSelect:focus > .CaptionCont, .SumoSelect:hover > .CaptionCont, .SumoSelect.open > .CaptionCont {
+	box-shadow: unset !important;
+}
+
+.pq-view-btn.is-active:hover {
+	background: linear-gradient(135deg, #1e3a5f, #1b3060) !important;
+	color: #fff;
+	border-color: #1e3a5f;
+}
+
+
+.clinical-appointment-calendar-btn--today:hover {
+	color: #000 !important;
+}
+
+.fd-search input {
+	border: 0px !important;
+}
+
+#ipdViewTabsWrapper .ipd-view-tabs > li.active > a:focus {
+	outline: none !important;
+	border: 0px !important;
+}
+
+.clinicaltaskinfoContainer .clinicaltaskinfo div.col-sm-2 {
+	min-width: 180px !important;
+	width: 180px;
+	max-width: 180px;
+}
+
+.clinicaltaskinfoContainer .clinicaltaskinfo {
+	display: flex;
+	flex-wrap: wrap !important;
+}
+
+	.clinicaltaskinfoContainer .clinicaltaskinfo .btn-remove-row span::before {
+		font-size: 16px;
+	}
+
+.calendar_default_event_bar {
+	background: #2563eb !important;
+}
+	/*	*/
+#PatientProfileContainer .col-12.col-sm-12.col-md-6.col-lg-6.col-xl-4.mb-4{
+	max-width: 100%;
+	width: 100%;
+	padding: 0;
+}
+
+#PatientProfileContainer:before {
+	display: none;
+}
+
+#PatientProfileContainer {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(345px, 1fr));
+	column-gap: 10px;
+	row-gap: 15px;
+}
+
+
+	#PatientProfileContainer .pp-card__details .pp-card__name {
+		font-size: 14px;
+	}
+
+	#PatientProfileContainer .pp-card__qr-text strong {
+		font-size: 12px;
+	}
+
+	#PatientProfileContainer .pp-card__emg-val {
+		font-size: 12px;
+	}
+
+	#PatientProfileContainer .pp-card__qr, #PatientProfileContainer .pp-card__qr img, #PatientProfileContainer .pp-card__qr canvas {
+		width: 48px !important;
+		height: 48px !important;
+	}
+
+	#PatientProfileContainer .pp-card__two-col .pp-card__col:last-child .pp-card__field:first-child .pp-card__field-val {
+		color: red;
+	}
+
+	#PatientProfileContainer .pp-card__field-val {
+		font-size: 10px;
+	}
+
+	#PatientProfileContainer .pp-card__qr-footer {
+		padding-block: 10px;
+	}
+
+
+
+	#ppPrintCardModal .ppc-dialog {
+		max-width: 540px !important;
+		margin: auto;
+	}
+	#ppPrintCardModal .ppc-dialog {
+		margin: 135px auto !important;
+	}
+#PatientProfileContainer .pp-card__banner,
+#ppPrintCardModal .ppc-card__banner,
+#allotDoctorModal .bk-header,
+#allotDoctorModal .bk-btn-check,
+.page-header-box .hs-hdr-split button.hs-hdr-btn--caret,
+.page-header-box .hs-hdr-split button.hs-hdr-btn--main {
+	background: var(--btnprimary) !important;
+}
+.pp-card__actions .btn-icon-toggle i.fa.fa-ellipsis-v {
+	color: #fff !important;
+}
+#allotDoctorModal .bk-btn-check:hover {
+	color: #fff;
+	border: 1px solid #148191;
+	background:#fff !important;
+}
+#allotDoctorModal .bk-btn-save:hover {
+	color: #000;
+	border: 1px solid #000;
+}
+
+#ppPrintCardModal .ppc-card__field div {
+	display: flex;
+	flex-direction: column;
+}
+
+#ppPrintCardModal .ppc-card__two-col .ppc-card__col:first-child .ppc-card__field {
+	flex-direction: column;
+}
+
+.ppc-field-val {
+	font-size: 12px !important;
+}
+
+.ppc-card__qr-label strong {
+	font-size: 12px !important;
+}
+.reportrange div, .reportrange {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0 !IMPORTANT;
+}
+
+.reportrange span {
+	font-size: 12px;
+}
+
+.reportrange label.control-label {
+	margin: 0;
+}
+
+.reportrange {
+	box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+	transition: box-shadow 0.2s, border-color 0.2s, color 0.2s, background 0.2s;
+	border-radius: 8px;
+	background: #fff;
+}
+
+.reportrange:hover {
+		border-color: var(--btnprimary, #2d5f44) !important;
+		color: var(--btnprimary, #2d5f44) !important;
+	}
+
+.fd-facet-bar .fd-facet-pill {
+	border-radius: 7px !IMPORTANT;
+	border-bottom-left-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+
+.fd-facet-subbar {
+	gap: 0;
+}
+
+.fd-facet-pill--sub {
+	border-radius: 0 !IMPORTANT;
+}
+.PermanentAddress_craftmyapp_container .row, .ContactAddress_craftmyapp_container .row {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(222px, 1fr));
+}
+
+	.PermanentAddress_craftmyapp_container .row:before, .ContactAddress_craftmyapp_container .row:before {
+		display: none;
+	}
+.people-profile-card {
+	border: 2px solid var(--btnprimary) !important;
+	padding-top: 10px;
+	background: var(--btnprimary) !important;
+}
+
+.people-profile-card__body {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+}
+.people-profile-card .people-profile-card__header a.people-profile-card__email, .people-profile-card__name,
+i.md.md-more-vert {
+	color: #fff !important;
+}
+.dependentContainerBorder {
+	align-items: center;
+}
+
+
+#transferTabs {
+	background: var(--btnprimary) !important;
+}
+	#transferTabs li  a:hover{
+		color: #fff !important;
+		background: rgba(255, 255, 255, .12) !important;
+		border-color: none !important;
+	}
+.transfer-room-card .nav-link:focus {
+	outline: 0 !important;
+}
+
+#transferTabs li a {
+	cursor: pointer;
+	color: #fff !important;
+	border-bottom: 4px solid transparent !important;
+	opacity: 1 !important;
+}
+	#transferTabs li a.active {
+		background: rgba(255, 255, 255, .12) !important;
+		border-bottom: 4px solid #fff !important;
+		
+	}
+button#btnUpdateMedicalInfo {
+	background: var(--btnprimary) !important;
+	border-color: var(--btnprimary) !important;
+}
+div#modalUpdateMedicalInfo .modal-dialog {
+	margin: auto !important;
+	max-width: 80% !important;
+}
+.page-header-menu-section .header-nav-profile .dropdown .profile-info {
+	width: auto;
+	overflow: hidden;
+	text-overflow: ellipsis !important;
+	white-space: nowrap;
+	display: block;
+	max-width: 200px;
+}
+
+
+.psc-modal-overlay .psc-modal__body .row div {
+	width: 50%;
+}
+
+	.psc-modal-overlay .psc-modal__body .row div .form-group {
+		width: 100%;
+	}
+
+		.psc-modal-overlay .psc-modal__body .row div .form-group .iti {
+			width: 100%;
+		}
+
+		.psc-modal-overlay .psc-modal__body .row div .form-group .input-fle {
+			width: max-content;
+		}
+
+	.psc-modal-overlay .psc-modal__body .row div .input-file {
+		width: 100% !important;
+	}
+
+	.psc-modal-overlay .psc-modal__body .row div.uploadidproof_craftmyapp_container div {
+		width: 100% !important;
+	}
+
+	.psc-modal-overlay .psc-modal__body .field-validation-error,
+	.psc-modal-overlay .psc-modal__body .text-danger {
+		display: block;
+		margin-top: 5px;
+		font-size: 12px;
+		font-weight: 400;
+		line-height: 1.4;
+	}
+
+
+
+
+span.room-allot-card__type {
+	line-height: normal;
+	max-height: unset;
+}
+.psc-modal__body {
+	max-height: 400px;
+}
+
+	.psc-modal__body .form-control {
+		min-height: 40px;
+	}
+
+.paddressline1_craftmyapp_viewcontainer {
+}
+
+.col-sm-3.col-xs-12.p-2.paddressline1_craftmyapp_viewcontainer, .caddressline1_craftmyapp_viewcontainer {
+	width: 100%;
+}
+
+.card.card-blue.card-section.cma_section_band.list_card_section.list_card_tablet .form-group > label {
+	overflow: unset;
+	padding-bottom: 8px;
+}
+
+
+.therapyimage_form_group > .therapyimage_label {
+	color: #4f4f4f !important;
+	font-size: 14px !important;
+	font-weight: 400 !important;
+	margin-bottom: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+
+#cma_printableArea .card .col-sm-3 {
+	padding-bottom: 10px;
+}
+.direct-ipd-page .btn {
+	font-weight: 500;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+.direct-ipd-page .form-actions a.cma_cancel_button {
+	margin-right: auto;
+}
+
+.room-allot-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 361px);
+}
+
+.room-allot-card {
+	width: 100%;
+}
+
+.room-allot-dis {
+	font-size: 12px;
+	color: #ccc;
+	margin-bottom: 3px;
+}
+span.room-allot-card__type {
+	line-height: normal;
+	max-height: unset;
+}
+.room-allot-card__img {
+	min-height: 146px;
+}
+.psc-modal__body label, .list_card_section .form-group > label {
+
+color: #334155 !important;
+
+/* font-size: 12px !important; */
+
+font-weight: 600;
+
+margin-bottom: 10px;
+}
+.iti__arrow {
+	width: 10px !important;
+	border-left: 5px solid transparent;
+	border-right: 5px solid transparent;
+	border-top: 6px solid #555;
+}
+/* The injected "Dashboard" flyout sits right after the sidebar logo, so its
+   default top:0 anchor overlaps the fixed header above it. Push it down clear. */
+.mainSideMenu li.Dashboard_ > .menu-dropdown {
+	top: 35px !important;
+	position:unset;
+	box-shadow:unset !important;
+}
+.fd-facet-subbar {
+	flex-direction: column;
+	position: absolute;
+	padding: 10px !important;
+	width: fit-content;
+	background: #fff;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.fd-facet-pill--sub {
+	width: 100%;
+	flex: 1;
+}
+.room-allot-card__desc {
+	display: flex;
+	overflow: auto;
+	height: 59px;
+	margin-bottom:15px;
+}
+.nrtp-card-tooltip {
+	background: transparent !important;
+}
+.nrtp-card:hover {
+	border-color: var(--btnprimary) !important;
+	transform:unset !important;
+}
+.image-card.image-top.landscape .card-head:first-child img {
+    border-radius: 6px;
+    object-fit: cover;
+}
+.image-card.image-top.landscape.compact-card .card-head:first-child {
+    width: 175px !important;
+}
+.card.card-blue .card-head {
+    padding-left: 17px;
+	color:#2f6b4f !important; 
+}
+#menubar .menubar-scroll-panel #main-menu li:first-child{
+	padding-inline: 13px;
+	border-bottom: 1px solid #fff !important;
+}
+
+#menubar .menubar-scroll-panel #main-menu .menu-dropdown li {
+	border: unset !important;
+}
+a#leftPanelToggle {
+	/* #header is position:fixed with its own left already tracking the
+	   sidebar's real right edge (var(--sideMenuWidth) expanded, 70px
+	   collapsed via body.left-panel-hidden #header) — anchoring here with
+	   position:absolute instead of a hardcoded fixed-viewport left keeps
+	   this button glued to the sidebar edge at every width/state, rather
+	   than guessing a pixel value that only matches one exact layout. */
+	position: absolute;
+	left: -15px;
+	background: #fff;
+	border-radius: 50%;
+	box-shadow: 0px 0px 2px 1px #ccc;
+	width: 30px;
+	height: 30px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1;
+}
+
+a#leftPanelToggle i {
+		line-height: normal !important;
+		position: relative;
+		left: -2px;
+}
+body.left-panel-hidden #base {
+	width: calc(100% - 70px);
+	margin-left: auto;
+}
+body.left-panel-hidden #menubar {
+	transform: unset;
+}
+	body.left-panel-hidden #menubar, body.left-panel-hidden #menubar .menubar-scroll-panel #main-menu {
+		width: 70px;
+	}
+body.left-panel-hidden .nano .gui-controls li a span {
+	display: none;
+}
+@media (max-width: 768px) {
+	/* On mobile the sidebar is an off-canvas drawer opened by the hamburger
+	   (.menubar-toggle) — this inline collapse control doesn't apply there,
+	   and its desktop-tuned left:180px otherwise leaves it floating
+	   disconnected from the hamburger button. */
+	a#leftPanelToggle {
+		display: none !important;
+	}
+}
+body.left-panel-hidden .menu-dropdown {
+	display: none;
+}
+.gui-controls > li > a.logo-item.navigatestartupurl {
+	min-height: 100%;
+	width: 100% !important;
+	min-width: 100% !important;
+	position: relative !important;
+}
+body.left-panel-hidden .gui-controls > li:first-child {
+	height: 70px !important;
+	width: 70px !important;
+	padding: 0 !important;
+	display: block !important;
+}
+body.left-panel-hidden .gui-controls > li > a.logo-item.navigatestartupurl {
+	height: 70px !important;
+	width: 70px !important;
+	position: relative !important;
+	display: block !important;
+}
+body.left-panel-hidden .logo-item > img {
+	height: 34px !important;
+	width: 34px !important;
+	object-fit: contain;
+	filter: brightness(0) invert(1);
+	position: absolute !important;
+	top: 50% !important;
+	left: 50% !important;
+	right: auto !important;
+	bottom: auto !important;
+	transform: translate(-50%, -50%) !important;
+	margin: 0 !important;
+	float: none !important;
+}
+body.left-panel-hidden .nano .gui-controls li a {
+	justify-content: center;
+}
+
+.main-content.ft-daily-task-page { padding: 0 !important; overflow: hidden; }
+
+/* ── 2-column wrapper ── */
+.ft-wrap {
+    display: flex;
+    height: calc(100vh - 70px);
+    overflow: hidden;
+    background: #f4f8f6;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 13px;
+    color: #18231f;
+}
+
+/* ── Main content ── */
+.ft-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.ft-header {
+    height: 60px;
+    background: #fff;
+    border-bottom: 1px solid #dce6e1;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    gap: 10px;
+}
+.ft-header h1 { font-size: 20px; margin: 0; font-weight: 700; white-space: nowrap; }
+.ft-tools { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
+.ft-tools input, .ft-tools select {
+    height: 36px;
+    border: 1px solid #dce6e1;
+    border-radius: 6px;
+    background: #fff;
+    padding: 0 10px;
+    font-size: 12px;
+    color: #18231f;
+}
+.ft-tools input:focus, .ft-tools select:focus { outline: none; border-color: #075c43; }
+.ft-search { width: 190px; }
+.ft-refresh {
+    width: 36px; height: 36px;
+    border: 1px solid #dce6e1;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #536159;
+    flex-shrink: 0;
+}
+.ft-refresh:hover { background: #f0f8f5; }
+
+.ft-content { flex: 1; overflow-y: auto; padding: 12px; min-height: 0; }
+.ft-panel { background: #fff; border: 1px solid #dce6e1; border-radius: 8px; overflow: hidden; }
+
+/* Finance strip */
+.ft-finance {
+    display: none;
+    gap: 8px;
+    padding: 10px 14px;
+    border-bottom: 1px solid #dce6e1;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.ft-finance.show { display: flex; }
+.ft-fin-tab {
+    padding: 7px 12px;
+    border: 1px solid #dce6e1;
+    border-radius: 7px;
+    background: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: #18231f;
+    transition: all 0.1s;
+}
+.ft-fin-tab:hover, .ft-fin-tab.active { background: #edf8f3; border-color: #a8cdbc; color: #075c43; }
+
+/* Status tabs */
+.ft-tabs {
+    display: flex;
+    gap: 18px;
+    border-bottom: 1px solid #dce6e1;
+    padding: 0 14px;
+    overflow-x: auto;
+    background: #fff;
+}
+.ft-tab {
+    border: 0;
+    background: transparent;
+    padding: 13px 0 10px;
+    font-size: 13px;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: #536159;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+}
+.ft-tab.active { color: #075c43; border-bottom-color: #075c43; font-weight: 700; }
+.ft-tab:hover:not(.active) { color: #18231f; }
+
+/* Task table */
+.ft-tablewrap { overflow-x: auto; }
+table.ft-table { border-collapse: collapse; width: 100%; min-width: 760px; }
+table.ft-table th {
+    padding: 10px;
+    border-bottom: 1px solid #edf1ef;
+    text-align: left;
+    font-size: 11px;
+    color: #536159;
+    background: #fbfcfb;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+table.ft-table td {
+    padding: 11px 10px;
+    border-bottom: 1px solid #edf1ef;
+    text-align: left;
+    font-size: 13px;
+    vertical-align: middle;
+}
+table.ft-table tr.ft-task-row { cursor: pointer; }
+table.ft-table tr.ft-task-row:hover { background: #f0f8f5; }
+table.ft-table tr.ft-task-row.ft-selected { background: #eff8f4; box-shadow: inset 3px 0 0 #075c43; }
+.ft-ref { display: block; color: #69776f; font-size: 11px; margin-top: 2px; }
+.ft-pill { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; display: inline-block; white-space: nowrap; }
+.ft-pill.green { background: #e6f4ec; color: #075c43; }
+.ft-pill.blue  { background: #edf5ff; color: #1769c2; }
+.ft-pill.amber { background: #fff2e2; color: #a75a00; }
+.ft-pill.red   { background: #ffeded; color: #c62828; }
+.ft-priority { padding:4px 9px; border-radius:12px; font-size:11px; font-weight:700; display:inline-block; white-space:nowrap; }
+.ft-priority.high, .ft-priority.urgent, .ft-priority.critical { background:#ffeded; color:#c62828; }
+.ft-priority.medium, .ft-priority.normal { background:#fff2e2; color:#a75a00; }
+.ft-priority.low { background:#e6f4ec; color:#075c43; }
+.ft-priority.other { background:#edf2ef; color:#536159; }
+.ft-act-select {
+    width: 130px; padding: 6px 7px;
+    border: 1px solid #dce6e1; border-radius: 6px;
+    background: #fff; font-size: 12px; color: #18231f;
+}
+.ft-foot { padding: 10px 14px; color: #69776f; font-size: 11px; }
+
+/* ── Right detail panel ── */
+.ft-detail {
+    width: 360px;
+    min-width: 360px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-left: 1px solid #dce6e1;
+    background: #fff;
+}
+.ft-detail-empty {
+    padding: 50px 20px;
+    text-align: center;
+    color: #69776f;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* ── Detail panel internal styles ── */
+.ft-d-head { display:flex; gap:10px; align-items:center; padding:14px; border-bottom:1px solid #dce6e1; }
+.ft-d-avatar { width:42px; height:42px; border-radius:50%; background:#deeee6; color:#075c43; display:grid; place-items:center; font-weight:800; font-size:14px; flex-shrink:0; }
+.ft-d-head h2 { font-size:15px; margin:0; font-weight:700; }
+.ft-d-ref { display:block; font-size:11px; color:#69776f; margin-top:2px; }
+.ft-d-code { font-size:10px; background:#edf2ef; padding:2px 6px; border-radius:4px; display:inline-block; margin-top:3px; }
+.ft-d-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; padding:10px 14px; border-bottom:1px solid #dce6e1; }
+.ft-d-actions button { min-height:36px; border:1px solid #dce6e1; border-radius:7px; background:#fff; font-size:11px; font-weight:700; cursor:pointer; transition: all 0.1s; }
+.ft-d-actions button:hover { background: #f5f5f5; }
+.ft-d-esc { color:#a75a00 !important; }
+.ft-d-close-task { color:#b42318 !important; }
+.ft-d-followup { color:#075c43 !important; }
+.ft-d-formwrap { padding:10px 14px; border-bottom:1px solid #dce6e1; display:none; }
+.ft-d-formcard { border:1px solid #dce6e1; border-radius:8px; overflow:hidden; }
+.ft-d-formhead { display:flex; justify-content:space-between; align-items:center; padding:9px 11px; border-bottom:1px solid #dce6e1; background:#fbfcfb; }
+.ft-d-formhead h3 { margin:0; font-size:13px; font-weight:700; }
+.ft-d-formhead button { border:0; background:transparent; font-size:20px; cursor:pointer; color:#536159; line-height:1; padding:0 4px; }
+.ft-d-formbody { padding:11px; }
+.ft-d-fg { margin-bottom:10px; }
+.ft-d-fg label { display:block; font-size:11px; font-weight:700; margin-bottom:4px; color:#18231f; }
+.ft-d-ctrl { width:100%; border:1px solid #ccd8d2; border-radius:6px; padding:7px 9px; font-size:13px; background:#fff; box-sizing:border-box; }
+.ft-d-ctrl:focus { outline:none; border-color:#075c43; box-shadow:0 0 0 2px rgba(7,92,67,0.08); }
+textarea.ft-d-ctrl { min-height:68px; resize:vertical; }
+.ft-d-formfoot { display:flex; justify-content:flex-end; gap:7px; padding:9px 11px; border-top:1px solid #dce6e1; }
+.ft-d-formfoot button { padding:7px 14px; border:1px solid #dce6e1; border-radius:6px; background:#fff; font-size:12px; cursor:pointer; }
+.ft-d-save { background:#075c43 !important; color:#fff !important; border-color:#075c43 !important; }
+.ft-d-section { padding:12px 14px; border-bottom:1px solid #dce6e1; }
+.ft-d-section h3 { font-size:11px; font-weight:700; text-transform:uppercase; color:#536159; margin:0 0 10px; letter-spacing:0.6px; }
+.ft-d-row { display:flex; justify-content:space-between; align-items:baseline; margin:7px 0; font-size:12px; color:#69776f; }
+.ft-d-row b { color:#18231f; text-align:right; font-size:12px; }
+.ft-d-bill { display:grid; grid-template-columns:repeat(3,1fr); border:1px solid #dce6e1; border-radius:7px; padding:10px; gap:4px; }
+.ft-d-bill small { display:block; color:#69776f; font-size:10px; margin-bottom:2px; }
+.ft-d-bill b { font-size:15px; color:#18231f; }
+.ft-d-danger { color:#c62828 !important; }
+.ft-d-dep { padding:8px 10px; border:1px solid #dce6e1; border-radius:7px; margin:5px 0; font-size:12px; }
+.ft-d-dep.ok    { background:#f5fbf7; border-color:#c4e0cc; }
+.ft-d-dep.block { background:#fff7eb; border-color:#f2d092; }
+.ft-d-dep.wait  { background:#eef5ff; border-color:#b9d3f2; }
+.ft-d-dep small { display:block; color:#69776f; margin-top:2px; font-size:11px; }
+.ft-d-timeline { border-left:2px solid #dce6e1; padding-left:14px; margin-top:4px; }
+.ft-d-event { margin-bottom:12px; }
+.ft-d-event b { display:block; font-size:12px; font-weight:600; }
+.ft-d-event small { display:block; color:#69776f; font-size:11px; }
+
+/* ── Toast ── */
+.ft-toast {
+    display: none; position: fixed; bottom: 20px; right: 20px;
+    background: #163d30; color: #fff; padding: 10px 16px;
+    border-radius: 7px; font-size: 13px; z-index: 9999;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* ── Classes replacing former style="" attributes on this page ── */
+.ft-breadcrumb-hidden { font-size: 11px; color: #69776f; display: none; }
+.ft-row-msg { text-align: center; color: #69776f; }
+.ft-row-msg.pad-36 { padding: 36px; }
+.ft-row-msg.pad-32 { padding: 32px; }
+.ft-row-error { text-align: center; padding: 32px; color: #c62828; }
+.ft-detail-loading { padding: 40px 20px; text-align: center; color: #69776f; }
+.ft-spin-lg { font-size: 28px; }
+.ft-info-rows { text-align: left; font-size: 13px; line-height: 1.7; }
+.ft-info-row { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid #edf2ef; padding: 6px 0; }
+.ft-info-label { color: #69776f; }
+.ft-info-value { text-align: right; }
+.ft-room-iframe { width: 100%; height: 62vh; border: 0; border-radius: 8px; }
+.ft-text-brand { color: #075c43; }
+.ft-d-section-noborder { border-bottom: 0; }
+.ft-muted-sm { color: #69776f; font-size: 11px; }
+.ft-timeline-detail { display: block; margin-top: 3px; white-space: pre-wrap; }
+.ft-required { color: #c62828; }
+.ft-close-warning { font-size: 13px; line-height: 1.55; color: #263a32; margin-bottom: 12px; }
+.ft-d-fg-flush { margin-bottom: 0; }
+
+/* ── Date range picker (bootstrap-daterangepicker) — app-wide theming ──
+   NOTE: the library's own daterangepicker.css is linked in _Layout.cshtml
+   AFTER this file, so its defaults would otherwise win ties — the color/
+   background rules below use !important specifically to beat that. */
+.daterangepicker {
+    border: 1px solid #dce6e1 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 12px 32px rgba(15,40,30,.16) !important;
+    font-family: inherit;
+}
+
+.daterangepicker:before,
+.daterangepicker:after {
+    display: none !important;
+}
+
+.daterangepicker .calendar-table {
+    border: 0;
+    background: #fff;
+}
+
+.daterangepicker .calendar-table th.month {
+    color: #1f5137;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.daterangepicker .calendar-table th.prev span,
+.daterangepicker .calendar-table th.next span {
+    border-color: #52675f !important;
+}
+
+.daterangepicker .calendar-table th.prev:hover,
+.daterangepicker .calendar-table th.next:hover {
+    background: #eaf4ee !important;
+}
+
+.daterangepicker td.available:hover,
+.daterangepicker th.available:hover {
+    background: #eaf4ee !important;
+    color: #1f5137 !important;
+}
+
+.daterangepicker td.in-range {
+    background: #eaf4ee !important;
+    color: #1f5137 !important;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover {
+    background: #2d5f44 !important;
+    border-color: #2d5f44 !important;
+    color: #fff !important;
+}
+
+.daterangepicker td.today.available {
+    box-shadow: inset 0 0 0 1px #79a48f;
+}
+
+.daterangepicker .ranges {
+    padding: 6px;
+}
+
+.daterangepicker .ranges ul {
+    width: 170px;
+}
+
+.daterangepicker .ranges li {
+    padding: 9px 14px;
+    margin-bottom: 2px;
+    border-radius: 6px;
+    font-size: 12.5px;
+    line-height: 1.3;
+    color: #29405a;
+    font-weight: 500;
+    transition: background .12s, color .12s;
+}
+
+.daterangepicker .ranges li:last-child {
+    margin-bottom: 0;
+}
+
+.daterangepicker .ranges li:hover {
+    background: #eaf4ee !important;
+    color: #1f5137 !important;
+}
+
+.daterangepicker .ranges li.active {
+    background: #2d5f44 !important;
+    color: #fff !important;
+    font-weight: 700;
+}
+
+.daterangepicker .drp-buttons {
+    border-top: 1px solid #eef1ef;
+    padding: 10px 12px;
+}
+
+.daterangepicker .drp-buttons .drp-selected {
+    color: #52675f;
+    font-size: 12px;
+}
+
+.daterangepicker .drp-buttons .btn {
+    border-radius: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+}
+
+.daterangepicker .drp-buttons .applyBtn {
+    background: #2d5f44 !important;
+    border-color: #2d5f44 !important;
+}
+
+.daterangepicker .drp-buttons .applyBtn:hover {
+    background: #254e39 !important;
+    border-color: #254e39 !important;
+}
+
+.daterangepicker .drp-buttons .cancelBtn {
+    background: #fff !important;
+    border: 1px solid #cfe0d7 !important;
+    color: #2d5f44 !important;
+}
+
+.daterangepicker .drp-buttons .cancelBtn:hover {
+    background: #eaf4ee !important;
+    color: #1f5137 !important;
+}

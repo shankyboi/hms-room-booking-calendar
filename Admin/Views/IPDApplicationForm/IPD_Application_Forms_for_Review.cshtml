@@ -1,0 +1,2229 @@
+
+					<!--This code generated from tDev Powered by Mahat, Build Number :#2024-01-001(Updated on 06-01-2024 12:57PM) on 03/10/2026 09:42:15 -->
+					@using Microsoft.AspNetCore.Http
+					@inject IHttpContextAccessor HttpContextAccessor
+					@using Microsoft.Extensions.Configuration
+					@inject IConfiguration Configuration
+					@using Admin;
+					@model NalamVazha.Models.IPDApplicationFormModel
+					@{
+					ViewData["Title"] = @Resource.ipdapplicationformsforreview;
+					Layout = "~/Views/Shared/_Layout.cshtml";
+					}
+
+					<div class="card maker_checker_card" style="padding:20px;">
+					<div class="mobileHeader"><!--form_card_header-->
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<h3 class="formHdr">@Resource.ipdapplicationformsforreview</h3>
+					</div>
+					</div>
+					</div><!--form_card_header-->
+					<div class="card-body" style="padding:1px;padding-top:0px;">
+
+					@if(TempData["errMessage"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-danger alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["errMessage"]
+					</div>
+					</div>
+					</div>
+					}
+
+					@if(TempData["message"] != null)
+					{
+					<div class="row">
+					<div class="col-sm-12 col-xs-12">
+					<div class="alert alert-success alert-dismissible ">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">x</span>
+					</button>
+					Info :  @TempData["message"]
+					</div>
+					</div>
+					</div>
+					}
+
+					<input type="hidden" id="IPDApplicationFormid" name="IPDApplicationFormid"/>
+					<div class="row">
+								<div class="col-sm-2 col-xs-12 p-2">
+								<div>
+								<div class="form-group form-group--float-above my-3" > 
+								<label for="tenantid" class="tenant_display">@Resource.tenantdisplayname</label>
+								<select name="tenantid" id="tenantid" class="form-control">
+								</select>
+								<i class="form-group__bar"></i>
+								</div>
+
+								<div id="tenantid-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+								</div>
+								<div class="col-sm-2 col-xs-12 p-2 patientname_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="patientname">@Resource.ipdapplicationform_patientname</label>
+										<select name="patientname" id="patientname" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.patientname)
+									<div id="patientname-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+			<div class="col-sm-2 col-xs-12 p-2 bookingstatus_craftmyapp_container">
+				<div>
+					<div class="form-group form-group--float-above my-3">
+						<label for="bookingstatus">@Resource.ipdapplicationform_bookingstatus</label>
+						<select name="bookingstatus" id="bookingstatus" class="form-control  "></select>
+
+					</div>
+					@Html.ValidationMessageFor(model => model.bookingstatus)
+					<div id="bookingstatus-error" class="help-block" style="display: none" role="alert"></div>
+				</div>
+			</div>
+			<div class="col-sm-2 col-xs-12 p-2 verifiedstatus_craftmyapp_container">
+								<div>
+									<div class="form-group form-group--float-above my-3" > 
+										<label for="verifiedstatus">@Resource.ipdapplicationform_verifiedstatus</label>
+										<select name="verifiedstatus" id="verifiedstatus" class="form-control  "></select>
+
+									</div>
+									@Html.ValidationMessageFor(model => model.verifiedstatus)
+									<div id="verifiedstatus-error" class="help-block" style="display: none" role="alert"></div>
+								</div>
+							</div>
+<div class="col-sm-2 p-2">
+
+												<button id="btnFilter" class="btn btn-secondary btn--icon-text mt-5"><i class="fa fa-filter"></i> Filter</button>
+
+												</div>
+								</div>
+
+					<div class="row"><div class="col-sm-12 col-xs-12">
+					<div class="table-responsive" style="margin:0px;">
+					<table id="tblIPDApplicationForm" class="table order-column hover responsive nowrap mahatTableWidthSetter" style="margin:0px; ">
+					<thead class="thead-default">
+					<tr>
+@* 					<th id="selectall" style="background: #ffffff;"><input name="select_all" value="1" style="text-align:left;" id="mah_tbl_select_all" type="checkbox" /></th>
+ *@					<th>@Resource.ipdapplicationform_bookingreferencenumber</th>
+<th>@Resource.ipdapplicationform_patientname</th>
+<th>@Resource.ipdapplicationform_firstname</th>
+<th>@Resource.ipdapplicationform_lastname</th>
+<th>@Resource.ipdapplicationform_gender</th>
+<th>@Resource.ipdapplicationform_mobilenumber</th>
+<th>@Resource.ipdapplicationform_whatsappnumber</th>
+<th>@Resource.ipdapplicationform_countryoforigin</th>
+<th>@Resource.ipdapplicationform_generalcondition</th>
+<th>@Resource.ipdapplicationform_bookingstatus</th>
+<th>@Resource.ipdapplicationform_packagename</th>
+<th>@Resource.ipdapplicationform_verifiedstatus</th>
+<th>@Resource.tenantdisplayname</th>
+
+					<th class="all">Action</th>
+					
+
+					</tr>
+					</thead>
+					<tbody></tbody>
+					
+					</table>
+					</div>
+
+					</div>
+					
+					
+					</div>
+					
+					</div>
+					</div>
+					
+					<link href="~/components/jquery-colorbox/colorbox.css" rel="stylesheet" />
+					<script src="~/components/jquery-colorbox/jquery.colorbox.js"></script>
+					<link href="~/css/GallaryContent/style.css" rel="stylesheet" />
+					<link href="~/components/starrr/starrr.css" rel="stylesheet" />
+					
+					 <script src="~/js/dtpager.js"></script>
+<script>
+	var userRole = "@Context.Session.GetString("NalamVazhauserrole")";
+</script>
+
+					<script type="text/javascript">
+
+					var arr_selected_for_verification = [];
+					var IPD_PATIENT_FILTER_CHOOSE_VALUE = "__choose__";
+
+					function getIPDReviewPatientFilterValue() {
+						var patientName = $("#patientname").val();
+						return patientName === IPD_PATIENT_FILTER_CHOOSE_VALUE ? "" : patientName;
+					}
+
+					function fill_IPDApplicationForm()
+					{
+
+						var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"patientname":getIPDReviewPatientFilterValue(),
+									"bookingstatus":$("#bookingstatus").val(),
+	"verifiedstatus":$("#verifiedstatus").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+						
+
+					
+
+					
+
+
+					
+		 dataTableId="#tblIPDApplicationForm";
+		 reachedEOF = false;
+		 totalRecordsCount = 0;
+		 currentPageNumber = 1;
+		 fetchingDataFromApi = false;
+	
+		var pagerControlsTemplate = "<div id='pager_container' class='dataTables_paginate'>"
+			+ "<button type='button' id='pager_btn_previous' onClick='pager_gotoPreviousPage(this);' class='paginate_button previous'>Previous</button>"
+			+ "<span>Page <input type='number' id='pager_txt_currentpage' min='1' max='^MAXPAGE^' maxlength='10' size='10' onFocus='this.oldValue=this.value;' onChange='pager_gotoPage(this);'/> of <span id='pager_lbl_pagecount'></span></span>"
+			+ "<select id='pager_ddl_pagesize' onChange='pager_pageSizeChanged(this);'>"
+			+ "<option value='50' selected>50 rows</option>"
+			+ "<option value='100'>100 rows</option>"
+			+ "<option value='200'>200 rows</option>"
+			+ "<option value='500'>500 rows</option>"
+			+ "<option value='^Everything^'>Everything</option>"
+			+ "</select>"
+			+ "<button type='button' id='pager_btn_next' onClick='pager_gotoNextPage(this);' class='paginate_button next'>Next</button>"
+			+ "</div>";
+
+	var table=$("#tblIPDApplicationForm").DataTable({
+	columnDefs: [{ 
+	 targets: -1,
+	 title: '<i class="fa fa-pencil fa-lg"></i>'
+  }],
+	paging:false,
+	destroy:true,
+	serverSide: true,
+	filter: true,
+	"orderMulti": false,
+	searchDelay: 2000,
+	autoWidth: false,
+	"order": [],"aaSorting": [],
+	autoWidth: !1,responsive:!0,
+	language: {
+	searchPlaceholder: "Search for records..."
+	},
+	 language: { search: '<i class="fa fa-search"></i>', searchPlaceholder: "Search for records..." },
+	dom: "Bfrtip", sDom: '<"dataTables__top"lfB>rt<"dataTables__bottom"ip><"clear">',
+  
+	buttons: [{
+	extend: "excelHtml5",
+	title: "List Of IPDApplicationForm Data"
+	}, {
+	extend: "csvHtml5",
+	title: "List Of IPDApplicationForm Data"
+	}, {
+	extend: "print",
+	title: "List Of IPDApplicationForm Data"
+	}],
+ initComplete: function(a, b) {
+
+ if(table.page.info().recordsTotal > 0){
+																				 var d =  table.row(':eq(0)').data();
+																				table.$('tr:first').addClass('trbg');
+																				fill_IPDApplicationForm_view_data(d.ipdapplicationformid)
+																				 $("#IPDApplicationFormid").val(d.ipdapplicationformid)   
+
+																				}
+
+	  $(this).closest(".dataTables_wrapper").find(".dt-buttons").hide();
+	  
+		if ($('#btnFilter').length && !$(this).closest(".dataTables_wrapper").find(".automatonShowFilter").length) {
+	 $(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`
+		<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+	  `);
+		 if ($("#cma_card_tab_action_container i.automatonShowFilter").length === 0) {
+			$("#cma_card_tab_action_container").prepend(`
+				<i class="automatonShowFilter actions__item mdi material-icons">filter_alt</i>
+			`);
+		}
+ }
+	count_of_IPDApplicationForm_bookingstatus(($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),sendFilterData)
+var Actions=getAutho("IPDApplicationForm","create")
+		if(Actions != undefined){
+			var create_URL = "@Url.Action("entry.viewname", "IPDApplicationForm")"
+			create_URL = create_URL.replace("entry.viewname", Actions.actionmethodname);
+			
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(`   
+<div class="dataTables_buttons actions">
+					<button style="display:none" class="btn btn-rounded add-row-btn add-review-btn" type="button" onclick="showFormAlert()">
+						Review
+					</button>
+	   
+		<div class="dataTables_buttons actions">
+		<div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.ipdapplicationform_bookingreferencenumber
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_patientname
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_firstname
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_lastname
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_gender
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_mobilenumber
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_whatsappnumber
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_countryoforigin
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_generalcondition
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_bookingstatus
+ <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_packagename
+ <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_verifiedstatus
+ <input type="checkbox" class="colvis_switch" data-column="12" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+
+		 <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>
+		</div>
+	  `.replace("create_URL", create_URL))
+}
+	$("#cma_card_tab_action_container .card-lst").remove();
+	$("#cma_card_tab_action_container_action_btn").empty()
+	$("#cma_card_tab_action_container_action_btn").append(' <a href="create_URL" class="btn btn-rounded add-row-btn cma_add_button">Add <span class="material-icons">add</span></a>'.replace("create_URL", create_URL))
+	   
+
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+			else{
+if ($(this).closest(".dataTables_wrapper").find(".dataTables__top .dataTables_buttons").length == 0) {
+			$(this).closest(".dataTables_wrapper").find(".dataTables__top").prepend(` 
+		<div class="dataTables_buttons actions">
+					<button style="display:none" class="btn btn-rounded add-row-btn add-review-btn" type="button" onclick="showFormAlert()">
+						Review
+					</button>
+		
+		<div class="dataTables_buttons actions">
+		 <div class="input-group prefix">
+							<span class="input-group-addon">
+							<i class="material-icons">search</i>
+							</span>
+							<input type="text" class="form-control dt-global-search" placeholder="Search..." />
+						</div>
+		  <div class="dropdown actions__item cma_top_icon">
+			<i data-toggle="dropdown" class="material-icons">share</i>
+			<ul class="dropdown-menu dropdown-menu-right">
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="excel">Excel (.xlsx)</a>
+			  <a href="javascript: void 0" class="dropdown-item" data-table-action="csv">CSV (.csv)</a>
+			 
+			</ul>
+		  </div>
+		 <div class="dropdown actions__item cma_top_icon">
+									<i data-toggle="dropdown" class="material-icons">settings</i>
+									<ul class="dropdown-menu dropdown-menu-right ColVis_collection">
+									<li>
+																<label> @Resource.ipdapplicationform_bookingreferencenumber
+ <input type="checkbox" class="colvis_switch" data-column="1" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_patientname
+ <input type="checkbox" class="colvis_switch" data-column="2" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_firstname
+ <input type="checkbox" class="colvis_switch" data-column="3" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_lastname
+ <input type="checkbox" class="colvis_switch" data-column="4" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_gender
+ <input type="checkbox" class="colvis_switch" data-column="5" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_mobilenumber
+ <input type="checkbox" class="colvis_switch" data-column="6" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_whatsappnumber
+ <input type="checkbox" class="colvis_switch" data-column="7" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_countryoforigin
+ <input type="checkbox" class="colvis_switch" data-column="8" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_generalcondition
+ <input type="checkbox" class="colvis_switch" data-column="9" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_bookingstatus
+ <input type="checkbox" class="colvis_switch" data-column="10" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_packagename
+ <input type="checkbox" class="colvis_switch" data-column="11" checked /></label>
+															  </li>
+<li>
+																<label> @Resource.ipdapplicationform_verifiedstatus
+ <input type="checkbox" class="colvis_switch" data-column="12" checked /></label>
+															  </li>
+   
+									</ul>
+									</div>
+		</div>
+	  `)
+}
+if ($(this).hasClass('make-active')) {
+		$('tbody', $(this)).children('tr').first().addClass('active-row');
+		setTimeout(() => {
+		  $('.active-row td:visible:last').addClass('last-active-td');
+		}, 200);
+	  }
+	  $(this).closest(".dataTables_wrapper").find(".dt-global-search").on('keyup', function() {
+		table.search(this.value).draw();
+	  });
+
+		}
+if (!$(pagerContainerId).length) {
+		$(dataTableId + '_info').parent().append(
+					pagerControlsTemplate.replace('^Everything^', totalRecordsCount).replace('^MAXPAGE^', pager_getPageCount())
+				);
+}
+				//$(dataTableId + '_info').hide();
+				$(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+				pager_setCurrentPageNumber(1);
+				pager_onPageChanged();
+
+			// fill_IPDApplicationForm_count(this,sendFilterData);
+
+	}
+	 ,columns: [
+		// {
+		// 			"bSearchable": false,
+		// 			"bSortable": false,
+		// 			data: 'ipdapplicationformid', render: function (data, types, row) {
+		// 				var ipdapplicationformid = row.ipdapplicationformid;
+		// 				var found = 0;
+		// 				var checkbox = ''
+		// 				if ((row.verifiedstatus == "Ready For Frontdesk Review" && userRole == "Frontdesk Admin") || (row.verifiedstatus == "Ready For Doctor Review" && userRole == "Doctor")) {
+		// 					if (arr_selected_for_verification.length != 0) {
+		// 						arr_selected_for_verification.forEach(function (item) {
+
+									
+		// 							if (item == ipdapplicationformid) {
+		// 								found = 1;
+		// 								checkbox = '<input type="checkbox" checked class="editor-active" name="ipdapplicationformcheck" id="' + ipdapplicationformid + '"> ';
+
+		// 							}
+
+
+		// 						});
+		// 						if (found == 0)
+		// 							checkbox = '<input type="checkbox"  class="editor-active" name="ipdapplicationformcheck" id="' + ipdapplicationformid + '"> ';
+
+		// 					}
+		// 					else {
+		// 						checkbox = '<input type="checkbox"  class="editor-active" name="ipdapplicationformcheck" id="' + ipdapplicationformid + '"> ';
+		// 					}
+
+		// 				}
+
+					  
+					  
+
+
+		// 				return checkbox;
+
+
+		// 			},
+		// 			className: "dt-body-left"
+		// 		}, 
+		{data: 'bookingreferencenumber'},
+{data: 'patientname_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('PatientProfile','detail')
+ if(row["patientname_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "PatientProfile")?PatientProfileid=" + row['patientname']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+var _bl = (row["blacklisted"]||"No").toString().toLowerCase();
+var _cat = (row["patientcategoryname"]||"Not Categorized").toString().trim();
+var _badges = "";
+if(_bl==="yes") _badges += "<span class=\"rv-badge-blacklisted\"><i class=\"fa fa-ban\" style=\"font-size:8px;\"></i> Blacklisted</span> ";
+if(_cat && _cat!=="Not Categorized") _badges += "<span class=\"rv-badge-category\"><i class=\"fa fa-tag\" style=\"font-size:8px;\"></i> "+_cat+"</span>";
+else _badges += "<span class=\"rv-badge-category rv-badge-category--none\"><i class=\"fa fa-tag\" style=\"font-size:8px;\"></i> Uncat.</span>";
+var _nameLink = "<a href=\""+DETAIL_URL+"\">"+row["patientname_master"]+"</a>";
+return _nameLink + (_badges ? "<div style=\"margin-top:3px;display:flex;flex-wrap:wrap;gap:3px;\">"+_badges+"</div>" : "");
+}else {
+ 
+return row['patientname_master'] 
+}
+}
+}},
+{data: 'firstname'},
+{data: 'lastname'},
+{data: 'gender'},
+{data: 'mobilenumber',mRender: function (data, type, row) {if(row["mobilenumber"]==null) {
+ return '-' 
+}else {
+ return '<a  href="tel:' + row["mobilenumber"]+ '">'+ row["mobilenumber"]+ '</a>' 
+}
+}},
+{data: 'whatsappnumber',mRender: function (data, type, row) {if(row["whatsappnumber"]==null) {
+ return '-' 
+}else {
+ return '<a  href="tel:' + row["whatsappnumber"]+ '">'+ row["whatsappnumber"]+ '</a>' 
+}
+}},
+{data: 'countryoforigin_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('Country','detail')
+ if(row["countryoforigin_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "Country")?Countryid=" + row['countryoforigin']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["countryoforigin_master"]+ '</a>' 
+}else {
+ 
+return row['countryoforigin_master'] 
+}
+}
+}},
+{data: 'generalcondition'},
+{data: 'bookingstatus'},
+{data: 'packagename_master',
+mRender: function (data, type, row) {
+var Actions_=getAutho('TreatmentPackage','detail')
+ if(row["packagename_master"]==null) {
+ return '-' 
+}else {
+ 
+if(Actions_ !=  undefined)
+{
+var DETAIL_URL = "@Url.Action("Actions_.actionmethodname", "TreatmentPackage")?TreatmentPackageid=" + row['packagename']
+DETAIL_URL = DETAIL_URL.replace("Actions_.actionmethodname",Actions_.actionmethodname);
+return '<a  href="' + DETAIL_URL  + '">'+ row["packagename_master"]+ '</a>' 
+}else {
+ 
+return row['packagename_master'] 
+}
+}
+}},
+{data: 'verifiedstatus'},
+{data: '_tenantname'},
+
+			{
+				 
+				"sName": "ipdapplicationformid",
+				"bSearchable": false,
+				"bSortable": false,
+				data: 'ipdapplicationformid', "className": "dt-center",
+				mRender: function(data, type, row) {
+				/* Frontdesk Admin has no actions when the form is pending Doctor review */
+				if (userRole === 'Frontdesk Admin' && row["verifiedstatus"] === 'Ready For Doctor Review') {
+					return '<span style="display:inline-flex;align-items:center;gap:4px;background:#f3e8ff;color:#7c3aed;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:600;"><i class="fa fa-stethoscope"></i> With Doctor</span>';
+				}
+				var Actions=getAuthoController("IPDApplicationForm")
+				var appendMessage='';
+				if(Actions !=undefined)
+				{
+				for (var index = 0; index < Actions.length; ++index) {
+				var entry = Actions[index];
+			 
+				if(entry.viewname !="bulkdelete" &&  entry.viewname !="compare" && entry.viewname !="bulkaction" && entry.viewname !="upload" && entry.viewname !="versionhistory" && entry.viewname !="list" && entry.viewname !="list_verify_approved" && entry.viewname !="list_verify" && entry.viewname !="create" && entry.viewname !="post" && entry.viewname !="getall" && entry.viewname !="get" && entry.viewname !="check_user" && entry.viewname !="change_password"){
+				var URL = "@Url.Action("entry.viewname", "IPDApplicationForm")?IPDApplicationFormid=" + row["ipdapplicationformid"]
+				URL = URL.replace("entry.viewname", entry.actionmethodname);
+				 if(entry.viewname=="delete" && (row["verifiedstatus"]=="Ready For Review" || row["verifiedstatus"]=="Rework"))
+				{
+					// appendMessage+='<a href="' + URL + '" class="dropdown-item deleteRecordFromTable">'+entry.actiondisplayname+'</a>' 	
+				   
+				
+				}
+				
+				else
+				{
+							var _allottedSt = ['Provisional Booking','Provisional Confirmed','Confirmed for Arrival','Arrival Confirmed','Admission Confirmed','Admitted'];
+						var _roomAllotted = _allottedSt.indexOf(row["bookingstatus"] || '') !== -1;
+
+						if(entry.actionmethodname == "Allot_Room") {
+							// Show Allot Room only when room has NOT yet been allotted
+							if(!_roomAllotted) {
+								appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>';
+							}
+						}
+						else if(userRole === "Doctor" && entry.actionmethodname == "Review_IPD_Application_Form" && (row["verifiedstatus"]=="Ready For Doctor Review" || row["verifiedstatus"]=="Request for Doctor Review" || row["verifiedstatus"]=="Doctor Review Requested")){
+								// Show Review for Front Desk only after room is allotted
+							//if(_roomAllotted) {
+								 var reviewReturnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+								 appendMessage+='<a href="' + URL + '&returnurl=' + reviewReturnUrl + '" class="dropdown-item">'+entry.actiondisplayname+'</a>';
+							//}
+						}
+							 
+						else if(entry.viewname == "edit" || row["verifiedstatus"]=="Ready For Frontdesk Review" || row["verifiedstatus"]=="Rework") {
+							//appendMessage+='<a href="' + URL + '" class="dropdown-item">'+entry.actiondisplayname+'</a>';
+						}
+				}
+			 
+				}					 
+						 
+				}
+
+												// Pay action for records awaiting booking deposit
+						if (row["bookingstatus"] == "Provisional Booking") {
+
+
+						//	var payURL = "@Url.Action("Initiate_Payment", "IPDApplicationForm")?IPDApplicationFormid=" + row["ipdapplicationformid"];
+							//appendMessage += '<a href="' + payURL + '" class="dropdown-item text-success"><i class="fa fa-credit-card"></i> Pay Booking Deposit</a>';
+						}
+					// Step 5: Confirm Arrival Details
+					if (row["bookingstatus"] == "Provisional Confirmed") {
+						//var confirmArrivalURL = "@Url.Action("Confirm_Arrival", "IPDApplicationForm")?IPDApplicationFormid=" + row["ipdapplicationformid"];
+						//appendMessage += '<a href="' + confirmArrivalURL + '" class="dropdown-item text-success"><i class="fa fa-plane"></i> Confirm Arrival Details</a>';
+					}
+					// Step 6: Record Patient Arrival
+						if (row["bookingstatus"] == "Confirmed for Arrival" || row["bookingstatus"] == "Arrival Confirmed") {
+						var arrivalURL = "@Url.Action("Patient_Arrival_Charges", "IPDApplicationForm")?IPDApplicationFormid=" + row["ipdapplicationformid"];
+						appendMessage += '<a href="' + arrivalURL + '" class="dropdown-item text-primary"><i class="fa fa-user-plus"></i> Record Patient Arrival</a>';
+					}
+					// Step 7: Final Admission
+							if (row["bookingstatus"] == "Patient Arrived" || row["bookingstatus"] == "Admission Confirmed") {
+						var admitURL = "@Url.Action("Final_Admission", "IPDApplicationForm")?IPDApplicationFormid=" + row["ipdapplicationformid"];
+						appendMessage += '<a href="' + admitURL + '" class="dropdown-item text-warning"><i class="fa fa-hospital-o"></i> Final Admission</a>';
+					}
+					// Step 8: Billing Dashboard (show for any paid/arrived/admitted status — NOT for Cancelled)
+						if (["Provisional Confirmed","Confirmed for Arrival","Arrival Confirmed","Patient Arrived","Admitted"].indexOf(row["bookingstatus"]) !== -1) {
+						var billingURL = "@Url.Action("Billing_Dashboard", "IPDApplicationForm")?IPDApplicationFormid=" + row["ipdapplicationformid"];
+						appendMessage += '<a href="' + billingURL + '" class="dropdown-item text-info"><i class="fa fa-file-text"></i> Billing Dashboard</a>';
+					}
+													if (row["bookingstatus"] == "Screening completed by the patient" || row["bookingstatus"] == "Assessment Form Reviewed" || row["bookingstatus"]=="Awaiting Doctor Screening" || row["bookingstatus"]=="Awaiting Consultation" || row["bookingstatus"] == 'Screening Scheduled') {
+								appendMessage += '<a href="@Url.Action("IPD_Screening", "IPDApplicationForm")?IPDApplicationFormid=' + row["ipdapplicationformid"] + '" class="dropdown-item">IPD Screening</a>';
+
+
+						}
+
+						if (row["bookingstatus"] == "Draft") {
+							appendMessage += '<a href="javascript:void(0)" onclick="openCompleteDraft(\'' + row["ipdapplicationformid"] + '\', \'' + row["patientname"] + '\')" class="dropdown-item"><i class="fa fa-edit"></i> Complete Draft</a>';
+						}
+
+							
+
+	if(appendMessage =="")
+				{
+				return '-'
+
+				}
+				else
+				{
+				return '<div class="dropdown actions__item">' +
+				'<i data-toggle="dropdown" class="fa fa-ellipsis-h"></i>' +
+				'<div class="dropdown-menu dropdown-menu-right">' + appendMessage +
+		 
+
+				'</div>' +
+				'</div>'
+				}
+
+
+
+				}
+				else
+				{
+				return '-'
+
+				}
+
+
+				}
+				}
+	
+
+	 ],
+
+		ajax: function (data, callback, settings) {
+		fetchingDataFromApi = true;
+		sendFilterData.searchterm = data.search.value; 
+		sendFilterData.pagesize = pageSize;    
+		sendFilterData.pagenumber =  (currentPageNumber - 1);   
+		var sortParams = [];
+		for (var i = 0; i < data.order.length; i++) {
+			var colIndex = data.order[i].column;
+			var sortDirection = data.order[i].dir;
+			var columnName = data.columns[colIndex].data;
+
+			var sortParam = {};
+			sortParam["col"] = columnName;
+			sortParam["dir"] = sortDirection;
+
+			sortParams.push(sortParam);
+		}
+		sendFilterData.sortFieldsJson =  JSON.stringify(sortParams);
+		$.ajax({
+		url: "@Url.Action("get_IPD_Application_Forms_for_Review", "IPDApplicationForm")",
+		type: 'GET',
+		dataType: 'json',
+		data: sendFilterData,
+
+		success: function(responsedata) {
+
+				 fetchingDataFromApi = false;
+				//to let grid say no data available and all other flows get through
+				if (responsedata.detail == null) {
+					responsedata.detail = [];
+				}
+				totalRecordsCount = responsedata.count;
+				if (responsedata.detail.length < pageSize) {
+					reachedEOF = true;
+				}
+		
+				setTimeout(function () {
+				callback({
+					data: responsedata.detail,
+					recordsTotal: responsedata.count
+				  });
+				}, 50);
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			fetchingDataFromApi = false;
+
+			if (JSON.stringify(jqXHR.responseText) == "API Authorization failed") {
+					swal({
+					title: 'Failed!',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+					 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function() {
+					window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+			}
+			else
+			{
+					swal({
+					title: 'Contact Administrator !',
+					text: jqXHR.responseText,
+					type: 'error',
+					buttonsStyling: false,
+					confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+			}
+		}
+		});
+		},
+		"infoCallback": function(settings, start, end, max, total, pre)
+		{
+				var startRowCount = (pageSize * currentPageNumber) - pageSize + 1;
+				var endRowCount = $(dataTableId).DataTable().rows().count() + startRowCount - 1;
+				var pagingInfo = 'Showing ' + startRowCount + ' to ' + endRowCount + ' of ' + totalRecordsCount + ' entries';
+
+				return pagingInfo;
+		}
+
+
+})
+	 
+	  
+ $('body').on('click', '.ColVis_collection li', function(a) {
+	event.stopPropagation();
+  });
+ 
+ $('body').on('change', '.colvis_switch', function(a) {
+	var column = table.column($(this).attr('data-column'));
+	column.visible(!column.visible());
+  });
+
+
+ 
+
+  
+	 
+
+
+	
+
+
+						
+											
+											$.ajax({
+												url: '@Url.Action("get_lookups_by_entity","lookups")',
+												dataType: 'json',
+												data:{id: 'IPDApplicationForm' },
+												success: function(data) {
+
+												$.each(data, function(index, optionDataInner) {
+												if(optionDataInner.fieldname=="verifiedstatus"){
+												var ddltarget_verifiedstatus = "#verifiedstatus_buttons"
+			
+												$(ddltarget_verifiedstatus).empty()
+			
+												if(optionDataInner.fieldname=="verifiedstatus"){
+												 
+												var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+												options_verifiedstatus.forEach(function(option_verifiedstatus){
+													if(option_verifiedstatus !='Ready For Review')
+													 $(ddltarget_verifiedstatus).append('<button class="btn btn-primary   auto_checker_action" style="display:none;" id='+option_verifiedstatus+'>'+option_verifiedstatus+'</button>')
+												
+												})  
+
+											}
+											
+											
+												}
+												})
+
+
+										}
+
+										})
+											$("#viewDetails_Auto").hide()
+											//$(".dataTables_length").hide()
+											$(".dataTables_filter").hide()
+											$(".dataTables_info").hide()
+											$(".dataTables_paginate").hide()
+										
+												
+												
+													$('#tblIPDApplicationForm').on('click','.odd,.even' , function(e){
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()		
+
+											 
+											$('#tblIPDApplicationForm tr').removeClass("trbg");
+											$(this).addClass("trbg")
+
+												var $row = $(this).closest('tr');
+												var data = table.row($row).data();
+												var IPDApplicationFormid = data.ipdapplicationformid;
+												$("#IPDApplicationFormid").val(IPDApplicationFormid)
+												
+													fill_IPDApplicationForm_view_data(IPDApplicationFormid)
+
+												})
+												
+												
+												$("body").on("click",'.auto_checker_action',function(){
+														if((this.id =='Rejected' || this.id=='Rework') &&   $("#reviewcomments").val()==''){
+															
+															swal({
+															title: 'Validation !',
+															text: "Please enter Review Comments",
+															type: 'error',
+															buttonsStyling: false,
+															confirmButtonClass: 'btn btn-primary',
+															 allowOutsideClick: false,
+															allowEscapeKey: false,
+															allowEnterKey: false
+															}) 
+															return;
+														}else{
+															setTimeout(() => {
+																var postData = {
+																	IPDApplicationFormid: $("#IPDApplicationFormid").val(),
+																	verifiedstatus: this.id,
+																	reviewcomments: $("#reviewcomments").val()
+																};
+																postData[''] = $('#').val();
+
+																$.ajax({
+																url: '@Url.Action("verify_IPDApplicationForm")',
+																 method: 'POST',
+																contentType: 'application/json',
+																dataType: 'json',
+																data: JSON.stringify(postData),
+
+																success: function(data) {
+
+																		window.location.reload()
+
+
+																}
+
+															})
+														},1);
+													}
+				 
+
+												})	
+					}
+	  function fill_pagination(callback) {
+		if ((reachedEOF || fetchingDataFromApi) && currentPageNumber !=1) {
+			return;
+		}
+		fetchingDataFromApi = true;
+		 var order = $(dataTableId).DataTable().order();
+			var sortParams = [];
+
+			for (var i = 0; i < order.length; i++) {
+				var colIndex = order[i][0];
+				var sortDirection = order[i][1];
+				var columnName = $(dataTableId).DataTable().settings()[0].aoColumns[colIndex].data;
+
+				var sortParam = {
+					col: columnName,
+					dir: sortDirection
+				};
+
+				sortParams.push(sortParam);
+			}
+			var sendFilterData = {
+								"tenantid":($("#tenantid").val() ? $("#tenantid").val() : str_tenantid),
+								"patientname":getIPDReviewPatientFilterValue(),
+									"bookingstatus":$("#bookingstatus").val(),
+	"verifiedstatus":$("#verifiedstatus").val(),
+
+								"pagesize": pageSize,
+								"pagenumber": (currentPageNumber - 1)
+								}
+			sendFilterData.searchterm = $(".dt-global-search").val();
+		sendFilterData.sortFieldsJson= JSON.stringify(sortParams);
+		var currentPage = $(dataTableId).DataTable().page();
+  
+		$.ajax({
+			url: "@Url.Action("get_IPD_Application_Forms_for_Review", "IPDApplicationForm")",
+			type: 'GET',
+			dataType: 'json',
+			data: sendFilterData,
+			success: function (responsedata) {
+				if (responsedata != null && responsedata.detail.length > 0) {
+					if (responsedata.detail.length < pageSize) {
+						reachedEOF = true;
+					}
+
+					api_response_data = responsedata.detail;
+					var table = $(dataTableId).DataTable();
+					table.rows().remove();
+					table.rows.add(responsedata.detail).draw();
+				}
+				else {
+					reachedEOF = true;
+				}
+				fetchingDataFromApi = false;
+				if (callback != undefined) {
+					callback();
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				fetchingDataFromApi = false;
+				if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"") {
+					swal({
+						title: 'Failed!',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+												allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					}).then(function () {
+						window.location = "@Url.Action("AuthorizationFailed", "users")"
+					})
+				}
+				else {
+					swal({
+						title: 'Contact Administrator !',
+						text: jqXHR.responseText,
+						type: 'error',
+						buttonsStyling: false,
+						confirmButtonClass: 'btn btn-primary',
+						 allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+					})
+				}
+			}
+		});
+
+
+	}
+
+
+
+					function fill_IPDApplicationForm_view_data(IPDApplicationFormid){
+											$("#viewDetails_Auto").show()
+											$(".auto_checker_action").hide()
+												$.ajax({
+												url: '@Url.Action("getById_allinfo_IPDApplicationForm")',
+												dataType: 'json',
+												data:{IPDApplicationFormid: IPDApplicationFormid },
+												success: function(data) {
+
+												var obj=eval(data[0]);
+													for (var key in obj) {
+
+															$(".auto_cls_"+key).html(obj[key]|| '-');
+															if (obj[''] !== undefined) { $('#').val(obj['']); }
+
+															
+							if (key === 'signature') {
+								loadSignatureDynamic(key, obj[key], false);
+							}
+
+													
+
+																if(key=='verifiedstatus'){
+																	
+																 var headerElement = $("div.page-header-box h1");
+																 if(obj['reviewcomments'] != undefined)
+																	headerElement.html('IPD Application Forms for Review - <span class="' + obj[key].replace(/ /g, "_").toLowerCase() +'">' + obj[key] +'</span> <span class="hdrcomments ' + obj[key].replace(/ /g, "_").toLowerCase() +'"> ' + obj['reviewcomments'] + ' </span>');
+																 else
+																	headerElement.html('IPD Application Forms for Review - <span class="' + obj[key].replace(/ /g, "_").toLowerCase() +'">' + obj[key] +'</span>');
+															
+																		if(obj[key]=='Approved'|| obj[key]=='Rejected')
+																		$("#reviewcomments").attr('readonly','readonly')
+															}	
+															if(obj[key]=='Ready For Review'){
+var Actions=getAutho("IPDApplicationForm","checker_detail")
+if(Actions != undefined){
+    $('.auto_checker_action').show();
+    $('#reviewcomments').attr('readonly', false);
+    $('#').attr('readonly', false);
+} else {
+    $('#reviewcomments').attr('readonly', true);
+    $('#').attr('readonly', true);
+}}
+
+
+															  if (key == 'automaton_review_logs') {
+																$('#review_logsContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+																	$('#review_logsContainerBody').append(get_dependent_table(obj[key]))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logsContainerBody').append('No Data Available')
+																}
+
+															}
+															if (key == 'automaton_review_logs_history') {
+																$('#review_logs_historyContainerBody').empty()
+																if (obj[key] != null && obj[key] != ""){
+																		const jsonData = JSON.parse(obj[key])
+																		$.each(jsonData, function(index, item) {
+																		delete item.IPDApplicationFormid;
+																		});
+
+																		var jsonWithoutIPDApplicationFormid = JSON.stringify(jsonData, null, 2);
+																		$('#review_logs_historyContainerBody').append(get_dependent_table(jsonWithoutIPDApplicationFormid))
+																		$('.review_logs_parent').removeClass('hide')
+																}
+																else{
+																	$('.review_logs_parent').addClass('hide')
+																	$('#review_logs_historyContainerBody').append('No Data Available')
+																}
+
+															}
+															if(key=='automaton_IPDApplicationForm_preferreddatesofadmission'){
+																			$('#preferreddatesofadmissionContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid +'&section=automaton_IPDApplicationForm_preferreddatesofadmission_history'
+																					 $(".preferreddatesofadmissionauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("IPDApplicationForm","versionhistory")
+																				if(Actions == undefined){
+																				$("preferreddatesofadmissionauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.preferreddatesofadmissionContainerBodyParent').removeClass('hide')      
+																			   $('#preferreddatesofadmissionContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.preferreddatesofadmissionContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_IPDApplicationForm_medicalinfo'){
+																			$('#medicalinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid +'&section=automaton_IPDApplicationForm_medicalinfo_history'
+																					 $(".medicalinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("IPDApplicationForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicalinfoauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.medicalinfoContainerBodyParent').removeClass('hide')      
+																			   $('#medicalinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicalinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_IPDApplicationForm_medicationinfo'){
+																			$('#medicationinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid +'&section=automaton_IPDApplicationForm_medicationinfo_history'
+																					 $(".medicationinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("IPDApplicationForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicationinfoauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.medicationinfoContainerBodyParent').removeClass('hide')      
+																			   $('#medicationinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicationinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_IPDApplicationForm_medicalrecords'){
+																			$('#medicalrecordsContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid +'&section=automaton_IPDApplicationForm_medicalrecords_history'
+																					 $(".medicalrecordsauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("IPDApplicationForm","versionhistory")
+																				if(Actions == undefined){
+																				$("medicalrecordsauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.medicalrecordsContainerBodyParent').removeClass('hide')      
+																			   $('#medicalrecordsContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.medicalrecordsContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='medicalrecordfile'){
+																			$('.auto_cls_medicalrecordfile').empty()
+																			if(obj[key] !=null)  {            
+  
+																			var uploaded_medicalrecordfile = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_medicalrecordfile.length; i++) {
+
+
+																				if (uploaded_medicalrecordfile[i] != "") {
+																							var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_medicalrecordfile[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																						 $('.auto_cls_medicalrecordfile').append('<a href=' + filepath + ' class="medicalrecordfile filedisplay"><i class="fa fa-file"></i></a>')
+																			
+																				}
+
+
+																			}
+
+ 
+																		  }
+
+
+																	}
+if(key=='automaton_IPDApplicationForm_attendantinfo'){
+																			$('#attendantinfoContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid +'&section=automaton_IPDApplicationForm_attendantinfo_history'
+																					 $(".attendantinfoauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("IPDApplicationForm","versionhistory")
+																				if(Actions == undefined){
+																				$("attendantinfoauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.attendantinfoContainerBodyParent').removeClass('hide')      
+																			   $('#attendantinfoContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.attendantinfoContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='automaton_IPDApplicationForm_roompreference'){
+																			$('#roompreferenceContainerBody').empty()
+																			if(obj[key]!=null && obj[key] !=""){
+																					var audit = '@Url.Action("audit")?id=' + IPDApplicationFormid +'&section=automaton_IPDApplicationForm_roompreference_history'
+																					 $(".roompreferenceauditheaderlink").attr('href',audit)
+
+																				var Actions=getAutho("IPDApplicationForm","versionhistory")
+																				if(Actions == undefined){
+																				$("roompreferenceauditheaderlink").parent().hide()
+																				} 
+																   
+																			   $('.roompreferenceContainerBodyParent').removeClass('hide')      
+																			   $('#roompreferenceContainerBody').append(get_dependent_table(obj[key]))
+																			}else{
+																			   $('.roompreferenceContainerBodyParent').addClass('hide')
+																			}
+																	}
+if(key=='uploadpassportcopy'){
+																			$('.auto_cls_uploadpassportcopy').empty()
+																			if(obj[key] !=null)  {            
+  
+																			var uploaded_uploadpassportcopy = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_uploadpassportcopy.length; i++) {
+
+
+																				if (uploaded_uploadpassportcopy[i] != "") {
+																							var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_uploadpassportcopy[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																						 $('.auto_cls_uploadpassportcopy').append('<a href=' + filepath + ' class="uploadpassportcopy filedisplay"><i class="fa fa-file"></i></a>')
+																			
+																				}
+
+
+																			}
+
+ 
+																		  }
+
+
+																	}
+if(key=='uploadvisacopy'){
+																			$('.auto_cls_uploadvisacopy').empty()
+																			if(obj[key] !=null)  {            
+  
+																			var uploaded_uploadvisacopy = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_uploadvisacopy.length; i++) {
+
+
+																				if (uploaded_uploadvisacopy[i] != "") {
+																							var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_uploadvisacopy[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																						 $('.auto_cls_uploadvisacopy').append('<a href=' + filepath + ' class="uploadvisacopy filedisplay"><i class="fa fa-file"></i></a>')
+																			
+																				}
+
+
+																			}
+
+ 
+																		  }
+
+
+																	}
+if(key=='consentfile'){
+																			$('.auto_cls_consentfile').empty()
+																			if(obj[key] !=null)  {            
+  
+																			var uploaded_consentfile = obj[key].split('|');
+																			var iterate = 0;
+																			for (var i = 0; i < uploaded_consentfile.length; i++) {
+
+
+																				if (uploaded_consentfile[i] != "") {
+																							var filepath = "@Context.Session.GetString("NalamVazhacloudpath")" + "/" + uploaded_consentfile[i] + "@Context.Session.GetString("NalamVazhaSAStoken")";
+																			 
+																					iterate = iterate + 1;
+																						 $('.auto_cls_consentfile').append('<a href=' + filepath + ' class="consentfile filedisplay"><i class="fa fa-file"></i></a>')
+																			
+																				}
+
+
+																			}
+
+ 
+																		  }
+
+
+																	}
+
+
+													}
+												}
+
+												})
+
+												}	
+
+					$(document).ready(function () {
+					$('body').on('change', '.dt-global-search', function(event) {
+					  reachedEOF = false;
+
+					  pager_setCurrentPageNumber(1);
+					  fill_pagination(pager_onPageChanged);
+
+					  $(pagerContainerId + ' #pager_lbl_pagecount').text(pager_getPageCount());
+					});
+
+
+					fill_IPDApplicationForm()
+
+
+					var Actions=getAutho("IPDApplicationForm","list_verify")
+					if(Actions == undefined){
+					window.location = "@Url.Action("RoleAuthorizationFailed", "users")"
+					}
+
+
+
+
+					});
+					
+
+					$("body").on("click", "[data-table-action]", function(a) {
+					a.preventDefault();
+					var b = $(this).data("table-action");
+					console.log('dataTables_wrapper', $(this).closest(".dataTables_wrapper").find(".buttons-print"));
+					if ("excel" === b && $(this).closest(".dataTables_wrapper").find(".buttons-excel").trigger("click"), "csv" === b && $(this).closest(".dataTables_wrapper").find(".buttons-csv").trigger("click"), "print" === b && $(this).closest(".dataTables_wrapper").find(".buttons-print").trigger("click"), "fullscreen" === b) {
+					var c = $(this).closest(".card");
+					c.hasClass("card--fullscreen") ? (c.removeClass("card--fullscreen"), $("body").removeClass("data-table-toggled")) : (c.addClass("card--fullscreen"), $("body").addClass("data-table-toggled"))
+					}
+					});
+					</script>
+<script>
+	var strbookingstatus;
+</script>
+@if (Model != null)
+{
+	if (Model.bookingstatus != null && Model.bookingstatus.ToString() != "")
+	{
+		<script>
+			strbookingstatus = "@Model.bookingstatus";
+		</script>
+	}
+}
+					<script>
+var strverifiedstatus;
+</script>
+@if (Model != null)
+{
+if (Model.verifiedstatus != null && Model.verifiedstatus.ToString() != "")
+{
+<script>
+strverifiedstatus = "@Model.verifiedstatus";
+</script>
+}
+}
+
+					<script>
+$(document).ready(function () {
+$.ajax({
+url: '@Url.Action("get_lookups_by_entity","lookups")',
+dataType: 'json',
+data:{id: 'IPDApplicationForm' },
+success: function(data) {
+
+
+
+		$.each(data, function(index, optionDataInner) {
+				if(optionDataInner.fieldname=="bookingstatus"){
+													var ddltarget_bookingstatus = "#bookingstatus"
+													$(ddltarget_bookingstatus).empty();
+													$(ddltarget_bookingstatus).append("<option value=''>Choose</option>")
+													var options_bookingstatus = optionDataInner.fielddesc.split(',');
+													options_bookingstatus.sort(function (a, b) {
+																			return a.localeCompare(b);
+														});
+													options_bookingstatus.forEach(function(option_bookingstatus){
+														if(strbookingstatus== option_bookingstatus){
+														$(ddltarget_bookingstatus).append('<option selected value="' + option_bookingstatus + '">' + option_bookingstatus+ '</option>')
+
+														}
+														else
+														$(ddltarget_bookingstatus).append('<option  value="' + option_bookingstatus + '">' + option_bookingstatus+ '</option>')
+
+													})
+
+												}
+				
+											if(optionDataInner.fieldname=="verifiedstatus"){
+												var ddltarget_verifiedstatus = "#verifiedstatus"
+												$(ddltarget_verifiedstatus).empty();
+												$(ddltarget_verifiedstatus).append("<option value=''>Choose</option>")
+												var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+												options_verifiedstatus.sort(function (a, b) {
+																		return a.localeCompare(b);
+													});
+												options_verifiedstatus.forEach(function(option_verifiedstatus){
+													if(strverifiedstatus== option_verifiedstatus){
+													$(ddltarget_verifiedstatus).append('<option selected value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+													 
+													}
+													else
+													$(ddltarget_verifiedstatus).append('<option  value="' + option_verifiedstatus + '">' + option_verifiedstatus+ '</option>')
+													  
+												})  
+ 
+											}
+
+
+
+		});
+
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+})
+		
+</script>
+					
+					
+								<script>
+								$(document).ready(function () {
+								$("#tenantid").change(function(){
+								fill_IPDApplicationForm();
+								})
+
+								$("#btnFilter").click(function(){
+								fill_IPDApplicationForm();
+								})
+								});
+								</script> 
+
+<script>
+
+
+// Function to create the option elements
+function createOptionElement(value, label, className) {
+	var option = document.createElement("option");
+	option.value = value;
+	option.textContent = label;
+	option.className = className;
+	return option;
+}
+
+// Function to populate the dropdown
+function populateDropdown(data) {
+	var dropdown = document.getElementById("tenantid");
+	dropdown.innerHTML = '<option value=""> Choose </option>';
+
+	// Create a dictionary to store child options grouped by parentid
+	var groupedOptions = { };
+
+				// Filter out duplicate entries with the same businessname
+				var filteredData = [];
+				var uniqueNames = new Set();
+
+				data.forEach(function(item) {
+					if (!uniqueNames.has(item.businessname))
+					{
+						filteredData.push(item);
+						uniqueNames.add(item.businessname);
+					}
+				});
+
+				// Group child options under corresponding parent options
+				filteredData.forEach(function(item) {
+					if (!item.parentid)
+					{
+						dropdown.appendChild(createOptionElement(item.tenantid, item.businessname, "optionGroup"));
+					}
+					else
+					{
+						if (!groupedOptions[item.parentid])
+						{
+							groupedOptions[item.parentid] = [];
+						}
+						groupedOptions[item.parentid].push(item);
+					}
+				});
+
+				// Add child options to their corresponding parent options
+				Object.keys(groupedOptions).forEach(function(parentid) {
+					var parentOption = dropdown.querySelector('[value="' + parentid + '"]');
+					groupedOptions[parentid].forEach(function(childOption) {
+						parentOption.insertAdjacentElement('afterend', createOptionElement(childOption.tenantid, childOption.businessname, "optionChild"));
+					});
+				});
+				
+				filteredData.forEach(function (item) {
+					if (!item.parentid && !groupedOptions[item.tenantid]) {
+						var parentOption = dropdown.querySelector('[value="' + item.tenantid + '"]');
+						if(item.natureofbusiness?.indexOf("Lead") !== -1)
+						parentOption.classList.add("optionNoChildLead");
+						else
+						parentOption.classList.add("optionNoChild");
+					}
+				});
+
+				$("#tenantid").val(str_tenantid);
+				$("#tenantid").select2()
+				var space = '&nbsp;&nbsp;&nbsp;'
+				$("#tenantid").find('.optionChild').prepend(space);
+				
+
+			}
+$(document).ready(function () {
+ if ("@Context.Session.GetString("NalamVazhashowtenant")" =="Y")
+ {
+$.ajax({
+url: '@Url.Action("get_project_tenant","tenant")',
+dataType: 'json',
+data:{"businesstype": "Healthcare Provider","tenantid": "@Context.Session.GetString("NalamVazhachoosedtenantid")"},
+success: function(data) {
+
+    populateDropdown(data);
+		
+	
+ 
+
+},
+error: function(jqXHR, textStatus, errorThrown) {
+if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+{
+swal({
+title: 'Failed!',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}).then(function() {
+window.location = "@Url.Action("AuthorizationFailed", "users")"
+}) 
+}
+else
+{
+swal({
+title: 'Contact Administrator !',
+text: jqXHR.responseText,
+type: 'error',
+buttonsStyling: false,
+confirmButtonClass: 'btn btn-primary',
+allowOutsideClick: false,
+allowEscapeKey: false,
+allowEnterKey: false
+}) 
+}
+}
+})
+}else
+{
+
+	$(".tenant_display").hide()
+}
+});
+</script>
+
+
+					
+					
+					 <script>
+
+
+	$('#mah_tbl_select_all').on('click', function () {
+		var table = $("#tblIPDApplicationForm").DataTable();
+		var rows = table.rows({ 'search': 'applied' }).nodes();
+
+		// Check/uncheck all checkboxes in the table
+		var isChecked = this.checked;
+		$('input[name="ipdapplicationformcheck"]', rows).prop('checked', isChecked);
+
+		// Clear the arrays if no checkboxes are checked
+		if (!isChecked) {
+
+			$(".add-review-btn").hide();
+		} else {
+			// Show review button when items are checked
+			$(".add-review-btn").show();
+		}
+
+		// Process checked checkboxes and add values to arrays
+		$('input[name="ipdapplicationformcheck"]:checked', rows).each(function () {
+			var checkboxId = $(this).attr('id');
+			var $tr = $(this).closest('tr');
+
+
+			var detailId = $tr.find('td:eq(0) > input').attr('id');
+
+			// Check if the detailId is not in the arr_selected_for_verification array
+			if (!arr_selected_for_verification.includes(detailId)) {
+
+
+
+
+				var id = $tr.find('td:eq(0) > input').attr('id');
+
+
+				arr_selected_for_verification.push(id);
+				 
+			}
+
+		});
+
+
+
+	});
+</script>
+
+<script>
+
+
+	$(document).ready(function () {
+
+		// Function to handle checkbox change
+		function handleCheckboxChange() {
+			var isChecked = $(this).is(':checked');
+			var checkboxId = $(this).attr('id');
+			$(".add-review-btn").show()
+			if (isChecked) {
+
+
+
+
+				var $tr = $(this).closest('tr');
+
+				var id = $tr.find('td:eq(0) > input').attr('id');
+
+
+				arr_selected_for_verification.push(id);
+			  
+
+
+
+
+			} else {
+
+				
+				var $tr = $(this).closest('tr');
+
+				var a = $tr.find('td:eq(0) > input').attr('id');
+				var index = arr_selected_for_verification.indexOf(a);
+
+
+
+				if (index !== -1) {
+					arr_selected_for_verification.splice(index, 1);
+					
+				}
+
+			}
+
+
+ var table = $("#tblIPDApplicationForm").DataTable();
+			var checkedCount = $('input[name="ipdapplicationformcheck"]:checked', table.rows({ 'search': 'applied' }).nodes()).length;
+			
+			if (checkedCount > 0) {
+				$(".add-review-btn").show();
+			} else {
+				$(".add-review-btn").hide();
+				// Also uncheck the select all checkbox
+				$('#mah_tbl_select_all').prop('checked', false);
+			}
+
+ var table = $("#tblIPDApplicationForm").DataTable();
+			var checkedCount = $('input[name="ipdapplicationformcheck"]:checked', table.rows({ 'search': 'applied' }).nodes()).length;
+			
+			if (checkedCount > 0) {
+				$(".add-review-btn").show();
+			} else {
+				$(".add-review-btn").hide();
+				// Also uncheck the select all checkbox
+				$('#mah_tbl_select_all').prop('checked', false);
+			}
+		}
+
+
+		// Delegate the event to the DataTable for dynamically created checkboxes
+		$('#tblIPDApplicationForm').on('change', "input[name='ipdapplicationformcheck']", handleCheckboxChange);
+	});
+</script>
+
+
+<script>
+
+	function VerifyIPDApplicationForm(pvar_verifiedstatus) {
+		$('.page-loader').show();
+
+		  
+			var str_selected_for_verification = arr_selected_for_verification.join(',')
+			$.ajax({
+				url: '@Url.Action("verify_IPDApplicationForm")',
+				method: 'POST',
+				contentType: 'application/json',
+				dataType: 'json',
+				data: JSON.stringify({
+					ipdapplicationformid: str_selected_for_verification,
+					verifiedstatus: pvar_verifiedstatus,
+					reviewcomments: $("#bulk_reviewcomments").val()
+				}),
+				success: function (data) {
+				  
+					window.location.reload();
+					
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					 window.location.reload();
+				}
+			});
+			 
+		 
+
+	}
+
+
+
+</script>
+<script>
+	function showFormAlert() {
+		if (arr_selected_for_verification.length > 0) {
+		// Define your SweetAlert content
+		const content = document.createElement('div');
+		content.innerHTML = '<label>Review Comments</label><br><textarea id="bulk_reviewcomments" class="form-control" placeholder="Enter Review Comments"></textarea><br><span id="verified_reject_message" style="color:red;display:none;" >Please enter Review Comments</span><div class="btn-group pull-right" id="verifiedstatus_buttons"><button class="btn btn-primary" id="Rework_" style="display: block;">Rework</button><button class="btn btn-primary" id="Approved_" style="display: block;">Approve</button><button class="btn btn-primary" id="Rejected_" style="display: block;">Reject</button></div>';
+ 
+		  $.colorbox({
+				html: content,
+				width: '80%', // Set the width as needed
+				onComplete: function () {
+					// Do additional setup if needed after the content is displayed
+				}
+			});
+
+		// Attach event listeners to your buttons
+		document.getElementById('Rework_').addEventListener('click', handleButtonClick);
+		document.getElementById('Approved_').addEventListener('click', handleButtonClick);
+		document.getElementById('Rejected_').addEventListener('click', handleButtonClick);
+	  }else{
+						swal({
+							title: 'Validation !',
+							text: "Please select items to be reviewed",
+							type: 'error',
+							buttonsStyling: false,
+							confirmButtonClass: 'btn btn-primary',
+						allowOutsideClick: false,
+						allowEscapeKey: false,
+						allowEnterKey: false
+							}) 
+		
+			}
+	}
+
+	function handleButtonClick(event) {
+		$('#verified_reject_message').hide();
+		const inputValue = document.getElementById('bulk_reviewcomments').value;
+
+		// Check which button was clicked
+		 const clickedButtonId = event.target.id;
+        const action = clickedButtonId.replace('_', '');
+
+		if ((clickedButtonId === 'Rejected_' || clickedButtonId=='Rework_') && !inputValue) {
+			 $('#verified_reject_message').show();
+		}
+		else if(clickedButtonId === 'Approved_')
+		{
+			let finalStatus = action;
+			if (userRole === 'Frontdesk Admin') {
+                finalStatus = 'Ready For Doctor Review';
+              }
+             else if (userRole === 'Doctor') {
+                finalStatus = 'Approved';
+             }
+			  VerifyIPDApplicationForm(finalStatus);
+		}
+		else {
+		 VerifyIPDApplicationForm(action);
+		}
+
+		// Prevent the default behavior of the button (which closes the Swal alert)
+		event.stopPropagation();
+	}
+
+
+
+
+</script>
+					<script>
+					 
+$(document).ready(function () {
+						 
+					 
+// $('body').on('click', '.list_status', function(a) {
+// $("#verifiedstatus").val($(this).attr('id'))
+
+// fill_IPDApplicationForm()
+// });
+
+   
+});
+// function fill_IPDApplicationForm_count(datato,sendFilterdata) {
+
+
+// var countofstatus = ''
+
+// $.ajax({
+// url: '@Url.Action("get_lookups_by_entity","lookups")',
+// dataType: 'json',
+// data: {
+// id: 'IPDApplicationForm'
+// },
+// success: function(data) {
+
+// $.ajax({
+// url: '@Url.Action("count_of_IPDApplicationForm")',
+// dataType: 'json',
+// data: sendFilterdata,
+// success: function(rowData) {
+
+// num=0;
+// $.each(data, function(index, optionDataInner) {
+// if (optionDataInner.fieldname == "verifiedstatus") {
+
+
+// var options_verifiedstatus = optionDataInner.fielddesc.split(',');
+// options_verifiedstatus.forEach(function(option_verifiedstatus) {
+// var found=0;
+// $.each(rowData, function(index_count, optionDataInner_count) {
+// 	if (optionDataInner_count.verifiedstatus == option_verifiedstatus){
+// 		found=1
+// 					var verifiedclass = option_verifiedstatus.replace(/[\s-]/g, '').toLowerCase();
+// 					num+=Number(optionDataInner_count.count)
+// 		countofstatus += `<div class="col-sm-2">
+// 			<div class="list list_status ${verifiedclass}" id="${option_verifiedstatus}">
+// 				<span><p class="tlt-txt">${option_verifiedstatus}</p></span><div class="lst-num">
+// 							<label>${optionDataInner_count.count}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+// 				</div>
+// 			</div>
+// 		</div>`
+
+// 	}
+									
+
+// });
+// if(found==0){
+// 		var verifiedclass = option_verifiedstatus.replace(/[\s-]/g, '').toLowerCase();
+// 		countofstatus += `<div class="col-sm-2">
+// 			<div class="list list_status ${verifiedclass}" id="${option_verifiedstatus}">
+// 				<span><p class="tlt-txt">${option_verifiedstatus}</p></span><div class="lst-num">
+// 							<label>0</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+// 				</div>
+// 			</div>
+// 		</div>`
+
+// }
+
+
+
+// })
+
+						 
+
+// $(datato).closest(".dataTables_wrapper").find(".dataTables__top").prepend(
+// 	`<div class="card-lst"><div class="col-sm-2">
+// 			<div class="list list_status all" id="">
+// 				<span><p class="tlt-txt">All</p></span><div class="lst-num">
+// 							<label>${num}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+// 				</div>
+// 			</div>
+// 		</div>` +
+							
+// countofstatus + '</div>')
+
+
+
+
+// }
+// })
+				   
+
+// }
+
+// })
+
+		  
+
+
+// }
+
+// })
+// }
+</script>
+					<script>
+					var strpatientname;
+					</script>
+						@if (Model != null)
+						{
+							if(Model.patientname != null && Model.patientname.ToString() != "")
+							{
+							<script>
+								 strpatientname="@Model.patientname"
+							</script>
+							}
+						}
+					<script>
+					
+
+					function lookup_IPDApplicationForm_patientname(tenantid) {
+
+					var ddltarget_patientname = $('#patientname');
+					ddltarget_patientname.empty();;
+					ddltarget_patientname.append("<option value=''>Choose</option>");
+					ddltarget_patientname.select2({
+						ajax: {
+							url: '@Url.Action("lookup_IPDApplicationForm_patientname")',
+							dataType: 'json',
+							data: function (params) {
+
+								return {
+									"tenantid":tenantid,
+
+									'searchterm': params.term || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': params.page || 1
+
+								};
+							},
+							delay: 500,
+							processResults: function (data, params) {
+								
+								if (data.length > 0) {
+									data = data.filter(item => item.firstname !== null);
+									data.sort((a, b) =>
+										String(a.firstname).toLowerCase().localeCompare(String(b.firstname).toLowerCase()) 
+									);
+								}
+								for (i = 0; i < data.length; i++) {
+									data[i].id =  data[i].PatientProfileid;
+									data[i].name = data[i].firstname+ ' ' + data[i].lastname;
+								}
+								var hasMorePatientResults = data != null && data.length == typeaheadpagesize;
+								data.unshift({ id: IPD_PATIENT_FILTER_CHOOSE_VALUE, text: 'Choose', firstname: '', lastname: '', name: 'Choose' });
+								return {
+									results: data,
+									pagination: {
+										more: hasMorePatientResults
+									}
+								};
+							}
+						},
+						placeholder: 'Choose',
+						minimumResultsForSearch: typeaheadpagesize,
+						templateResult: formatSelectOption_lookup_IPDApplicationForm_patientname,
+						 templateSelection: formatSelectSelected_lookup_IPDApplicationForm_patientname
+
+					});
+
+							  var sendFilterData = {
+									"tenantid":tenantid,
+
+									'searchterm': strpatientname || ''
+									,'pagesize': typeaheadpagesize
+									,'pagenumber': 1
+
+								};
+								$.ajax({
+								url: '@Url.Action("lookup_IPDApplicationForm_patientname")',
+								dataType: 'json',
+								data: sendFilterData,
+								success: function (data) {
+									 for (i = 0; i < data.length; i++) {
+										if (data[i].PatientProfileid == strpatientname) {
+											var option = new Option(data[i].firstname+ ' ' + data[i].lastname,data[i].PatientProfileid, true, true);
+											ddltarget_patientname.append(option).trigger('update');
+
+											ddltarget_patientname.trigger({
+												type: 'select2:select',
+												params: {
+													data: data
+												}
+											});
+										}
+									}
+								}
+							});
+
+
+				}
+
+				function formatSelectSelected_lookup_IPDApplicationForm_patientname(item) {
+					 
+					if (!item) {
+						return 'Choose';
+					}
+					if (item.id === IPD_PATIENT_FILTER_CHOOSE_VALUE || item.text === 'Choose') {
+						return 'Choose';
+					}
+					if (item.text) {
+						var textValue = item.text;
+					}
+					else if (item.firstname+ ' ' + item.lastname) {
+						var textValue = item.firstname+ ' ' + item.lastname
+					} 
+					
+					return textValue;
+				}
+				function formatSelectOption_lookup_IPDApplicationForm_patientname(item) {
+					if (item.loading) {
+						return item.text;
+					}
+					if (item.id === IPD_PATIENT_FILTER_CHOOSE_VALUE || item.text === 'Choose') {
+						return 'Choose';
+					}
+
+					var textValue = item.firstname+ ' ' + item.lastname;
+					return textValue;
+
+				 }
+
+
+ 
+</script>
+<script>
+						$(document).ready(function(){
+						setTimeout(function () {
+									lookup_IPDApplicationForm_patientname(str_tenantid)
+								}, 3000)
+							
+							
+
+
+						})
+						
+						</script>
+
+<script>
+					$(document).ready(function () {
+						 
+						$("#tenantid").change(function(){
+								 lookup_IPDApplicationForm_patientname($("#tenantid").val())
+
+						})
+					
+
+					});
+					</script>
+
+<script>
+	var strbookingstatus;
+</script>
+@if (Model != null)
+{
+	if (Model.bookingstatus != null && Model.bookingstatus.ToString() != "")
+	{
+		<script>
+			strbookingstatus="@Model.bookingstatus"
+		</script>
+	}
+}
+<script>
+
+	function count_of_IPDApplicationForm_bookingstatus(tenantid,globalFilterData) {
+
+
+
+	$.ajax({
+	url: '@Url.Action("get_lookups_by_entity", "lookups")',
+	dataType: 'json',
+	data:{id: 'IPDApplicationForm' },
+	success: function(data) {
+
+				$.each(data, function(index, optionDataInner) {
+
+
+												if(optionDataInner.fieldname=="bookingstatus"){
+
+
+					$.ajax({
+						url: '@Url.Action("count_of_IPDApplicationForm_bookingstatus")',
+						dataType: 'json',
+						data: globalFilterData,
+						success: function(rowData) {
+
+							var countofstatus = '';
+							var num = 0;
+
+							// Create status cards
+							var options_bookingstatus = optionDataInner.fielddesc.split(',');
+							$.each(options_bookingstatus, function(index, optionDataInner) {
+								var bookingstatus = optionDataInner;
+								var valueToCheck = optionDataInner;
+
+								var found = 0;
+								var statecount = 0;
+
+								$.each(rowData, function(index_count, optionDataInner_count) {
+										if (optionDataInner_count.bookingstatus == valueToCheck) {
+										found = 1;
+										statecount = Number(optionDataInner_count.count);
+										num += statecount;
+									}
+								});
+
+								var bookingstatusclass = bookingstatus.replace(/[\s-]/g, '').toLowerCase();
+											var backgroundcolor=getFixedColor(index);
+								countofstatus += `<div class="col-sm-2">
+											<div class="list list_status ${bookingstatusclass}" style="background-color:${backgroundcolor}"  id="${valueToCheck}">
+										<span><p class="tlt-txt">${bookingstatus}</p></span>
+										<div class="lst-num">
+											<label>${statecount}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+										</div>
+									</div>
+								</div>`;
+							});
+
+							// Add 'All' total card + individual state counts to top bar
+							$(".dataTables__top .card-lst").remove();
+							$(".dataTables__top1").prepend(
+								`<div class="card-lst">
+									<div class="col-sm-2">
+										<div class="list list_status all" id="">
+											<span><p class="tlt-txt">All</p></span>
+											<div class="lst-num">
+												<label>${num}</label><i class="fa fa-chevron-right" aria-hidden="true"></i>
+											</div>
+										</div>
+									</div>
+									${countofstatus}
+								</div>`
+							);
+						}
+					});
+
+			}
+
+
+
+			});
+
+
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+	if (JSON.stringify(jqXHR.responseText) == "\"API Authorization failed\"")
+	{
+	swal({
+	title: 'Failed!',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	}).then(function() {
+	window.location = "@Url.Action("AuthorizationFailed", "users")"
+	})
+	}
+	else
+	{
+	swal({
+	title: 'Contact Administrator !',
+	text: jqXHR.responseText,
+	type: 'error',
+	buttonsStyling: false,
+	confirmButtonClass: 'btn btn-primary',
+	allowOutsideClick: false,
+	allowEscapeKey: false,
+	allowEnterKey: false
+	})
+	}
+	}
+	})
+
+	}
+</script>
+
+
+<script>
+	$(document).ready(function () {
+
+
+	$('body').on('click', '.list_status', function(a) {
+		$("#bookingstatus").val($(this).attr('id'))
+
+		fill_IPDApplicationForm()
+	});
+
+
+	});</script>
+
+<script>
+function openCompleteDraft(ipdformid, patientnameid) {
+	window.location.href = '@Url.Action("Direct_IPD_Admission", "IPDApplicationForm")'
+		+ '?IPDApplicationFormid=' + encodeURIComponent(ipdformid);
+}
+</script>

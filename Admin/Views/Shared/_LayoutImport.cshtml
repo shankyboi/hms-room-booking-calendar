@@ -1,0 +1,149 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    <link type="text/css" rel="stylesheet" href="~/css/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/materialadmin.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/fontawesome/css/fontawesome.min.css" />
+    <link rel="stylesheet"              href="~/css/fontawesome/css/all.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/material-design-iconic-font.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="~/css/custom.css" />
+    <link type="text/css" rel="stylesheet" href="~/css/custom_changed.css" />
+    <link type="text/css" rel="stylesheet" href="~/Monochrome.css" />
+    <link type="text/css" rel="stylesheet" href="~/themestyles.css" />
+    <link type="text/css" rel="stylesheet" href="~/appstyles.css" />
+    <link rel="stylesheet" href="~/components/sweetalert2/sweetalert2.min.css">
+
+    <script src="~/js/jquery-1.11.2.min.js"></script>
+    <script src="~/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="~/components/sweetalert2/sweetalert2.min.js"></script>
+    <script>
+        /* SweetAlert2 shim */
+        window.swal = function(opts) {
+            return (typeof Swal !== 'undefined' && Swal.fire)
+                ? Swal.fire({ title: opts.title, text: opts.text, icon: (opts.type || 'info'),
+                              confirmButtonText: opts.confirmButtonText || 'OK',
+                              allowOutsideClick: opts.allowOutsideClick !== false,
+                              allowEscapeKey:    opts.allowEscapeKey    !== false })
+                : Promise.resolve();
+        };
+    </script>
+    <script src="~/components/jquery/jquery.validate.js"></script>
+    <script src="~/components/jquery/additional-methods.min.js"></script>
+    <script src="~/js/id-proof-validation.js"></script>
+
+    <script>
+        /* ── Global helpers (no tenant-manipulation here) ── */
+        var str_tenantid = "";
+        var typeaheadpagesize = @Configuration.GetSection("settings")["typeaheadpagesize"];
+        var vBaseurl = "@Configuration.GetSection("ApiSettings")["baseURL"]";
+
+        function ISOtoSelectedFormat(isoDate) {
+            if (!isoDate) return "";
+            if (/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) {
+                var p = isoDate.split('-').map(Number);
+                var d = new Date(p[0], p[1]-1, p[2]);
+                return String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0') + '/' + d.getFullYear();
+            }
+            var date = new Date(isoDate);
+            if (isNaN(date)) return "";
+            var day = String(date.getDate()).padStart(2,'0');
+            var mon = String(date.getMonth()+1).padStart(2,'0');
+            var yr  = date.getFullYear();
+            var h   = date.getHours(), m = date.getMinutes();
+            return (h||m) ? (day+'/'+mon+'/'+yr+' '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')) : (day+'/'+mon+'/'+yr);
+        }
+
+        function getSqlDate(ds) {
+            if (!ds) return "";
+            var r = ds.split("/"); return r[2]+'-'+r[1]+'-'+r[0];
+        }
+    </script>
+
+    <style>
+        /* ── Import-page shell ── */
+        body { background: #f0f2f6; margin: 0; font-family: 'Source Sans 3', sans-serif; }
+
+        .imp-shell-header {
+            background: linear-gradient(135deg, #1a3c5e 0%, #2d6a9f 100%);
+            padding: 14px 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.18);
+        }
+        .imp-shell-header .back-btn {
+            color: rgba(255,255,255,.8);
+            font-size: 20px;
+            text-decoration: none;
+            line-height: 1;
+            transition: color .15s;
+        }
+        .imp-shell-header .back-btn:hover { color: #fff; }
+        .imp-shell-header h1 {
+            color: #fff;
+            font-size: 17px;
+            font-weight: 600;
+            margin: 0;
+            flex: 1;
+        }
+        .imp-shell-header .hdr-sub {
+            color: rgba(255,255,255,.65);
+            font-size: 12px;
+        }
+
+        .imp-shell-body {
+            max-width: 900px;
+            margin: 32px auto 60px;
+            padding: 0 20px;
+        }
+
+        /* ── page loader ── */
+        .imp-loader {
+            display: none;
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(255,255,255,.65);
+            align-items: center;
+            justify-content: center;
+        }
+        .imp-loader.active { display: flex; }
+        .imp-loader img { width: 50px; height: 50px; }
+    </style>
+
+    @RenderSection("Head", required: false)
+</head>
+<body>
+
+    <div class="imp-loader" id="impLoader">
+        <img src="~/images/loading.gif" alt="loading" />
+    </div>
+
+    <header class="imp-shell-header">
+        <a href="javascript:history.back();" class="back-btn" title="Go back">
+            <i class="fa fa-angle-left"></i>
+        </a>
+        <div>
+            <h1><i class="fa fa-file-excel-o" style="margin-right:8px;opacity:.85;"></i>@ViewBag.Title</h1>
+            <div class="hdr-sub">Assessment &rarr; Bulk Import</div>
+        </div>
+    </header>
+
+    <div class="imp-shell-body">
+        @RenderBody()
+    </div>
+
+    @RenderSection("Scripts", required: false)
+    @* <script src="~/js/mobile-numeric-input.js"></script> *@
+</body>
+</html>

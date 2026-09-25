@@ -1,0 +1,130 @@
+/* Room Occupancy Status List – improved styling */
+
+/* Page card */
+.room-occupancy-list-card.card {
+	border-radius: 10px;
+	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+	border: 1px solid #e8ecf1;
+	overflow: hidden;
+	padding: 12px 14px !important;
+}
+.room-occupancy-list-card .mobileHeader {
+	padding: 6px 10px 4px;
+	border-bottom: 1px solid #e8ecf1;
+	background: #fafbfc;
+}
+.room-occupancy-list-card .formHdr {
+	font-size: var(--fs-h4, 16px);
+	font-weight: 600;
+	color: #1e293b;
+	margin: 0;
+}
+.room-occupancy-list-card .card-body {
+	padding: 0 !important;
+}
+
+/* Filter row – hide block and building for calendar view */
+.room-occupancy-list-card .block_craftmyapp_container,
+.room-occupancy-list-card .building_craftmyapp_container {
+	display: none !important;
+}
+
+/* Filter row */
+.room-occupancy-list-card .card-body .row:first-of-type {
+	background: #fff;
+	padding: 6px 10px;
+	border-bottom: 1px solid #e8ecf1;
+}
+.room-occupancy-list-card .form-group--float-above {
+	margin-top: 0.25rem !important;
+	margin-bottom: 0.25rem !important;
+}
+.room-occupancy-list-card .form-group--float-above label {
+	color: #475569;
+	font-weight: 500;
+	font-size: var(--fs-small, 12px);
+	margin-bottom: 2px;
+}
+.room-occupancy-list-card #btnFilter {
+	border-radius: 8px;
+	font-weight: 500;
+	padding: 7px 14px;
+	margin-top: 0.5rem;
+}
+
+/* View toggle (Calendar / List) */
+.room-occupancy-list-card .btn-group.shadow-sm {
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.room-occupancy-list-card .view-btn-active {
+	background: var(--btnprimary, #2563eb) !important;
+	color: #fff !important;
+	border-color: var(--btnprimary, #2563eb) !important;
+}
+.room-occupancy-list-card .view-btn-inactive {
+	background: #fff;
+	color: #64748b;
+	border: 1px solid #e2e8f0;
+}
+.room-occupancy-list-card .view-btn-inactive:hover {
+	background: #f1f5f9;
+	color: #1e293b;
+}
+
+/* Table: room name with room type icon */
+.room-occupancy-list-card .room-with-type-icon {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+}
+.room-occupancy-list-card .room-with-type-icon i.fa {
+	color: #5c9fd6;
+	font-size: 1rem;
+	width: 1.1em;
+	text-align: center;
+}
+.room-occupancy-list-card #tblRoomOccupancyStatus tbody td {
+	vertical-align: middle;
+}
+
+/* Status badges in list */
+.room-occupancy-list-card .status-badge {
+	display: inline-block;
+	padding: 3px 8px;
+	border-radius: 20px;
+	font-size: var(--fs-small, 12px);
+	font-weight: 500;
+}
+.room-occupancy-list-card .status-badge--booked {
+	background: #e8f5e9;
+	color: #2e7d32;
+}
+.room-occupancy-list-card .status-badge--occupied {
+	background: #e8f5e9;
+	color: #2e7d32;
+}
+.room-occupancy-list-card .status-badge--blocked {
+	background: #fff3e0;
+	color: #ef6c00;
+}
+.room-occupancy-list-card .status-badge--other {
+	background: #f1f5f9;
+	color: #475569;
+}
+
+/* Calendar row header: room type icon (DayPilot row header) */
+#occupancyCalendar .scheduler_default_rowheader_inner .room-with-type-icon,
+#occupancyCalendar .scheduler_default_rowheader_inner i.fa {
+	margin-right: 6px;
+	opacity: 0.95;
+}
+
+/* Scheduler: no drag cursor */
+#occupancyCalendar .scheduler_default_event {
+	cursor: pointer;
+}
+#occupancyCalendar.scheduler_readonly .scheduler_default_event {
+	cursor: pointer;
+}
