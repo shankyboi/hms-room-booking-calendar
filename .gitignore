@@ -1,6 +1,8 @@
 **/bin/
 **/obj/
 **/.vs/
+**/.codex_tmp/
+**/.codex-build/
 **/node_modules/
 **/wwwroot/lib/
 *.user
